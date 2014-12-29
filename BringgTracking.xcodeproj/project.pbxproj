@@ -1,0 +1,371 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A99163A81A51523C008BADCD /* BringgTracking.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A99163A71A51523C008BADCD /* BringgTracking.h */; };
+		A99163AA1A51523C008BADCD /* BringgTracking.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163A91A51523C008BADCD /* BringgTracking.m */; };
+		A99163B01A51523C008BADCD /* libBringgTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163A41A51523C008BADCD /* libBringgTracking.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A99163B11A51523C008BADCD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A991639C1A51523C008BADCD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A99163A31A51523C008BADCD;
+			remoteInfo = BringgTracking;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A99163A21A51523C008BADCD /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				A99163A81A51523C008BADCD /* BringgTracking.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A99163A41A51523C008BADCD /* libBringgTracking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBringgTracking.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A99163A71A51523C008BADCD /* BringgTracking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BringgTracking.h; sourceTree = "<group>"; };
+		A99163A91A51523C008BADCD /* BringgTracking.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BringgTracking.m; sourceTree = "<group>"; };
+		A99163AF1A51523C008BADCD /* BringgTrackingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BringgTrackingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A99163B51A51523C008BADCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A99163A11A51523C008BADCD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A99163AC1A51523C008BADCD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A99163B01A51523C008BADCD /* libBringgTracking.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A991639B1A51523C008BADCD = {
+			isa = PBXGroup;
+			children = (
+				A99163A61A51523C008BADCD /* BringgTracking */,
+				A99163B31A51523C008BADCD /* BringgTrackingTests */,
+				A99163A51A51523C008BADCD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A99163A51A51523C008BADCD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A99163A41A51523C008BADCD /* libBringgTracking.a */,
+				A99163AF1A51523C008BADCD /* BringgTrackingTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A99163A61A51523C008BADCD /* BringgTracking */ = {
+			isa = PBXGroup;
+			children = (
+				A99163A71A51523C008BADCD /* BringgTracking.h */,
+				A99163A91A51523C008BADCD /* BringgTracking.m */,
+			);
+			path = BringgTracking;
+			sourceTree = "<group>";
+		};
+		A99163B31A51523C008BADCD /* BringgTrackingTests */ = {
+			isa = PBXGroup;
+			children = (
+				A99163B41A51523C008BADCD /* Supporting Files */,
+			);
+			path = BringgTrackingTests;
+			sourceTree = "<group>";
+		};
+		A99163B41A51523C008BADCD /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A99163B51A51523C008BADCD /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A99163A31A51523C008BADCD /* BringgTracking */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A99163B81A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTracking" */;
+			buildPhases = (
+				A99163A01A51523C008BADCD /* Sources */,
+				A99163A11A51523C008BADCD /* Frameworks */,
+				A99163A21A51523C008BADCD /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BringgTracking;
+			productName = BringgTracking;
+			productReference = A99163A41A51523C008BADCD /* libBringgTracking.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		A99163AE1A51523C008BADCD /* BringgTrackingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A99163BB1A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTrackingTests" */;
+			buildPhases = (
+				A99163AB1A51523C008BADCD /* Sources */,
+				A99163AC1A51523C008BADCD /* Frameworks */,
+				A99163AD1A51523C008BADCD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A99163B21A51523C008BADCD /* PBXTargetDependency */,
+			);
+			name = BringgTrackingTests;
+			productName = BringgTrackingTests;
+			productReference = A99163AF1A51523C008BADCD /* BringgTrackingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A991639C1A51523C008BADCD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Ilya Kalinin";
+				TargetAttributes = {
+					A99163A31A51523C008BADCD = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					A99163AE1A51523C008BADCD = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = A991639F1A51523C008BADCD /* Build configuration list for PBXProject "BringgTracking" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A991639B1A51523C008BADCD;
+			productRefGroup = A99163A51A51523C008BADCD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A99163A31A51523C008BADCD /* BringgTracking */,
+				A99163AE1A51523C008BADCD /* BringgTrackingTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A99163AD1A51523C008BADCD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A99163A01A51523C008BADCD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A99163AA1A51523C008BADCD /* BringgTracking.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A99163AB1A51523C008BADCD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A99163B21A51523C008BADCD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A99163A31A51523C008BADCD /* BringgTracking */;
+			targetProxy = A99163B11A51523C008BADCD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A99163B61A51523C008BADCD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A99163B71A51523C008BADCD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A99163B91A51523C008BADCD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A99163BA1A51523C008BADCD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A99163BC1A51523C008BADCD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = BringgTrackingTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A99163BD1A51523C008BADCD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = BringgTrackingTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A991639F1A51523C008BADCD /* Build configuration list for PBXProject "BringgTracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99163B61A51523C008BADCD /* Debug */,
+				A99163B71A51523C008BADCD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A99163B81A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99163B91A51523C008BADCD /* Debug */,
+				A99163BA1A51523C008BADCD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		A99163BB1A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTrackingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99163BC1A51523C008BADCD /* Debug */,
+				A99163BD1A51523C008BADCD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A991639C1A51523C008BADCD /* Project object */;
+}

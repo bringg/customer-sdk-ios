@@ -6,10 +6,35 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		A99163EF1A51615C008BADCD /* BringgTrackingUniversal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = A99163F01A51615D008BADCD /* Build configuration list for PBXAggregateTarget "BringgTrackingUniversal" */;
+			buildPhases = (
+				A99163F31A5161AA008BADCD /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = BringgTrackingUniversal;
+			productName = BringgTrackingUniversal;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		A99163A81A51523C008BADCD /* BringgTracking.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A99163A71A51523C008BADCD /* BringgTracking.h */; };
-		A99163AA1A51523C008BADCD /* BringgTracking.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163A91A51523C008BADCD /* BringgTracking.m */; };
 		A99163B01A51523C008BADCD /* libBringgTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163A41A51523C008BADCD /* libBringgTracking.a */; };
+		A99163D71A515719008BADCD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163C11A515719008BADCD /* Reachability.m */; };
+		A99163D81A515719008BADCD /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163C51A515719008BADCD /* SocketIO.m */; };
+		A99163D91A515719008BADCD /* SocketIOJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163C71A515719008BADCD /* SocketIOJSONSerialization.m */; };
+		A99163DA1A515719008BADCD /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163C91A515719008BADCD /* SocketIOPacket.m */; };
+		A99163DB1A515719008BADCD /* SocketIOTransportWebsocket.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163CC1A515719008BADCD /* SocketIOTransportWebsocket.m */; };
+		A99163DC1A515719008BADCD /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163CE1A515719008BADCD /* SocketIOTransportXHR.m */; };
+		A99163DD1A515719008BADCD /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = A99163D01A515719008BADCD /* base64.c */; };
+		A99163DE1A515719008BADCD /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163D41A515719008BADCD /* NSData+SRB64Additions.m */; };
+		A99163DF1A515719008BADCD /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163D61A515719008BADCD /* SRWebSocket.m */; };
+		A99163E21A51582E008BADCD /* BringgTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163E11A51582E008BADCD /* BringgTracker.m */; };
+		A99163E41A51587C008BADCD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E31A51587C008BADCD /* Foundation.framework */; };
+		A99163E61A515884008BADCD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E51A515884008BADCD /* CFNetwork.framework */; };
+		A99163E81A515893008BADCD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E71A515893008BADCD /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +54,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				A99163A81A51523C008BADCD /* BringgTracking.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,10 +61,34 @@
 
 /* Begin PBXFileReference section */
 		A99163A41A51523C008BADCD /* libBringgTracking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBringgTracking.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		A99163A71A51523C008BADCD /* BringgTracking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BringgTracking.h; sourceTree = "<group>"; };
-		A99163A91A51523C008BADCD /* BringgTracking.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BringgTracking.m; sourceTree = "<group>"; };
 		A99163AF1A51523C008BADCD /* BringgTrackingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BringgTrackingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A99163B51A51523C008BADCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A99163C01A515719008BADCD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		A99163C11A515719008BADCD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		A99163C31A515719008BADCD /* LICENSE_SIO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE_SIO; sourceTree = "<group>"; };
+		A99163C41A515719008BADCD /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIO.h; sourceTree = "<group>"; };
+		A99163C51A515719008BADCD /* SocketIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIO.m; sourceTree = "<group>"; };
+		A99163C61A515719008BADCD /* SocketIOJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOJSONSerialization.h; sourceTree = "<group>"; };
+		A99163C71A515719008BADCD /* SocketIOJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOJSONSerialization.m; sourceTree = "<group>"; };
+		A99163C81A515719008BADCD /* SocketIOPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOPacket.h; sourceTree = "<group>"; };
+		A99163C91A515719008BADCD /* SocketIOPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOPacket.m; sourceTree = "<group>"; };
+		A99163CA1A515719008BADCD /* SocketIOTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransport.h; sourceTree = "<group>"; };
+		A99163CB1A515719008BADCD /* SocketIOTransportWebsocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransportWebsocket.h; sourceTree = "<group>"; };
+		A99163CC1A515719008BADCD /* SocketIOTransportWebsocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportWebsocket.m; sourceTree = "<group>"; };
+		A99163CD1A515719008BADCD /* SocketIOTransportXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransportXHR.h; sourceTree = "<group>"; };
+		A99163CE1A515719008BADCD /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportXHR.m; sourceTree = "<group>"; };
+		A99163D01A515719008BADCD /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
+		A99163D11A515719008BADCD /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
+		A99163D21A515719008BADCD /* LICENSE_SR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE_SR; sourceTree = "<group>"; };
+		A99163D31A515719008BADCD /* NSData+SRB64Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SRB64Additions.h"; sourceTree = "<group>"; };
+		A99163D41A515719008BADCD /* NSData+SRB64Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SRB64Additions.m"; sourceTree = "<group>"; };
+		A99163D51A515719008BADCD /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
+		A99163D61A515719008BADCD /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
+		A99163E01A51582E008BADCD /* BringgTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BringgTracker.h; sourceTree = "<group>"; };
+		A99163E11A51582E008BADCD /* BringgTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BringgTracker.m; sourceTree = "<group>"; };
+		A99163E31A51587C008BADCD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A99163E51A515884008BADCD /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		A99163E71A515893008BADCD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +96,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A99163E81A515893008BADCD /* Security.framework in Frameworks */,
+				A99163E61A515884008BADCD /* CFNetwork.framework in Frameworks */,
+				A99163E41A51587C008BADCD /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +116,9 @@
 		A991639B1A51523C008BADCD = {
 			isa = PBXGroup;
 			children = (
+				A99163E71A515893008BADCD /* Security.framework */,
+				A99163E51A515884008BADCD /* CFNetwork.framework */,
+				A99163E31A51587C008BADCD /* Foundation.framework */,
 				A99163A61A51523C008BADCD /* BringgTracking */,
 				A99163B31A51523C008BADCD /* BringgTrackingTests */,
 				A99163A51A51523C008BADCD /* Products */,
@@ -83,8 +137,9 @@
 		A99163A61A51523C008BADCD /* BringgTracking */ = {
 			isa = PBXGroup;
 			children = (
-				A99163A71A51523C008BADCD /* BringgTracking.h */,
-				A99163A91A51523C008BADCD /* BringgTracking.m */,
+				A99163E01A51582E008BADCD /* BringgTracker.h */,
+				A99163E11A51582E008BADCD /* BringgTracker.m */,
+				A99163BE1A515719008BADCD /* Utils */,
 			);
 			path = BringgTracking;
 			sourceTree = "<group>";
@@ -103,6 +158,58 @@
 				A99163B51A51523C008BADCD /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A99163BE1A515719008BADCD /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A99163BF1A515719008BADCD /* Reachibility */,
+				A99163C21A515719008BADCD /* SocketIO */,
+				A99163CF1A515719008BADCD /* SocketRocket */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		A99163BF1A515719008BADCD /* Reachibility */ = {
+			isa = PBXGroup;
+			children = (
+				A99163C01A515719008BADCD /* Reachability.h */,
+				A99163C11A515719008BADCD /* Reachability.m */,
+			);
+			path = Reachibility;
+			sourceTree = "<group>";
+		};
+		A99163C21A515719008BADCD /* SocketIO */ = {
+			isa = PBXGroup;
+			children = (
+				A99163C31A515719008BADCD /* LICENSE_SIO */,
+				A99163C41A515719008BADCD /* SocketIO.h */,
+				A99163C51A515719008BADCD /* SocketIO.m */,
+				A99163C61A515719008BADCD /* SocketIOJSONSerialization.h */,
+				A99163C71A515719008BADCD /* SocketIOJSONSerialization.m */,
+				A99163C81A515719008BADCD /* SocketIOPacket.h */,
+				A99163C91A515719008BADCD /* SocketIOPacket.m */,
+				A99163CA1A515719008BADCD /* SocketIOTransport.h */,
+				A99163CB1A515719008BADCD /* SocketIOTransportWebsocket.h */,
+				A99163CC1A515719008BADCD /* SocketIOTransportWebsocket.m */,
+				A99163CD1A515719008BADCD /* SocketIOTransportXHR.h */,
+				A99163CE1A515719008BADCD /* SocketIOTransportXHR.m */,
+			);
+			path = SocketIO;
+			sourceTree = "<group>";
+		};
+		A99163CF1A515719008BADCD /* SocketRocket */ = {
+			isa = PBXGroup;
+			children = (
+				A99163D01A515719008BADCD /* base64.c */,
+				A99163D11A515719008BADCD /* base64.h */,
+				A99163D21A515719008BADCD /* LICENSE_SR */,
+				A99163D31A515719008BADCD /* NSData+SRB64Additions.h */,
+				A99163D41A515719008BADCD /* NSData+SRB64Additions.m */,
+				A99163D51A515719008BADCD /* SRWebSocket.h */,
+				A99163D61A515719008BADCD /* SRWebSocket.m */,
+			);
+			path = SocketRocket;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +265,9 @@
 					A99163AE1A51523C008BADCD = {
 						CreatedOnToolsVersion = 6.1;
 					};
+					A99163EF1A51615C008BADCD = {
+						CreatedOnToolsVersion = 6.1;
+					};
 				};
 			};
 			buildConfigurationList = A991639F1A51523C008BADCD /* Build configuration list for PBXProject "BringgTracking" */;
@@ -174,6 +284,7 @@
 			targets = (
 				A99163A31A51523C008BADCD /* BringgTracking */,
 				A99163AE1A51523C008BADCD /* BringgTrackingTests */,
+				A99163EF1A51615C008BADCD /* BringgTrackingUniversal */,
 			);
 		};
 /* End PBXProject section */
@@ -188,12 +299,37 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A99163F31A5161AA008BADCD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# define output folder environment variable\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target BringTracking ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target BringTracking -configuration ${CONFIGURATION} -sdk iphonesimulator -arch x86_64 BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 2. Create universal binary file using lipo\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A99163A01A51523C008BADCD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A99163AA1A51523C008BADCD /* BringgTracking.m in Sources */,
+				A99163D81A515719008BADCD /* SocketIO.m in Sources */,
+				A99163D71A515719008BADCD /* Reachability.m in Sources */,
+				A99163DF1A515719008BADCD /* SRWebSocket.m in Sources */,
+				A99163DC1A515719008BADCD /* SocketIOTransportXHR.m in Sources */,
+				A99163DE1A515719008BADCD /* NSData+SRB64Additions.m in Sources */,
+				A99163DA1A515719008BADCD /* SocketIOPacket.m in Sources */,
+				A99163DB1A515719008BADCD /* SocketIOTransportWebsocket.m in Sources */,
+				A99163DD1A515719008BADCD /* base64.c in Sources */,
+				A99163D91A515719008BADCD /* SocketIOJSONSerialization.m in Sources */,
+				A99163E21A51582E008BADCD /* BringgTracker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,6 +446,7 @@
 		A99163BC1A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -327,12 +464,27 @@
 		A99163BD1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = BringgTrackingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		A99163F11A51615D008BADCD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A99163F21A51615D008BADCD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -356,12 +508,22 @@
 				A99163BA1A51523C008BADCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A99163BB1A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTrackingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A99163BC1A51523C008BADCD /* Debug */,
 				A99163BD1A51523C008BADCD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A99163F01A51615D008BADCD /* Build configuration list for PBXAggregateTarget "BringgTrackingUniversal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A99163F11A51615D008BADCD /* Debug */,
+				A99163F21A51615D008BADCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

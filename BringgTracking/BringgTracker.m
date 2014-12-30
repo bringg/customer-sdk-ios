@@ -164,7 +164,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             [self.orderDelegates setObject:delegate forKey:uuid];
             
         }
-        [self sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, NSError *error) {
+        [self sendWatchOrderWithOrderUUID:uuid shareUUID:shareUUID completionHandler:^(BOOL success, NSError *error) {
             if (!success) {
                 id delegateToRemove = [self.orderDelegates objectForKey:uuid];
                 @synchronized(self) {
@@ -262,15 +262,31 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-- (BOOL)errorAck:(id)argsData {
+- (BOOL)errorAck:(id)argsData error:(NSError **)error {
+    BOOL errorResult = NO;
+    NSString *message;
     if ([argsData isKindOfClass:[NSString class]]) {
         NSString *data = (NSString *)argsData;
         if ([[data lowercaseString] rangeOfString:@"error"].location != NSNotFound) {
-            return YES;
-            
+            errorResult = YES;
+            message = data;
+        }
+
+    } else if ([argsData isKindOfClass:[NSDictionary class]]) {
+        NSNumber *success = [argsData objectForKey:@"success"];
+        message = [argsData objectForKey:@"message"];
+        if (![success boolValue]) {
+            errorResult = YES;
+        
         }
     }
-    return NO;
+    if (errorResult) {
+        *error = [NSError errorWithDomain:@"OVDomain" code:0
+                                 userInfo:@{NSLocalizedDescriptionKey:message,
+                                            NSLocalizedRecoverySuggestionErrorKey:message}];
+        
+    }
+    return errorResult;
     
 }
 
@@ -290,11 +306,12 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     if (completionHandler) {
         cb = ^(id argsData) {
             NSLog(@"SocketIOCallback argsData %@", argsData);
-            if (![self errorAck:argsData]) {
+            NSError *error;
+            if (![self errorAck:argsData error:&error]) {
                 completionHandler(YES, nil);
                 
             } else {
-                completionHandler(NO, nil);
+                completionHandler(NO, error);
                 
             }
         };

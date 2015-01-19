@@ -17,7 +17,7 @@
 @end
 
 @protocol OrderDelegate <NSObject>
-- (void)orderMonitoringFailedForOrederWithUUID:(NSString *)uuid error:(NSError *)error;
+- (void)watchOrderFailedForOrederWithUUID:(NSString *)uuid error:(NSError *)error;
 - (void)orderDidAssignedWithOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
 @optional
 - (void)orderDidAcceptedOrderUUID:(NSString *)uuid;
@@ -29,7 +29,7 @@
 @end
 
 @protocol DriverDelegate <NSObject>
-- (void)driverMonitoringFailedForDriverWithUUID:(NSString *)uuid error:(NSError *)error;
+- (void)watchDriverFailedForDriverWithUUID:(NSString *)uuid error:(NSError *)error;
 @optional
 - (void)driverLocationDidChangedWithDriverUUID:(NSString *)driverUUID lat:(NSNumber *)lat lng:(NSNumber *)lng;
 
@@ -45,14 +45,14 @@
 - (void)connect;
 - (void)disconnect;
 
-- (BOOL)isMonitoringOrders;
-- (BOOL)isMonitoringOrderWithUUID:(NSString *)uuid;
-- (void)startMonitorOrederWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <OrderDelegate>)delegate;
-- (void)stopMonitorOrderWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID;
+- (BOOL)isWatchingOrders;
+- (BOOL)isWatchingOrderWithUUID:(NSString *)uuid;
+- (void)startWatchingOrederWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <OrderDelegate>)delegate;
+- (void)stopWatchingOrderWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID;
 
-- (BOOL)isMonitoringDrivers;
-- (BOOL)isMonitoringDriverWithUUID:(NSString *)uuid;
-- (void)startMonitorDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate;
-- (void)stopMonitorDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID;
+- (BOOL)isWatchingDrivers;
+- (BOOL)isWatchingDriverWithUUID:(NSString *)uuid;
+- (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate;
+- (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID;
 
 @end

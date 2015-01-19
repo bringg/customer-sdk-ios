@@ -114,22 +114,22 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-- (BOOL)isMonitoringOrders {
+- (BOOL)isWatchingOrders {
     return self.doMonitoringOrders;
     
 }
 
-- (BOOL)isMonitoringOrderWithUUID:(NSString *)uuid {
+- (BOOL)isWatchingOrderWithUUID:(NSString *)uuid {
     return ([self.orderDelegates objectForKey:uuid]) ? YES : NO;
     
 }
 
-- (BOOL)isMonitoringDrivers {
+- (BOOL)isWatchingDrivers {
     return self.doMonitoringDrivers;
     
 }
 
-- (BOOL)isMonitoringDriverWithUUID:(NSString *)uuid {
+- (BOOL)isWatchingDriverWithUUID:(NSString *)uuid {
     return ([self.driverDelegates objectForKey:uuid]) ? YES : NO;
     
 }
@@ -156,7 +156,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-- (void)startMonitorOrederWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <OrderDelegate>)delegate {
+- (void)startWatchingOrederWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <OrderDelegate>)delegate {
     self.doMonitoringOrders = YES;
     id existingDelegate = [self.orderDelegates objectForKey:uuid];
     if (!existingDelegate) {
@@ -171,7 +171,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                     [self.orderDelegates removeObjectForKey:uuid];
                     
                 }
-                [delegateToRemove orderMonitoringFailedForOrederWithUUID:uuid error:error];
+                [delegateToRemove watchOrderFailedForOrederWithUUID:uuid error:error];
                 if (![self.orderDelegates count]) {
                     self.doMonitoringOrders = NO;
                     
@@ -181,7 +181,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     }
 }
 
-- (void)stopMonitorOrderWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
+- (void)stopWatchingOrderWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
     id existingDelegate = [self.orderDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(self) {
@@ -191,7 +191,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     }
 }
 
-- (void)startMonitorDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate {
+- (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate {
     self.doMonitoringDrivers = YES;
     id existingDelegate = [self.driverDelegates objectForKey:uuid];
     if (!existingDelegate) {
@@ -206,7 +206,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                     [self.driverDelegates removeObjectForKey:uuid];
                     
                 }
-                [delegateToRemove driverMonitoringFailedForDriverWithUUID:uuid error:error];
+                [delegateToRemove watchDriverFailedForDriverWithUUID:uuid error:error];
                 if (![self.driverDelegates count]) {
                     self.doMonitoringDrivers = NO;
                     
@@ -216,7 +216,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     }
 }
 
-- (void)stopMonitorDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
+- (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
     id existingDelegate = [self.driverDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(self) {

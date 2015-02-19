@@ -39,11 +39,13 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 @property (nonatomic, weak) id <RealTimeDelegate> delegate;
 @property (nonatomic, strong) NSMutableDictionary *orderDelegates;
 @property (nonatomic, strong) NSMutableDictionary *driverDelegates;
+@property (nonatomic, strong) NSMutableDictionary *waypointDelegates;
 
 @property (nonatomic, assign) BOOL connected;
 @property (nonatomic, assign) BOOL doConnect;
 @property (nonatomic, assign) BOOL doMonitoringOrders;
 @property (nonatomic, assign) BOOL doMonitoringDrivers;
+@property (nonatomic, assign) BOOL doMonitoringWaypoints;
 
 @property (nonatomic,strong) SocketIO *socketIO;
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
@@ -64,6 +66,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     if (self = [super init]) {
         self.orderDelegates = [[NSMutableDictionary alloc] init];
         self.driverDelegates = [[NSMutableDictionary alloc] init];
+        self.waypointDelegates = [[NSMutableDictionary alloc] init];
         self.socketIO = [[SocketIO alloc] initWithDelegate:self];
         
         //[self configureReachability];
@@ -78,6 +81,26 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 }
 
 #pragma mark - Helper
+
+- (NSDate *)dateFromString:(NSString *)string {
+    NSDate *date;
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+    date = [dateFormat dateFromString:string];
+    if (!date) {
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
+        date = [dateFormat dateFromString:string];
+        
+    }
+    if (!date) {
+        [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+        date = [dateFormat dateFromString:string];
+        
+    }
+    return date;
+    
+}
 
 - (void)configureReachability {
     Reachability* reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
@@ -134,6 +157,16 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
+- (BOOL)isWatchingWaypoints {
+    return self.doMonitoringWaypoints;
+    
+}
+
+- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId {
+    return ([self.waypointDelegates objectForKey:waypointId]) ? YES : NO;
+    
+}
+
 #pragma mark - Actions
 
 - (void)connect {
@@ -156,7 +189,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-- (void)startWatchingOrederWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <OrderDelegate>)delegate {
+- (void)startWatchingOrederWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
     self.doMonitoringOrders = YES;
     id existingDelegate = [self.orderDelegates objectForKey:uuid];
     if (!existingDelegate) {
@@ -164,7 +197,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             [self.orderDelegates setObject:delegate forKey:uuid];
             
         }
-        [self sendWatchOrderWithOrderUUID:uuid shareUUID:shareUUID completionHandler:^(BOOL success, NSError *error) {
+        [self sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, NSError *error) {
             if (!success) {
                 id delegateToRemove = [self.orderDelegates objectForKey:uuid];
                 @synchronized(self) {
@@ -181,7 +214,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     }
 }
 
-- (void)stopWatchingOrderWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
+- (void)stopWatchingOrderWithUUID:(NSString *)uuid {
     id existingDelegate = [self.orderDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(self) {
@@ -221,6 +254,41 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     if (existingDelegate) {
         @synchronized(self) {
             [self.driverDelegates removeObjectForKey:uuid];
+            
+        }
+    }
+}
+
+- (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId delegate:(id <WaypointDelegate>)delegate {
+    self.doMonitoringWaypoints = YES;
+    id existingDelegate = [self.waypointDelegates objectForKey:waypointId];
+    if (!existingDelegate) {
+        @synchronized(self) {
+            [self.waypointDelegates setObject:delegate forKey:waypointId];
+            
+        }
+        [self sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, NSError *error) {
+            if (!success) {
+                id delegateToRemove = [self.waypointDelegates objectForKey:waypointId];
+                @synchronized(self) {
+                    [self.waypointDelegates removeObjectForKey:waypointId];
+                    
+                }
+                [delegateToRemove watchWaypointFailedForWaypointId:waypointId error:error];
+                if (![self.waypointDelegates count]) {
+                    self.doMonitoringWaypoints = NO;
+                    
+                }
+            }
+        }];
+    }
+}
+
+- (void)stopWatchingWaypointWithWaypointId:(NSNumber *)waypointId {
+    id existingDelegate = [self.waypointDelegates objectForKey:waypointId];
+    if (existingDelegate) {
+        @synchronized(self) {
+            [self.waypointDelegates removeObjectForKey:waypointId];
             
         }
     }
@@ -320,11 +388,10 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
     NSLog(@"watch order");
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    uuid, @"order_uuid",
-                                   shareUUID, @"share_uuid",
                                    nil];
     [self sendEventWithName:@"watch order" params:params completionHandler:completionHandler];
     
@@ -337,6 +404,15 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                                    shareUUID, @"share_uuid",
                                    nil];
     [self sendEventWithName:@"watch driver" params:params completionHandler:completionHandler];
+    
+}
+
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+    NSLog(@"watch waypoint");
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   waypointId, @"way_point_id",
+                                   nil];
+    [self sendEventWithName:@"watch way point" params:params completionHandler:completionHandler];
     
 }
 
@@ -413,8 +489,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             }
             
         }
-    }
-    if ([packet.name isEqualToString:@"order done"]) {
+    } else if ([packet.name isEqualToString:@"order done"]) {
         NSDictionary *orderDone = [packet.args firstObject];
         NSString *orderUUID = [orderDone objectForKey:@"uuid"];
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
@@ -422,8 +497,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             [existingDelegate orderDidFinishedOrderUUID:orderUUID];
             
         }
-    }
-    if ([packet.name isEqualToString:@"location update"]) {
+    } else if ([packet.name isEqualToString:@"location update"]) {
         NSDictionary *locationUpdate = [packet.args firstObject];
         NSString *driverUUID = [locationUpdate objectForKey:@"uuid"];
         NSNumber *lat = [locationUpdate objectForKey:@"lat"];
@@ -431,6 +505,36 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         id existingDelegate = [self.driverDelegates objectForKey:driverUUID];
         if (existingDelegate) {
             [existingDelegate driverLocationDidChangedWithDriverUUID:driverUUID lat:lat lng:lng];
+            
+        }
+    } else if ([packet.name isEqualToString:@"activity change"]) {
+        //activity change
+        
+    } else if ([packet.name isEqualToString:@"way point eta updated"]) {
+        NSDictionary *etaUpdate = [packet.args firstObject];
+        NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
+        NSString *eta = [etaUpdate objectForKey:@"eta"];
+        NSDate *etaToDate = [self dateFromString:eta];
+        id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        if (existingDelegate) {
+            [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
+            
+        }
+    } else if ([packet.name isEqualToString:@"way point arrived"]) {
+        NSDictionary *waypointArrived = [packet.args firstObject];
+        NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
+        id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        if (existingDelegate) {
+            [existingDelegate waypointDidArrivedWaypointId:wpid];
+            
+        }
+        
+    } else if ([packet.name isEqualToString:@"way point done"]) {
+        NSDictionary *waypointDone = [packet.args firstObject];
+        NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
+        id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        if (existingDelegate) {
+            [existingDelegate waypointDidArrivedWaypointId:wpid];
             
         }
     }

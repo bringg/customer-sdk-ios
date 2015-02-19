@@ -35,6 +35,15 @@
 
 @end
 
+@protocol WaypointDelegate <NSObject>
+- (void)watchWaypointFailedForWaypointId:(NSNumber *)waypointId error:(NSError *)error;
+@optional
+- (void)waypointDidUpdatedWaypointId:(NSNumber *)waypointId eta:(NSDate *)eta;
+- (void)waypointDidArrivedWaypointId:(NSNumber *)waypointId;
+- (void)waypointDidFinishedWaypointId:(NSNumber *)waypointId;
+
+@end
+
 @interface BringgTracker : NSObject <SocketIODelegate>
 
 + (id)sharedInstance;
@@ -47,12 +56,17 @@
 
 - (BOOL)isWatchingOrders;
 - (BOOL)isWatchingOrderWithUUID:(NSString *)uuid;
-- (void)startWatchingOrederWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <OrderDelegate>)delegate;
-- (void)stopWatchingOrderWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID;
+- (void)startWatchingOrederWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate;
+- (void)stopWatchingOrderWithUUID:(NSString *)uuid;
 
 - (BOOL)isWatchingDrivers;
 - (BOOL)isWatchingDriverWithUUID:(NSString *)uuid;
 - (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate;
 - (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID;
+
+- (BOOL)isWatchingWaypoints;
+- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId;
+- (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId delegate:(id <WaypointDelegate>)delegate;
+- (void)stopWatchingWaypointWithWaypointId:(NSNumber *)waypointId;
 
 @end

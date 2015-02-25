@@ -190,27 +190,29 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 }
 
 - (void)startWatchingOrederWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
-    self.doMonitoringOrders = YES;
-    id existingDelegate = [self.orderDelegates objectForKey:uuid];
-    if (!existingDelegate) {
-        @synchronized(self) {
-            [self.orderDelegates setObject:delegate forKey:uuid];
-            
-        }
-        [self sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, NSError *error) {
-            if (!success) {
-                id delegateToRemove = [self.orderDelegates objectForKey:uuid];
-                @synchronized(self) {
-                    [self.orderDelegates removeObjectForKey:uuid];
-                    
-                }
-                [delegateToRemove watchOrderFailedForOrederWithUUID:uuid error:error];
-                if (![self.orderDelegates count]) {
-                    self.doMonitoringOrders = NO;
-                    
-                }
+    if (uuid) {
+        self.doMonitoringOrders = YES;
+        id existingDelegate = [self.orderDelegates objectForKey:uuid];
+        if (!existingDelegate) {
+            @synchronized(self) {
+                [self.orderDelegates setObject:delegate forKey:uuid];
+                
             }
-        }];
+            [self sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, NSError *error) {
+                if (!success) {
+                    id delegateToRemove = [self.orderDelegates objectForKey:uuid];
+                    @synchronized(self) {
+                        [self.orderDelegates removeObjectForKey:uuid];
+                        
+                    }
+                    [delegateToRemove watchOrderFailedForOrederWithUUID:uuid error:error];
+                    if (![self.orderDelegates count]) {
+                        self.doMonitoringOrders = NO;
+                        
+                    }
+                }
+            }];
+        }
     }
 }
 
@@ -225,27 +227,29 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 }
 
 - (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate {
-    self.doMonitoringDrivers = YES;
-    id existingDelegate = [self.driverDelegates objectForKey:uuid];
-    if (!existingDelegate) {
-        @synchronized(self) {
-            [self.driverDelegates setObject:delegate forKey:uuid];
-            
-        }
-        [self sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success, NSError *error) {
-            if (!success) {
-                id delegateToRemove = [self.driverDelegates objectForKey:uuid];
-                @synchronized(self) {
-                    [self.driverDelegates removeObjectForKey:uuid];
-                    
-                }
-                [delegateToRemove watchDriverFailedForDriverWithUUID:uuid error:error];
-                if (![self.driverDelegates count]) {
-                    self.doMonitoringDrivers = NO;
-                    
-                }
+    if (uuid && shareUUID) {
+        self.doMonitoringDrivers = YES;
+        id existingDelegate = [self.driverDelegates objectForKey:uuid];
+        if (!existingDelegate) {
+            @synchronized(self) {
+                [self.driverDelegates setObject:delegate forKey:uuid];
+                
             }
-        }];
+            [self sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success, NSError *error) {
+                if (!success) {
+                    id delegateToRemove = [self.driverDelegates objectForKey:uuid];
+                    @synchronized(self) {
+                        [self.driverDelegates removeObjectForKey:uuid];
+                        
+                    }
+                    [delegateToRemove watchDriverFailedForDriverWithUUID:uuid error:error];
+                    if (![self.driverDelegates count]) {
+                        self.doMonitoringDrivers = NO;
+                        
+                    }
+                }
+            }];
+        }
     }
 }
 
@@ -260,27 +264,29 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 }
 
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId delegate:(id <WaypointDelegate>)delegate {
-    self.doMonitoringWaypoints = YES;
-    id existingDelegate = [self.waypointDelegates objectForKey:waypointId];
-    if (!existingDelegate) {
-        @synchronized(self) {
-            [self.waypointDelegates setObject:delegate forKey:waypointId];
-            
-        }
-        [self sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, NSError *error) {
-            if (!success) {
-                id delegateToRemove = [self.waypointDelegates objectForKey:waypointId];
-                @synchronized(self) {
-                    [self.waypointDelegates removeObjectForKey:waypointId];
-                    
-                }
-                [delegateToRemove watchWaypointFailedForWaypointId:waypointId error:error];
-                if (![self.waypointDelegates count]) {
-                    self.doMonitoringWaypoints = NO;
-                    
-                }
+    if (waypointId) {
+        self.doMonitoringWaypoints = YES;
+        id existingDelegate = [self.waypointDelegates objectForKey:waypointId];
+        if (!existingDelegate) {
+            @synchronized(self) {
+                [self.waypointDelegates setObject:delegate forKey:waypointId];
+                
             }
-        }];
+            [self sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, NSError *error) {
+                if (!success) {
+                    id delegateToRemove = [self.waypointDelegates objectForKey:waypointId];
+                    @synchronized(self) {
+                        [self.waypointDelegates removeObjectForKey:waypointId];
+                        
+                    }
+                    [delegateToRemove watchWaypointFailedForWaypointId:waypointId error:error];
+                    if (![self.waypointDelegates count]) {
+                        self.doMonitoringWaypoints = NO;
+                        
+                    }
+                }
+            }];
+        }
     }
 }
 

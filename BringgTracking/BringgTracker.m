@@ -169,6 +169,11 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
 #pragma mark - Actions
 
+- (void)connectWithCustomerToken:(NSString *)customerToken {
+    [self connect];
+    
+}
+
 - (void)connect {
     NSLog(@"Connecting!");
     [self webSocketConnectWithCompletionHandler:^(BOOL success, NSError *error) {

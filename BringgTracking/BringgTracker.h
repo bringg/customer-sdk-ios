@@ -51,6 +51,7 @@
 - (void)setConnectionDelegate:(id <RealTimeDelegate>)delegate;
 
 - (BOOL)isConnected;
+- (void)connectWithCustomerToken:(NSString *)customerToken;
 - (void)connect;
 - (void)disconnect;
 

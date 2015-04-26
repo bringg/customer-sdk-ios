@@ -10,6 +10,8 @@
 
 #import "SocketIO.h"
 
+@class BringgCustomer;
+
 @protocol RealTimeDelegate <NSObject>
 - (void)trackerDidConnected;
 - (void)trackerDidDisconnectedWithError:(NSError *)error;
@@ -49,10 +51,10 @@
 + (id)sharedInstance;
 
 - (void)setConnectionDelegate:(id <RealTimeDelegate>)delegate;
+- (void)setCustomer:(BringgCustomer *)customer;
 
 - (BOOL)isConnected;
 - (void)connectWithCustomerToken:(NSString *)customerToken;
-- (void)connect;
 - (void)disconnect;
 
 - (BOOL)isWatchingOrders;
@@ -69,5 +71,7 @@
 - (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId;
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId delegate:(id <WaypointDelegate>)delegate;
 - (void)stopWatchingWaypointWithWaypointId:(NSNumber *)waypointId;
+
+- (void)rateWithRating:(NSUInteger)rating shareUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 @end

@@ -7,8 +7,10 @@
 //
 
 #import "BringgTracker.h"
+#import "BringgCustomer_Private.h"
 #import "SocketIOPacket.h"
 #import "Reachability.h"
+#import "AFNetworking.h"
 
 #define DEFINE_SHARED_INSTANCE_USING_BLOCK(block) \
 static dispatch_once_t pred = 0; \
@@ -18,7 +20,26 @@ _sharedObject = block(); \
 }); \
 return _sharedObject;
 
-#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
+//#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
+#define BTRealtimeServer @"realtime.bringg.com"
+
+#define BTSuccessKey @"status"
+#define BTStatusKey @"status"
+#define BTMessageKey @"message"
+#define BTNameKey @"name"
+#define BTPhoneKey @"phone"
+#define BTConfirmationCodeKey @"confirmation_code"
+#define BTMerchantIdKey @"merchant_id"
+#define BTDeveloperTokenKey @"developer_access_token"
+#define BTCustomerTokenKey @"access_token"
+#define BTCustomerPhoneKey @"phone"
+#define BTRatingTokenKey @"rating_token"
+#define BTTokenKey @"token"
+#define BTRatingKey @"rating"
+
+#define BTRESTSharedLocationPath @"/api/shared/"    //+uuid
+#define BTRESTRatingPath @"/api/rate/"              //+uuid
+#define BTRESTOrderPath @"/api/customer/task/"      //+id
 
 typedef NS_ENUM(NSInteger, OrderStatus) {
     OrderStatusCreated = 0,
@@ -50,6 +71,27 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 @property (nonatomic,strong) SocketIO *socketIO;
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
 @property (nonatomic, strong) Reachability* reachability;
+
+@property (nonatomic, strong) BringgCustomer *customer;
+@property (nonatomic, strong) NSString *customerToken;
+@property (nonatomic, strong) NSMutableArray *orders;
+@property (nonatomic, strong) NSMutableArray *locations;
+
+@property (nonatomic, strong) NSTimer *orderPollingTimer;
+@property (nonatomic, strong) NSTimer *driverPollingTimer;
+
+- (void)connect;
+
+- (void)shareLocationWithShareUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSDictionary *JSON, NSError *error))completionHandler;
+- (void)orderWithOrderID:(NSNumber *)orderID completionHandler:(void (^)(BOOL success, NSNumber *status, NSError *error))completionHandler;
+
+- (void)startOrderPolling;
+- (void)stopOrderPolling;
+- (void)startDriverPolling;
+- (void)stopDriverPolling;
+
+- (void)orderPolling:(NSTimer *)timer;
+- (void)driverPolling:(NSTimer *)timer;
 
 @end
 
@@ -130,6 +172,11 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
+- (void)setCustomer:(BringgCustomer *)customer {
+    _customer = customer;
+    
+}
+
 #pragma mark - Status
 
 - (BOOL)isConnected {
@@ -167,9 +214,256 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
+#pragma mark - Polling
+
+- (void)startOrderPolling {
+    self.orderPollingTimer = [NSTimer scheduledTimerWithTimeInterval:20.0
+                                                              target:self
+                                                            selector:@selector(orderPolling:)
+                                                            userInfo:nil
+                                                             repeats:YES];
+    
+}
+
+- (void)stopOrderPolling {
+    [self.orderPollingTimer invalidate];
+    self.orderPollingTimer = nil;
+    
+}
+
+- (void)startDriverPolling {
+    self.driverPollingTimer = [NSTimer scheduledTimerWithTimeInterval:20.0
+                                                              target:self
+                                                             selector:@selector(driverPolling:)
+                                                            userInfo:nil
+                                                             repeats:YES];
+    
+}
+
+- (void)stopDriverPolling {
+    [self.driverPollingTimer invalidate];
+    self.driverPollingTimer = nil;
+    
+}
+
+- (void)orderPolling:(NSTimer *)timer {
+    
+}
+
+- (void)driverPolling:(NSTimer *)timer {
+    [self shareLocationWithShareUUID:nil completionHandler:^(BOOL success, NSDictionary *JSON, NSError *error) {
+        if (success) {
+            
+            
+        }
+    }];
+}
+
 #pragma mark - Actions
 
+- (void)orderWithOrderID:(NSNumber *)orderID completionHandler:(void (^)(BOOL success, NSNumber *status, NSError *error))completionHandler {
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
+    if (self.customer.developerToken) {
+        [params setObject:self.customer.developerToken forKey:BTDeveloperTokenKey];
+        
+    }
+    if (self.customer.customerToken) {
+        [params setObject:self.customer.customerToken forKey:BTCustomerTokenKey];
+        
+    }
+    if (self.customer.merchantId) {
+        [params setObject:self.customer.merchantId forKey:BTMerchantIdKey];
+        
+    }
+    if (self.customer.phone) {
+        [params setObject:self.customer.phone forKey:BTCustomerPhoneKey];
+        
+    }
+    NSLog(@"order params %@", params);
+    NSString *url = [NSString stringWithFormat:@"http://%@%@%@", BTRealtimeServer, BTRESTOrderPath, orderID];
+    NSLog(@"%@", url);
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        BOOL result = NO;
+        NSError *error;
+        NSNumber *orderStatus;
+        NSLog(@"response order %@", responseObject);
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            id success = [responseObject objectForKey:BTSuccessKey];
+            id status = [responseObject objectForKey:BTStatusKey];
+            if ([success isKindOfClass:[NSString class]] &&
+                [success isEqualToString:@"ok"] &&
+                [status isKindOfClass:[NSNumber class]]) {
+                result = YES;
+                status = status;
+                
+            } else {
+                id message = [responseObject objectForKey:BTMessageKey];
+                if ([message isKindOfClass:[NSString class]]) {
+                    error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                                            userInfo:@{NSLocalizedDescriptionKey: message,
+                                                       NSLocalizedRecoverySuggestionErrorKey: message}];
+                    
+                } else {
+                    error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                                            userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
+                                                       NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
+                    
+                }
+            }
+        }
+        if (completionHandler) {
+            completionHandler(result, orderStatus, error);
+            
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completionHandler) {
+            completionHandler(NO, nil, error);
+            
+        }
+    }];
+
+}
+
+- (void)shareLocationWithShareUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSDictionary *JSON, NSError *error))completionHandler {
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
+    if (self.customer.developerToken) {
+        [params setObject:self.customer.developerToken forKey:BTDeveloperTokenKey];
+        
+    }
+    if (self.customerToken) {
+        [params setObject:self.customerToken forKey:BTCustomerTokenKey];
+        
+    }
+    if (self.customer.merchantId) {
+        [params setObject:self.customer.merchantId forKey:BTMerchantIdKey];
+        
+    }
+    NSLog(@"shareLocation %@ %@ %@", self.customer.developerToken, self.customerToken, self.customer.merchantId);
+    NSString *url = [NSString stringWithFormat:@"http://%@%@%@", BTRealtimeServer, BTRESTSharedLocationPath, uuid];
+    NSLog(@"%@", url);
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        BOOL result = NO;
+        NSError *error;
+        //NSString *ratingToken;
+        NSLog(@"%@", responseObject);
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            id success = [responseObject objectForKey:BTSuccessKey];
+            //id token = [responseObject objectForKey:BTRatingTokenKey];
+            if ([success isKindOfClass:[NSString class]] &&
+                [success isEqualToString:@"ok"] /*&&
+                [token isKindOfClass:[NSString class]]*/) {
+                result = YES;
+                //ratingToken = token;
+                
+            } else {
+                id message = [responseObject objectForKey:BTMessageKey];
+                if ([message isKindOfClass:[NSString class]]) {
+                    error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                                            userInfo:@{NSLocalizedDescriptionKey: message,
+                                                       NSLocalizedRecoverySuggestionErrorKey: message}];
+                    
+                } else {
+                    error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                                            userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
+                                                       NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
+                    
+                }
+            }
+        }
+        if (completionHandler) {
+            completionHandler(result, responseObject, error);
+            
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completionHandler) {
+            completionHandler(NO, nil, error);
+            
+        }
+    }];
+}
+
+- (void)rateWithRating:(NSUInteger)rating shareUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+    [self shareLocationWithShareUUID:uuid completionHandler:^(BOOL success, NSDictionary *JSON, NSError *error) {
+        if (success) {
+            NSString *ratingToken = [JSON objectForKey:BTRatingTokenKey];
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
+            if (self.customer.developerToken) {
+                [params setObject:self.customer.developerToken forKey:BTDeveloperTokenKey];
+                
+            }
+            if (self.customerToken) {
+                [params setObject:self.customerToken forKey:BTCustomerTokenKey];
+                
+            }
+            if (self.customer.merchantId) {
+                [params setObject:self.customer.merchantId forKey:BTMerchantIdKey];
+                
+            }
+            if (ratingToken) {
+                [params setObject:ratingToken forKey:BTTokenKey];
+                
+            }
+            if (rating) {
+                [params setObject:@(rating) forKey:BTRatingKey];
+                
+            }
+            NSLog(@"rate params %@", params);
+            NSString *url = [NSString stringWithFormat:@"http://%@%@%@", BTRealtimeServer, BTRESTRatingPath, uuid];
+            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+            [manager setRequestSerializer:[AFHTTPRequestSerializer serializer]];
+            [manager.requestSerializer setTimeoutInterval:90.0];
+            
+            [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                BOOL result = NO;
+                NSError *error;
+                NSLog(@"%@", responseObject);
+                if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                    id success = [responseObject objectForKey:@"success"];
+                    if ([success isKindOfClass:[NSNumber class]] &&
+                        [success isEqualToNumber:@(true)]) {
+                        result = YES;
+                        
+                    } else {
+                        id message = [responseObject objectForKey:BTMessageKey];
+                        if ([message isKindOfClass:[NSString class]]) {
+                            error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                                                    userInfo:@{NSLocalizedDescriptionKey: message,
+                                                               NSLocalizedRecoverySuggestionErrorKey: message}];
+                            
+                        } else {
+                            error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                                                    userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
+                                                               NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
+                            
+                        }
+                    }
+                }
+                if (completionHandler) {
+                    completionHandler(result, error);
+                    
+                }
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                if (completionHandler) {
+                    completionHandler(NO, error);
+                    
+                }
+            }];
+        } else {
+            if (completionHandler) {
+                completionHandler(NO, error);
+                
+            }
+        }
+    }];
+}
+
 - (void)connectWithCustomerToken:(NSString *)customerToken {
+    self.customerToken = customerToken;
     [self connect];
     
 }
@@ -308,7 +602,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 #pragma mark - SocketIO methods
 
 - (void)webSocketConnectWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
-    NSString *server = BRINGG_REALTIME_SERVER;
+    NSString *server = BTRealtimeServer;
     if ([self.socketIO isConnected] || [self.socketIO isConnecting]) {
         if (completionHandler) {
             NSError *error = [NSError errorWithDomain:@"OVDomain" code:0
@@ -473,6 +767,14 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         NSString *orderUUID = [orderUpdate objectForKey:@"uuid"];
         NSString *driverUUID = [orderUpdate objectForKey:@"driver_uuid"];
         NSNumber *orderStatus = [orderUpdate objectForKey:@"status"];
+        //test get order method
+//        NSNumber *orderID = [orderUpdate objectForKey:@"id"];
+//        
+//        [self orderWithOrderID:orderID completionHandler:^(BOOL success, NSNumber *status, NSError *error) {
+//            NSLog(@"status %@, error %@", status, error);
+//            
+//        }];
+        
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
         if (existingDelegate) {
             switch ([orderStatus integerValue]) {

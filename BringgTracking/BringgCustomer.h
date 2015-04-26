@@ -17,6 +17,5 @@
 - (BOOL)isSignedIn;
 - (void)signInWithName:(NSString *)name phone:(NSString *)phone confirmationCode:(NSString *)confirmationCode merchantId:(NSString *)merchantId
      completionHandler:(void (^)(BOOL success, NSString *customerToken, NSError *error))completionHandler;
-- (void)rateWithRating:(NSUInteger)rating shareUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 @end

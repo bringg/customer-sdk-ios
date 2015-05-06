@@ -21,9 +21,9 @@
 @protocol OrderDelegate <NSObject>
 - (void)watchOrderFailedForOrederWithUUID:(NSString *)uuid error:(NSError *)error;
 - (void)orderDidAssignedWithOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
+- (void)orderDidAcceptedOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
+- (void)orderDidStartedOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
 @optional
-- (void)orderDidAcceptedOrderUUID:(NSString *)uuid;
-- (void)orderDidStartedOrderUUID:(NSString *)uuid;
 - (void)orderDidArrivedOrderUUID:(NSString *)uuid;
 - (void)orderDidFinishedOrderUUID:(NSString *)uuid;
 - (void)orderDidCancelledOrderUUID:(NSString *)uuid;

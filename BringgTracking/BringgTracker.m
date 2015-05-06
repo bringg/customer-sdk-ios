@@ -279,7 +279,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         [params setObject:self.customer.phone forKey:BTCustomerPhoneKey];
         
     }
-    NSLog(@"order params %@", params);
+    //NSLog(@"order params %@", params);
     NSString *url = [NSString stringWithFormat:@"http://%@%@%@", BTRealtimeServer, BTRESTOrderPath, orderID];
     NSLog(@"%@", url);
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -287,7 +287,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         BOOL result = NO;
         NSError *error;
         NSNumber *orderStatus;
-        NSLog(@"response order %@", responseObject);
+        //NSLog(@"response order %@", responseObject);
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             id success = [responseObject objectForKey:BTSuccessKey];
             id status = [responseObject objectForKey:BTStatusKey];
@@ -340,7 +340,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         [params setObject:self.customer.merchantId forKey:BTMerchantIdKey];
         
     }
-    NSLog(@"shareLocation %@ %@ %@", self.customer.developerToken, self.customerToken, self.customer.merchantId);
+    //NSLog(@"shareLocation %@ %@ %@", self.customer.developerToken, self.customerToken, self.customer.merchantId);
     NSString *url = [NSString stringWithFormat:@"http://%@%@%@", BTRealtimeServer, BTRESTSharedLocationPath, uuid];
     NSLog(@"%@", url);
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -348,7 +348,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         BOOL result = NO;
         NSError *error;
         //NSString *ratingToken;
-        NSLog(@"%@", responseObject);
+        //NSLog(@"%@", responseObject);
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             id success = [responseObject objectForKey:BTSuccessKey];
             //id token = [responseObject objectForKey:BTRatingTokenKey];
@@ -411,7 +411,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                 [params setObject:@(rating) forKey:BTRatingKey];
                 
             }
-            NSLog(@"rate params %@", params);
+            //NSLog(@"rate params %@", params);
             NSString *url = [NSString stringWithFormat:@"http://%@%@%@", BTRealtimeServer, BTRESTRatingPath, uuid];
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
             [manager setRequestSerializer:[AFHTTPRequestSerializer serializer]];
@@ -420,7 +420,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 BOOL result = NO;
                 NSError *error;
-                NSLog(@"%@", responseObject);
+                //NSLog(@"%@", responseObject);
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
                     id success = [responseObject objectForKey:@"success"];
                     if ([success isKindOfClass:[NSNumber class]] &&
@@ -782,10 +782,10 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                     [existingDelegate orderDidAssignedWithOrderUUID:orderUUID driverUUID:driverUUID];
                     break;
                 case OrderStatusAccepted:
-                    [existingDelegate orderDidAcceptedOrderUUID:orderUUID];
+                    [existingDelegate orderDidAcceptedOrderUUID:orderUUID driverUUID:driverUUID];
                     break;
                 case OrderStatusOnTheWay:
-                    [existingDelegate orderDidStartedOrderUUID:orderUUID];
+                    [existingDelegate orderDidStartedOrderUUID:orderUUID driverUUID:driverUUID];
                     break;
                 case OrderStatusCheckedIn:
                     [existingDelegate orderDidArrivedOrderUUID:orderUUID];

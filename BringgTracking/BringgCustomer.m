@@ -95,6 +95,7 @@ return _sharedObject;
         [params setObject:merchantId forKey:BCMerchantIdKey];
         
     }
+    //NSLog(@"params %@", params);
     NSString *url = [NSString stringWithFormat:@"http://%@%@", BCRealtimeServer, BCRESTSignInPath];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {

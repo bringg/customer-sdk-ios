@@ -19,7 +19,7 @@
 @end
 
 @protocol OrderDelegate <NSObject>
-- (void)watchOrderFailedForOrederWithUUID:(NSString *)uuid error:(NSError *)error;
+- (void)watchOrderFailedForOrderWithUUID:(NSString *)uuid error:(NSError *)error;
 - (void)orderDidAssignedWithOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
 - (void)orderDidAcceptedOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
 - (void)orderDidStartedOrderUUID:(NSString *)uuid driverUUID:(NSString *)driverUUID;
@@ -59,7 +59,7 @@
 
 - (BOOL)isWatchingOrders;
 - (BOOL)isWatchingOrderWithUUID:(NSString *)uuid;
-- (void)startWatchingOrederWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate;
+- (void)startWatchingOrderWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate;
 - (void)stopWatchingOrderWithUUID:(NSString *)uuid;
 
 - (BOOL)isWatchingDrivers;

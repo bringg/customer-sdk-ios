@@ -488,7 +488,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-- (void)startWatchingOrederWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
+- (void)startWatchingOrderWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
     if (uuid) {
         self.doMonitoringOrders = YES;
         id existingDelegate = [self.orderDelegates objectForKey:uuid];
@@ -504,7 +504,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                         [self.orderDelegates removeObjectForKey:uuid];
                         
                     }
-                    [delegateToRemove watchOrderFailedForOrederWithUUID:uuid error:error];
+                    [delegateToRemove watchOrderFailedForOrderWithUUID:uuid error:error];
                     if (![self.orderDelegates count]) {
                         self.doMonitoringOrders = NO;
                         
@@ -615,12 +615,12 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         if (self.reachability.isReachableViaWiFi) {
             [self.socketIO connectToHost:server
                                   onPort:0
-                           withTransport:SocketIOTransportWebSocket];
+                           /*withTransport:SocketIOTransportWebSocket*/];
             
         } else {
             [self.socketIO connectToHost:server
                                   onPort:0
-                           withTransport:SocketIOTransportXHRPolling];
+                          /* withTransport:SocketIOTransportXHRPolling*/];
             
         }
         self.socketIOConnectedBlock = completionHandler;

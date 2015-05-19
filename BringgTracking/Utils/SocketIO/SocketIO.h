@@ -1,6 +1,6 @@
 //
 //  SocketIO.h
-//  v0.4.1 ARC
+//  v0.5.1
 //
 //  based on 
 //  socketio-cocoa https://github.com/fpotter/socketio-cocoa
@@ -8,17 +8,14 @@
 //
 //  using
 //  https://github.com/square/SocketRocket
-//  https://github.com/stig/json-framework/
 //
 //  reusing some parts of
 //  /socket.io/socket.io.js
 //
 //  Created by Philipp Kyeck http://beta-interactive.de
 //
-//  Updated by 
-//    samlown   https://github.com/samlown
-//    kayleg    https://github.com/kayleg
-//    taiyangc  https://github.com/taiyangc
+//  With help from
+//    https://github.com/pkyeck/socket.IO-objc/blob/master/CONTRIBUTORS.md
 //
 
 #import <Foundation/Foundation.h>
@@ -32,13 +29,6 @@ typedef void(^SocketIOCallback)(id argsData);
 
 extern NSString* const SocketIOError;
 
-typedef NS_ENUM(NSInteger, SocketIOTransport) {
-    SocketIOTransportNone,
-    SocketIOTransportWebSocket,
-    SocketIOTransportXHRPolling
-    
-};
-
 typedef enum {
     SocketIOServerRespondedWithInvalidConnectionData = -1,
     SocketIOServerRespondedWithDisconnect = -2,
@@ -46,7 +36,8 @@ typedef enum {
     SocketIOWebSocketClosed = -4,
     SocketIOTransportsNotSupported = -5,
     SocketIOHandshakeFailed = -6,
-    SocketIODataCouldNotBeSend = -7
+    SocketIODataCouldNotBeSend = -7,
+    SocketIOUnauthorized = -8
 } SocketIOErrorCodes;
 
 
@@ -59,10 +50,6 @@ typedef enum {
 - (void) socketIO:(SocketIO *)socket didReceiveEvent:(SocketIOPacket *)packet;
 - (void) socketIO:(SocketIO *)socket didSendMessage:(SocketIOPacket *)packet;
 - (void) socketIO:(SocketIO *)socket onError:(NSError *)error;
-
-// TODO: deprecated -> to be removed
-- (void) socketIO:(SocketIO *)socket failedToConnectWithError:(NSError *)error __attribute__((deprecated));
-- (void) socketIOHandshakeFailed:(SocketIO *)socket __attribute__((deprecated));
 @end
 
 
@@ -73,7 +60,6 @@ typedef enum {
     NSString *_sid;
     NSString *_endpoint;
     NSDictionary *_params;
-    SocketIOTransport _preferredTransport;
     
     __weak id<SocketIODelegate> _delegate;
     
@@ -82,6 +68,8 @@ typedef enum {
     BOOL _isConnected;
     BOOL _isConnecting;
     BOOL _useSecure;
+    
+    NSArray *_cookies;
     
     NSURLConnection *_handshake;
     
@@ -106,14 +94,13 @@ typedef enum {
 @property (nonatomic, readonly) NSInteger port;
 @property (nonatomic, readonly) NSString *sid;
 @property (nonatomic, readonly) NSTimeInterval heartbeatTimeout;
-@property (nonatomic, readonly) SocketIOTransport preferredTransport;
 @property (nonatomic) BOOL useSecure;
+@property (nonatomic) NSArray *cookies;
 @property (nonatomic, readonly) BOOL isConnected, isConnecting;
 @property (nonatomic, weak) id<SocketIODelegate> delegate;
 @property (nonatomic) BOOL returnAllDataFromAck;
 
 - (id) initWithDelegate:(id<SocketIODelegate>)delegate;
-- (void) connectToHost:(NSString *)host onPort:(NSInteger)port withTransport:(SocketIOTransport)transport;
 - (void) connectToHost:(NSString *)host onPort:(NSInteger)port;
 - (void) connectToHost:(NSString *)host onPort:(NSInteger)port withParams:(NSDictionary *)params;
 - (void) connectToHost:(NSString *)host onPort:(NSInteger)port withParams:(NSDictionary *)params withNamespace:(NSString *)endpoint;

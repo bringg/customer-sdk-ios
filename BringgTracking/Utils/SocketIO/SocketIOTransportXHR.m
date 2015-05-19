@@ -1,6 +1,6 @@
 //
 //  SocketIOTransportXHR.m
-//  v0.4.1 ARC
+//  v0.5.1
 //
 //  based on
 //  socketio-cocoa https://github.com/fpotter/socketio-cocoa
@@ -8,17 +8,14 @@
 //
 //  using
 //  https://github.com/square/SocketRocket
-//  https://github.com/stig/json-framework/
 //
 //  reusing some parts of
 //  /socket.io/socket.io.js
 //
 //  Created by Philipp Kyeck http://beta-interactive.de
 //
-//  Updated by
-//    samlown   https://github.com/samlown
-//    kayleg    https://github.com/kayleg
-//    taiyangc  https://github.com/taiyangc
+//  With help from
+//    https://github.com/pkyeck/socket.IO-objc/blob/master/CONTRIBUTORS.md
 //
 
 #import "SocketIOTransportXHR.h"
@@ -78,12 +75,28 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
 {
     NSMutableDictionary *pollData;
     NSURLConnection *conn;
-    for (NSString *key in _polls) {
-        pollData = [_polls objectForKey:key];
-        conn = [pollData objectForKey:@"connection"];
-        [conn cancel];
+    
+#warning lib modified by matan poreh to be thread safe
+    @synchronized(_polls){
+        for (NSString *key in _polls) {
+            
+            @try {
+                pollData = [_polls objectForKey:key];
+                conn = [pollData objectForKey:@"connection"];
+                [conn cancel];
+            }
+            @catch (NSException *exception) {
+                // error in canceling connection
+                DEBUGLOG(@"ERROR CLOSING CONNECTION :%@", exception);
+            }
+            
+            
+           
+        }
+        [_polls removeAllObjects];
     }
-    [_polls removeAllObjects];
+    
+   
     
     _isClosed = YES;
 }
@@ -162,9 +175,18 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
     [pollData setObject:[NSNumber numberWithInt:retry] forKey:@"retries"];
     [pollData setObject:conn forKey:@"connection"];
     [pollData setValue:data forKey:@"data"];
-    [_polls setObject:pollData forKey:conn.description];
     
-    [conn start];
+    @try {
+        [_polls setObject:pollData forKey:conn.description];
+        
+        [conn start];
+    }
+    @catch (NSException *exception) {
+        DEBUGLOG(@"ERROR STARTING CONNECTION : %@" , exception);
+    }
+    
+    
+    
 }
 
 
@@ -174,6 +196,27 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
 
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
+    // check for server status code (http://gigliwood.com/weblog/Cocoa/Q__When_is_an_conne.html)
+    if ([response respondsToSelector:@selector(statusCode)]) {
+        NSInteger statusCode = [((NSHTTPURLResponse *)response) statusCode];
+        DEBUGLOG(@"didReceiveResponse() %i", statusCode);
+        
+        if (statusCode >= 400) {
+            // stop connecting; no more delegate messages
+            [connection cancel];
+            
+            NSString *error = [NSString stringWithFormat:NSLocalizedString(@"Server returned status code %d", @""), statusCode];
+            NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:error forKey:NSLocalizedDescriptionKey];
+            NSError *statusError = [NSError errorWithDomain:SocketIOError
+                                                       code:statusCode
+                                                   userInfo:errorInfo];
+            
+            if ([delegate respondsToSelector:@selector(onError:)]) {
+                [delegate onError:statusError];
+            }
+        }
+    }
+    
     [_data setLength:0];
 }
 
@@ -209,15 +252,13 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
     }
 }
 
-// Sometimes Socket.IO "batches" up messages in one packet,
-// so we have to split them.
-//
+// Sometimes Socket.IO "batches" up messages in one packet, so we have to split them.
 - (NSArray *)packetsFromPayload:(NSString *)payload
 {
     // "Batched" format is:
     // �[packet_0 length]�[packet_0]�[packet_1 length]�[packet_1]�[packet_n length]�[packet_n]
     
-    if([payload hasPrefix:@"\ufffd"]) {
+    if ([payload hasPrefix:@"\ufffd"]) {
         // Payload has multiple packets, split based on the '�' character
         // Skip the first character, then split
         NSArray *split = [[payload substringFromIndex:1] componentsSeparatedByString:@"\ufffd"];
@@ -227,14 +268,20 @@ static NSString* kSecureXHRPortURL = @"https://%@:%d/socket.io/1/xhr-polling/%@"
 
         // Now all of the odd-numbered indices are the packets (1, 3, 5, etc.)
         [split enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if(idx % 2 != 0) {
+            if (idx % 2 != 0) {
                 [packets addObject:obj];
             }
         }];
 
         NSLog(@"Parsed a payload!");
         return packets;
-    } else {
+    }
+    else {
+        // make sure payload is non-nil
+        if (!payload) {
+            payload = @"";
+        }
+        
         // Regular single-packet payload
         return @[payload];
     }

@@ -6,12 +6,11 @@
 //  Copyright (c) 2015 Ilya Kalinin. All rights reserved.
 //
 
-#import "BringgCustomer.h"
+#import "GGClientAppManager.h"
 
-@interface BringgCustomer ()
+
+@interface GGClientAppManager ()
 @property (nonatomic, strong) NSString *developerToken;
-@property (nonatomic, strong) NSString *customerToken;
-@property (nonatomic, strong) NSString *merchantId;
-@property (nonatomic, strong) NSString *phone;
+@property (nonatomic, strong) GGCustomer *customer;
 
 @end

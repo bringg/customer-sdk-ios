@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 Ilya Kalinin. All rights reserved.
 //
 
-#import "BringgCustomer.h"
-#import "BringgCustomer_Private.h"
+#import "GGClientAppManager.h"
+#import "GGClientAppManager_Private.h"
+#import "GGCustomer.h"
 
 #import "AFNetworking.h"
 
@@ -24,18 +25,16 @@ return _sharedObject;
 #define BCSuccessKey @"status"
 #define BCMessageKey @"message"
 #define BCNameKey @"name"
-#define BCPhoneKey @"phone"
 #define BCConfirmationCodeKey @"confirmation_code"
-#define BCMerchantIdKey @"merchant_id"
 #define BCDeveloperTokenKey @"developer_access_token"
-#define BCCustomerTokenKey @"access_token"
+#define BCDeveloperTokenKey @"developer_access_token"
+
 #define BCRatingTokenKey @"rating_token"
-#define BCTokenKey @"token"
 #define BCRatingKey @"rating"
 
 #define BCRESTSignInPath @"/api/customer/sign_in"   //method: POST; phone, name, confirmation_code, merchant_id, dev_access_token
 
-@implementation BringgCustomer
+@implementation GGClientAppManager
 
 + (id)sharedInstance {
     DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
@@ -46,7 +45,7 @@ return _sharedObject;
 
 - (id)init {
     if (self = [super init]) {
-        
+        // do nothing
     }
     return self;
     
@@ -66,14 +65,19 @@ return _sharedObject;
 #pragma mark - Status
 
 - (BOOL)isSignedIn {
-    return self.customerToken ? YES : NO;
+    return self.customer ? YES : NO;
     
 }
 
 #pragma mark - Actions
 
-- (void)signInWithName:(NSString *)name phone:(NSString *)phone confirmationCode:(NSString *)confirmationCode merchantId:(NSString *)merchantId
-     completionHandler:(void (^)(BOOL success, NSString *customerToken, NSError *error))completionHandler {
+- (void)signInWithName:(NSString *)name
+                 phone:(NSString *)phone
+      confirmationCode:(NSString *)confirmationCode
+            merchantId:(NSString *)merchantId
+     completionHandler:(void (^)(BOOL success, GGCustomer *customer, NSError *error))completionHandler {
+    
+    // build params for sign in
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
     if (self.developerToken) {
         [params setObject:self.developerToken forKey:BCDeveloperTokenKey];
@@ -95,12 +99,17 @@ return _sharedObject;
         [params setObject:merchantId forKey:BCMerchantIdKey];
         
     }
+    
     //NSLog(@"params %@", params);
     NSString *url = [NSString stringWithFormat:@"http://%@%@", BCRealtimeServer, BCRESTSignInPath];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
         BOOL result = NO;
         NSError *error;
+        
+        GGCustomer *customer = nil;
+        
         //NSLog(@"%@", responseObject);
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             id success = [responseObject objectForKey:BCSuccessKey];
@@ -109,35 +118,45 @@ return _sharedObject;
                 [success isEqualToString:@"ok"] &&
                 [token isKindOfClass:[NSString class]]) {
                 result = YES;
-                self.customerToken = token;
-                self.merchantId = merchantId;
-                self.phone = phone;
+                
+//                NSDictionary *customerData = @{BCCustomerTokenKey : token,
+//                                               BCDeveloperTokenKey: self.developerToken,
+//                                               BCMerchantIdKey : merchantId,
+//                                               BCPhoneKey : phone,
+//                                               BCNameKey : name};
+                
+                customer = [[GGCustomer alloc] initWithData:responseObject];
+                
+                
                 
             } else {
                 id message = [responseObject objectForKey:BCMessageKey];
                 if ([message isKindOfClass:[NSString class]]) {
-                    error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                    error = [NSError errorWithDomain:@"GGClientAppManager" code:0
                                                      userInfo:@{NSLocalizedDescriptionKey: message,
                                                                 NSLocalizedRecoverySuggestionErrorKey: message}];
                     
                 } else {
-                    error = [NSError errorWithDomain:@"BringgCustomer" code:0
+                    error = [NSError errorWithDomain:@"GGClientAppManager" code:0
                                             userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
                                                        NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
                     
                 }
-                self.customerToken = nil;
+               
                 
             }
         }
+        
+        self.customer = customer;
+        
         if (completionHandler) {
-            completionHandler(result, self.customerToken, error);
+            completionHandler(result, customer, error);
             
         }
 
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"signIn failed");
-        self.customerToken = nil;
+        self.customer = nil;
         if (completionHandler) {
             completionHandler(NO, nil, error);
             

@@ -49,6 +49,7 @@
 		13D644291B416F5500F9EA37 /* GGSharedLocation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441B1B3C180D00F9EA37 /* GGSharedLocation.h */; };
 		13D6442A1B416F5500F9EA37 /* GGOrderBuilder.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D644241B413FF600F9EA37 /* GGOrderBuilder.h */; };
 		13D6442B1B416F5500F9EA37 /* GGRating.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441E1B3C18F900F9EA37 /* GGRating.h */; };
+		13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441A1B3C179500F9EA37 /* BringgGlobals.h */; };
 		A99163B01A51523C008BADCD /* libBringgTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163A41A51523C008BADCD /* libBringgTracking.a */; };
 		A99163D71A515719008BADCD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163C11A515719008BADCD /* Reachability.m */; };
 		A99163DD1A515719008BADCD /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = A99163D01A515719008BADCD /* base64.c */; };
@@ -87,6 +88,7 @@
 			dstPath = "${PROJECT_DIR}/BringgTracking/framework/include";
 			dstSubfolderSpec = 0;
 			files = (
+				13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */,
 				13D644291B416F5500F9EA37 /* GGSharedLocation.h in CopyFiles */,
 				13D6442A1B416F5500F9EA37 /* GGOrderBuilder.h in CopyFiles */,
 				13D6442B1B416F5500F9EA37 /* GGRating.h in CopyFiles */,

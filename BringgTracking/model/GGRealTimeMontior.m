@@ -331,10 +331,10 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                     [existingDelegate orderDidAssignWithOrder:order withDriver:driver];
                     break;
                 case OrderStatusAccepted:
-                    [existingDelegate orderDidAcceptOrder:order withDriver:driver];
+                    [existingDelegate orderDidAcceptWithOrder:order withDriver:driver];
                     break;
                 case OrderStatusOnTheWay:
-                    [existingDelegate orderDidStartOrder:order withDriver:driver];
+                    [existingDelegate orderDidStartWithOrder:order withDriver:driver];
                     break;
                 case OrderStatusCheckedIn:
                     [existingDelegate orderDidArrive:order];
@@ -373,7 +373,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         
         id existingDelegate = [self.driverDelegates objectForKey:driverUUID];
         if (existingDelegate) {
-            [existingDelegate driverLocationDidChangedWithDriver:driver];
+            [existingDelegate driverLocationDidChangeWithDriver:driver];
             
         }
     } else if ([packet.name isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {

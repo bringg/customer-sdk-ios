@@ -35,7 +35,6 @@
 
 - (void)connect;
 - (void)disconnect;
-
 - (void)setCustomer:(GGCustomer *)customer;
 
 

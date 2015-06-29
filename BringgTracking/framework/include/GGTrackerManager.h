@@ -34,7 +34,6 @@
 + (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate;
 
 - (void)connect;
-- (void)disconnect;
 
 - (void)setCustomer:(GGCustomer *)customer;
 

@@ -3,10 +3,11 @@
 //  BringgTracking
 //
 //  Created by Matan on 6/25/15.
-//  Copyright (c) 2015 Ilya Kalinin. All rights reserved.
+//  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 
 #import "GGRealTimeMontior.h"
+#import "GGRealTimeMontior+Private.h"
 
 #import "SocketIOPacket.h"
 #import "Reachability.h"
@@ -38,20 +39,10 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
 @property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
 
-@property (nonatomic, assign) BOOL connected;
+
 @property (nonatomic, strong) Reachability* reachability;
 
-@property (nonatomic, strong) NSString *developerToken;
 
-@property (nonatomic, strong) NSMutableDictionary *orderDelegates;
-@property (nonatomic, strong) NSMutableDictionary *driverDelegates;
-@property (nonatomic, strong) NSMutableDictionary *waypointDelegates;
-@property (nonatomic, strong) NSMutableDictionary *activeDrivers;
-
-
-@property (nonatomic, assign) BOOL doMonitoringOrders;
-@property (nonatomic, assign) BOOL doMonitoringDrivers;
-@property (nonatomic, assign) BOOL doMonitoringWaypoints;
 
 @end
 
@@ -144,7 +135,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     NSString *server = BTRealtimeServer;
     if ([self.socketIO isConnected] || [self.socketIO isConnecting]) {
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"OVDomain" code:0
+            NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
                                              userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Already connected.", @"eng/heb")}];
             completionHandler(NO, error);
             
@@ -206,7 +197,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 - (void)sendEventWithName:(NSString *)name params:(NSDictionary *)params completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
     if (!self.connected) {
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"OVDomain" code:0
+            NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
                                              userInfo:@{NSLocalizedDescriptionKey: @"Web socket disconnected.",
                                                         NSLocalizedRecoverySuggestionErrorKey: @"Web socket disconnected."}];
             completionHandler(NO, error);
@@ -256,7 +247,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         }
     }
     if (errorResult) {
-        *error = [NSError errorWithDomain:@"OVDomain" code:0
+        *error = [NSError errorWithDomain:@"BringgRealTime" code:0
                                  userInfo:@{NSLocalizedDescriptionKey:message,
                                             NSLocalizedRecoverySuggestionErrorKey:message}];
         
@@ -428,139 +419,6 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     
 }
 
-#pragma mark - Track Requests
-
-- (void)startWatchingOrderWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
-   
-    if (uuid) {
-        self.doMonitoringOrders = YES;
-        id existingDelegate = [self.orderDelegates objectForKey:uuid];
-        
-        GGOrder *order = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
-        
-        if (!existingDelegate) {
-            @synchronized(self) {
-                [self.orderDelegates setObject:delegate forKey:uuid];
-                
-            }
-            [self sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, NSError *error) {
-                if (!success) {
-                    id delegateToRemove = [self.orderDelegates objectForKey:uuid];
-                    @synchronized(self) {
-                        [self.orderDelegates removeObjectForKey:uuid];
-                        
-                    }
-                    [delegateToRemove watchOrderFailForOrder:order error:error];
-                    if (![self.orderDelegates count]) {
-                        self.doMonitoringOrders = NO;
-                        
-                    }
-                }
-            }];
-        }
-    }else{
-        [NSException raise:@"Invalid UUID" format:@"Driver UUID can not be nil"];
-    }
-}
-
-
-
-- (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate {
-    
-    if (uuid && shareUUID) {
-        self.doMonitoringDrivers = YES;
-        
-        GGDriver *driver = [[GGDriver alloc] initWithUUID:uuid];
-        
-        id existingDelegate = [self.driverDelegates objectForKey:uuid];
-        if (!existingDelegate) {
-            @synchronized(self) {
-                [self.driverDelegates setObject:delegate forKey:uuid];
-                
-            }
-            [self sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success, NSError *error) {
-                if (!success) {
-                    id delegateToRemove = [self.driverDelegates objectForKey:uuid];
-                    @synchronized(self) {
-                        [self.driverDelegates removeObjectForKey:uuid];
-                        
-                    }
-                    [delegateToRemove watchDriverFailedForDriver:driver error:error];
-                    if (![self.driverDelegates count]) {
-                        self.doMonitoringDrivers = NO;
-                        
-                    }
-                }
-            }];
-        }
-    }else{
-        
-        [NSException raise:@"Invalid UUIDs" format:@"Driver and Share UUIDs can not be nil"];
-    }
-
-}
-
-- (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId delegate:(id <WaypointDelegate>)delegate {
-    
-    if (waypointId) {
-        self.doMonitoringWaypoints = YES;
-        id existingDelegate = [self.waypointDelegates objectForKey:waypointId];
-        if (!existingDelegate) {
-            @synchronized(self) {
-                [self.waypointDelegates setObject:delegate forKey:waypointId];
-                
-            }
-            [self sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, NSError *error) {
-                if (!success) {
-                    id delegateToRemove = [self.waypointDelegates objectForKey:waypointId];
-                    @synchronized(self) {
-                        [self.waypointDelegates removeObjectForKey:waypointId];
-                        
-                    }
-                    [delegateToRemove watchWaypointFailedForWaypointId:waypointId error:error];
-                    if (![self.waypointDelegates count]) {
-                        self.doMonitoringWaypoints = NO;
-                        
-                    }
-                }
-            }];
-        }
-    }else{
-        [NSException raise:@"Invalid waypoint ID" format:@"Waypoint ID can not be nil"];
-    }
-    
-    
-}
-
-- (void)stopWatchingOrderWithUUID:(NSString *)uuid {
-    id existingDelegate = [self.orderDelegates objectForKey:uuid];
-    if (existingDelegate) {
-        @synchronized(self) {
-            [self.orderDelegates removeObjectForKey:uuid];
-            
-        }
-    }
-}
-
-- (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
-    id existingDelegate = [self.driverDelegates objectForKey:uuid];
-    if (existingDelegate) {
-        @synchronized(self) {
-            [self.driverDelegates removeObjectForKey:uuid];
-            
-        }
-    }
-}
-
-- (void)stopWatchingWaypointWithWaypointId:(NSNumber *)waypointId {
-    id existingDelegate = [self.waypointDelegates objectForKey:waypointId];
-    if (existingDelegate) {
-        @synchronized(self) {
-            [self.waypointDelegates removeObjectForKey:waypointId];
-            
-        }
-    }
-}
 
 - (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
     NSLog(@"watch order");
@@ -591,42 +449,6 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 }
 
 
-#pragma mark Getters
-
-- (BOOL)isConnected {
-    return self.connected;
-    
-}
-
-- (BOOL)isWatchingOrders {
-    return self.doMonitoringOrders;
-    
-}
-
-- (BOOL)isWatchingOrderWithUUID:(NSString *)uuid {
-    return ([self.orderDelegates objectForKey:uuid]) ? YES : NO;
-    
-}
-
-- (BOOL)isWatchingDrivers {
-    return self.doMonitoringDrivers;
-    
-}
-
-- (BOOL)isWatchingDriverWithUUID:(NSString *)uuid {
-    return ([self.driverDelegates objectForKey:uuid]) ? YES : NO;
-    
-}
-
-- (BOOL)isWatchingWaypoints {
-    return self.doMonitoringWaypoints;
-    
-}
-
-- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId {
-    return ([self.waypointDelegates objectForKey:waypointId]) ? YES : NO;
-    
-}
 
 
 @end

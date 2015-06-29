@@ -27,7 +27,6 @@
 #define BCConfirmationCodeKey @"confirmation_code"
 #define BCDeveloperTokenKey @"developer_access_token"
 
-
 #define BCRatingTokenKey @"rating_token"
 #define BCRatingKey @"rating"
 
@@ -42,6 +41,9 @@
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
+
+//PRIVATE
+#define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone
 
 
 #define HTTP_FORMAT @"http://%@"
@@ -229,7 +231,9 @@
         
     }
     if (name) {
+        
         [params setObject:name forKey:BCNameKey];
+        
         
     }
     if (phone) {
@@ -254,8 +258,10 @@
                    
                    GGCustomer *customer = nil;
                                                            
-                   if (success) customer = [[GGCustomer alloc] initWithData:JSON];
+                   if (success) customer = [[GGCustomer alloc] initWithData:[JSON objectForKey:PARAM_CUSTOMER] ];
             
+
+                   
                    if (completionHandler) {
                        completionHandler(success, customer, error);
                    }
@@ -360,7 +366,6 @@
                    //
                }]];
 }
-
 
 
 

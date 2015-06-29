@@ -13,4 +13,6 @@
 @property (nonatomic, strong) NSString *developerToken;
 @property (nonatomic, strong) GGCustomer *customer;
 
+
+
 @end

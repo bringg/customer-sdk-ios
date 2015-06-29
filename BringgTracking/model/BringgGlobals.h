@@ -11,6 +11,7 @@
 
 
 #define PARAM_STATUS @"status"
+#define PARAM_CUSTOMER @"customer"
 #define PARAM_ORDER_UUID @"order_uuid"
 #define PARAM_DRIVER @"driver"
 #define PARAM_DRIVER_ID @"driver_id"

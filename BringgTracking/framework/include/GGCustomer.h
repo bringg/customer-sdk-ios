@@ -24,6 +24,9 @@
 @property (nonatomic, readonly) NSString *merchantId;
 @property (nonatomic, readonly) NSString *phone;
 @property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *email;
+@property (nonatomic, readonly) NSString *address;
+@property (nonatomic, readonly) NSString *imageURL;
 
 -(id)initWithData:(NSDictionary *)data;
 

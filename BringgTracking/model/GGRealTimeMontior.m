@@ -161,7 +161,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 }
 
 - (void)setDeveloperToken:(NSString *)developerToken{
-    self.developerToken = developerToken;
+    _developerToken = developerToken;
 }
 
 

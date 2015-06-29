@@ -10,7 +10,7 @@
 
 @implementation GGCustomer
 
-@synthesize customerToken,merchantId,phone, name;
+@synthesize customerToken,merchantId,phone, name, email,address, imageURL;
 
 
 
@@ -23,8 +23,17 @@
         merchantId = [data objectForKey:BCMerchantIdKey];
         phone = [data objectForKey:BCPhoneKey];
         name = [data objectForKey:BCNameKey];
+        email = [data objectForKey:@"email"];
+        address = [data objectForKey:@"address"];
+        imageURL = [data objectForKey:@"image"];
         
+        if ( !customerToken || [customerToken isEqual:[NSNull null]]) {
+            customerToken = @"xyxqLH7dmjZaDL1S2zZw";
+        }
     }
+    
+#warning TODO HACK
+    
     
     return self;
     

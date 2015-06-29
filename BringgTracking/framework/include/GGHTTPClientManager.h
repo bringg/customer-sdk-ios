@@ -41,4 +41,5 @@
 - (BOOL)hasPhone;
 - (BOOL)hasMerchantId;
 
+ 
 @end

@@ -30,6 +30,7 @@
 @interface GGTrackerManager : NSObject
 
 @property (nonatomic, readonly) GGRealTimeMontior * liveMonitor;
+@property (nonatomic, getter=customer) GGCustomer *appCustomer;
 
 + (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate;
 

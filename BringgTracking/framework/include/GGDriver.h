@@ -11,9 +11,9 @@
 @interface GGDriver : NSObject
 
 
-@property (nonatomic, readonly) NSString *uuid;
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) NSString *imageURL;
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *imageURL;
 
 @property (nonatomic) NSUInteger driverid;
 @property (nonatomic) double latitude;

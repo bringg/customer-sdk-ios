@@ -11,17 +11,32 @@
 
 @implementation GGOrder
 
-@synthesize orderid,status,uuid,sharedLocation;
+@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid;
 
 -(id)initOrderWithData:(NSDictionary*)data{
     
     if (self = [super init]) {
         orderid = [[data objectForKey:PARAM_ID] integerValue];
         uuid = [data objectForKey:PARAM_UUID];
+        
         status = (OrderStatus)[[data objectForKey:PARAM_STATUS] integerValue];
+ 
+        totalPrice = [data[@"total_price"] doubleValue];
+        tip = [data[@"tip"] doubleValue];
+        leftToBePaid = [data[@"left_to_be_paid"] doubleValue];
         
-        sharedLocation = [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]];
+        activeWaypointId = [data[@"active_way_point_id"] integerValue];
+        customerId = [data[@"customer_id"] integerValue];
+        merchantId = [data[@"merchant_id"] integerValue];
+        priority = [data[@"priority"] integerValue];
+        driverId = [data[@"user_id"] integerValue];
         
+        late = [data[@"late"] boolValue];
+        
+        title = data[@"title"];
+        
+         sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
+
     }
     
     return self;
@@ -37,6 +52,10 @@
     }
     
     return self;
+}
+
+-(void)updateOrderStatus:(OrderStatus)newStatus{
+    self.status = newStatus;
 }
 
 @end

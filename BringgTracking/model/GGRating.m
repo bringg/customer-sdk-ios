@@ -10,7 +10,7 @@
 
 @implementation GGRating
 
-@synthesize token, rating;
+@synthesize token, rating, ratingMessage;
 
 - (id)initWithRatingToken:(NSString *)ratingToken{
     

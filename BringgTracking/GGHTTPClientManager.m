@@ -21,13 +21,14 @@
 
 #define BCRealtimeServer @"realtime-api.bringg.com"
 
-#define BCSuccessKey @"status"
+#define BCSuccessKey @"success"
+#define BCSuccessAlternateKey @"status"
 #define BCMessageKey @"message"
 #define BCNameKey @"name"
 #define BCConfirmationCodeKey @"confirmation_code"
 #define BCDeveloperTokenKey @"developer_access_token"
 
-#define BCRatingTokenKey @"rating_token"
+#define BCRatingTokenKey @"token"
 #define BCRatingKey @"rating"
 
 
@@ -61,18 +62,29 @@
 
 + (id)sharedInstance {
     DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [[self alloc] init];
+        return [[self alloc] initClient];
         
     });
 }
 
-- (id)init {
+- (id) initClient{
     if (self = [super init]) {
-         self.sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        self.sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
     }
     return self;
-    
 }
+
+-(id)init{
+    
+    // we want to prevent the developer from using normal intializers
+    // the http manager class should only be used as a singelton
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class GGHTTPClientManager. Please use class method initializer"
+                                 userInfo:nil];
+    
+    return self;
+}
+
 
 - (void)dealloc {
     
@@ -129,17 +141,20 @@
     AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:CTSURL sessionConfiguration:self.sessionConfiguration];
     sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    sessionManager.responseSerializer.acceptableContentTypes = [sessionManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
     
     
     NSError *jsonError;
     NSMutableURLRequest *jsonRequest = [sessionManager.requestSerializer requestWithMethod:method URLString:[NSString stringWithFormat:@"%@%@",sessionManager.baseURL,path] parameters:params error:&jsonError];
+    
     
     if (jsonError) {
         NSLog(@" error creating json request in %s : %@", __PRETTY_FUNCTION__, jsonError);
     }
     
     AFHTTPRequestOperation *jsonOperation = [[AFHTTPRequestOperation alloc] initWithRequest:jsonRequest];
-    jsonOperation.responseSerializer = [AFJSONResponseSerializer serializer];
+    jsonOperation.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
+    jsonOperation.responseSerializer.acceptableContentTypes = [jsonOperation.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
     
     [jsonOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         //
@@ -148,27 +163,65 @@
         NSError *error;
         
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            
+            // there are two params that represent success
             id success = [responseObject objectForKey:BCSuccessKey];
             
-            if ([success isKindOfClass:[NSString class]] &&
-                [success isEqualToString:@"ok"]) {
+            // if it's "success" then then check for valid data (should be bool)
+            if (success && [success isKindOfClass:[NSNumber class]]) {
                 
-                result = YES;
+                result = [success boolValue];
+
+            }
+            
+            // check if there is another success params to indicate response status
+            if (!result) {
                 
-            } else {
-                id message = [responseObject objectForKey:BCMessageKey];
-                if ([message isKindOfClass:[NSString class]]) {
-                    error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
-                                            userInfo:@{NSLocalizedDescriptionKey: message,
-                                                       NSLocalizedRecoverySuggestionErrorKey: message}];
+                // "status" could also represent a succesfull call - status here will be a string
+                id status = [responseObject objectForKey:BCSuccessAlternateKey];
+                
+                // check if status field is valid and if success
+                if ([status isKindOfClass:[NSString class]] &&
+                    [status isEqualToString:@"ok"]) {
+                    
+                    result = YES;
                     
                 } else {
-                    error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
-                                            userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
-                                                       NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
                     
+                    // for sure we have a failed response - both success params tests failed
+                    
+                    id message = [responseObject objectForKey:BCMessageKey];
+                    
+                    
+                    // some times the success key is part of a legitimate response object - so no message will exits
+                    // but other data will be present so we should conisder it
+                    
+                    if ([message isKindOfClass:[NSString class]]) {
+                        error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
+                                                userInfo:@{NSLocalizedDescriptionKey: message,
+                                                           NSLocalizedRecoverySuggestionErrorKey: message}];
+                        
+                    } else {
+                        
+                        // check if there is other data
+                        if (!message && [[responseObject allKeys] count] > 1) {
+                            
+                            // the response is legit
+                            result = YES;
+                        }else{
+                            error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
+                                                    userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
+                                                               NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
+                        }
+                        
+                        
+                        
+                        
+                    }
                 }
             }
+            
+           
         }
         
        
@@ -249,6 +302,8 @@
         
     }
     
+    __weak __typeof(&*self)weakSelf = self;
+    
     // tell the operation Q to do the sign in operation
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodPost
@@ -260,7 +315,7 @@
                                                            
                    if (success) customer = [[GGCustomer alloc] initWithData:[JSON objectForKey:PARAM_CUSTOMER] ];
             
-
+                   weakSelf.customer = customer;
                    
                    if (completionHandler) {
                        completionHandler(success, customer, error);
@@ -271,23 +326,29 @@
  
 }
 
-- (void)rate:(int)rating withToken:(NSString *)ratingToken forSharedUUID:(NSString *)sharedUUID withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler{
+- (void)rate:(int)rating withToken:(NSString *)ratingToken forSharedLocationUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler{
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     
     [params setObject:@(rating) forKey:BCRatingKey];
     [params setObject:ratingToken forKey:BCRatingTokenKey];
     
+ 
     [self addAuthinticationToParams:&params];
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodPost
-                            path:[NSString stringWithFormat:API_PATH_RATE,sharedUUID]
+                            path:[NSString stringWithFormat:API_PATH_RATE,sharedLocationUUID]
                           params:params
                completionHandler:^(BOOL success, id JSON, NSError *error) {
                    
                    GGRating *rating = nil;
                    
-#warning TODO analytize response
+                   if (success) {
+                       rating = [[GGRating alloc] initWithRatingToken:ratingToken];
+                       [rating setRatingMessage:[JSON objectForKey:BCMessageKey]];
+                       [rating rate:[[JSON objectForKey:@"rating"] intValue]];
+                   }
+                   
                    if (completionHandler) {
                        completionHandler(success, rating, error);
                    }
@@ -296,6 +357,7 @@
 }
 
 
+#warning TODO - add Order method to header once server is ready
 - (void)addOrderWith:(GGOrderBuilder *)orderBuilder withCompletionHandler:(void (^)(BOOL success, GGOrder *order, NSError *error))completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:orderBuilder.orderData];
@@ -325,6 +387,7 @@
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
+    [params setObject:_customer.phone forKey:BCPhoneKey];
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodGet
@@ -344,20 +407,19 @@
     
 }
 
-- (void)getSharedLocationByID:(NSUInteger)sharedLocationId withCompletionHandler:(void (^)(BOOL success, GGSharedLocation *sharedLocation, NSError *error))completionHandler{
+- (void)getSharedLocationByUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGSharedLocation *sharedLocation, NSError *error))completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodGet
-                            path:[NSString stringWithFormat:API_PATH_SHARED_LOCATION, @(sharedLocationId)]
+                            path:[NSString stringWithFormat:API_PATH_SHARED_LOCATION, sharedLocationUUID]
                           params:params
                completionHandler:^(BOOL success, id JSON, NSError *error) {
                    
                    GGSharedLocation *sharedLocation = nil;
                    
-                   #warning TODO analytize response
                    if (success) sharedLocation = [[GGSharedLocation alloc] initWithData:JSON];
                    
                    if (completionHandler) {

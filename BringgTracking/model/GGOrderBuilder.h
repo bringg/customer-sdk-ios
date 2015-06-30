@@ -23,7 +23,7 @@
  @param email waypoint email.
  @param notes array of strings representing each note
  
- @return the update order as a dictionary
+ @return the updated order builder object
  */
 - (GGOrderBuilder *)addWaypointAtLatitude:(double)lat
                               longitude:(double)lng
@@ -37,19 +37,59 @@
  adds an inventory item to the order object and returns the order builder reporesenting the order after the update.
  @param itemId the id of the inventory item
  @param quantity the items count for this inventory item
+ @return the updated order builder object
  
  */
 - (GGOrderBuilder *)addInventoryItem:(NSUInteger)itemId
                           quantity:(NSUInteger)count;
 
+/**
+ *  set the ASAP param of an order
+ *
+ *  @param asap bool stating the asap mode
+ *
+ *  @return the updated order builder object
+ */
 - (GGOrderBuilder *)setASAP:(BOOL)asap;
+
+/**
+ *  set the order title
+ *
+ *  @param title
+ *
+ *  @return the updated order builder object
+ */
 - (GGOrderBuilder *)setTitle:(NSString *)title;
+
+/**
+ *  set team id for order
+ *
+ *  @param teamId
+ *
+ *  @return the updated order builder object
+ */
 - (GGOrderBuilder *)setTeamId:(NSUInteger)teamId;
+
+/**
+ *  set the total price of the order
+ *
+ *  @param totalPrice double
+ *
+ *  @return the updated order builder object
+ */
 - (GGOrderBuilder *)setTotalPrice:(double)totalPrice;
 
 
+/**
+ *  get the number of waypoints currently in the builder data
+ *
+ *  @return number of waypoints
+ */
+- (NSUInteger)numWaypoints;
 
-
+/**
+ *  resets the data of the builder object
+ */
 - (void)resetOrder;
 
 @end

@@ -14,11 +14,13 @@
 
 @property (nonatomic, readonly) NSString *locationUUID;
 @property (nonatomic, readonly) NSString *orderUUID;
+@property (nonatomic, assign) NSInteger orderID;
 @property (nonatomic) NSInteger waypointID;
 @property (nonatomic, readonly) NSString *eta;
 
 @property (nonatomic, readonly) GGDriver *driver;
 @property (nonatomic, readonly) GGRating *rating;
+@property (nonatomic, copy) NSString *trackingURL;
 
 -(id)initWithData:(NSDictionary *)data;
 

@@ -10,8 +10,9 @@
 
 @interface GGRating : NSObject
 
-@property (nonatomic, readonly) NSString *token;
-@property (nonatomic) int rating;
+@property (nonatomic, copy) NSString *token;
+@property (nonatomic, copy) NSString *ratingMessage;
+@property (nonatomic, assign) int rating;
 
 
 -(id)initWithRatingToken:(NSString *)ratingToken;

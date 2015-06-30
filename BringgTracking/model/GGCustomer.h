@@ -14,8 +14,6 @@
 #define BCPhoneKey @"phone"
 #define BCMerchantIdKey @"merchant_id"
 #define BCCustomerTokenKey @"access_token"
-#define BCRatingTokenKey @"rating_token"
-#define BCRatingKey @"rating"
 
 @interface GGCustomer : NSObject
 
@@ -28,6 +26,13 @@
 @property (nonatomic, readonly) NSString *address;
 @property (nonatomic, readonly) NSString *imageURL;
 
+/**
+ *  init a Customer object using json data recieved from a server response
+ *
+ *  @param data a dictionary representing the json response object
+ *
+ *  @return a Customer object
+ */
 -(id)initWithData:(NSDictionary *)data;
 
 

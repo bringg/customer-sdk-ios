@@ -36,7 +36,7 @@
 @interface GGTrackerManager ()
 
 
-@property (nonatomic, strong) GGCustomer *customer;
+
 @property (nonatomic, strong) NSString *customerToken;
 @property (nonatomic, strong) NSString *developerToken;
 @property (nonatomic, strong) NSMutableArray *orders;
@@ -59,6 +59,7 @@
 @implementation GGTrackerManager
 
 @synthesize liveMonitor = _liveMonitor;
+@synthesize appCustomer = _appCustomer;
 
 
 + (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate{
@@ -68,7 +69,7 @@
     dispatch_once(&onceToken, ^{
         
         // init the tracker
-        sharedObject = [[self alloc] init];
+        sharedObject = [[self alloc] initTacker];
         
         // init the real time monitor
          sharedObject->_liveMonitor = [GGRealTimeMontior sharedInstance];
@@ -85,20 +86,25 @@
 }
 
 
-
-- (id)initWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken{
+-(id)initTacker{
     if (self = [super init]) {
-        
-        
-        // setup the realtime manager
-        _liveMonitor = [GGRealTimeMontior sharedInstance];
-        
-        
- 
-        
+        // do nothing
     }
-    return self;
     
+    return self;
+}
+
+
+
+-(id)init{
+    
+    // we want to prevent the developer from using normal intializers
+    // the tracker class should only be used as a singelton
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class GGTrackerManager. Please use class method initializer"
+                                 userInfo:nil];
+    
+    return self;
 }
 
 - (void)connect{
@@ -146,7 +152,7 @@
 }
 
 - (void)setCustomer:(GGCustomer *)customer{
-    _customer = customer;
+    _appCustomer = customer;
 }
 
 
@@ -306,6 +312,13 @@
     }
 }
 
+- (void)stopWatchingAllOrders{
+    @synchronized(_liveMonitor) {
+        [_liveMonitor.orderDelegates removeAllObjects];
+        
+    }
+}
+
 - (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
     id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     if (existingDelegate) {
@@ -313,6 +326,13 @@
             [_liveMonitor.driverDelegates removeObjectForKey:uuid];
             
         }
+    }
+}
+
+- (void)stopWatchingAllDrivers{
+    @synchronized(_liveMonitor) {
+        [_liveMonitor.driverDelegates removeAllObjects];
+        
     }
 }
 
@@ -326,6 +346,12 @@
     }
 }
 
+- (void)stopWatchingAllWaypoints{
+    @synchronized(_liveMonitor) {
+        [_liveMonitor.waypointDelegates removeAllObjects];
+        
+    }
+}
 
 #pragma mark Real Time status checks
 

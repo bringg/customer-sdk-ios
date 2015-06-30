@@ -105,12 +105,21 @@
                                     longitude:[[data objectForKey:PARAM_LNG] doubleValue]
                                      activity:[data objectForKey:PARAM_ACTIVITY] ? [[data objectForKey:PARAM_ACTIVITY] intValue] : 0
                                 averageRating:[data objectForKey:PARAM_DRIVER_AVG_RATING] ? [[data objectForKey:PARAM_DRIVER_AVG_RATING] doubleValue] : -1
-                                     imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL]
+                                     imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
                   ];
  
     }
     
     return driver;
+}
+
+- (NSString *)imageURL{
+    if ([imageURL isEqualToString:@"/images/avatar.png"]) {
+        // this is a stub  so return nil
+        return nil;
+    }else{
+        return imageURL;
+    }
 }
 
 @end

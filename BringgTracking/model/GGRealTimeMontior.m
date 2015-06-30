@@ -357,7 +357,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         
         GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:OrderStatusDone];
         
-        id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
+        id existingDelegate = [self.orderDelegates objectForKey:order.uuid];
         if (existingDelegate) {
             [existingDelegate orderDidFinish:order];
             
@@ -369,9 +369,13 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         NSNumber *lng = [locationUpdate objectForKey:@"lng"];
         
         GGDriver *driver = [self.activeDrivers objectForKey:driverUUID];
+        if (!driver) {
+            driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
+        }
+        
         [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
         
-        id existingDelegate = [self.driverDelegates objectForKey:driverUUID];
+        id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
         if (existingDelegate) {
             [existingDelegate driverLocationDidChangeWithDriver:driver];
             

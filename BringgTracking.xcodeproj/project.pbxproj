@@ -85,8 +85,8 @@
 		13D643FB1B3BEDDD00F9EA37 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "${PROJECT_DIR}/BringgTracking/framework/include";
-			dstSubfolderSpec = 0;
+			dstPath = include;
+			dstSubfolderSpec = 16;
 			files = (
 				13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */,
 				13D644291B416F5500F9EA37 /* GGSharedLocation.h in CopyFiles */,
@@ -104,15 +104,6 @@
 				13D644031B3BEE4700F9EA37 /* SocketIOTransportXHR.h in CopyFiles */,
 				13D643FC1B3BEE2800F9EA37 /* GGTrackerManager.h in CopyFiles */,
 				13D643FD1B3BEE2800F9EA37 /* GGHTTPClientManager.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13D644481B4177EC00F9EA37 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,10 +234,10 @@
 			isa = PBXGroup;
 			children = (
 				13D6441A1B3C179500F9EA37 /* BringgGlobals.h */,
-				13D6440B1B3C0F7300F9EA37 /* GGDriver.h */,
 				13D644271B41618E00F9EA37 /* GGRealTimeMontior+Private.h */,
 				13D644211B3C2F9300F9EA37 /* GGRealTimeMontior.h */,
 				13D644221B3C2F9300F9EA37 /* GGRealTimeMontior.m */,
+				13D6440B1B3C0F7300F9EA37 /* GGDriver.h */,
 				13D6440C1B3C0F7300F9EA37 /* GGDriver.m */,
 				13D6441B1B3C180D00F9EA37 /* GGSharedLocation.h */,
 				13D6441C1B3C180D00F9EA37 /* GGSharedLocation.m */,
@@ -384,7 +375,6 @@
 				A99163A11A51523C008BADCD /* Frameworks */,
 				A99163A21A51523C008BADCD /* CopyFiles */,
 				13D643FB1B3BEDDD00F9EA37 /* CopyFiles */,
-				13D644481B4177EC00F9EA37 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -609,22 +599,26 @@
 		A99163B91A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
 		};
 		A99163BA1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
 		};

@@ -26,15 +26,9 @@
         email = [data objectForKey:@"email"];
         address = [data objectForKey:@"address"];
         imageURL = [data objectForKey:@"image"];
-        
-        if ( !customerToken || [customerToken isEqual:[NSNull null]]) {
-            customerToken = @"xyxqLH7dmjZaDL1S2zZw";
-        }
+
     }
-    
-#warning TODO HACK
-    
-    
+
     return self;
     
 }

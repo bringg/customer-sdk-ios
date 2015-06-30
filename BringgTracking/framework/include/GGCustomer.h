@@ -14,8 +14,6 @@
 #define BCPhoneKey @"phone"
 #define BCMerchantIdKey @"merchant_id"
 #define BCCustomerTokenKey @"access_token"
-#define BCRatingTokenKey @"rating_token"
-#define BCRatingKey @"rating"
 
 @interface GGCustomer : NSObject
 

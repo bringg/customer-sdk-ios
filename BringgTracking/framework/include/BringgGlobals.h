@@ -28,7 +28,8 @@
 #define PARAM_ACTIVITY @"activity"
 #define PARAM_DRIVER_ACTIVITY @"driver_activity"
 #define PARAM_DRIVER_AVG_RATING @"driver_average_rating"
-#define PARAM_DRIVER_IMAGE_URL @"employee_image"
+#define PARAM_DRIVER_IMAGE_URL @"profile_image"
+#define PARAM_DRIVER_IMAGE_URL2 @"employee_image"
 #define PARAM_SHARED_LOCATION @"shared_location"
 
 #define PARAM_ETA @"eta"

@@ -122,4 +122,8 @@
     [_orderParams setObject:[NSMutableArray array] forKey:@"way_points"];
 }
 
+-(NSUInteger)numWaypoints{
+    return [[_orderParams objectForKey:@"way_points"] count];
+}
+
 @end

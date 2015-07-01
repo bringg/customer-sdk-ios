@@ -58,10 +58,21 @@
 
 @end
 
+
 @implementation GGHTTPClientManager
 
+static GGHTTPClientManager *sharedObject = nil;
+
++ (id)manager{
+    
+    NSAssert(sharedObject, @"Wrror getting non intialized http manager. Please use SEL -managerWithDeveloperToken: to init the http manager singelton");
+    
+    return sharedObject;
+    
+}
+
 + (id)managerWithDeveloperToken:(NSString *)developerToken{
-    static GGHTTPClientManager *sharedObject = nil;
+   
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         

@@ -62,9 +62,19 @@
 @synthesize appCustomer = _appCustomer;
 
 
+static GGTrackerManager *sharedObject = nil;
+
++ (id)tracker{
+    
+    NSAssert(sharedObject, @"Error getting non intialized tracker. Please use SEL -trackerWithCustomerToken:andDeveloperToken:andDelegate: to init the tracker singelton");
+    
+    return sharedObject;
+    
+}
+
 + (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate{
  
-    static GGTrackerManager *sharedObject = nil;
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         

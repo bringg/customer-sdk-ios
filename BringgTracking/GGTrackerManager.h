@@ -32,6 +32,14 @@
 @property (nonatomic, readonly) GGRealTimeMontior * liveMonitor;
 @property (nonatomic, getter=customer) GGCustomer *appCustomer;
 
+
+/**
+ *  return an initialized tracker singelton after asserting
+ *  @warning make sure the singleton is already intiialized before using this accessor
+ *  @return the tracker singelton
+ */
++ (id)tracker;
+
 /**
  *  creates a singelton Bringg Tracker object
  *  @warning call this method only when obtained valid customer access token and developer access token

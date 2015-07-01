@@ -17,15 +17,20 @@
 
 @interface GGHTTPClientManager : NSObject
 
+
+/**
+ *  return an initialized http manager singelton after asserting
+ *  @warning make sure the singleton is already intiialized before using this accessor
+ *  @return the http manager singelton
+ */
++ (id)manager;
+
 /**
  *  get a singelton reference to the http client manager
  *  @param developerToken   the developer token acquired when registering as a developer in Bringg website
  *  @return the http manager singelton
  */
 + (id)managerWithDeveloperToken:(NSString *)developerToken;
-
-
-
 
 /**
  *  perform a sign in request with a specific customers credentials

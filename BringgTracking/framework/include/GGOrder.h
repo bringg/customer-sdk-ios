@@ -34,10 +34,31 @@
 
 @property (nonatomic, assign) OrderStatus status;
 
-
+/**
+ *  init an Order object using json data recieved from a server response
+ *
+ *  @param data a dictionary representing the json response object
+ *
+ *  @return an Order object
+ */
 -(id)initOrderWithData:(NSDictionary*)data;
+
+/**
+ *  init an Order object with just a uuid and current status
+ *
+ *  @param ouuid   uuid of the order
+ *  @param ostatus order status
+ *  @see BringgGlobals.h
+ *
+ *  @return an Order object
+ */
 -(id)initOrderWithUUID:(NSString *)ouuid atStatus:(OrderStatus)ostatus;
 
+/**
+ *  updates the order status
+ *
+ *  @param newStatus
+ */
 -(void)updateOrderStatus:(OrderStatus)newStatus;
 
 @end

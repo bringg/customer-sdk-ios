@@ -22,6 +22,14 @@
 @property (nonatomic, readonly) GGRating *rating;
 @property (nonatomic, copy) NSString *trackingURL;
 
+
+/**
+ *  init a SharedLocation object using json data recieved from a server response
+ *
+ *  @param data a dictionary representing the json response object
+ *
+ *  @return a SharedLocation object
+ */
 -(id)initWithData:(NSDictionary *)data;
 
 

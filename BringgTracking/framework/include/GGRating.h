@@ -14,8 +14,20 @@
 @property (nonatomic, copy) NSString *ratingMessage;
 @property (nonatomic, assign) int rating;
 
-
+/**
+ *  initializes the rating object of a driver
+ *
+ *  @param ratingToken the token needed to validate which driver
+ *
+ *  @return the rating object
+ */
 -(id)initWithRatingToken:(NSString *)ratingToken;
+
+/**
+ *  give the a driver rating between (1-5)
+ *
+ *  @param driverRating
+ */
 -(void)rate:(int)driverRating;
 
 @end

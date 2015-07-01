@@ -19,17 +19,11 @@
 
 /**
  *  get a singelton reference to the http client manager
- *
+ *  @param developerToken   the developer token acquired when registering as a developer in Bringg website
  *  @return the http manager singelton
  */
-+ (id)sharedInstance;
++ (id)managerWithDeveloperToken:(NSString *)developerToken;
 
-/**
- *  sets a developer token to be passed with all service reqiests
- *  @warning you should set the token before trying to do any service requests
- *  @param developerToken the developer token
- */
-- (void)setDeveloperToken:(NSString *)developerToken;
 
 
 

@@ -60,11 +60,20 @@
 
 @implementation GGHTTPClientManager
 
-+ (id)sharedInstance {
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [[self alloc] initClient];
++ (id)managerWithDeveloperToken:(NSString *)developerToken{
+    static GGHTTPClientManager *sharedObject = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        // init the tracker
+        sharedObject = [[self alloc] initClient];
+        
+        // set the developer token
+        sharedObject->_developerToken = developerToken;
         
     });
+    
+    return sharedObject;
 }
 
 - (id) initClient{
@@ -90,12 +99,7 @@
     
 }
 
-#pragma mark - Setters
 
-- (void)setDeveloperToken:(NSString *)developerToken {
-    _developerToken = developerToken;
-    
-}
 
 #pragma mark - Helpers
 

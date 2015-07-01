@@ -2,8 +2,8 @@
 //  BringgTracker.m
 //  BringgTracking
 //
-//  Created by Ilya Kalinin on 12/16/14.
-//  Copyright (c) 2014 Ilya Kalinin. All rights reserved.
+//  Created by Matan Poreh on 12/16/14.
+//  Copyright (c) 2014 Matan Poreh. All rights reserved.
 //
 
 #import "GGTrackerManager.h"

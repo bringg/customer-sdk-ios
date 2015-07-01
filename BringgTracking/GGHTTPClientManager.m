@@ -2,7 +2,7 @@
 //  BringgCustomer.m
 //  BringgTracking
 //
-//  Created by Ilya Kalinin on 3/9/15.
+//  Created by Matan Poreh on 3/9/15.
 //  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 

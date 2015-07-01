@@ -62,19 +62,17 @@
 @synthesize appCustomer = _appCustomer;
 
 
-static GGTrackerManager *sharedObject = nil;
+
 
 + (id)tracker{
     
-    NSAssert(sharedObject, @"Error getting non intialized tracker. Please use SEL -trackerWithCustomerToken:andDeveloperToken:andDelegate: to init the tracker singelton");
-    
-    return sharedObject;
+    return [self trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:nil];
     
 }
 
 + (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate{
  
-    
+    static GGTrackerManager *sharedObject = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
@@ -89,7 +87,7 @@ static GGTrackerManager *sharedObject = nil;
         [sharedObject setDeveloperToken:devToken];
        
         // set the connection delegate
-        [sharedObject setConnectionDelegate:delegate];
+        [sharedObject setRealTimeDelegate:delegate];
     });
     
     return sharedObject;
@@ -156,13 +154,18 @@ static GGTrackerManager *sharedObject = nil;
 
 #pragma mark - Setters
 
-- (void)setConnectionDelegate:(id <RealTimeDelegate>)delegate {
+- (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate {
     [self.liveMonitor setRealTimeConnectionDelegate:delegate];
     
 }
 
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
+    _customerToken = customer ? customer.customerToken : nil;
+}
+
+- (void)setDeveloperToken:(NSString *)devToken{
+    _developerToken = devToken;
 }
 
 

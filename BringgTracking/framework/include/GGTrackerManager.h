@@ -34,7 +34,7 @@
 
 
 /**
- *  return an initialized tracker singelton after asserting
+ *  return an initialized tracker singelton after
  *  @warning make sure the singleton is already intiialized before using this accessor
  *  @return the tracker singelton
  */
@@ -50,6 +50,21 @@
  *  @return the Bringg Tracker singelton
  */
 + (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate;
+
+/**
+ *  set the developer token for the singelton
+ *  @warning it is prefered to init the singelton with a developer token instead of using this method
+ *  @param devToken
+ */
+- (void)setDeveloperToken:(NSString *)devToken;
+
+
+/**
+ *  set the developer token for the singelton
+ *  @warning it is prefered to init the singelton with a a delegate instead of using this method
+ *  @param delegate an object conforming to RealTimeDelegate
+ */
+- (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate;
 
 /**
  *  tells the tracker to connect to the real time update service asscosiated with the tracker

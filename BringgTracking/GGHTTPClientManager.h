@@ -19,7 +19,7 @@
 
 
 /**
- *  return an initialized http manager singelton after asserting
+ *  return an initialized http manager singelton
  *  @warning make sure the singleton is already intiialized before using this accessor
  *  @return the http manager singelton
  */
@@ -31,6 +31,13 @@
  *  @return the http manager singelton
  */
 + (id)managerWithDeveloperToken:(NSString *)developerToken;
+
+/**
+ *  set the developer token for the singelton
+ *  @warning it is prefered to init the singelton with a developer token instead of using this method
+ *  @param devToken
+ */
+- (void)setDeveloperToken:(NSString *)devToken;
 
 /**
  *  perform a sign in request with a specific customers credentials

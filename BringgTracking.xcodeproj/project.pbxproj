@@ -50,6 +50,7 @@
 		13D6442A1B416F5500F9EA37 /* GGOrderBuilder.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D644241B413FF600F9EA37 /* GGOrderBuilder.h */; };
 		13D6442B1B416F5500F9EA37 /* GGRating.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441E1B3C18F900F9EA37 /* GGRating.h */; };
 		13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441A1B3C179500F9EA37 /* BringgGlobals.h */; };
+		A32958DF011F761E856A5DBA /* libPods-BringgTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF843EE8AD3EA258A3F5B194 /* libPods-BringgTracking.a */; };
 		A99163B01A51523C008BADCD /* libBringgTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163A41A51523C008BADCD /* libBringgTracking.a */; };
 		A99163D71A515719008BADCD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A99163C11A515719008BADCD /* Reachability.m */; };
 		A99163DD1A515719008BADCD /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = A99163D01A515719008BADCD /* base64.c */; };
@@ -60,15 +61,6 @@
 		A99163E61A515884008BADCD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E51A515884008BADCD /* CFNetwork.framework */; };
 		A99163E81A515893008BADCD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E71A515893008BADCD /* Security.framework */; };
 		A9A2F6F01AAD9AB3003038E8 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */; };
-		A9A2F7051AADA36F003038E8 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6F31AADA36F003038E8 /* AFHTTPRequestOperation.m */; };
-		A9A2F7061AADA36F003038E8 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6F51AADA36F003038E8 /* AFHTTPRequestOperationManager.m */; };
-		A9A2F7071AADA36F003038E8 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6F71AADA36F003038E8 /* AFHTTPSessionManager.m */; };
-		A9A2F7081AADA36F003038E8 /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6FA1AADA36F003038E8 /* AFNetworkReachabilityManager.m */; };
-		A9A2F7091AADA36F003038E8 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6FC1AADA36F003038E8 /* AFSecurityPolicy.m */; };
-		A9A2F70A1AADA36F003038E8 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6FE1AADA36F003038E8 /* AFURLConnectionOperation.m */; };
-		A9A2F70B1AADA36F003038E8 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F7001AADA36F003038E8 /* AFURLRequestSerialization.m */; };
-		A9A2F70C1AADA36F003038E8 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F7021AADA36F003038E8 /* AFURLResponseSerialization.m */; };
-		A9A2F70D1AADA36F003038E8 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F7041AADA36F003038E8 /* AFURLSessionManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,26 +159,10 @@
 		A99163E71A515893008BADCD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		A9A2F6EE1AAD9AB3003038E8 /* GGHTTPClientManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGHTTPClientManager.h; sourceTree = "<group>"; };
 		A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGHTTPClientManager.m; sourceTree = "<group>"; };
-		A9A2F6F21AADA36F003038E8 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
-		A9A2F6F31AADA36F003038E8 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
-		A9A2F6F41AADA36F003038E8 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
-		A9A2F6F51AADA36F003038E8 /* AFHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationManager.m; sourceTree = "<group>"; };
-		A9A2F6F61AADA36F003038E8 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
-		A9A2F6F71AADA36F003038E8 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
-		A9A2F6F81AADA36F003038E8 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
-		A9A2F6F91AADA36F003038E8 /* AFNetworkReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkReachabilityManager.h; sourceTree = "<group>"; };
-		A9A2F6FA1AADA36F003038E8 /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
-		A9A2F6FB1AADA36F003038E8 /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
-		A9A2F6FC1AADA36F003038E8 /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
-		A9A2F6FD1AADA36F003038E8 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
-		A9A2F6FE1AADA36F003038E8 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperation.m; sourceTree = "<group>"; };
-		A9A2F6FF1AADA36F003038E8 /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLRequestSerialization.h; sourceTree = "<group>"; };
-		A9A2F7001AADA36F003038E8 /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLRequestSerialization.m; sourceTree = "<group>"; };
-		A9A2F7011AADA36F003038E8 /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLResponseSerialization.h; sourceTree = "<group>"; };
-		A9A2F7021AADA36F003038E8 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
-		A9A2F7031AADA36F003038E8 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
-		A9A2F7041AADA36F003038E8 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
 		A9AC3F6F1ADD0111004817ED /* GGHTTPClientManager_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGHTTPClientManager_Private.h; sourceTree = "<group>"; };
+		C52E084C2A6440564C033CAA /* Pods-BringgTracking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking/Pods-BringgTracking.debug.xcconfig"; sourceTree = "<group>"; };
+		EF843EE8AD3EA258A3F5B194 /* libPods-BringgTracking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BringgTracking.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE0AB5F1D21DAE88B4678BDC /* Pods-BringgTracking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking/Pods-BringgTracking.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +173,7 @@
 				A99163E81A515893008BADCD /* Security.framework in Frameworks */,
 				A99163E61A515884008BADCD /* CFNetwork.framework in Frameworks */,
 				A99163E41A51587C008BADCD /* Foundation.framework in Frameworks */,
+				A32958DF011F761E856A5DBA /* libPods-BringgTracking.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +230,23 @@
 			path = model;
 			sourceTree = "<group>";
 		};
+		485B6BF250A6C85454117B22 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C52E084C2A6440564C033CAA /* Pods-BringgTracking.debug.xcconfig */,
+				FE0AB5F1D21DAE88B4678BDC /* Pods-BringgTracking.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		51714AA7A87F5BD99D489D8B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EF843EE8AD3EA258A3F5B194 /* libPods-BringgTracking.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A991639B1A51523C008BADCD = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +256,8 @@
 				A99163A61A51523C008BADCD /* BringgTracking */,
 				A99163B31A51523C008BADCD /* BringgTrackingTests */,
 				A99163A51A51523C008BADCD /* Products */,
+				485B6BF250A6C85454117B22 /* Pods */,
+				51714AA7A87F5BD99D489D8B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -283,7 +279,7 @@
 				A9A2F6EE1AAD9AB3003038E8 /* GGHTTPClientManager.h */,
 				A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */,
 				13D6440A1B3C0F7300F9EA37 /* model */,
-				A99163BE1A515719008BADCD /* Utils */,
+				A99163BE1A515719008BADCD /* libs */,
 			);
 			path = BringgTracking;
 			sourceTree = "<group>";
@@ -304,15 +300,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		A99163BE1A515719008BADCD /* Utils */ = {
+		A99163BE1A515719008BADCD /* libs */ = {
 			isa = PBXGroup;
 			children = (
 				135692221B0B36E000100034 /* SocketIO */,
-				A9A2F6F11AADA36F003038E8 /* AFNetworking */,
 				A99163BF1A515719008BADCD /* Reachibility */,
 				A99163CF1A515719008BADCD /* SocketRocket */,
 			);
-			path = Utils;
+			path = libs;
 			sourceTree = "<group>";
 		};
 		A99163BF1A515719008BADCD /* Reachibility */ = {
@@ -338,32 +333,6 @@
 			path = SocketRocket;
 			sourceTree = "<group>";
 		};
-		A9A2F6F11AADA36F003038E8 /* AFNetworking */ = {
-			isa = PBXGroup;
-			children = (
-				A9A2F6F21AADA36F003038E8 /* AFHTTPRequestOperation.h */,
-				A9A2F6F31AADA36F003038E8 /* AFHTTPRequestOperation.m */,
-				A9A2F6F41AADA36F003038E8 /* AFHTTPRequestOperationManager.h */,
-				A9A2F6F51AADA36F003038E8 /* AFHTTPRequestOperationManager.m */,
-				A9A2F6F61AADA36F003038E8 /* AFHTTPSessionManager.h */,
-				A9A2F6F71AADA36F003038E8 /* AFHTTPSessionManager.m */,
-				A9A2F6F81AADA36F003038E8 /* AFNetworking.h */,
-				A9A2F6F91AADA36F003038E8 /* AFNetworkReachabilityManager.h */,
-				A9A2F6FA1AADA36F003038E8 /* AFNetworkReachabilityManager.m */,
-				A9A2F6FB1AADA36F003038E8 /* AFSecurityPolicy.h */,
-				A9A2F6FC1AADA36F003038E8 /* AFSecurityPolicy.m */,
-				A9A2F6FD1AADA36F003038E8 /* AFURLConnectionOperation.h */,
-				A9A2F6FE1AADA36F003038E8 /* AFURLConnectionOperation.m */,
-				A9A2F6FF1AADA36F003038E8 /* AFURLRequestSerialization.h */,
-				A9A2F7001AADA36F003038E8 /* AFURLRequestSerialization.m */,
-				A9A2F7011AADA36F003038E8 /* AFURLResponseSerialization.h */,
-				A9A2F7021AADA36F003038E8 /* AFURLResponseSerialization.m */,
-				A9A2F7031AADA36F003038E8 /* AFURLSessionManager.h */,
-				A9A2F7041AADA36F003038E8 /* AFURLSessionManager.m */,
-			);
-			path = AFNetworking;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -371,10 +340,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A99163B81A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTracking" */;
 			buildPhases = (
+				1B419CC7A14C9E4BA8B0408E /* Check Pods Manifest.lock */,
 				A99163A01A51523C008BADCD /* Sources */,
 				A99163A11A51523C008BADCD /* Frameworks */,
 				A99163A21A51523C008BADCD /* CopyFiles */,
 				13D643FB1B3BEDDD00F9EA37 /* CopyFiles */,
+				8574E031E3C2E0F6436CCB73 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -410,7 +381,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = GG;
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Matan Poreh";
 				TargetAttributes = {
 					A99163A31A51523C008BADCD = {
@@ -454,6 +425,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1B419CC7A14C9E4BA8B0408E /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		8574E031E3C2E0F6436CCB73 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking/Pods-BringgTracking-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A99163F31A5161AA008BADCD /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -475,7 +476,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13D644101B3C0F8300F9EA37 /* GGCustomer.m in Sources */,
-				A9A2F7051AADA36F003038E8 /* AFHTTPRequestOperation.m in Sources */,
 				A9A2F6F01AAD9AB3003038E8 /* GGHTTPClientManager.m in Sources */,
 				13D6441D1B3C180D00F9EA37 /* GGSharedLocation.m in Sources */,
 				135692351B0B36E000100034 /* SocketIOTransportXHR.m in Sources */,
@@ -484,19 +484,11 @@
 				13D644261B413FF600F9EA37 /* GGOrderBuilder.m in Sources */,
 				A99163DF1A515719008BADCD /* SRWebSocket.m in Sources */,
 				13D644131B3C0F9F00F9EA37 /* GGOrder.m in Sources */,
-				A9A2F70D1AADA36F003038E8 /* AFURLSessionManager.m in Sources */,
-				A9A2F7071AADA36F003038E8 /* AFHTTPSessionManager.m in Sources */,
-				A9A2F7081AADA36F003038E8 /* AFNetworkReachabilityManager.m in Sources */,
 				135692341B0B36E000100034 /* SocketIOTransportWebsocket.m in Sources */,
 				13D6440D1B3C0F7300F9EA37 /* GGDriver.m in Sources */,
 				A99163DE1A515719008BADCD /* NSData+SRB64Additions.m in Sources */,
-				A9A2F70C1AADA36F003038E8 /* AFURLResponseSerialization.m in Sources */,
-				A9A2F70B1AADA36F003038E8 /* AFURLRequestSerialization.m in Sources */,
-				A9A2F70A1AADA36F003038E8 /* AFURLConnectionOperation.m in Sources */,
 				135692331B0B36E000100034 /* SocketIOPacket.m in Sources */,
 				135692311B0B36E000100034 /* SocketIO.m in Sources */,
-				A9A2F7061AADA36F003038E8 /* AFHTTPRequestOperationManager.m in Sources */,
-				A9A2F7091AADA36F003038E8 /* AFSecurityPolicy.m in Sources */,
 				A99163DD1A515719008BADCD /* base64.c in Sources */,
 				A99163E21A51582E008BADCD /* GGTrackerManager.m in Sources */,
 				13D644201B3C18F900F9EA37 /* GGRating.m in Sources */,
@@ -598,10 +590,10 @@
 		};
 		A99163B91A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C52E084C2A6440564C033CAA /* Pods-BringgTracking.debug.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -611,10 +603,10 @@
 		};
 		A99163BA1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FE0AB5F1D21DAE88B4678BDC /* Pods-BringgTracking.release.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

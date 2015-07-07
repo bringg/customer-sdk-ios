@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 
+#define SDK_VERSION @"1.2"
+//-----------------------------------------------------------------------cu------
+
 #import "GGHTTPClientManager.h"
 #import "GGHTTPClientManager_Private.h"
 #import "GGCustomer.h"
@@ -117,6 +120,11 @@
 
 #pragma mark - Helpers
 
+- (NSDictionary *)authenticationHeaders{
+        return @{@"CLIENT": @"BRINGG SDK iOS",
+             @"CLIENT-VERSION": SDK_VERSION};
+}
+
 - (NSString *)getServerURLWithMethod:(NSString *)method path:(NSString *)path {
     NSString *server;
     
@@ -142,8 +150,12 @@
     NSAssert([*params isKindOfClass:[NSMutableDictionary class]], @"http paras must be mutable");
     
     [*params setObject:_developerToken forKey:BCDeveloperTokenKey];
-    [*params setObject:_customer.customerToken forKey:BCCustomerTokenKey];
-    [*params setObject:_customer.merchantId forKey:BCMerchantIdKey];
+    
+    if (_customer) {
+        [*params setObject:_customer.customerToken forKey:BCCustomerTokenKey];
+        [*params setObject:_customer.merchantId forKey:BCMerchantIdKey];
+    }
+    
 }
 
 - (NSOperation *)httpRequestWithMethod:(NSString *)method
@@ -169,6 +181,13 @@
     if (jsonError) {
         NSLog(@" error creating json request in %s : %@", __PRETTY_FUNCTION__, jsonError);
     }
+    
+    
+    // set the headers of the request
+    [[self authenticationHeaders] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [jsonRequest setValue:obj forHTTPHeaderField:key];
+        
+    }];
     
     AFHTTPRequestOperation *jsonOperation = [[AFHTTPRequestOperation alloc] initWithRequest:jsonRequest];
     jsonOperation.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
@@ -405,7 +424,11 @@
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
-    [params setObject:_customer.phone forKey:BCPhoneKey];
+    
+    
+    if (_customer) {
+        [params setObject:_customer.phone forKey:BCPhoneKey];
+    }
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodGet

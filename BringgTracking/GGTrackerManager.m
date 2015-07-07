@@ -82,13 +82,15 @@
         // init the real time monitor
          sharedObject->_liveMonitor = [GGRealTimeMontior sharedInstance];
         
-        // set the customer token and developer token
-        [sharedObject setCustomerToken:customerToken];
-        [sharedObject setDeveloperToken:devToken];
        
-        // set the connection delegate
-        [sharedObject setRealTimeDelegate:delegate];
     });
+    
+    // set the customer token and developer token
+    [sharedObject setCustomerToken:customerToken];
+    [sharedObject setDeveloperToken:devToken];
+    
+    // set the connection delegate
+    [sharedObject setRealTimeDelegate:delegate];
     
     return sharedObject;
 }
@@ -116,21 +118,12 @@
 }
 
 - (void)connect{
-    if (!self.customerToken || !self.developerToken) {
-        NSString *message = @"Missing or incorrect tokens";
+    
+    // if no dev token we should raise an exception
+    
+    if  (!self.developerToken) {
         
-        // if no dev token we should raise an exception
-        if (!self.developerToken) {
-            [NSException raise:@"Invalid tracker Tokens" format:@"Token can not be nil"];
-        }else if (!self.customerToken){
-            
-            
-            NSError *error = [NSError errorWithDomain:@"BringgTracker" code:0 userInfo:@{NSLocalizedDescriptionKey: message,NSLocalizedRecoverySuggestionErrorKey:message}];
-            
-            // tell the live montitor to send errir
-            [_liveMonitor sendConnectionError:error];
-            
-        }
+        [NSException raise:@"Invalid tracker Tokens" format:@"Developer Token can not be nil"];
         
     }else{
         

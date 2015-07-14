@@ -86,11 +86,11 @@
     });
     
     // set the customer token and developer token
-    [sharedObject setCustomerToken:customerToken];
-    [sharedObject setDeveloperToken:devToken];
+    if (customerToken) [sharedObject setCustomerToken:customerToken];
+    if (devToken) [sharedObject setDeveloperToken:devToken];
     
     // set the connection delegate
-    [sharedObject setRealTimeDelegate:delegate];
+    if (delegate) [sharedObject setRealTimeDelegate:delegate];
     
     return sharedObject;
 }
@@ -121,14 +121,14 @@
     
     // if no dev token we should raise an exception
     
-    if  (!self.developerToken) {
+    if  (!_developerToken) {
         
         [NSException raise:@"Invalid tracker Tokens" format:@"Developer Token can not be nil"];
         
     }else{
         
         // update the real time monitor with the dev token
-        [self.liveMonitor setDeveloperToken:self.developerToken];
+        [self.liveMonitor setDeveloperToken:_developerToken];
         [self.liveMonitor connect];
         
         
@@ -158,7 +158,11 @@
 }
 
 - (void)setDeveloperToken:(NSString *)devToken{
+    
+   
+    
     _developerToken = devToken;
+    NSLog(@"Tracker Set with Dev Token %@", _developerToken);
 }
 
 

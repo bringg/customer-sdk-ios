@@ -18,13 +18,13 @@
 @interface GGCustomer : NSObject
 
 
-@property (nonatomic, readonly) NSString *customerToken;
-@property (nonatomic, readonly) NSString *merchantId;
-@property (nonatomic, readonly) NSString *phone;
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) NSString *email;
-@property (nonatomic, readonly) NSString *address;
-@property (nonatomic, readonly) NSString *imageURL;
+@property (nonatomic, strong) NSString *customerToken;
+@property (nonatomic, strong) NSString *merchantId;
+@property (nonatomic, strong) NSString *phone;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *address;
+@property (nonatomic, strong) NSString *imageURL;
 
 /**
  *  init a Customer object using json data recieved from a server response

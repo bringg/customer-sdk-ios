@@ -309,7 +309,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         GGDriver *driver = [GGDriver driverFromData:[eventData objectForKey:PARAM_DRIVER]];
         
         // add this driver to the drivers active list if needed
-        if (![self.activeDrivers objectForKey:driver.uuid]) {
+        if (driver && ![self.activeDrivers objectForKey:driver.uuid]) {
             [self.activeDrivers setObject:driver forKey:driver.uuid];
         }
         
@@ -368,18 +368,25 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         NSNumber *lat = [locationUpdate objectForKey:@"lat"];
         NSNumber *lng = [locationUpdate objectForKey:@"lng"];
         
+        // get driver from data
         GGDriver *driver = [self.activeDrivers objectForKey:driverUUID];
+        
+        // if no data get it from the current active drivers
         if (!driver) {
             driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
         }
         
-        [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
-        
-        id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
-        if (existingDelegate) {
-            [existingDelegate driverLocationDidChangeWithDriver:driver];
+        if (driver) {
+            [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
             
+            id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
+            if (existingDelegate) {
+                [existingDelegate driverLocationDidChangeWithDriver:driver];
+                
+            }
         }
+        
+        
     } else if ([packet.name isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
         //activity change
         

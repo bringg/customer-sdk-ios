@@ -12,14 +12,14 @@
 
 @interface GGSharedLocation : NSObject
 
-@property (nonatomic, readonly) NSString *locationUUID;
-@property (nonatomic, readonly) NSString *orderUUID;
+@property (nonatomic, strong) NSString *locationUUID;
+@property (nonatomic, strong) NSString *orderUUID;
 @property (nonatomic, assign) NSInteger orderID;
 @property (nonatomic) NSInteger waypointID;
-@property (nonatomic, readonly) NSString *eta;
+@property (nonatomic, strong) NSString *eta;
 
-@property (nonatomic, readonly) GGDriver *driver;
-@property (nonatomic, readonly) GGRating *rating;
+@property (nonatomic, strong) GGDriver *driver;
+@property (nonatomic, strong) GGRating *rating;
 @property (nonatomic, copy) NSString *trackingURL;
 
 

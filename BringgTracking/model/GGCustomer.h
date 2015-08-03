@@ -19,7 +19,7 @@
 
 
 @property (nonatomic, strong) NSString *customerToken;
-@property (nonatomic, strong) NSString *merchantId;
+@property (nonatomic, strong) NSNumber *merchantId;
 @property (nonatomic, strong) NSString *phone;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *email;

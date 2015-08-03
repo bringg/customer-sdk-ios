@@ -14,7 +14,7 @@
 @interface GGOrder : NSObject
 
 
-@property (nonatomic, readonly) GGSharedLocation *sharedLocation;
+@property (nonatomic, strong) GGSharedLocation *sharedLocation;
 
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *title;

@@ -325,6 +325,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 //        }];
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
+        
+        NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus );
+        
         if (existingDelegate) {
             switch ([orderStatus integerValue]) {
                 case OrderStatusAssigned:
@@ -358,6 +361,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:OrderStatusDone];
         
         id existingDelegate = [self.orderDelegates objectForKey:order.uuid];
+        
+        NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid );
+        
         if (existingDelegate) {
             [existingDelegate orderDidFinish:order];
             
@@ -380,6 +386,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
             
             id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
+            
+            NSLog(@"delegate: %@ should udpate location for driver :%@", existingDelegate, driverUUID );
+            
             if (existingDelegate) {
                 [existingDelegate driverLocationDidChangeWithDriver:driver];
                 
@@ -389,13 +398,17 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         
     } else if ([packet.name isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
         //activity change
+        NSLog(@"driver activity changed: %@", packet.args);
         
     } else if ([packet.name isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
         NSDictionary *etaUpdate = [packet.args firstObject];
         NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
         NSString *eta = [etaUpdate objectForKey:@"eta"];
         NSDate *etaToDate = [self dateFromString:eta];
+        
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        NSLog(@"delegate: %@ should udpate waypoint %@ ETA to: %@", existingDelegate, wpid, eta );
+       
         if (existingDelegate) {
             [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
             
@@ -404,6 +417,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         NSDictionary *waypointArrived = [packet.args firstObject];
         NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        
+        NSLog(@"delegate: %@ should udpate waypoint %@ arrived", existingDelegate, wpid );
+        
         if (existingDelegate) {
             [existingDelegate waypointDidArrivedWaypointId:wpid];
             
@@ -413,6 +429,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         NSDictionary *waypointDone = [packet.args firstObject];
         NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        
+         NSLog(@"delegate: %@ should udpate waypoint %@ done", existingDelegate, wpid );
+        
         if (existingDelegate) {
             [existingDelegate waypointDidArrivedWaypointId:wpid];
             

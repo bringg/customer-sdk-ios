@@ -211,4 +211,26 @@
  *  stops tracking all waypoints
  */
 - (void)stopWatchingAllWaypoints;
+
+
+/**
+ *  remove all delegates listening for order updates
+ */
+- (void)removeOrderDelegates;
+
+/**
+ *  remove all delegates listening for driver updates
+ */
+- (void)removeDriverDelegates;
+
+/**
+ *  clear all delegates listening for waypoint updates
+ */
+- (void)removeWaypointDelegates;
+
+/**
+ *  clear all delegates listening for updates
+ */
+- (void)removeAllDelegates;
+
 @end

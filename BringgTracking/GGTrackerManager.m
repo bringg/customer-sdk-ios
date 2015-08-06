@@ -212,6 +212,8 @@
 #pragma mark - Track Actions
 - (void)startWatchingOrderWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
     
+    NSLog(@"SHOULD START WATCHING ORDER %@ with delegate %@", uuid, delegate);
+    
     if (uuid) {
         _liveMonitor.doMonitoringOrders = YES;
         id existingDelegate = [_liveMonitor.orderDelegates objectForKey:uuid];
@@ -227,6 +229,8 @@
                 if (!success) {
                     id delegateToRemove = [_liveMonitor.orderDelegates objectForKey:uuid];
                     @synchronized(_liveMonitor) {
+                        NSLog(@"SHOULD STOP WATCHING ORDER %@ with delegate %@", uuid, delegate);
+                        
                         [_liveMonitor.orderDelegates removeObjectForKey:uuid];
                         
                     }
@@ -247,6 +251,8 @@
 
 - (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate {
     
+    NSLog(@"SHOULD START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
+    
     if (uuid && shareUUID) {
         _liveMonitor.doMonitoringDrivers = YES;
         
@@ -262,6 +268,9 @@
                 if (!success) {
                     id delegateToRemove = [_liveMonitor.driverDelegates objectForKey:uuid];
                     @synchronized(_liveMonitor) {
+                        
+                         NSLog(@"SHOULD START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
+                        
                         [_liveMonitor.driverDelegates removeObjectForKey:uuid];
                         
                     }
@@ -316,6 +325,8 @@
     id existingDelegate = [_liveMonitor.orderDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(_liveMonitor) {
+            
+            NSLog(@"SHOULD STOP WATCHING ORDER %@ with delegate %@", uuid, existingDelegate);
             [_liveMonitor.orderDelegates removeObjectForKey:uuid];
             
         }
@@ -333,6 +344,9 @@
     id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(_liveMonitor) {
+            
+            NSLog(@"SHOULD START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, existingDelegate);
+            
             [_liveMonitor.driverDelegates removeObjectForKey:uuid];
             
         }
@@ -363,7 +377,28 @@
     }
 }
 
-#pragma mark Real Time status checks
+#pragma mark - cleanup
+-(void)removeOrderDelegates{
+    [self.liveMonitor.orderDelegates removeAllObjects];
+}
+
+-(void)removeDriverDelegates{
+    [self.liveMonitor.driverDelegates removeAllObjects];
+}
+
+-(void)removeWaypointDelegates{
+    [self.liveMonitor.waypointDelegates removeAllObjects];
+}
+
+-(void)removeAllDelegates{
+    
+    [self removeOrderDelegates];
+    [self removeDriverDelegates];
+    [self removeWaypointDelegates];
+}
+
+
+#pragma mark - Real Time status checks
 
 - (BOOL)isConnected {
     return _liveMonitor.connected;

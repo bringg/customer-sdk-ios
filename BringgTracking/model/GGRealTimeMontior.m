@@ -387,7 +387,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             
             id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
             
-            NSLog(@"delegate: %@ should udpate location for driver :%@", existingDelegate, driverUUID );
+            NSLog(@"delegate: %@ should udpate location for driver :%@", existingDelegate, driver.uuid );
             
             if (existingDelegate) {
                 [existingDelegate driverLocationDidChangeWithDriver:driver];

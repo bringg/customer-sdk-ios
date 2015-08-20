@@ -8,10 +8,11 @@
 
 #import "GGOrder.h"
 #import "GGSharedLocation.h"
+#import "GGWaypoint.h"
 
 @implementation GGOrder
 
-@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid;
+@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid, waypoints;
 
 -(id)initOrderWithData:(NSDictionary*)data{
     
@@ -36,6 +37,20 @@
         title = data[@"title"];
         
         sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
+        
+        NSArray *waypointsData = [data objectForKey:PARAM_WAYPOINTS];
+        if (waypointsData) {
+            
+            __block NSMutableArray *wps = [NSMutableArray arrayWithCapacity:waypointsData.count];
+            
+            [waypointsData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                GGWaypoint *wp = [[GGWaypoint alloc] initWaypointWithData:obj];
+                [wps addObject:wp];
+            }];
+            
+            self.waypoints = wps;
+        }
+        
 
     }
     

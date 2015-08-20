@@ -10,6 +10,7 @@
 #import "BringgGlobals.h"
 
 @class GGSharedLocation;
+@class GGDriver;
 
 @interface GGOrder : NSObject
 
@@ -33,6 +34,7 @@
 @property (nonatomic, assign) BOOL late;
 
 @property (nonatomic, assign) OrderStatus status;
+@property (nonatomic, strong) NSArray *waypoints;
 
 /**
  *  init an Order object using json data recieved from a server response

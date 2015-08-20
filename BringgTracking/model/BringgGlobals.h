@@ -12,13 +12,17 @@
 
 #define PARAM_STATUS @"status"
 #define PARAM_CUSTOMER @"customer"
+#define PARAM_CUSTOMER_ID @"customer_id"
+#define PARAM_ORDER_ID @"task_id"
 #define PARAM_ORDER_UUID @"order_uuid"
+#define PARAM_MERCHANT_ID @"merchant_id"
 #define PARAM_DRIVER @"driver"
 #define PARAM_DRIVER_ID @"driver_id"
 #define PARAM_DRIVER_UUID @"driver_uuid"
 #define PARAM_SHARE_UUID @"share_uuid"
 #define PARAM_WAY_POINT_ID @"way_point_id"
 #define PARAM_ID @"id"
+#define PARAM_ADDRESS @"address"
 #define PARAM_UUID @"uuid"
 #define PARAM_NAME @"name"
 #define PARAM_LAT @"lat"
@@ -31,6 +35,8 @@
 #define PARAM_DRIVER_IMAGE_URL @"profile_image"
 #define PARAM_DRIVER_IMAGE_URL2 @"employee_image"
 #define PARAM_SHARED_LOCATION @"shared_location"
+#define PARAM_WAYPOINTS @"way_points"
+
 
 #define PARAM_ETA @"eta"
 #define PARAM_RATING_TOKEN @"rating_token"

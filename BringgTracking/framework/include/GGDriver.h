@@ -23,6 +23,11 @@
 @property (nonatomic, getter=hasArrived) BOOL arrived;
 
 
+@property (nonatomic, copy) NSString * ratingToken;
+@property (nonatomic, copy) NSString * ratingUrl;
+@property (nonatomic, copy) NSString * phone;
+
+
 /**
  *  init a Driver object
  *
@@ -40,10 +45,13 @@
 -(id)initWithID:(NSInteger)dId
            uuid:(NSString *)dUUID
            name:(NSString *)dName
+          phone:(NSString *)dPhone
        latitude:(double)dLat
       longitude:(double)dLng
        activity:(int)dActivity
   averageRating:(double)dRating
+    ratingToken:(NSString *)dToken
+      ratingURL:(NSString *)dRatingUrl
        imageURL:(NSString *)dUrl;
 
 /**

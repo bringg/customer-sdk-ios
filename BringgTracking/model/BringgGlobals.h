@@ -31,12 +31,14 @@
 #define PARAM_CURRENT_LNG @"current_lng"
 #define PARAM_ACTIVITY @"activity"
 #define PARAM_DRIVER_ACTIVITY @"driver_activity"
-#define PARAM_DRIVER_AVG_RATING @"driver_average_rating"
+#define PARAM_DRIVER_AVG_RATING @"average_rating"
+#define PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION @"driver_average_rating"
 #define PARAM_DRIVER_IMAGE_URL @"profile_image"
 #define PARAM_DRIVER_IMAGE_URL2 @"employee_image"
+#define PARAM_DRIVER_PHONE @"employee_phone"
 #define PARAM_SHARED_LOCATION @"shared_location"
 #define PARAM_WAYPOINTS @"way_points"
-
+#define PARAM_DRIVER_TOKEN_URL @"rating_url"
 
 #define PARAM_ETA @"eta"
 #define PARAM_RATING_TOKEN @"rating_token"

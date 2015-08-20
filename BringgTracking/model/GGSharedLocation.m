@@ -28,10 +28,13 @@
         driver = [[GGDriver alloc] initWithID:[[data objectForKey:@"user_id"] integerValue]
                                          uuid:[data objectForKey:PARAM_DRIVER_UUID]
                                          name:[data objectForKey:PARAM_DRIVER_NAME]
+                                        phone:[data objectForKey:PARAM_DRIVER_PHONE]
                                      latitude:[[data objectForKey:PARAM_CURRENT_LAT] doubleValue]
                                     longitude:[[data objectForKey:PARAM_CURRENT_LNG] doubleValue]
                                      activity:[[data objectForKey:PARAM_DRIVER_ACTIVITY] intValue]
-                                averageRating:[[data objectForKey:PARAM_DRIVER_AVG_RATING] doubleValue]
+                                averageRating:[[data objectForKey:PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] doubleValue]
+                                  ratingToken:[data objectForKey:PARAM_RATING_TOKEN]
+                                    ratingURL:[data objectForKey:PARAM_DRIVER_TOKEN_URL]
                                      imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
                   ];
         

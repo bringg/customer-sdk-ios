@@ -27,7 +27,8 @@
 		135692331B0B36E000100034 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922A1B0B36E000100034 /* SocketIOPacket.m */; };
 		135692341B0B36E000100034 /* SocketIOTransportWebsocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922D1B0B36E000100034 /* SocketIOTransportWebsocket.m */; };
 		135692351B0B36E000100034 /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */; };
-		136E2B511B7733B900673183 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 136E2B501B7733B900673183 /* GGWaypoint.m */; };
+		136CB2771B85C47400521029 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 136CB2761B85C47400521029 /* GGWaypoint.m */; };
+		136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 136CB2751B85C47400521029 /* GGWaypoint.h */; };
 		13D643FA1B3BECF100F9EA37 /* libBringgTracking.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = A99163A41A51523C008BADCD /* libBringgTracking.a */; };
 		13D643FC1B3BEE2800F9EA37 /* GGTrackerManager.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A99163E01A51582E008BADCD /* GGTrackerManager.h */; };
 		13D643FD1B3BEE2800F9EA37 /* GGHTTPClientManager.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A2F6EE1AAD9AB3003038E8 /* GGHTTPClientManager.h */; };
@@ -106,6 +107,7 @@
 			dstPath = include;
 			dstSubfolderSpec = 16;
 			files = (
+				136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */,
 				13DA44071B72263200C981B6 /* SRWebSocket.h in CopyFiles */,
 				13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */,
 				13D644291B416F5500F9EA37 /* GGSharedLocation.h in CopyFiles */,
@@ -151,8 +153,8 @@
 		1356922D1B0B36E000100034 /* SocketIOTransportWebsocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportWebsocket.m; sourceTree = "<group>"; };
 		1356922E1B0B36E000100034 /* SocketIOTransportXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransportXHR.h; sourceTree = "<group>"; };
 		1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportXHR.m; sourceTree = "<group>"; };
-		136E2B4F1B7733B900673183 /* GGWaypoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGWaypoint.h; sourceTree = "<group>"; };
-		136E2B501B7733B900673183 /* GGWaypoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGWaypoint.m; sourceTree = "<group>"; };
+		136CB2751B85C47400521029 /* GGWaypoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGWaypoint.h; sourceTree = "<group>"; };
+		136CB2761B85C47400521029 /* GGWaypoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGWaypoint.m; sourceTree = "<group>"; };
 		13D6440B1B3C0F7300F9EA37 /* GGDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGDriver.h; sourceTree = "<group>"; };
 		13D6440C1B3C0F7300F9EA37 /* GGDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGDriver.m; sourceTree = "<group>"; };
 		13D6440E1B3C0F8300F9EA37 /* GGCustomer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGCustomer.h; sourceTree = "<group>"; };
@@ -281,6 +283,8 @@
 				13D6441B1B3C180D00F9EA37 /* GGSharedLocation.h */,
 				13D6441C1B3C180D00F9EA37 /* GGSharedLocation.m */,
 				13D6440E1B3C0F8300F9EA37 /* GGCustomer.h */,
+				136CB2751B85C47400521029 /* GGWaypoint.h */,
+				136CB2761B85C47400521029 /* GGWaypoint.m */,
 				13D6440F1B3C0F8300F9EA37 /* GGCustomer.m */,
 				13D644111B3C0F9F00F9EA37 /* GGOrder.h */,
 				13D644121B3C0F9F00F9EA37 /* GGOrder.m */,
@@ -569,6 +573,7 @@
 				13D644231B3C2F9300F9EA37 /* GGRealTimeMontior.m in Sources */,
 				13D644261B413FF600F9EA37 /* GGOrderBuilder.m in Sources */,
 				A99163DF1A515719008BADCD /* SRWebSocket.m in Sources */,
+				136CB2771B85C47400521029 /* GGWaypoint.m in Sources */,
 				84DAC0831B84474A00FD2B75 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				84DAC0851B84474A00FD2B75 /* UIAlertView+AFNetworking.m in Sources */,
 				13D644131B3C0F9F00F9EA37 /* GGOrder.m in Sources */,
@@ -585,7 +590,6 @@
 				135692331B0B36E000100034 /* SocketIOPacket.m in Sources */,
 				135692311B0B36E000100034 /* SocketIO.m in Sources */,
 				A99163DD1A515719008BADCD /* base64.c in Sources */,
-				136E2B511B7733B900673183 /* GGWaypoint.m in Sources */,
 				A99163E21A51582E008BADCD /* GGTrackerManager.m in Sources */,
 				13D644201B3C18F900F9EA37 /* GGRating.m in Sources */,
 				84DAC07C1B84474A00FD2B75 /* AFNetworkReachabilityManager.m in Sources */,
@@ -721,6 +725,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				DYLIB_CURRENT_VERSION = 1.4;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -739,6 +744,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				DYLIB_CURRENT_VERSION = 1.4;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",

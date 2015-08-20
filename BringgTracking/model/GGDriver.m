@@ -15,15 +15,18 @@
 @synthesize name, imageURL;
 @synthesize latitude,longitude;
 @synthesize averageRating,activity,arrived;
-
+@synthesize ratingToken, ratingUrl, phone;
 
 -(id)initWithID:(NSInteger)dId
            uuid:(NSString *)dUUID
            name:(NSString *)dName
+          phone:(NSString *)dPhone
        latitude:(double)dLat
       longitude:(double)dLng
        activity:(int)dActivity
   averageRating:(double)dRating
+    ratingToken:(NSString *)dToken
+      ratingURL:(NSString *)dRatingUrl
        imageURL:(NSString *)dUrl{
     
     if (self = [super init]) {
@@ -32,12 +35,15 @@
         driverid = dId;
         uuid = dUUID;
         name = dName;
+        phone = dPhone;
         imageURL = dUrl;
         latitude = dLat;
         longitude = dLng;
         averageRating = dRating;
         activity = dActivity;
-         
+        ratingToken = dToken;
+        ratingUrl = dRatingUrl;
+        
         
     }
     
@@ -101,12 +107,16 @@
         driver = [[GGDriver alloc] initWithID:[[data objectForKey:PARAM_ID] integerValue]
                                          uuid:[data objectForKey:PARAM_UUID]
                                          name:[data objectForKey:PARAM_NAME]
+                                        phone:[data objectForKey:PARAM_DRIVER_PHONE]
                                      latitude:[[data objectForKey:PARAM_LAT] doubleValue]
                                     longitude:[[data objectForKey:PARAM_LNG] doubleValue]
                                      activity:[data objectForKey:PARAM_ACTIVITY] ? [[data objectForKey:PARAM_ACTIVITY] intValue] : 0
                                 averageRating:[data objectForKey:PARAM_DRIVER_AVG_RATING] ? [[data objectForKey:PARAM_DRIVER_AVG_RATING] doubleValue] : -1
+                                  ratingToken:[data objectForKey:PARAM_RATING_TOKEN]
+                                    ratingURL:[data objectForKey:PARAM_DRIVER_TOKEN_URL]
                                      imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
                   ];
+        
  
     }
     

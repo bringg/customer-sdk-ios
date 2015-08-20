@@ -352,6 +352,22 @@
                                                            
                    if (success) customer = [[GGCustomer alloc] initWithData:[JSON objectForKey:PARAM_CUSTOMER] ];
             
+                   // if customer doesnt have an access token tree this as an error
+                   if (customer && (!customer.customerToken || [customer.customerToken isEqualToString:@""])) {
+                       // token invalid report error
+                       if (completionHandler) {
+
+                           NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                           
+                           completionHandler(NO, nil, responseError);
+                       }
+                       
+                       weakSelf.customer = nil;
+                       
+                       return ;
+                   }
+                   
+                   
                    weakSelf.customer = customer;
                    
                    if (completionHandler) {

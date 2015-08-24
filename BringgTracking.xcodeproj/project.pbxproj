@@ -23,6 +23,7 @@
 
 /* Begin PBXBuildFile section */
 		13361E231B8B15C200388D14 /* GGBringgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 13361E221B8B15C200388D14 /* GGBringgUtils.m */; };
+		13361E241B8B3D7B00388D14 /* GGBringgUtils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13361E211B8B15C200388D14 /* GGBringgUtils.h */; };
 		135692311B0B36E000100034 /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 135692261B0B36E000100034 /* SocketIO.m */; };
 		135692321B0B36E000100034 /* SocketIOJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 135692281B0B36E000100034 /* SocketIOJSONSerialization.m */; };
 		135692331B0B36E000100034 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922A1B0B36E000100034 /* SocketIOPacket.m */; };
@@ -108,6 +109,7 @@
 			dstPath = include;
 			dstSubfolderSpec = 16;
 			files = (
+				13361E241B8B3D7B00388D14 /* GGBringgUtils.h in CopyFiles */,
 				136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */,
 				13DA44071B72263200C981B6 /* SRWebSocket.h in CopyFiles */,
 				13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */,

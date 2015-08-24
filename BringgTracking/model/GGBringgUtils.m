@@ -34,4 +34,15 @@
     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
 }
 
+
++(BOOL)isValidLatitude:(double)latitude andLongitude:(double)longitude{
+    BOOL retVal = YES;
+    
+    if (latitude > 90 || latitude < -90) retVal = NO;
+    if (longitude > 180 || longitude < -180) retVal = NO;
+    if (latitude == 0 && latitude == 0) retVal = NO;
+    
+    return retVal;
+}
+
 @end

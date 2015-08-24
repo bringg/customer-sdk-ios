@@ -9,6 +9,7 @@
 #import "GGOrder.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
+#import "GGBringgUtils.h"
 
 @implementation GGOrder
 
@@ -17,24 +18,24 @@
 -(id)initOrderWithData:(NSDictionary*)data{
     
     if (self = [super init]) {
-        orderid = [[data objectForKey:PARAM_ID] integerValue];
-        uuid = [data objectForKey:PARAM_UUID];
+        orderid = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0];
+        uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:nil];
         
-        status = (OrderStatus)[[data objectForKey:PARAM_STATUS] integerValue];
+        status = (OrderStatus)[GGBringgUtils integerFromJSON:data[PARAM_STATUS] defaultTo:0];
  
-        totalPrice = [data[@"total_price"] doubleValue];
-        tip = [data[@"tip"] doubleValue];
-        leftToBePaid = [data[@"left_to_be_paid"] doubleValue];
+        totalPrice = [GGBringgUtils doubleFromJSON:data[@"total_price"] defaultTo:0];
+        tip = [GGBringgUtils doubleFromJSON:data[@"tip"] defaultTo:0];
+        leftToBePaid = [GGBringgUtils doubleFromJSON:data[@"left_to_be_paid"] defaultTo:0];
         
-        activeWaypointId = [data[@"active_way_point_id"] integerValue];
-        customerId = [data[@"customer_id"] integerValue];
-        merchantId = [data[@"merchant_id"] integerValue];
-        priority = [data[@"priority"] integerValue];
-        driverId = [data[@"user_id"] integerValue];
+        activeWaypointId = [GGBringgUtils integerFromJSON:data[@"active_way_point_id"] defaultTo:0];
+        customerId = [GGBringgUtils integerFromJSON:data[@"customer_id"] defaultTo:0];
+        merchantId = [GGBringgUtils integerFromJSON:data[@"merchant_id"] defaultTo:0];
+        priority = [GGBringgUtils integerFromJSON:data[@"priority"] defaultTo:0];
+        driverId = [GGBringgUtils integerFromJSON:data[@"user_id"] defaultTo:0];
         
-        late = [data[@"late"] boolValue];
+        late = [GGBringgUtils boolFromJSON:data[@"late"] defaultTo:NO];
         
-        title = data[@"title"];
+        title = [GGBringgUtils stringFromJSON:data[@"title"] defaultTo:nil];
         
         sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
         

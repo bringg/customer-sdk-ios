@@ -8,6 +8,7 @@
 
 #import "GGDriver.h"
 #import "BringgGlobals.h"
+#import "GGBringgUtils.h"
 
 @implementation GGDriver
 
@@ -104,16 +105,16 @@
     
     if (data ) {
  
-        driver = [[GGDriver alloc] initWithID:[[data objectForKey:PARAM_ID] integerValue]
-                                         uuid:[data objectForKey:PARAM_UUID]
-                                         name:[data objectForKey:PARAM_NAME]
-                                        phone:[data objectForKey:PARAM_DRIVER_PHONE]
-                                     latitude:[[data objectForKey:PARAM_LAT] doubleValue]
-                                    longitude:[[data objectForKey:PARAM_LNG] doubleValue]
-                                     activity:[data objectForKey:PARAM_ACTIVITY] ? [[data objectForKey:PARAM_ACTIVITY] intValue] : 0
-                                averageRating:[data objectForKey:PARAM_DRIVER_AVG_RATING] ? [[data objectForKey:PARAM_DRIVER_AVG_RATING] doubleValue] : -1
-                                  ratingToken:[data objectForKey:PARAM_RATING_TOKEN]
-                                    ratingURL:[data objectForKey:PARAM_DRIVER_TOKEN_URL]
+        driver = [[GGDriver alloc] initWithID:[GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0]
+                                         uuid:[GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:nil]
+                                         name:[GGBringgUtils stringFromJSON:data[PARAM_NAME] defaultTo:nil]
+                                        phone:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE] defaultTo:nil]
+                                     latitude:[GGBringgUtils doubleFromJSON:data[PARAM_LAT] defaultTo:0]
+                                    longitude:[GGBringgUtils doubleFromJSON:data[PARAM_LNG] defaultTo:0]
+                                     activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:0]
+                                averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:-1]
+                                  ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
+                                    ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_TOKEN_URL] defaultTo:nil]
                                      imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
                   ];
         

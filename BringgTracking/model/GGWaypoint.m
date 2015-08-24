@@ -7,10 +7,11 @@
 //
 
 #import "GGWaypoint.h"
+#import "GGBringgUtils.h"
 
 @implementation GGWaypoint
 
-@synthesize orderid,waypointId,customerId,merchantId,position,done,ASAP,address;
+@synthesize orderid,waypointId,customerId,merchantId,position,done,ASAP,allowFindMe,address, latitude, longitude;
 
 
 -(id)initWaypointWithData:(NSDictionary*)data{
@@ -18,15 +19,19 @@
     if (self = [super init]) {
         
         if (data){
-            orderid = data[PARAM_ORDER_ID] ? [data[PARAM_ORDER_ID] integerValue] : 0;
-            waypointId = data[PARAM_ID] ? [data[PARAM_ID] integerValue] : 0;
-            customerId = data[PARAM_CUSTOMER_ID] ? [data[PARAM_CUSTOMER_ID] integerValue] : 0;
-            merchantId = data[PARAM_MERCHANT_ID] ? [data[PARAM_MERCHANT_ID] integerValue] : 0;
+            orderid = [GGBringgUtils integerFromJSON:data[PARAM_ORDER_ID] defaultTo:0];
+            waypointId = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0];
+            customerId = [GGBringgUtils integerFromJSON:data[PARAM_CUSTOMER_ID] defaultTo:0];
+            merchantId = [GGBringgUtils integerFromJSON:data[PARAM_MERCHANT_ID] defaultTo:0];
+
+            done =[GGBringgUtils boolFromJSON:data[@"done"] defaultTo:NO];
+            ASAP = [GGBringgUtils boolFromJSON:data[@"asap"] defaultTo:NO];
+            allowFindMe = [GGBringgUtils boolFromJSON:data[@"find_me"] defaultTo:NO];
+
+            address =  [GGBringgUtils stringFromJSON:data[PARAM_ADDRESS] defaultTo:nil];
             
-            done = data[@"done"] ? [data[@"done"] boolValue] : NO;
-            ASAP = data[@"asap"] ? [data[@"asap"] boolValue] : NO;
-            
-            address = data[PARAM_ADDRESS] ? data[PARAM_ADDRESS] : nil;
+            latitude =  [GGBringgUtils doubleFromJSON:data[@"lat"] defaultTo:0];
+            longitude =  [GGBringgUtils doubleFromJSON:data[@"lng"] defaultTo:0];
         }
         
     }

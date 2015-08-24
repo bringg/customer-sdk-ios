@@ -8,6 +8,7 @@
 
 #import "GGSharedLocation.h"
 #import "BringgGlobals.h"
+#import "GGBringgUtils.h"
 
 @implementation GGSharedLocation
 
@@ -25,16 +26,16 @@
         trackingURL = data[@"url"];
         
         rating = [[GGRating alloc] initWithRatingToken:[data objectForKey:PARAM_RATING_TOKEN]];
-        driver = [[GGDriver alloc] initWithID:[[data objectForKey:@"user_id"] integerValue]
-                                         uuid:[data objectForKey:PARAM_DRIVER_UUID]
-                                         name:[data objectForKey:PARAM_DRIVER_NAME]
-                                        phone:[data objectForKey:PARAM_DRIVER_PHONE]
-                                     latitude:[[data objectForKey:PARAM_CURRENT_LAT] doubleValue]
-                                    longitude:[[data objectForKey:PARAM_CURRENT_LNG] doubleValue]
-                                     activity:[[data objectForKey:PARAM_DRIVER_ACTIVITY] intValue]
-                                averageRating:[[data objectForKey:PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] doubleValue]
-                                  ratingToken:[data objectForKey:PARAM_RATING_TOKEN]
-                                    ratingURL:[data objectForKey:PARAM_DRIVER_TOKEN_URL]
+        driver = [[GGDriver alloc] initWithID:[GGBringgUtils integerFromJSON:data[@"user_id"] defaultTo:0]
+                                         uuid:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:nil]
+                                         name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:nil]
+                                        phone:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE] defaultTo:nil]
+                                     latitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LAT] defaultTo:0]
+                                    longitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LNG] defaultTo:0]
+                                     activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:0]
+                                averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:-1]
+                                  ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
+                                    ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_TOKEN_URL] defaultTo:nil]
                                      imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
                   ];
         

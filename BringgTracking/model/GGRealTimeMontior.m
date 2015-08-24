@@ -304,8 +304,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
         NSNumber *orderStatus = [eventData objectForKey:PARAM_STATUS];
         
-        GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
+        //GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
         
+        GGOrder *order = [[GGOrder alloc] initOrderWithData:eventData];
         GGDriver *driver = [GGDriver driverFromData:[eventData objectForKey:PARAM_DRIVER]];
         
         // add this driver to the drivers active list if needed
@@ -340,14 +341,14 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
                     [existingDelegate orderDidStartWithOrder:order withDriver:driver];
                     break;
                 case OrderStatusCheckedIn:
-                    [existingDelegate orderDidArrive:order];
+                    [existingDelegate orderDidArrive:order withDriver:driver];
                     break;
                 case OrderStatusDone:
-                    [existingDelegate orderDidFinish:order];
+                    [existingDelegate orderDidFinish:order withDriver:driver];
                     break;
                 case OrderStatusCancelled:
                 case OrderStatusRejected:
-                    [existingDelegate orderDidCancel:order];
+                    [existingDelegate orderDidCancel:order withDriver:driver];
                     break;
                 default:
                     break;
@@ -355,17 +356,26 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
             
         }
     } else if ([packet.name isEqualToString:EVENT_ORDER_DONE]) {
-        NSDictionary *orderDone = [packet.args firstObject];
-        NSString *orderUUID = [orderDone objectForKey:@"uuid"];
+        NSDictionary *eventData = [packet.args firstObject];
+
+        NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
         
-        GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:OrderStatusDone];
+        GGOrder *order = [[GGOrder alloc] initOrderWithData:eventData];
         
-        id existingDelegate = [self.orderDelegates objectForKey:order.uuid];
+        if (!order){
+            order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:OrderStatusDone];
+        }
+        
+        [order updateOrderStatus:OrderStatusDone];
+        
+        GGDriver *driver = [GGDriver driverFromData:[eventData objectForKey:PARAM_DRIVER]];
+        
+        id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
         
         NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid );
         
         if (existingDelegate) {
-            [existingDelegate orderDidFinish:order];
+            [existingDelegate orderDidFinish:order  withDriver:driver];
             
         }
     } else if ([packet.name isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {

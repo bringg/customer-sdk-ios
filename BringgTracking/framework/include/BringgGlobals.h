@@ -65,9 +65,9 @@ return _sharedObject;
 - (void)orderDidAcceptWithOrder:(GGOrder *)order withDriver:(GGDriver *)driver;
 - (void)orderDidStartWithOrder:(GGOrder *)order withDriver:(GGDriver *)driver;
 @optional
-- (void)orderDidArrive:(GGOrder *)order;
-- (void)orderDidFinish:(GGOrder *)order;
-- (void)orderDidCancel:(GGOrder *)order;
+- (void)orderDidArrive:(GGOrder *)order withDriver:(GGDriver *)driver;
+- (void)orderDidFinish:(GGOrder *)order withDriver:(GGDriver *)driver;
+- (void)orderDidCancel:(GGOrder *)order withDriver:(GGDriver *)driver;
 
 @end
 

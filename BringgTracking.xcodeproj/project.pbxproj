@@ -22,6 +22,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		13361E231B8B15C200388D14 /* GGBringgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 13361E221B8B15C200388D14 /* GGBringgUtils.m */; };
 		135692311B0B36E000100034 /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 135692261B0B36E000100034 /* SocketIO.m */; };
 		135692321B0B36E000100034 /* SocketIOJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 135692281B0B36E000100034 /* SocketIOJSONSerialization.m */; };
 		135692331B0B36E000100034 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922A1B0B36E000100034 /* SocketIOPacket.m */; };
@@ -141,6 +142,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		13361E211B8B15C200388D14 /* GGBringgUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGBringgUtils.h; sourceTree = "<group>"; };
+		13361E221B8B15C200388D14 /* GGBringgUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGBringgUtils.m; sourceTree = "<group>"; };
 		135692241B0B36E000100034 /* LICENSE_SIO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE_SIO; sourceTree = "<group>"; };
 		135692251B0B36E000100034 /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIO.h; sourceTree = "<group>"; };
 		135692261B0B36E000100034 /* SocketIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIO.m; sourceTree = "<group>"; };
@@ -275,6 +278,8 @@
 			isa = PBXGroup;
 			children = (
 				13D6441A1B3C179500F9EA37 /* BringgGlobals.h */,
+				13361E211B8B15C200388D14 /* GGBringgUtils.h */,
+				13361E221B8B15C200388D14 /* GGBringgUtils.m */,
 				13D644271B41618E00F9EA37 /* GGRealTimeMontior+Private.h */,
 				13D644211B3C2F9300F9EA37 /* GGRealTimeMontior.h */,
 				13D644221B3C2F9300F9EA37 /* GGRealTimeMontior.m */,
@@ -564,6 +569,7 @@
 				84DAC07D1B84474A00FD2B75 /* AFSecurityPolicy.m in Sources */,
 				84DAC07A1B84474A00FD2B75 /* AFHTTPRequestOperationManager.m in Sources */,
 				84DAC0791B84474A00FD2B75 /* AFHTTPRequestOperation.m in Sources */,
+				13361E231B8B15C200388D14 /* GGBringgUtils.m in Sources */,
 				13D6441D1B3C180D00F9EA37 /* GGSharedLocation.m in Sources */,
 				84DAC0861B84474A00FD2B75 /* UIButton+AFNetworking.m in Sources */,
 				84DAC0841B84474A00FD2B75 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
@@ -725,7 +731,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				DYLIB_CURRENT_VERSION = 1.4;
+				DYLIB_CURRENT_VERSION = 1.4.1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -744,7 +750,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				DYLIB_CURRENT_VERSION = 1.4;
+				DYLIB_CURRENT_VERSION = 1.4.1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",

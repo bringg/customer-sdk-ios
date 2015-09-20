@@ -11,7 +11,7 @@
 
 @implementation GGWaypoint
 
-@synthesize orderid,waypointId,customerId,merchantId,position,done,ASAP,allowFindMe,address, latitude, longitude;
+@synthesize orderid,waypointId,customerId,merchantId,position,done,ASAP,allowFindMe,address, latitude, longitude, ETA;
 
 
 -(id)initWaypointWithData:(NSDictionary*)data{
@@ -32,6 +32,8 @@
             
             latitude =  [GGBringgUtils doubleFromJSON:data[@"lat"] defaultTo:0];
             longitude =  [GGBringgUtils doubleFromJSON:data[@"lng"] defaultTo:0];
+            
+            ETA = [GGBringgUtils stringFromJSON:data[PARAM_ETA] defaultTo:nil];
         }
         
     }

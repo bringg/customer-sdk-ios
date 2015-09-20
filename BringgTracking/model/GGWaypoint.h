@@ -25,6 +25,8 @@
 @property (nonatomic) double latitude;
 @property (nonatomic) double longitude;
 
+@property (nonatomic, strong) NSString *ETA;
+
 -(id)initWaypointWithData:(NSDictionary*)data;
 
 /*

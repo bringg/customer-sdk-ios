@@ -12,7 +12,24 @@
 @class GGSharedLocation;
 @class GGDriver;
 
-@interface GGOrder : NSObject
+
+#define GGOrderStoreKeyTitle                @"title"
+#define GGOrderStoreKeyAmount               @"totalPrice"
+#define GGOrderStoreKeyID                   @"orderid"
+
+#define GGOrderStoreKeyLate                 @"late"
+#define GGOrderStoreKeyStatus               @"status"
+#define GGOrderStoreKeySharedLocation       @"sharedLocation"
+#define GGOrderStoreKeySharedLocationUUID   @"sharedLocationUUID"
+#define GGOrderStoreKeyUUID                 @"uuid"
+#define GGOrderStoreKeyDriverUUID           @"driverUUID"
+#define GGOrderStoreKeyDriver               @"driver"
+#define GGOrderStoreKeyURL                  @"url"
+#define GGOrderStoreKeyCustomerID           @"customerId"
+
+
+
+@interface GGOrder : NSObject <NSCoding>
 
 
 @property (nonatomic, strong) GGSharedLocation *sharedLocation;
@@ -20,6 +37,9 @@
 
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *url;
+@property (nonatomic, copy) NSString *driverUUID;
+@property (nonatomic, copy) NSString *sharedLocationUUID;
 
 @property (nonatomic, assign) double totalPrice;
 @property (nonatomic, assign) double tip;
@@ -33,10 +53,11 @@
 @property (nonatomic, assign) NSInteger driverId;
 
 @property (nonatomic, assign) BOOL late;
+@property (nonatomic, assign) BOOL urgent;
 
 @property (nonatomic, assign) OrderStatus status;
 @property (nonatomic, strong) NSArray *waypoints;
-
+@property (nonatomic, strong) NSDate *scheduled;
 /**
  *  init an Order object using json data recieved from a server response
  *

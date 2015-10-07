@@ -13,11 +13,22 @@
 
 @implementation GGOrder
 
-@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid, waypoints;
+@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid, waypoints, scheduled, url,driverUUID, sharedLocationUUID;
+
+static NSDateFormatter *dateFormat;
 
 -(id)initOrderWithData:(NSDictionary*)data{
     
     if (self = [super init]) {
+        
+        if (!data) {
+            return self;
+        }
+        
+        dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+        [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+        
         orderid = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0];
         uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:nil];
         
@@ -35,10 +46,19 @@
         
         late = [GGBringgUtils boolFromJSON:data[@"late"] defaultTo:NO];
         
+        
         title = [GGBringgUtils stringFromJSON:data[@"title"] defaultTo:nil];
         
+        url = [GGBringgUtils stringFromJSON:data[@"url"] defaultTo:nil];
+        
+        
+        
+        // get shared location model
         sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
         
+        sharedLocationUUID = sharedLocation ? sharedLocation.locationUUID : nil;
+        
+        // get waypoints
         NSArray *waypointsData = [data objectForKey:PARAM_WAYPOINTS];
         if (waypointsData) {
             
@@ -52,7 +72,11 @@
             self.waypoints = wps;
         }
         
-
+        // get date
+        NSString *dateString = [GGBringgUtils stringFromJSON:data[@"scheduled_at"] defaultTo:@""];
+        
+        self.scheduled = [dateFormat dateFromString:dateString];
+        
     }
     
     return self;
@@ -73,5 +97,53 @@
 -(void)updateOrderStatus:(OrderStatus)newStatus{
     self.status = newStatus;
 }
+
+// MARK: NSCoding
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    
+    if (self = [self initOrderWithData:nil]) {
+        self.uuid = [aDecoder decodeObjectForKey:GGOrderStoreKeyUUID];
+        self.sharedLocationUUID = [aDecoder decodeObjectForKey:GGOrderStoreKeySharedLocationUUID];
+        self.driverUUID = [aDecoder decodeObjectForKey:GGOrderStoreKeyDriverUUID];
+        self.url = [aDecoder decodeObjectForKey:GGOrderStoreKeyURL];
+        self.title = [aDecoder decodeObjectForKey:GGOrderStoreKeyTitle];
+        
+        self.orderid = [aDecoder decodeIntegerForKey:GGOrderStoreKeyID];
+        self.customerId = [aDecoder decodeIntegerForKey:GGOrderStoreKeyCustomerID];
+        self.status = [aDecoder decodeIntegerForKey:GGOrderStoreKeyStatus];
+        
+        self.totalPrice = [aDecoder decodeDoubleForKey:GGOrderStoreKeyAmount];
+       
+        self.late = [aDecoder decodeDoubleForKey:GGOrderStoreKeyLate];
+    }
+    
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeObject:self.uuid forKey:GGOrderStoreKeyUUID];
+    [aCoder encodeObject:self.sharedLocationUUID forKey:GGOrderStoreKeySharedLocationUUID];
+    [aCoder encodeObject:self.driverUUID forKey:GGOrderStoreKeyDriverUUID];
+    [aCoder encodeObject:self.url forKey:GGOrderStoreKeyURL];
+    [aCoder encodeObject:self.title forKey:GGOrderStoreKeyTitle];
+    
+    [aCoder encodeInteger:self.orderid forKey:GGOrderStoreKeyID];
+    [aCoder encodeInteger:self.customerId forKey:GGOrderStoreKeyCustomerID];
+    [aCoder encodeInteger:self.status forKey:GGOrderStoreKeyStatus];
+   
+    [aCoder encodeDouble:self.totalPrice forKey:GGOrderStoreKeyAmount];
+
+    [aCoder encodeBool:self.late forKey:GGOrderStoreKeyLate];
+    
+    // do not store the shared location object - it has now use if a driver isnt actually doing a delivery
+    //[aCoder encodeObject:self.sharedLocation forKey:GGOrderStoreKeySharedLocation];
+    
+    //TODO: after updating driver model uncomment this line
+    //[aCoder encodeObject:self.driver forKey:GGOrderStoreKeyDriver];
+}
+
+
+
+
 
 @end

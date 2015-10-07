@@ -53,7 +53,7 @@
 @property (nonatomic, assign) NSInteger driverId;
 
 @property (nonatomic, assign) BOOL late;
-@property (nonatomic, assign) BOOL urgent;
+
 
 @property (nonatomic, assign) OrderStatus status;
 @property (nonatomic, strong) NSArray *waypoints;

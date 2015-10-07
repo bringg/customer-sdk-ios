@@ -733,7 +733,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				DYLIB_CURRENT_VERSION = 1.4.2;
+				DYLIB_CURRENT_VERSION = 1.4.3;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -752,7 +752,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				DYLIB_CURRENT_VERSION = 1.4.2;
+				DYLIB_CURRENT_VERSION = 1.4.3;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",

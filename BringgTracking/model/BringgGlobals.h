@@ -36,6 +36,7 @@
 #define PARAM_DRIVER_IMAGE_URL @"profile_image"
 #define PARAM_DRIVER_IMAGE_URL2 @"employee_image"
 #define PARAM_DRIVER_PHONE @"employee_phone"
+#define PARAM_DRIVER_PHONE2 @"phone"
 #define PARAM_SHARED_LOCATION @"shared_location"
 #define PARAM_WAYPOINTS @"way_points"
 #define PARAM_DRIVER_TOKEN_URL @"rating_url"

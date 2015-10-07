@@ -95,4 +95,62 @@
  */
 + (GGDriver *)driverFromData:(NSDictionary *)data;
 
+
+// example data when order status update
+/*
+"driver": {
+    "access_token": "",
+    "active_shift_id": 23990,
+    "admin": false,
+    "authentication_token": "fjbhmct1gXbxSsJ_rq8q",
+    "authorization_flags": "{}",
+    "average_rating": 0,
+    "battery": 0,
+    "belongs_to_partner": "true",
+    "beta": false,
+    "blocked_email": "false",
+    "confirmation_code": "",
+    "confirmation_token": "",
+    "created_at": "2015-08-03T12:40:07.000Z",
+    "current_sign_in_ip": "",
+    "current_task_id": "",
+    "debug": false,
+    "default_user_activity": "5",
+    "delete_at": "",
+    "dispatcher": false,
+    "driver": true,
+    "driver_current_sign_in_at": "2015-10-07T07:26:35.000Z",
+    "driver_last_sign_in_at": "2015-10-07T07:26:35.000Z",
+    "driver_sign_in_count": 2,
+    "email": "matan@bringg.com",
+    "encrypted_password": "$2a$10$1NL49kR/L5wkpdNVCljlbuRBPZ6GtMS01z5hbJg8DJtXFzd.0dIp2",
+    "external_id": "14065",
+    "feature_flags": null,
+    "id": 14065,
+    "job_description": "the MAC",
+    "last_sign_in_at": "2015-08-03T12:42:10.000Z",
+    "last_sign_in_ip": "",
+    "lat": 0,
+    "lng": 0,
+    "merchant_id": 8250,
+    "mobile_type": "2",
+    "mobile_version": "1.8.6.1",
+    "name": "Matan P",
+    "original_phone_number": "054 -554-1748",
+    "partner_user": false,
+    "password_hash": "",
+    "password_salt": "",
+    "phone": "+972545541748",
+    "profile_image": "https://task-images.s3.amazonaws.com/uploads/user/uploaded_profile_image/14065/265d775e-3953-48e6-9b88-6a0cd2efb313.png",
+    "push_token": "(null)",
+    "reset_password_token": "",
+    "sign_in_count": "0",
+    "status": "offline",
+    "sub": "Free",
+    "updated_at": "2015-10-07T07:26:38.000Z",
+    "uploaded_profile_image": "265d775e-3953-48e6-9b88-6a0cd2efb313.png",
+    "uuid": "3d000d93-d6d7-457e-af6e-4898fe35ebad"
+}
+*/
+
 @end

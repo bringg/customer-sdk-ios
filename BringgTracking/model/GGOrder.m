@@ -30,7 +30,7 @@ static NSDateFormatter *dateFormat;
         [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
         
         orderid = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0];
-        uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:nil];
+        uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:@""];
         
         status = (OrderStatus)[GGBringgUtils integerFromJSON:data[PARAM_STATUS] defaultTo:0];
  
@@ -58,6 +58,8 @@ static NSDateFormatter *dateFormat;
         
         sharedLocationUUID = sharedLocation ? sharedLocation.locationUUID : nil;
         
+        self.waypoints = [NSMutableArray array];
+        
         // get waypoints
         NSArray *waypointsData = [data objectForKey:PARAM_WAYPOINTS];
         if (waypointsData) {
@@ -70,6 +72,9 @@ static NSDateFormatter *dateFormat;
             }];
             
             self.waypoints = wps;
+        }else{
+            
+            
         }
         
         // get date
@@ -115,6 +120,22 @@ static NSDateFormatter *dateFormat;
         self.totalPrice = [aDecoder decodeDoubleForKey:GGOrderStoreKeyAmount];
        
         self.late = [aDecoder decodeDoubleForKey:GGOrderStoreKeyLate];
+        
+        
+        // decode the array of waypoints
+        int waypointsCounter = (int)[aDecoder decodeIntegerForKey:GGOrderStoreKeyWaypoints];
+        
+        self.waypoints = [NSMutableArray array];
+        
+        for (int i = 0; i < waypointsCounter; i++) {
+            GGWaypoint *wp = (GGWaypoint *)[aDecoder decodeObjectForKey:[NSString stringWithFormat:GGOrderStoreKeyWaypoint, (unsigned long)i]];
+            
+            if (wp) {
+                [self.waypoints addObject:wp];
+            }
+            
+        }
+ 
     }
     
     return self;
@@ -135,6 +156,15 @@ static NSDateFormatter *dateFormat;
 
     [aCoder encodeBool:self.late forKey:GGOrderStoreKeyLate];
     
+    // encode array of waypoints
+    [aCoder encodeInteger:waypoints.count forKey:GGOrderStoreKeyWaypoints];
+    
+    [waypoints enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        [aCoder encodeObject:obj forKey:[NSString stringWithFormat:GGOrderStoreKeyWaypoint, (unsigned long)idx]];
+    }];
+    
+ 
     // do not store the shared location object - it has now use if a driver isnt actually doing a delivery
     //[aCoder encodeObject:self.sharedLocation forKey:GGOrderStoreKeySharedLocation];
     

@@ -8,6 +8,23 @@
 
 #import <Foundation/Foundation.h>
 #import "BringgGlobals.h"
+
+
+
+#define GGWaypointStoreKeyOrderID @"orderid"
+#define GGWaypointStoreKeyID @"orderid"
+#define GGWaypointStoreKeyCustomerID @"customerId"
+#define GGWaypointStoreKeyMerchantID @"merchantId"
+#define GGWaypointStoreKeyDone @"done"
+#define GGWaypointStoreKeyASAP @"asap"
+#define GGWaypointStoreKeyAddress @"address"
+#define GGWaypointStoreKeyLatitude @"latitude"
+#define GGWaypointStoreKeyLongitude @"longitude"
+#define GGWaypointStoreKeyAllowFindMe @"findme"
+#define GGWaypointStoreKeyStartTime @"startTime"
+#define GGWaypointStoreKeyArriveTime @"arriveTime"
+#define GGWaypointStoreKeyDoneTime @"doneTime"
+
 @interface GGWaypoint : NSObject<NSCoding>
 
 
@@ -26,6 +43,10 @@
 @property (nonatomic) double longitude;
 
 @property (nonatomic, strong) NSString *ETA;
+
+@property (nonatomic, strong) NSDate *startTime;
+@property (nonatomic, strong) NSDate *checkinTime;
+@property (nonatomic, strong) NSDate *doneTime;
 
 -(id)initWaypointWithData:(NSDictionary*)data;
 

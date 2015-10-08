@@ -261,6 +261,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
 - (void) socketIODidConnect:(SocketIO *)socket {
     NSLog(@"websocket connected");
+    
+    self.connected = YES;
+    
     if (self.socketIOConnectedBlock) {
         self.socketIOConnectedBlock(YES, nil);
         self.socketIOConnectedBlock = nil;
@@ -271,17 +274,23 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
 - (void) socketIODidDisconnect:(SocketIO *)socket disconnectedWithError:(NSError *)error {
     NSLog(@"websocket disconnected, error %@", error);
+    
+    // set the real timemonitor as disconnected
+    self.connected = NO;
+    
+    // try to execture connection blocks
     if (self.socketIOConnectedBlock) {
         self.socketIOConnectedBlock(NO, error);
         self.socketIOConnectedBlock = nil;
         
     } else {
         
+        // report connection error
         [self sendConnectionError:error];
- 
-        
-        
+    
     }
+    
+    
   
 }
 
@@ -307,7 +316,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         //GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
         
         GGOrder *order = [[GGOrder alloc] initOrderWithData:eventData];
-        GGDriver *driver = [GGDriver driverFromData:[eventData objectForKey:PARAM_DRIVER]];
+        GGDriver *driver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
         
         // add this driver to the drivers active list if needed
         if (driver && ![self.activeDrivers objectForKey:driver.uuid]) {
@@ -368,7 +377,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         
         [order updateOrderStatus:OrderStatusDone];
         
-        GGDriver *driver = [GGDriver driverFromData:[eventData objectForKey:PARAM_DRIVER]];
+        GGDriver *driver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
         

@@ -8,12 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GGDriver : NSObject
+
+#define GGDriverStoreKeyRatingToken @"ratingToken"
+#define GGDriverStoreKeyRatingURL @"ratingUrl"
+#define GGDriverStoreKeyUUID @"uuid"
+#define GGDriverStoreKeyName @"name"
+#define GGDriverStoreKeyImageURL @"imageURL"
+#define GGDriverStoreKeyPhone @"phone"
+#define GGDriverStoreKeyLatitude @"latitude"
+#define GGDriverStoreKeyLongitude @"longitude"
+#define GGDriverStoreKeyRatingAvg @"averageRating"
+#define GGDriverStoreKeyActivity @"activity"
+#define GGDriverStoreKeyID @"driverid"
+
+@interface GGDriver : NSObject <NSCoding>
 
 
-@property (nonatomic, copy) NSString *uuid;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) NSString *imageURL;
+@property (nonatomic, copy) NSString * __nonnull uuid;
+@property (nonatomic, copy) NSString * __nullable name;
+@property (nonatomic, copy) NSString * __nullable imageURL;
 
 @property (nonatomic) NSUInteger driverid;
 @property (nonatomic) double latitude;
@@ -23,9 +36,9 @@
 @property (nonatomic, getter=hasArrived) BOOL arrived;
 
 
-@property (nonatomic, copy) NSString * ratingToken;
-@property (nonatomic, copy) NSString * ratingUrl;
-@property (nonatomic, copy) NSString * phone;
+@property (nonatomic, copy) NSString * __nullable ratingToken;
+@property (nonatomic, copy) NSString * __nullable ratingUrl;
+@property (nonatomic, copy) NSString * __nullable phone;
 
 
 /**
@@ -42,17 +55,17 @@
  *
  *  @return init a Driver object
  */
--(id)initWithID:(NSInteger)dId
-           uuid:(NSString *)dUUID
-           name:(NSString *)dName
-          phone:(NSString *)dPhone
+-(nonnull instancetype)initWithID:(NSInteger)dId
+           uuid:(NSString *__nonnull )dUUID
+           name:(NSString *__nullable )dName
+          phone:(NSString *__nullable )dPhone
        latitude:(double)dLat
       longitude:(double)dLng
        activity:(int)dActivity
   averageRating:(double)dRating
-    ratingToken:(NSString *)dToken
-      ratingURL:(NSString *)dRatingUrl
-       imageURL:(NSString *)dUrl;
+    ratingToken:(NSString *__nullable )dToken
+      ratingURL:(NSString *__nullable )dRatingUrl
+       imageURL:(NSString *__nullable )dUrl;
 
 /**
  *  init a Driver object with just uuid and geo location
@@ -63,10 +76,19 @@
  *
  *  @return a Driver object
  */
--(id)initWithUUID:(NSString *)dUUID
+-(nonnull instancetype)initWithUUID:(NSString *__nonnull )dUUID
          latitude:(double)dLat
         longitude:(double)dLng;
 
+
+/**
+ *  inits the driver object with json date representing its properties
+ *
+ *  @param data the json data to init with
+ *
+ *  @return driver instance
+ */
+- (nonnull instancetype)initDriverWithData:(NSDictionary*__nullable)data;
 
 /**
  *  init a Driver object with just uuid
@@ -75,7 +97,7 @@
  *
  *  @return a Driver object
  */
--(id)initWithUUID:(NSString *)dUUID;
+-(nonnull instancetype)initWithUUID:(NSString *__nonnull)dUUID;
 
 /**
  *  updates the driver location
@@ -86,14 +108,6 @@
 - (void)updateLocationToLatitude:(double)newlatitude longtitude:(double)newlongitude;
 
 
-/**
- *  creates a Driver object from a json response object
- *
- *  @param data a dictionary representing the json response object
- *
- *  @return a Driver object
- */
-+ (GGDriver *)driverFromData:(NSDictionary *)data;
 
 
 // example data when order status update

@@ -140,7 +140,7 @@
 
 //MARK: NSCoding
 -(instancetype)initWithCoder:(NSCoder *)aDecoder{
-    if (self = [self initDriverWithData:nil]) {
+    if (self = [self init]) {
         
         self.ratingToken = [aDecoder decodeObjectForKey:GGDriverStoreKeyRatingToken];
         self.ratingUrl = [aDecoder decodeObjectForKey:GGDriverStoreKeyRatingURL];

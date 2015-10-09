@@ -17,7 +17,7 @@
 
 static NSDateFormatter *dateFormat;
 
--(id)initOrderWithData:(NSDictionary*)data{
+-(nonnull instancetype)initOrderWithData:(NSDictionary*__nullable)data{
     
     if (self = [super init]) {
         
@@ -87,7 +87,7 @@ static NSDateFormatter *dateFormat;
     return self;
 }
 
--(id)initOrderWithUUID:(NSString *)ouuid atStatus:(OrderStatus)ostatus{
+-(nonnull instancetype)initOrderWithUUID:(NSString * __nonnull)ouuid atStatus:(OrderStatus)ostatus{
     if (self = [super init]) {
         orderid = 0;
         uuid = ouuid;
@@ -106,7 +106,7 @@ static NSDateFormatter *dateFormat;
 // MARK: NSCoding
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     
-    if (self = [self initOrderWithData:nil]) {
+    if (self = [self init]) {
         self.uuid = [aDecoder decodeObjectForKey:GGOrderStoreKeyUUID];
         self.sharedLocationUUID = [aDecoder decodeObjectForKey:GGOrderStoreKeySharedLocationUUID];
         self.driverUUID = [aDecoder decodeObjectForKey:GGOrderStoreKeyDriverUUID];
@@ -119,7 +119,7 @@ static NSDateFormatter *dateFormat;
         
         self.totalPrice = [aDecoder decodeDoubleForKey:GGOrderStoreKeyAmount];
        
-        self.late = [aDecoder decodeDoubleForKey:GGOrderStoreKeyLate];
+        self.late = [aDecoder decodeBoolForKey:GGOrderStoreKeyLate];
         
         
         // decode the array of waypoints

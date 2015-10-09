@@ -316,7 +316,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         //GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
         
         GGOrder *order = [[GGOrder alloc] initOrderWithData:eventData];
-        GGDriver *driver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
+        GGDriver *driver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
         
         // add this driver to the drivers active list if needed
         if (driver && ![self.activeDrivers objectForKey:driver.uuid]) {

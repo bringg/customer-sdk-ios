@@ -23,14 +23,14 @@
     
     if (data) {
         
-        return [self initWithID:[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ID] defaultTo:0]
-                           uuid:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:@""]
-                           name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:nil]
+        return [self initWithID:[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ID] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0]]
+                           uuid:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:@""]]
+                           name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_NAME] defaultTo:nil]]
                           phone:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE2] defaultTo:nil]]
                        latitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LAT] defaultTo:0]
                       longitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LNG] defaultTo:0]
-                       activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ACTIVITY] defaultTo:0]
-                  averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:-1]
+                       activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ACTIVITY] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:0]]
+                  averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:-1]]
                     ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
                       ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_TOKEN_URL] defaultTo:nil]
                        imageURL:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_IMAGE_URL] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_IMAGE_URL2] defaultTo:nil]]];

@@ -23,12 +23,13 @@
     
     if (data) {
         
+        // the init params can change since it depends which socket event generates the data
         return [self initWithID:[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ID] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0]]
                            uuid:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:@""]]
                            name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_NAME] defaultTo:nil]]
                           phone:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE2] defaultTo:nil]]
-                       latitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LAT] defaultTo:0]
-                      longitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LNG] defaultTo:0]
+                       latitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LAT] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_LAT] defaultTo:0]]
+                      longitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LNG] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_LNG] defaultTo:0]]
                        activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ACTIVITY] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:0]]
                   averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:-1]]
                     ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]

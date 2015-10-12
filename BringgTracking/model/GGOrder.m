@@ -29,8 +29,8 @@ static NSDateFormatter *dateFormat;
         [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
         [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
         
-        orderid = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:0];
-        uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:@""];
+        orderid = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ORDER_ID] defaultTo:0]];
+        uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_ORDER_UUID] defaultTo:@""]];
         
         status = (OrderStatus)[GGBringgUtils integerFromJSON:data[PARAM_STATUS] defaultTo:0];
  

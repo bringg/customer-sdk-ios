@@ -117,7 +117,7 @@
     return self;
 }
 
-- (void)connect{
+- (void)connectUsingSecureConnection:(BOOL)useSecure{
     
     // if no dev token we should raise an exception
     
@@ -129,6 +129,7 @@
         
         // update the real time monitor with the dev token
         [self.liveMonitor setDeveloperToken:_developerToken];
+        [self.liveMonitor useSecureConnection:useSecure];
         [self.liveMonitor connect];
         
         

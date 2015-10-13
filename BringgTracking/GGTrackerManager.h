@@ -63,10 +63,13 @@
  */
 - (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate;
 
+
 /**
  *  tells the tracker to connect to the real time update service asscosiated with the tracker
+ *
+ *  @param useSecure should use SSL connection or not
  */
-- (void)connect;
+- (void)connectUsingSecureConnection:(BOOL)useSecure;
 
 /**
  *  tells the tracker to disconnect from the real time update service asscosiated with the tracker

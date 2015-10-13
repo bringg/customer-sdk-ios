@@ -106,6 +106,12 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     }
 }
 
+#pragma mark - Setters
+
+-(void)useSecureConnection:(BOOL)shouldUse{
+    self.useSSL = shouldUse;
+}
+
 #pragma mark - Helper
 
 - (NSDate *)dateFromString:(NSString *)string {
@@ -133,6 +139,9 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
 - (void)webSocketConnectWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
     NSString *server = BTRealtimeServer;
+    
+    self.socketIO.useSecure = self.useSSL;
+    
     if ([self.socketIO isConnected] || [self.socketIO isConnecting]) {
         if (completionHandler) {
             NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0

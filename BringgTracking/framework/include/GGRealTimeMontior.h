@@ -15,5 +15,6 @@
 
 @interface GGRealTimeMontior : NSObject<SocketIODelegate>
 
+-(void)useSecureConnection:(BOOL)shouldUse;
 
 @end

@@ -24,6 +24,7 @@
 @property (nonatomic, assign) BOOL doMonitoringDrivers;
 @property (nonatomic, assign) BOOL doMonitoringWaypoints;
 @property (nonatomic, assign) BOOL connected;
+@property (nonatomic, assign) BOOL useSSL;
 
 + (id)sharedInstance;
 

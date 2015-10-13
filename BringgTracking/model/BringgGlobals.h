@@ -39,12 +39,13 @@
 #define PARAM_DRIVER_PHONE2 @"phone"
 #define PARAM_SHARED_LOCATION @"shared_location"
 #define PARAM_WAYPOINTS @"way_points"
-#define PARAM_DRIVER_TOKEN_URL @"rating_url"
+#define PARAM_RATING_URL @"rating_url"
 
 #define PARAM_ETA @"eta"
 #define PARAM_RATING_TOKEN @"rating_token"
 #define PARAM_DRIVER_NAME @"employee_name"
 
+#import "GGBringgUtils.h"
 
 #define DEFINE_SHARED_INSTANCE_USING_BLOCK(block) \
 static dispatch_once_t pred = 0; \

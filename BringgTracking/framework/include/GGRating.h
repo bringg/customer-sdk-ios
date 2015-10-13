@@ -8,10 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GGRating : NSObject
 
-@property (nonatomic, copy) NSString *token;
-@property (nonatomic, copy) NSString *ratingMessage;
+#define GGRatingStoreKeyToken @"token"
+#define GGRatingStoreKeyMessage @"ratingMessage"
+#define GGRatingStoreKeyRating @"rating"
+
+@interface GGRating : NSObject<NSCoding>
+
+@property (nonatomic, copy) NSString  * _Nonnull token;
+@property (nonatomic, copy) NSString * _Nullable ratingMessage;
 @property (nonatomic, assign) int rating;
 
 /**
@@ -21,7 +26,7 @@
  *
  *  @return the rating object
  */
--(id)initWithRatingToken:(NSString *)ratingToken;
+-(nullable instancetype)initWithRatingToken:(NSString * _Nonnull)ratingToken;
 
 /**
  *  give the a driver rating between (1-5)

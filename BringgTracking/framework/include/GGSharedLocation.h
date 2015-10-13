@@ -10,17 +10,36 @@
 #import "GGDriver.h"
 #import "GGRating.h"
 
-@interface GGSharedLocation : NSObject
+#define GGSharedLocationStoreKeyUUID @"locationUUID"
+#define GGSharedLocationStoreKeyOrderUUID @"orderUUID"
+#define GGSharedLocationStoreKeyETA @"eta"
+#define GGSharedLocationStoreKeyTrackingURL @"trackingURL"
+#define GGSharedLocationStoreKeyRatingURL @"ratingURL"
 
-@property (nonatomic, strong) NSString *locationUUID;
-@property (nonatomic, strong) NSString *orderUUID;
+#define GGSharedLocationStoreKeyDriver @"driver"
+#define GGSharedLocationStoreKeyRating @"rating"
+
+#define GGSharedLocationStoreKeyOrderID @"orderID"
+#define GGSharedLocationStoreKeyWaypointID @"waypointID"
+
+
+
+@interface GGSharedLocation : NSObject<NSCoding>
+
+@property (nonatomic, strong) NSString * _Nullable locationUUID;
+@property (nonatomic, strong) NSString * _Nullable orderUUID;
+
+@property (nonatomic, strong) NSString * _Nullable eta;
+@property (nonatomic, strong) NSString * _Nullable trackingURL;
+@property (nonatomic, strong) NSString * _Nullable ratingURL;
+
+
 @property (nonatomic, assign) NSInteger orderID;
 @property (nonatomic) NSInteger waypointID;
-@property (nonatomic, strong) NSString *eta;
 
-@property (nonatomic, strong) GGDriver *driver;
-@property (nonatomic, strong) GGRating *rating;
-@property (nonatomic, copy) NSString *trackingURL;
+@property (nonatomic, strong) GGDriver *_Nullable driver;
+@property (nonatomic, strong) GGRating *_Nullable rating;
+
 
 
 /**
@@ -30,7 +49,7 @@
  *
  *  @return a SharedLocation object
  */
--(id)initWithData:(NSDictionary *)data;
+-(nullable instancetype)initWithData:(NSDictionary * _Nullable)data;
 
 
 @end

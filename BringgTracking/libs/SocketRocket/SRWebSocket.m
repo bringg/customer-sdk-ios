@@ -1749,7 +1749,8 @@ static NSRunLoop *networkRunLoop = nil;
         _runLoop = [NSRunLoop currentRunLoop];
         dispatch_group_leave(_waitGroup);
         
-        NSTimer *timer = [[NSTimer alloc] initWithFireDate:[NSDate distantFuture] interval:0.0 target:nil selector:nil userInfo:nil repeats:NO];
+        // modified to fix nullablity warning
+        NSTimer *timer = [[NSTimer alloc] initWithFireDate:[NSDate distantFuture] interval:0.0 target:self selector:@selector(fireTimer:) userInfo:nil repeats:NO];
         [_runLoop addTimer:timer forMode:NSDefaultRunLoopMode];
         
         while ([_runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]) {
@@ -1757,6 +1758,10 @@ static NSRunLoop *networkRunLoop = nil;
         }
         assert(NO);
     }
+}
+
+- (void)fireTimer:(NSTimer *)timer{
+    //do nothing
 }
 
 - (NSRunLoop *)runLoop;

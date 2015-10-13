@@ -33,7 +33,7 @@
                        activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ACTIVITY] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:0]]
                   averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:-1]]
                     ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
-                      ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_TOKEN_URL] defaultTo:nil]
+                      ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_RATING_URL] defaultTo:nil]
                        imageURL:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_IMAGE_URL] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_IMAGE_URL2] defaultTo:nil]]];
         
         

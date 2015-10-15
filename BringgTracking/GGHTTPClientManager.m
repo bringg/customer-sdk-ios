@@ -152,8 +152,8 @@
     [*params setObject:_developerToken forKey:BCDeveloperTokenKey];
     
     if (_customer) {
-        [*params setObject:_customer.customerToken forKey:BCCustomerTokenKey];
-        [*params setObject:_customer.merchantId forKey:BCMerchantIdKey];
+        [*params setObject:_customer.customerToken forKey:PARAM_ACCESS_TOKEN];
+        [*params setObject:_customer.merchantId forKey:PARAM_MERCHANT_ID];
     }
     
 }
@@ -327,7 +327,7 @@
         
     }
     if (phone) {
-        [params setObject:phone forKey:BCPhoneKey];
+        [params setObject:phone forKey:PARAM_PHONE];
         
     }
     if (confirmationCode) {
@@ -335,7 +335,7 @@
         
     }
     if (merchantId) {
-        [params setObject:merchantId forKey:BCMerchantIdKey];
+        [params setObject:merchantId forKey:PARAM_MERCHANT_ID];
         
     }
     
@@ -443,7 +443,7 @@
     
     
     if (_customer) {
-        [params setObject:_customer.phone forKey:BCPhoneKey];
+        [params setObject:_customer.phone forKey:PARAM_PHONE];
     }
     
     [self.serviceOperationQueue addOperation:

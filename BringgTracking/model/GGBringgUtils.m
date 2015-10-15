@@ -34,6 +34,11 @@
     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
 }
 
++(NSNumber *)numberFromJSON:(id)jsonObject defaultTo:(NSNumber *)defaultValue{
+    return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
+}
+
+
 
 +(BOOL)isValidLatitude:(double)latitude andLongitude:(double)longitude{
     BOOL retVal = YES;

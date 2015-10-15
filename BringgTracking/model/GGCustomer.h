@@ -10,21 +10,36 @@
 
 
 
-#define BCNameKey @"name"
-#define BCPhoneKey @"phone"
-#define BCMerchantIdKey @"merchant_id"
-#define BCCustomerTokenKey @"access_token"
+#define GGCustomerStoreKeyToken @"customerToken"
+#define GGCustomerStoreKeyPhone @"customerPhone"
+#define GGCustomerStoreKeyName @"customerName"
+#define GGCustomerStoreKeyEmail @"customerEmail"
+#define GGCustomerStoreKeyAddress @"customerAddress"
+#define GGCustomerStoreKeyImageURL @"customerImageUrl"
+#define GGCustomerStoreKeyFBID @"customerFBiD"
+#define GGCustomerStoreKeyMerchantID @"customerMerchantId"
+#define GGCustomerStoreKeyID @"customerId"
+#define GGCustomerStoreKeyLAT @"customerLat"
+#define GGCustomerStoreKeyLNG @"customerLng"
 
-@interface GGCustomer : NSObject
 
 
-@property (nonatomic, strong) NSString *customerToken;
-@property (nonatomic, strong) NSNumber *merchantId;
-@property (nonatomic, strong) NSString *phone;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong) NSString *address;
-@property (nonatomic, strong) NSString *imageURL;
+@interface GGCustomer : NSObject<NSCoding>
+
+
+@property (nonatomic, strong) NSString * _Nullable customerToken;
+@property (nonatomic, strong) NSString * _Nullable phone;
+@property (nonatomic, strong) NSString * _Nullable name;
+@property (nonatomic, strong) NSString * _Nullable email;
+@property (nonatomic, strong) NSString * _Nullable address;
+@property (nonatomic, strong) NSString * _Nullable imageURL;
+@property (nonatomic, strong) NSString * _Nullable facebookId;
+@property (nonatomic, strong) NSNumber * _Nullable merchantId;
+
+@property (nonatomic, assign) NSInteger customerId;
+@property (nonatomic, assign) double lat;
+@property (nonatomic, assign) double lng;
+
 
 /**
  *  init a Customer object using json data recieved from a server response
@@ -33,7 +48,7 @@
  *
  *  @return a Customer object
  */
--(id)initWithData:(NSDictionary *)data;
+-(nonnull instancetype)initWithData:(NSDictionary * _Nullable)data;
 
 
 @end

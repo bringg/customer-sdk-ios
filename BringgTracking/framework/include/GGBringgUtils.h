@@ -22,7 +22,7 @@
 
 /**
  *  takes a json object and tries to parse it as 'double'. if it fails it should
- *
+ *  return the default value set
  *  @param jsonObject   the Json object to parse
  *  @param defaultValue default value to return if parsing failes
  *
@@ -32,7 +32,7 @@
 
 /**
  *  takes a json object and tries to parse it as 'BOOL'. if it fails it should
- *
+ *  return the default value set
  *  @param jsonObject   the Json object to parse
  *  @param defaultValue default value to return if parsing failes
  *
@@ -42,13 +42,24 @@
 
 /**
  *  takes a json object and tries to parse it as 'NSString'. if it fails it should
- *
+ *  return the default value set
  *  @param jsonObject   the Json object to parse
  *  @param defaultValue default value to return if parsing failes
  *
  *  @return the final result of the parsing
  */
 +(NSString *)stringFromJSON:(id)jsonObject defaultTo:(NSString *)defaultValue;
+
+
+/**
+*  takes a json object and tries to parse it as 'NSNumber'. if it fails it should
+ *  return the default value set
+*  @param jsonObject   the Json object to parse
+*  @param defaultValue default value to return if parsing failes
+*
+*  @return the final result of the parsing
+*/
++(NSNumber *)numberFromJSON:(id)jsonObject defaultTo:(NSNumber *)defaultValue;
 
 /**
  *  validates lat/lng coordinates. Latitude must be max/min +90 to -90

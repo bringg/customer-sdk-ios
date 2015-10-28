@@ -18,23 +18,23 @@
 }
 */
 
-+(NSInteger)integerFromJSON:(id)jsonObject defaultTo:(NSInteger)defaultValue{
++(NSInteger)integerFromJSON:(nullable id)jsonObject defaultTo:(NSInteger)defaultValue{
     return jsonObject && jsonObject != [NSNull null] ? [jsonObject integerValue] : defaultValue;
 }
 
-+(double)doubleFromJSON:(id)jsonObject defaultTo:(double)defaultValue{
++(double)doubleFromJSON:(nullable id)jsonObject defaultTo:(double)defaultValue{
     return jsonObject && jsonObject != [NSNull null] ? [jsonObject doubleValue] : defaultValue;
 }
 
-+(BOOL)boolFromJSON:(id)jsonObject defaultTo:(BOOL)defaultValue{
++(BOOL)boolFromJSON:(nullable id)jsonObject defaultTo:(BOOL)defaultValue{
     return jsonObject && jsonObject != [NSNull null] ? [jsonObject boolValue] : defaultValue;
 }
 
-+(NSString *)stringFromJSON:(id)jsonObject defaultTo:(NSString *)defaultValue{
++(NSString *_Nullable)stringFromJSON:(nullable id)jsonObject defaultTo:(NSString * _Nullable)defaultValue{
     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
 }
 
-+(NSNumber *)numberFromJSON:(id)jsonObject defaultTo:(NSNumber *)defaultValue{
++(NSNumber *_Nullable)numberFromJSON:(nullable id)jsonObject defaultTo:(NSNumber *_Nullable)defaultValue{
     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
 }
 

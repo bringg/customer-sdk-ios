@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GGBringgUtils : UIView
+@interface GGBringgUtils : NSObject
 
 /**
  *  takes a json object and tries to parse it as 'NSInteger'. if it fails it should
@@ -18,7 +18,7 @@
  *
  *  @return the final result of the parsing
  */
-+(NSInteger)integerFromJSON:(id)jsonObject defaultTo:(NSInteger)defaultValue;
++(NSInteger)integerFromJSON:(nullable id)jsonObject defaultTo:(NSInteger)defaultValue;
 
 /**
  *  takes a json object and tries to parse it as 'double'. if it fails it should
@@ -28,7 +28,7 @@
  *
  *  @return the final result of the parsing
  */
-+(double)doubleFromJSON:(id)jsonObject defaultTo:(double)defaultValue;
++(double)doubleFromJSON:(nullable id)jsonObject defaultTo:(double)defaultValue;
 
 /**
  *  takes a json object and tries to parse it as 'BOOL'. if it fails it should
@@ -38,7 +38,7 @@
  *
  *  @return the final result of the parsing
  */
-+(BOOL)boolFromJSON:(id)jsonObject defaultTo:(BOOL)defaultValue;
++(BOOL)boolFromJSON:(nullable id)jsonObject defaultTo:(BOOL)defaultValue;
 
 /**
  *  takes a json object and tries to parse it as 'NSString'. if it fails it should
@@ -48,7 +48,7 @@
  *
  *  @return the final result of the parsing
  */
-+(NSString *)stringFromJSON:(id)jsonObject defaultTo:(NSString *)defaultValue;
++(NSString *_Nullable)stringFromJSON:(nullable id)jsonObject defaultTo:(NSString * _Nullable)defaultValue;
 
 
 /**
@@ -59,7 +59,7 @@
 *
 *  @return the final result of the parsing
 */
-+(NSNumber *)numberFromJSON:(id)jsonObject defaultTo:(NSNumber *)defaultValue;
++(NSNumber *_Nullable)numberFromJSON:(nullable id)jsonObject defaultTo:(NSNumber *_Nullable)defaultValue;
 
 /**
  *  validates lat/lng coordinates. Latitude must be max/min +90 to -90

@@ -17,4 +17,7 @@
 
 -(void)useSecureConnection:(BOOL)shouldUse;
 
+-(BOOL)hasNetwork;
+
+
 @end

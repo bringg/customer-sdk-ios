@@ -44,7 +44,7 @@
 
 @property (nonatomic, strong) NSTimer *orderPollingTimer;
 @property (nonatomic, strong) NSTimer *driverPollingTimer;
-
+@property (nonatomic, weak) id<RealTimeDelegate> trackerRealtimeDelegate;
  
 - (void)startOrderPolling;
 - (void)stopOrderPolling;
@@ -53,6 +53,16 @@
 
 - (void)orderPolling:(NSTimer *)timer;
 - (void)driverPolling:(NSTimer *)timer;
+
+
+- (void)disconnectFromRealTimeUpdates;
+- (void)configureLiveMonitor;
+- (void)resetPollingTimers;
+
+- (void)autoWatchOrders;
+- (void)autoWatchDrivers;
+- (void)autoWatchWaypoints;
+
 
 @end
 
@@ -149,7 +159,12 @@
 #pragma mark - Setters
 
 - (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate {
-    [self.liveMonitor setRealTimeConnectionDelegate:delegate];
+    
+    // set a delegate to keep tracker of the delegate that came outside the sdk
+    self.trackerRealtimeDelegate = delegate;
+    
+    // for the live monitor itself set the tracker as the delegated
+    [self.liveMonitor setRealTimeConnectionDelegate:self];
     
 }
 
@@ -211,6 +226,17 @@
 }
 
 #pragma mark - Track Actions
+- (void)disconnectFromRealTimeUpdates{
+    NSLog(@"DISCONNECTING TRACKER");
+    
+    [self.liveMonitor setRealTimeConnectionDelegate:nil];
+    [self stopWatchingAllOrders];
+    [self stopWatchingAllDrivers];
+    [self stopWatchingAllWaypoints];
+    [self disconnect];
+}
+
+
 - (void)startWatchingOrderWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
     
     NSLog(@"SHOULD START WATCHING ORDER %@ with delegate %@", uuid, delegate);
@@ -396,6 +422,27 @@
     [self removeOrderDelegates];
     [self removeDriverDelegates];
     [self removeWaypointDelegates];
+}
+
+#pragma mark - Real time delegate
+
+-(void)trackerDidConnect{
+    
+    // report to the external delegate
+    if (self.trackerRealtimeDelegate) {
+        [self.trackerRealtimeDelegate trackerDidConnect];
+    }
+}
+
+-(void)trackerDidDisconnectWithError:(NSError *)error{
+    
+    // report to the external delegate
+    if (self.trackerRealtimeDelegate) {
+        [self.trackerRealtimeDelegate trackerDidDisconnectWithError:error];
+    }
+    
+    // handle reconnection
+
 }
 
 

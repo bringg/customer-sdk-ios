@@ -269,7 +269,20 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         //
         if (completionHandler) {
-            completionHandler(NO, nil, error);
+            
+            if (error && error.code >= 500 && error.code < 600) {
+                
+                NSMutableDictionary *info = [NSMutableDictionary dictionaryWithDictionary:error.userInfo];
+                [info setObject:@"server temporarily unavailable, please try again later." forKey:NSLocalizedDescriptionKey];
+                
+                NSError *newError = [NSError errorWithDomain:error.domain code:error.code userInfo:info];
+                completionHandler(NO, nil, newError);
+                
+            }else{
+                completionHandler(NO, nil, error);
+            }
+            
+            
         }
     }];
     

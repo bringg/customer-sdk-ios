@@ -112,6 +112,12 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     self.useSSL = shouldUse;
 }
 
+#pragma mark - Getters
+
+-(BOOL)hasNetwork{
+    return [self.reachability isReachable];
+}
+
 #pragma mark - Helper
 
 - (NSDate *)dateFromString:(NSString *)string {

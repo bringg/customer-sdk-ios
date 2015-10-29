@@ -27,7 +27,7 @@
 
 
 
-@interface GGTrackerManager : NSObject
+@interface GGTrackerManager : NSObject <RealTimeDelegate>
 
 @property (nonatomic, readonly) GGRealTimeMontior * liveMonitor;
 @property (nonatomic, getter=customer) GGCustomer *appCustomer;

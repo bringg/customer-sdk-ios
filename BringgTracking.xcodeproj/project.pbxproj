@@ -146,6 +146,7 @@
 /* Begin PBXFileReference section */
 		13361E211B8B15C200388D14 /* GGBringgUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGBringgUtils.h; sourceTree = "<group>"; };
 		13361E221B8B15C200388D14 /* GGBringgUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGBringgUtils.m; sourceTree = "<group>"; };
+		134A8B751BE6188C001FFF34 /* GGTrackerManager_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGTrackerManager_Private.h; sourceTree = "<group>"; };
 		135692241B0B36E000100034 /* LICENSE_SIO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE_SIO; sourceTree = "<group>"; };
 		135692251B0B36E000100034 /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIO.h; sourceTree = "<group>"; };
 		135692261B0B36E000100034 /* SocketIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIO.m; sourceTree = "<group>"; };
@@ -398,6 +399,7 @@
 			children = (
 				A99163E01A51582E008BADCD /* GGTrackerManager.h */,
 				A99163E11A51582E008BADCD /* GGTrackerManager.m */,
+				134A8B751BE6188C001FFF34 /* GGTrackerManager_Private.h */,
 				A9AC3F6F1ADD0111004817ED /* GGHTTPClientManager_Private.h */,
 				A9A2F6EE1AAD9AB3003038E8 /* GGHTTPClientManager.h */,
 				A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */,

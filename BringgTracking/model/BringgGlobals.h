@@ -75,21 +75,84 @@ return _sharedObject;
 - (void)orderDidFinish:(GGOrder *)order withDriver:(GGDriver *)driver;
 - (void)orderDidCancel:(GGOrder *)order withDriver:(GGDriver *)driver;
 
+
+
+/**
+ *  notifies that the tracker is about to revive all previously monitored orders
+ *
+ *  @param orderUUID uuid of order
+ */
+- (void)trackerWillReviveWatchedOrder:(NSString *)orderUUID;
+
 @end
 
 @protocol DriverDelegate <NSObject>
+
+/**
+ *  notifies if watching a driver failed
+ *
+ *  @param waypointId id of driver
+ *  @param error      error
+ */
 - (void)watchDriverFailedForDriver:(GGDriver *)driver error:(NSError *)error;
 @optional
+
+/**
+ *  notifies a driver has changed location
+ *
+ *  @param driver the updated driver object
+ */
 - (void)driverLocationDidChangeWithDriver:(GGDriver *)driver;
+
+/**
+ *  notifies that the tracker is about to revive all previously monitored drivers
+ *
+ *  @param driverUUID uuid of driver
+ *  @param sharedUUID uuid of shared
+ */
+- (void)trackerWillReviveWatchedDriver:(NSString *)driverUUID withSharedUUID:(NSString *)sharedUUID;
 
 @end
 
 @protocol WaypointDelegate <NSObject>
+/**
+ *  notifies if watching a waypoint failed
+ *
+ *  @param waypointId id of waypoint
+ *  @param error      error
+ */
 - (void)watchWaypointFailedForWaypointId:(NSNumber *)waypointId error:(NSError *)error;
 @optional
+
+/**
+ *  notifies ETA updates to a waypoint
+ *
+ *  @param waypointId id of waypoint
+ *  @param eta        ETA
+ */
 - (void)waypointDidUpdatedWaypointId:(NSNumber *)waypointId eta:(NSDate *)eta;
+
+
+/**
+ *  notifies a driver has arrvied a waypoint
+ *
+ *  @param waypointId id of waypoint
+ */
 - (void)waypointDidArrivedWaypointId:(NSNumber *)waypointId;
+
+/**
+ *  notifies a waypoint has finished
+ *
+ *  @param waypointId id of waypoint
+ */
 - (void)waypointDidFinishedWaypointId:(NSNumber *)waypointId;
+
+/**
+ *  notifies that the tracker is about to revive all previously monitored waypoints
+ *
+ *  @param waypointId id of waypoint
+ */
+- (void)trackerWillReviveWatchedWaypoint:(NSNumber *)waypointId;
 
 @end
 

@@ -181,4 +181,55 @@
     [aCoder encodeInt:(int)self.driverid forKey:GGDriverStoreKeyID];
 }
 
+#pragma mark - Setters
+- (void)update:(GGDriver *__nullable)newDriver{
+    if (newDriver) {
+        if (newDriver.uuid.length > 0) {
+            self.uuid = newDriver.uuid;
+        }
+        
+        if (newDriver.name && newDriver.name.length > 0) {
+            self.name = newDriver.name;
+        }
+        
+        if (newDriver.imageURL && newDriver.imageURL.length > 0) {
+            self.imageURL = newDriver.imageURL;
+        }
+        
+        if (newDriver.ratingToken && newDriver.ratingToken.length > 0) {
+            self.ratingToken = newDriver.ratingToken;
+        }
+        
+        if (newDriver.ratingUrl && newDriver.ratingUrl.length > 0) {
+            self.ratingUrl = newDriver.ratingUrl;
+        }
+        
+        if (newDriver.phone && newDriver.phone.length > 0) {
+            self.phone = newDriver.phone;
+        }
+
+        
+        if (newDriver.driverid != 0  ) {
+            self.driverid = newDriver.driverid;
+        }
+        
+        if (newDriver.latitude != 0) {
+            self.latitude = newDriver.latitude;
+        }
+        
+        if (newDriver.longitude != 0) {
+            self.longitude = newDriver.longitude;
+        }
+        
+        if (newDriver.activity >= 0) {
+            self.activity = newDriver.activity;
+        }
+        
+        if (newDriver.averageRating > 0) {
+            self.averageRating = newDriver.averageRating;
+        }
+
+    }
+}
+
 @end

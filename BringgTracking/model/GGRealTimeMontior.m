@@ -10,7 +10,7 @@
 #import "GGRealTimeMontior+Private.h"
 
 #import "SocketIOPacket.h"
-#import "Reachability.h"
+
 
 #import "GGDriver.h"
 #import "GGCustomer.h"
@@ -31,20 +31,9 @@
 #define EVENT_WAY_POINT_DONE @"way point done"
 #define EVENT_WAY_POINT_ETA_UPDATE @"way point eta updated"
 
-typedef void (^CompletionBlock)(BOOL success, NSError *error);
-
-@interface GGRealTimeMontior ()
-
-@property (nonatomic,strong) SocketIO *socketIO;
-@property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
-@property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
-
-
-@property (nonatomic, strong) Reachability* reachability;
 
 
 
-@end
 
 @implementation GGRealTimeMontior
 
@@ -65,6 +54,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         self.driverDelegates = [NSMutableDictionary dictionary];
         self.waypointDelegates = [NSMutableDictionary dictionary];
         self.activeDrivers = [NSMutableDictionary dictionary];
+        self.activeOrders = [NSMutableDictionary dictionary];
         // let the real time manager handle socket events
         self.socketIO = [[SocketIO alloc] initWithDelegate:self];
         
@@ -81,14 +71,20 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     reachability.reachableBlock = ^(Reachability*reach) {
         NSLog(@"Reachable!");
         if (![self.socketIO isConnected] && ![self.socketIO isConnecting]) {
-            
-            
+            [self connect];
+
         }
     };
     reachability.unreachableBlock = ^(Reachability*reach) {
         NSLog(@"Unreachable!");
         
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self disconnect];
+        });
+        
+
     };
+    
     [reachability startNotifier];
     
 }
@@ -112,11 +108,48 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
     self.useSSL = shouldUse;
 }
 
+- (void)addAndUpdateOrder:(GGOrder *)order{
+    // add this order to the orders active list if needed;
+    if (order) {
+        
+        if (![self.activeOrders objectForKey:order.uuid]) {
+            [self.activeOrders setObject:order forKey:order.uuid];
+        }else{
+            [[self.activeOrders objectForKey:order.uuid] update:order];
+        }
+        
+    }
+    
+    
+
+}
+- (void)addAndUpdateDriver:(GGDriver *)driver{
+    // add this driver to the drivers active list if needed
+    if (driver) {
+        
+        if (![self.activeDrivers objectForKey:driver.uuid]) {
+            [self.activeDrivers setObject:driver forKey:driver.uuid];
+        }else{
+            [[self.activeDrivers objectForKey:driver.uuid] update:driver];
+        }
+        
+    }
+}
+
 #pragma mark - Getters
 
 -(BOOL)hasNetwork{
     return [self.reachability isReachable];
 }
+
+-(GGOrder * _Nullable)getOrderWithUUID:(NSString * _Nonnull)uuid{
+    return [self.activeOrders objectForKey:uuid];
+}
+
+-(GGDriver * _Nullable)getDriverWithUUID:(NSString * _Nonnull)uuid{
+    return [self.activeDrivers objectForKey:uuid];
+}
+
 
 #pragma mark - Helper
 
@@ -330,15 +363,17 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
         
         //GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
         
-        GGOrder *order = [[GGOrder alloc] initOrderWithData:eventData];
-        GGDriver *driver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
+        GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
+        GGDriver *updatedDriver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
         
-        // add this driver to the drivers active list if needed
-        if (driver && ![self.activeDrivers objectForKey:driver.uuid]) {
-            [self.activeDrivers setObject:driver forKey:driver.uuid];
-        }
-        
+        // updated existing model
+        [self addAndUpdateOrder:updatedOrder];
+        [self addAndUpdateDriver:updatedDriver];
     
+        
+        // get most updated model
+        GGOrder *order = [self.activeOrders objectForKey:orderUUID];
+        GGDriver *driver = [self.activeOrders objectForKey:updatedDriver.uuid];
         
         //test get order method
 //        NSNumber *orderID = [eventData objectForKey:PARAM_ID];
@@ -384,15 +419,26 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
         NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
         
-        GGOrder *order = [[GGOrder alloc] initOrderWithData:eventData];
+        GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
         
-        if (!order){
-            order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:OrderStatusDone];
+        if (!updatedOrder){
+            updatedOrder = [self.activeOrders objectForKey:orderUUID];
         }
         
-        [order updateOrderStatus:OrderStatusDone];
+        [updatedOrder updateOrderStatus:OrderStatusDone];
         
-        GGDriver *driver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
+        GGDriver *updatedDriver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
+        
+
+        // updated existing model
+        [self addAndUpdateOrder:updatedOrder];
+        [self addAndUpdateDriver:updatedDriver];
+        
+        
+        // get most updated model
+        GGOrder *order = [self.activeOrders objectForKey:orderUUID];
+        GGDriver *driver = [self.activeOrders objectForKey:updatedDriver.uuid];
+
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
         

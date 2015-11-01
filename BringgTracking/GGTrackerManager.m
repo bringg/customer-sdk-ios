@@ -6,7 +6,8 @@
 //  Copyright (c) 2014 Matan Poreh. All rights reserved.
 //
 
-#import "GGTrackerManager.h"
+#import "GGTrackerManager_Private.h"
+
 #import "GGHTTPClientManager.h"
 #import "GGHTTPClientManager_Private.h"
 
@@ -33,39 +34,6 @@
 #define BTRatingKey @"rating"
 
 
-@interface GGTrackerManager ()
-
-
-
-@property (nonatomic, strong) NSString *customerToken;
-@property (nonatomic, strong) NSString *developerToken;
-@property (nonatomic, strong) NSMutableArray *orders;
-@property (nonatomic, strong) NSMutableArray *locations;
-
-@property (nonatomic, strong) NSTimer *orderPollingTimer;
-@property (nonatomic, strong) NSTimer *driverPollingTimer;
-@property (nonatomic, weak) id<RealTimeDelegate> trackerRealtimeDelegate;
- 
-- (void)startOrderPolling;
-- (void)stopOrderPolling;
-- (void)startDriverPolling;
-- (void)stopDriverPolling;
-
-- (void)orderPolling:(NSTimer *)timer;
-- (void)driverPolling:(NSTimer *)timer;
-
-
-- (void)disconnectFromRealTimeUpdates;
-- (void)configureLiveMonitor;
-- (void)resetPollingTimers;
-
-- (void)autoWatchOrders;
-- (void)autoWatchDrivers;
-- (void)autoWatchWaypoints;
-
-
-@end
-
 @implementation GGTrackerManager
 
 @synthesize liveMonitor = _liveMonitor;
@@ -90,7 +58,14 @@
         sharedObject = [[self alloc] initTacker];
         
         // init the real time monitor
-         sharedObject->_liveMonitor = [GGRealTimeMontior sharedInstance];
+        sharedObject->_liveMonitor = [GGRealTimeMontior sharedInstance];
+        
+        // init polled
+        sharedObject->_polledOrders = [NSMutableSet set];
+        sharedObject->_polledLocations = [NSMutableSet set];
+        
+        // setup http manager
+        sharedObject->_httpManager = [GGHTTPClientManager manager];
         
        
     });
@@ -127,6 +102,20 @@
     return self;
 }
 
+- (void)restartLiveMonitor{
+    // for the live monitor itself set the tracker as the delegated
+    [self.liveMonitor setRealTimeConnectionDelegate:self];
+    if (![self isConnected]) {
+        NSLog(@"******** RESTART TRACKER CONNECTION ********");
+        
+        [self connectUsingSecureConnection:self.useSSL];
+    }else{
+        NSLog(@">>>>> CAN'T RESTART CONNECTION - TRACKER IS ALREADY CONNECTED");
+    }
+    
+}
+
+
 - (void)connectUsingSecureConnection:(BOOL)useSecure{
     
     // if no dev token we should raise an exception
@@ -136,6 +125,8 @@
         [NSException raise:@"Invalid tracker Tokens" format:@"Developer Token can not be nil"];
         
     }else{
+        
+        self.useSSL = useSecure;
         
         // update the real time monitor with the dev token
         [self.liveMonitor setDeveloperToken:_developerToken];
@@ -154,7 +145,22 @@
     
 }
 
+#pragma mark - Helpers
 
+- (void)parseDriverCompoundKey:(NSString *)key toDriverUUID:(NSString *__autoreleasing  _Nonnull *)driverUUID andSharedUUID:(NSString *__autoreleasing  _Nonnull *)sharedUUID{
+ 
+    NSArray *pair = [key componentsSeparatedByString:DRIVER_COMPOUND_SEPERATOR];
+
+    @try {
+        *driverUUID = [pair objectAtIndex:0];
+        *sharedUUID = [pair   objectAtIndex:1];
+    }
+    @catch (NSException *exception) {
+        //
+        NSLog(@"cant parse driver comound key %@ - error:%@", key, exception);
+    }
+
+}
 
 #pragma mark - Setters
 
@@ -163,8 +169,7 @@
     // set a delegate to keep tracker of the delegate that came outside the sdk
     self.trackerRealtimeDelegate = delegate;
     
-    // for the live monitor itself set the tracker as the delegated
-    [self.liveMonitor setRealTimeConnectionDelegate:self];
+    [self.liveMonitor setRealtimeDelegate:self];
     
 }
 
@@ -175,64 +180,261 @@
 
 - (void)setDeveloperToken:(NSString *)devToken{
     
-   
     
     _developerToken = devToken;
     NSLog(@"Tracker Set with Dev Token %@", _developerToken);
 }
 
+#pragma mark - Getters
+- (NSArray *)monitoredOrders{
+    
+    return _liveMonitor.orderDelegates.allKeys;
+}
+- (NSArray *)monitoredDrivers{
+    
+    return _liveMonitor.driverDelegates.allKeys;
+    
+}
+- (NSArray *)monitoredWaypoints{
+    return _liveMonitor.waypointDelegates.allKeys;
+}
+
 
 #pragma mark - Polling
-
-- (void)startOrderPolling {
-    self.orderPollingTimer = [NSTimer scheduledTimerWithTimeInterval:20.0
-                                                              target:self
-                                                            selector:@selector(orderPolling:)
-                                                            userInfo:nil
-                                                             repeats:YES];
+- (void)configurePollingTimers{
     
-}
-
-- (void)stopOrderPolling {
-    [self.orderPollingTimer invalidate];
-    self.orderPollingTimer = nil;
+    self.orderPollingTimer = [ NSTimer scheduledTimerWithTimeInterval:POLLING_SEC target:self selector:@selector(orderPolling:) userInfo:nil repeats:YES];
     
-}
-
-- (void)startDriverPolling {
-    self.driverPollingTimer = [NSTimer scheduledTimerWithTimeInterval:20.0
-                                                              target:self
-                                                             selector:@selector(driverPolling:)
-                                                            userInfo:nil
-                                                             repeats:YES];
-    
-}
-
-- (void)stopDriverPolling{
-    [self.driverPollingTimer invalidate];
-    self.driverPollingTimer = nil;
-    
+    self.locationPollingTimer = [ NSTimer scheduledTimerWithTimeInterval:POLLING_SEC target:self selector:@selector(locationPolling:) userInfo:nil repeats:YES];
 }
 
 
+- (void)resetPollingTimers {
+    [self stopPolling];
+    [self configurePollingTimers];
+    
+    if (self.orderPollingTimer && [self.orderPollingTimer isValid]) {
+        [self.orderPollingTimer fire];
+    }
+    
+    if (self.locationPollingTimer && [self.locationPollingTimer isValid]) {
+        [self.locationPollingTimer fire];
+    }
+}
 
-- (void)driverPolling:(NSTimer *)timer {
-#warning TODO add driver polling functionality
+- (void)stopPolling{
+    if (self.orderPollingTimer && [self.orderPollingTimer isValid]) {
+        [self.orderPollingTimer invalidate];
+    }
+    
+    if (self.locationPollingTimer && [self.locationPollingTimer isValid]) {
+        [self.locationPollingTimer invalidate];
+    }
+}
+
+
+
+
+- (void)locationPolling:(NSTimer *)timer {
+    
+    // polling is only available if signed in
+    if (![self.httpManager isSignedIn]) {
+        return;
+    }
+    
+    [self.monitoredOrders enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        NSString *orderUUID = (NSString *)obj;
+       
+        __block GGOrder *activeOrder = [self.liveMonitor getOrderWithUUID:orderUUID];
+       
+        
+        __weak __typeof(&*self)weakSelf = self;
+        
+        // if we have a shared location object for this order we can now poll
+        if (activeOrder.sharedLocation) {
+            
+            // check that we arent already polling this
+            if (![self.polledLocations containsObject:activeOrder.sharedLocationUUID]) {
+                
+                // mark as being polled
+                [self.polledLocations addObject:activeOrder.sharedLocationUUID];
+                
+                // ask our REST to poll
+                [[GGHTTPClientManager manager] getSharedLocationByUUID:activeOrder.sharedLocationUUID withCompletionHandler:^(BOOL success, GGSharedLocation *sharedLocation, NSError *error) {
+                    //
+                    
+                    // removed from the polled list
+                    [weakSelf.polledLocations removeObject:activeOrder.sharedLocationUUID];
+                    
+                    if (!error && sharedLocation != nil) {
+                        //
+                        activeOrder.sharedLocation = sharedLocation;
+                    }
+                    
+                    if (sharedLocation.driver) {
+                        [_liveMonitor addAndUpdateDriver:sharedLocation.driver];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            // notify all interested parties that there has been a status change in the order
+                            [weakSelf notifyRESTUpdateForDriver:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
+                        });
+                        
+                    }
+                    
+                    
+                }];
+            }
+        }
+
+        
+    }];
 }
 
 
 - (void)orderPolling:(NSTimer *)timer{
-    #warning TODO add order polling functionality
+    
+    // polling is only available if signed in
+    if (![self.httpManager isSignedIn]) {
+        return;
+    }
+    
+    [self.monitoredOrders enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        __block NSString *orderUUID = (NSString *)obj;
+        
+        // check that we are not polling already
+        if (![self.polledOrders containsObject:orderUUID]) {
+            
+            // we need order id to do this so skip polling until the first real time updated that gets us full order model
+            __block GGOrder *activeOrder = [self.liveMonitor getOrderWithUUID:orderUUID];
+            
+            // check that we have an order id needed for polling
+            if (activeOrder && activeOrder.orderid) {
+                [self.polledOrders addObject:orderUUID];
+                
+                __weak __typeof(&*self)weakSelf = self;
+                
+                [[GGHTTPClientManager manager] getOrderByID:activeOrder.orderid withCompletionHandler:^(BOOL success, GGOrder *order, NSError *error) {
+                    
+                    // remove from polled orders
+                    [weakSelf.polledOrders removeObject:orderUUID];
+                    
+                    
+                    //
+                    if (!error && order != nil) {
+                        // check that is is the update we were waiting for
+                        if ([order.uuid isEqualToString:activeOrder.uuid]) {
+
+                            
+                            BOOL hasStatusChanged = NO;
+                            // check if there was a status change
+                            if (order.status != activeOrder.status) {
+                                hasStatusChanged = YES;
+                            }
+                            
+                            // update the local model in the live monitor
+                            [_liveMonitor addAndUpdateOrder:order];
+                            
+                            // check if we can also update the driver related to the order
+                            if ([[order sharedLocation] driver]) {
+                                [_liveMonitor addAndUpdateDriver:[[order sharedLocation] driver]];
+                            }
+
+                            if (hasStatusChanged) {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    // notify all interested parties that there has been a status change in the order
+                                    [weakSelf notifyRESTUpdateForOrder:order.uuid];
+                                });
+                                
+                            }
+                        }
+                    }
+                    
+                }];
+            }
+            
+            
+            
+        }
+    }];
+}
+
+/**
+ *  due to REST polling notify order delegates that an order has updated
+ *
+ *  @param orderUUID uuid of updated order
+ */
+- (void)notifyRESTUpdateForOrder:(NSString *)orderUUID{
+    
+    GGOrder *order = [self.liveMonitor getOrderWithUUID:orderUUID];
+    GGDriver *driver = [self.liveMonitor getDriverWithUUID:order.driverUUID ? order.driverUUID : order.sharedLocation.driver.uuid];
+    
+    // update the order delegate
+    id<OrderDelegate> delegate = [_liveMonitor.orderDelegates objectForKey:order.uuid];
+    
+    if (delegate) {
+        
+        
+        switch (order.status) {
+            case OrderStatusAccepted:
+                [delegate orderDidAcceptWithOrder:order withDriver:driver];
+                break;
+            case OrderStatusAssigned:
+                [delegate orderDidAssignWithOrder:order withDriver:driver];
+                break;
+            case OrderStatusOnTheWay:
+                [delegate orderDidStartWithOrder:order withDriver:driver];
+                break;
+            case OrderStatusCheckedIn:
+                [delegate orderDidArrive:order withDriver:driver];
+                break;
+            case OrderStatusDone:
+                [delegate orderDidFinish:order withDriver:driver];
+                break;
+            case OrderStatusCancelled:
+                [delegate orderDidCancel:order withDriver:driver];
+                break;
+    
+            
+            default:
+                break;
+        }
+    }
+}
+
+/**
+ *  due to REST polling notify driver delegates that a driver location has updated
+ *
+ *  @param driverUUID uuid of updated driver
+ *  @param shareUUID  shared uuid of updated related location
+ */
+- (void)notifyRESTUpdateForDriver:(NSString *)driverUUID andSharedUUID:(NSString *)shareUUID{
+     GGDriver *driver = [self.liveMonitor getDriverWithUUID:driverUUID];
+    
+     NSString *compoundKey = [[driverUUID stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
+    
+    // update the order delegate
+    id<DriverDelegate> delegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+    
+    if (delegate) {
+        [delegate driverLocationDidChangeWithDriver:driver];
+    }
+
 }
 
 #pragma mark - Track Actions
 - (void)disconnectFromRealTimeUpdates{
     NSLog(@"DISCONNECTING TRACKER");
     
+    // remove internal delegate
     [self.liveMonitor setRealTimeConnectionDelegate:nil];
-    [self stopWatchingAllOrders];
-    [self stopWatchingAllDrivers];
-    [self stopWatchingAllWaypoints];
+    
+    // stop all watching
+    //[self stopWatchingAllOrders];
+    //[self stopWatchingAllDrivers];
+    //[self stopWatchingAllWaypoints];
     [self disconnect];
 }
 
@@ -266,6 +468,16 @@
                         _liveMonitor.doMonitoringOrders = NO;
                         
                     }
+                }else{
+                    // with a little delay - also start polling orders
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        //
+                        if (self.orderPollingTimer && [self.orderPollingTimer isValid]) {
+                            [self.orderPollingTimer fire];
+                        }else{
+                            [self resetPollingTimers];
+                        }
+                    });
                 }
             }];
         }
@@ -285,7 +497,11 @@
         
         GGDriver *driver = [[GGDriver alloc] initWithUUID:uuid];
         
-        id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
+        // here the key is a match
+        NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
+        
+        id existingDelegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+        
         if (!existingDelegate) {
             @synchronized(self) {
                 [_liveMonitor.driverDelegates setObject:delegate forKey:uuid];
@@ -306,6 +522,16 @@
                         _liveMonitor.doMonitoringDrivers = NO;
                         
                     }
+                }else{
+                    // with a little delay - also start polling orders
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        //
+                        if (self.locationPollingTimer && [self.locationPollingTimer isValid]) {
+                            [self.locationPollingTimer fire];
+                        }else{
+                            [self resetPollingTimers];
+                        }
+                    });
                 }
             }];
         }
@@ -404,6 +630,79 @@
     }
 }
 
+- (void)reviveWatchedOrders{
+    
+    [self.monitoredOrders enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        NSString *orderUUID = (NSString *)obj;
+        //check there is still a delegate listening
+        id<OrderDelegate> orderDelegate = [_liveMonitor.orderDelegates objectForKey:orderUUID];
+        
+        // remove the old entry in the dictionary
+        [_liveMonitor.orderDelegates removeObjectForKey:orderUUID];
+        
+        // if delegate isnt null than start watching again
+        if (orderDelegate && ![orderDelegate isEqual: [NSNull null]]) {
+            
+            [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
+            
+            [self startWatchingOrderWithUUID:orderUUID delegate:orderDelegate];
+            
+        }
+    }];
+}
+
+- (void)reviveWatchedDrivers{
+    
+    [self.monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        
+        NSString *driverCompoundKey = (NSString *)obj;
+        
+        
+        NSString *driverUUID;
+        NSString *sharedUUID;
+        
+        [self parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+        
+        //check there is still a delegate listening
+        id<DriverDelegate> driverDelegate = [_liveMonitor.driverDelegates objectForKey:driverCompoundKey];
+        
+        // remove the old entry in the dictionary
+        [_liveMonitor.driverDelegates removeObjectForKey:driverCompoundKey];
+        
+        // if delegate isnt null than start watching again
+        if (driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
+            
+            [driverDelegate trackerWillReviveWatchedDriver:driverUUID withSharedUUID:sharedUUID];
+            
+            [self startWatchingDriverWithUUID:driverUUID shareUUID:sharedUUID delegate:driverDelegate];
+            
+        }
+    }];
+}
+- (void)reviveWatchedWaypoints{
+    
+    [self.monitoredWaypoints enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        NSNumber *waypointId = (NSNumber *)obj;
+        //check there is still a delegate listening
+        id<WaypointDelegate> wpDelegate = [_liveMonitor.waypointDelegates objectForKey:waypointId];
+        
+        // remove the old entry in the dictionary
+        [_liveMonitor.waypointDelegates removeObjectForKey:waypointId];
+        
+        // if delegate isnt null than start watching again
+        if (wpDelegate && ![wpDelegate isEqual: [NSNull null]]) {
+        
+            [wpDelegate trackerWillReviveWatchedWaypoint:waypointId];
+            
+            [self startWatchingWaypointWithWaypointId:waypointId delegate:wpDelegate];
+            
+        }
+    }];
+}
+
 #pragma mark - cleanup
 -(void)removeOrderDelegates{
     [self.liveMonitor.orderDelegates removeAllObjects];
@@ -428,6 +727,12 @@
 
 -(void)trackerDidConnect{
     
+    // check if we have any monotired order/driver/waypoints
+    // if so we should re watch-them
+    [self reviveWatchedOrders];
+    [self reviveWatchedDrivers];
+    [self reviveWatchedWaypoints];
+    
     // report to the external delegate
     if (self.trackerRealtimeDelegate) {
         [self.trackerRealtimeDelegate trackerDidConnect];
@@ -435,14 +740,23 @@
 }
 
 -(void)trackerDidDisconnectWithError:(NSError *)error{
-    
+
+    NSLog(@"tracker disconnected with error %@", error);
+
     // report to the external delegate
     if (self.trackerRealtimeDelegate) {
         [self.trackerRealtimeDelegate trackerDidDisconnectWithError:error];
     }
     
-    // handle reconnection
-
+    // HANDLE RECONNECTION
+    
+    // disconnect real time for now
+    [self disconnectFromRealTimeUpdates];
+    
+    // check if there is network available - if yes > try to reconnect
+    if ([self.liveMonitor.reachability isReachable]) {
+        [self restartLiveMonitor];
+    }
 }
 
 

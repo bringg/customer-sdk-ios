@@ -85,4 +85,11 @@
  */
 -(void)updateOrderStatus:(OrderStatus)newStatus;
 
+/**
+ *  tries to update current object with data from new object
+ *
+ *  @param newOrder new order to updated data from
+ */
+- (void)update:(GGOrder *__nullable)newOrder;
+
 @end

@@ -9,8 +9,11 @@
 #import "GGRealTimeMontior.h"
 #import "BringgGlobals.h"
 #import "GGTrackerManager.h"
+#import "Reachability.h"
 
 @interface GGRealTimeMontior ()
+
+typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
 @property (nonatomic, strong) NSString *developerToken;
 
@@ -18,13 +21,22 @@
 @property (nonatomic, strong) NSMutableDictionary *driverDelegates;
 @property (nonatomic, strong) NSMutableDictionary *waypointDelegates;
 @property (nonatomic, strong) NSMutableDictionary *activeDrivers;
-
+@property (nonatomic, strong) NSMutableDictionary *activeOrders;
 
 @property (nonatomic, assign) BOOL doMonitoringOrders;
 @property (nonatomic, assign) BOOL doMonitoringDrivers;
 @property (nonatomic, assign) BOOL doMonitoringWaypoints;
 @property (nonatomic, assign) BOOL connected;
 @property (nonatomic, assign) BOOL useSSL;
+
+@property (nonatomic,strong) SocketIO *socketIO;
+@property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
+@property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
+
+
+@property (nonatomic, strong) Reachability* reachability;
+
+
 
 + (id)sharedInstance;
 
@@ -45,5 +57,7 @@
 - (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
 
 - (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, NSError *error))completionHandler ;
+
+
 
 @end

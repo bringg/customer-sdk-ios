@@ -173,7 +173,56 @@ static NSDateFormatter *dateFormat;
 }
 
 
-
+#pragma mark - Setters
+- (void)update:(GGOrder *__nullable)newOrder{
+    
+    if (newOrder) {
+        if (newOrder.uuid.length > 0) {
+            self.uuid = newOrder.uuid;
+        }
+        
+        if (newOrder.title && newOrder.title.length > 0) {
+            self.title = newOrder.title;
+        }
+        
+        
+        if (newOrder.merchantId > 0) {
+            self.merchantId = newOrder.merchantId;
+        }
+        
+        if (newOrder.priority> 0) {
+            self.priority = newOrder.priority;
+        }
+        
+        if (newOrder.customerId > 0) {
+            self.customerId = newOrder.customerId;
+        }
+        
+        if (newOrder.orderid  > 0) {
+            self.orderid = newOrder.orderid;
+        }
+        
+        if (newOrder.status) {
+            self.status = newOrder.status;
+        }
+        
+        if (newOrder.driverId != 0  ) {
+            self.driverId = newOrder.driverId;
+        }
+        
+        if (newOrder.driverUUID && newOrder.driverUUID.length > 0) {
+            self.driverUUID = newOrder.driverUUID;
+        }
+        
+        if (newOrder.sharedLocation) {
+            self.sharedLocation = newOrder.sharedLocation;
+        }
+        
+        if (newOrder.sharedLocationUUID && newOrder.sharedLocationUUID.length > 0) {
+            self.sharedLocationUUID = newOrder.sharedLocationUUID;
+        }
+    }
+}
 
 
 @end

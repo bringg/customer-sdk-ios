@@ -51,11 +51,13 @@
 
 
 #define HTTP_FORMAT @"http://%@"
+#define HTTPS_FORMAT @"https://%@"
 
 @interface GGHTTPClientManager ()
 
 @property (nonatomic, strong) NSOperationQueue *serviceOperationQueue;
 @property (nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
+@property (nonatomic, assign) BOOL useSSL;
 
 -(void)addAuthinticationToParams:(NSMutableDictionary **)params;
 
@@ -83,6 +85,9 @@
         
         // set the developer token
         sharedObject->_developerToken = developerToken;
+        
+        // by default set the manager to use ssl
+        sharedObject->_useSSL = YES;
         
     });
     
@@ -130,18 +135,28 @@
     
     server = BCRealtimeServer;
     
+    // remove current prefix
+    if ([server hasPrefix:HTTPS_FORMAT]) {
+        server = [server stringByReplacingOccurrencesOfString:HTTPS_FORMAT withString:@""];
+    }
+    
+    if ([server hasPrefix:HTTP_FORMAT]) {
+        server = [server stringByReplacingOccurrencesOfString:HTTP_FORMAT withString:@""];
+    }
+    
+    // add prefix according to ssl flag
     if (![server hasPrefix:@"http://"] && ![server hasPrefix:@"https://"]) {
         
         
-#ifdef USE_SSL
-        server = [NSString stringWithFormat:HTTP_FORMAT, server];
-#else
-        server = [NSString stringWithFormat:HTTP_FORMAT, server];
-#endif
+        if (self.useSSL) {
+             server = [NSString stringWithFormat:HTTPS_FORMAT, server];
+        }else{
+            server = [NSString stringWithFormat:HTTP_FORMAT, server];
+        }
         
+ 
     }
-    
-    
+
     return server;
     
 }
@@ -154,6 +169,9 @@
     if (_customer) {
         [*params setObject:_customer.customerToken forKey:PARAM_ACCESS_TOKEN];
         [*params setObject:_customer.merchantId forKey:PARAM_MERCHANT_ID];
+        if (_customer.getAuthIdentifier) {
+            [*params setObject:_customer.getAuthIdentifier forKey:PARAM_PHONE];
+        }
     }
     
 }
@@ -299,6 +317,11 @@
     
 }
 
+#pragma mark - Setters
+- (void)useSecuredConnection:(BOOL)isSecured{
+    self.useSSL = isSecured;
+}
+
 #pragma mark - Getters
 
 - (NSOperationQueue *)serviceOperationQueue {
@@ -325,6 +348,7 @@
                  phone:(NSString *)phone
       confirmationCode:(NSString *)confirmationCode
             merchantId:(NSString *)merchantId
+                extras:(NSDictionary *)extras
      completionHandler:(void (^)(BOOL success, GGCustomer *customer, NSError *error))completionHandler {
     
     // build params for sign in
@@ -335,7 +359,7 @@
     }
     if (name) {
         
-        [params setObject:name forKey:BCNameKey];
+        [params setObject:name forKey:PARAM_NAME];
         
         
     }
@@ -352,6 +376,10 @@
         
     }
     
+    if (extras) {
+        [params addEntriesFromDictionary:extras];
+    }
+    
     __weak __typeof(&*self)weakSelf = self;
     
     // tell the operation Q to do the sign in operation
@@ -365,7 +393,7 @@
                                                            
                    if (success) customer = [[GGCustomer alloc] initWithData:[JSON objectForKey:PARAM_CUSTOMER] ];
             
-                   // if customer doesnt have an access token tree this as an error
+                   // if customer doesnt have an access token treet this as an error
                    if (customer && (!customer.customerToken || [customer.customerToken isEqualToString:@""])) {
                        // token invalid report error
                        if (completionHandler) {
@@ -392,7 +420,7 @@
  
 }
 
-- (void)rate:(int)rating withToken:(NSString *)ratingToken forSharedLocationUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler{
+- (void)rate:(int)rating withToken:(NSString *)ratingToken ratingURL:(NSString *)ratingURL withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler{
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     
     [params setObject:@(rating) forKey:BCRatingKey];
@@ -403,7 +431,7 @@
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodPost
-                            path:[NSString stringWithFormat:API_PATH_RATE,sharedLocationUUID]
+                            path:ratingURL//[NSString stringWithFormat:API_PATH_RATE,sharedLocationUUID]
                           params:params
                completionHandler:^(BOOL success, id JSON, NSError *error) {
                    
@@ -411,8 +439,8 @@
                    
                    if (success) {
                        rating = [[GGRating alloc] initWithRatingToken:ratingToken];
-                       [rating setRatingMessage:[JSON objectForKey:BCMessageKey]];
-                       [rating rate:[[JSON objectForKey:@"rating"] intValue]];
+                       [rating setRatingMessage:[GGBringgUtils stringFromJSON:[JSON objectForKey:BCMessageKey] defaultTo:nil]];
+                       [rating rate:(int)[GGBringgUtils integerFromJSON:[JSON objectForKey:@"rating"] defaultTo:0]];
                    }
                    
                    if (completionHandler) {

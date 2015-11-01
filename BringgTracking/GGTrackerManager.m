@@ -753,6 +753,15 @@
     // disconnect real time for now
     [self disconnectFromRealTimeUpdates];
     
+    
+    // stop polling
+    [self stopPolling];
+    
+    // clear polled items
+    [self.polledLocations removeAllObjects];
+    [self.polledOrders removeAllObjects];
+    
+    
     // check if there is network available - if yes > try to reconnect
     if ([self.liveMonitor.reachability isReachable]) {
         [self restartLiveMonitor];

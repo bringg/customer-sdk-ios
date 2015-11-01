@@ -20,14 +20,26 @@
 @class GGCustomer;
 
 @protocol RealTimeDelegate <NSObject>
+
+/**
+ *  notifies delegate that a socket connection has been made
+ */
 - (void)trackerDidConnect;
+
+/**
+ *  notifies the delegate that the tracker has disconnected the socket connection w/o and error
+ *  @usage the tracker manager handles connection recoveries by its own if network allows it. so this notifications is just to give the delegete a change to updates its own model to whatever he desiers
+ *  @param error an error describing connection error (might be nill if forced)
+ */
 - (void)trackerDidDisconnectWithError:(NSError *)error;
+
+
 
 @end
 
 
 
-@interface GGTrackerManager : NSObject
+@interface GGTrackerManager : NSObject <RealTimeDelegate>
 
 @property (nonatomic, readonly) GGRealTimeMontior * liveMonitor;
 @property (nonatomic, getter=customer) GGCustomer *appCustomer;
@@ -58,8 +70,9 @@
 
 
 /**
- *  set the developer token for the singelton
- *  @param delegate an object conforming to RealTimeDelegate
+ *  sets the delegate to receieve real time updates
+ *
+ *  @param delegate a delegate confirming to RealTimeDelegate protocol
  */
 - (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate;
 
@@ -235,5 +248,28 @@
  *  clear all delegates listening for updates
  */
 - (void)removeAllDelegates;
+
+
+/**
+ *  get a list of monitored orders
+ *
+ *  @return a list of order uuid's
+ */
+- (NSArray *)monitoredOrders;
+
+/**
+ *  get a list of monitored drivers
+ *
+ *  @return a list of driver uuid's
+ */
+
+- (NSArray *)monitoredDrivers;
+
+/**
+ *  get a list of monitored waypoints
+ *
+ *  @return a list of waypoint id's
+ */
+- (NSArray *)monitoredWaypoints;
 
 @end

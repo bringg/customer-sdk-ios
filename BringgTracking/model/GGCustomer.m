@@ -88,5 +88,17 @@
     
 }
 
+- (nullable NSString *)getAuthIdentifier{
+    if (phone && phone.length>0) {
+        return phone;
+    }
+    
+    if (email && email.length>0) {
+        return email;
+    }
+    
+    return nil;
+}
+
 
 @end

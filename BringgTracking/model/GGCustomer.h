@@ -51,4 +51,12 @@
 -(nonnull instancetype)initWithData:(NSDictionary * _Nullable)data;
 
 
+/**
+ *  retrieves an authentication identifer for authenticating web calls
+ *
+ *  @return an authentication identifer
+ */
+- (nullable NSString *)getAuthIdentifier;
+
+
 @end

@@ -108,7 +108,12 @@
 - (void)updateLocationToLatitude:(double)newlatitude longtitude:(double)newlongitude;
 
 
-
+/**
+ *  tries to update current object with data from new object
+ *
+ *  @param newOrder new driver to updated data from
+ */
+- (void)update:(GGDriver *__nullable)newDriver;
 
 // example data when order status update
 /*

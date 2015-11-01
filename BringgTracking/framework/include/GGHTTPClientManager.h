@@ -39,6 +39,17 @@
  */
 - (void)setDeveloperToken:(NSString *)devToken;
 
+
+/**
+ *  tells the manager to use or not use HTTPS
+ *  @usage default is set to YES
+ *  @param isSecured BOOL
+ */
+- (void)useSecuredConnection:(BOOL)isSecured;
+
+
+
+
 /**
  *  perform a sign in request with a specific customers credentials
  *  @warning do not call this method before setting a valid developer token. also notice method call won't work without valid confirmation code and merchant Id
@@ -46,12 +57,14 @@
  *  @param phone             phone number of customer
  *  @param confirmationCode  sms confirmation code
  *  @param merchantId        merchant id registered for the customer
+ *  @param extras            additional arguments to add to the call
  *  @param completionHandler block to handle async service response
  */
 - (void)signInWithName:(NSString *)name
                  phone:(NSString *)phone
       confirmationCode:(NSString *)confirmationCode
             merchantId:(NSString *)merchantId
+                extras:(NSDictionary *)extras
      completionHandler:(void (^)(BOOL success, GGCustomer *customer, NSError *error))completionHandler;
 
 /**
@@ -69,16 +82,18 @@
  *  @param completionHandler  block to handle async service response
  */
 - (void)getSharedLocationByUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGSharedLocation *sharedLocation, NSError *error))completionHandler;
-
+ 
 /**
  *  send customer rating for a specific driver
  *
- *  @param rating             the rating of the driver must be between (1-5)
- *  @param ratingToken        token to validate rating request - obtained from a valid shared location object related to a specific driver
- *  @param sharedLocationUUID id of shared location object related to a specific driver
- *  @param completionHandler  block to handle async service response
+ *  @param rating            the rating of the driver must be between (1-5)
+
+ *  @param ratingToken       token to validate rating request - obtained from a valid shared location object related to a specific driver
+
+ *  @param ratingURL         rating url is provided with the shared location object responsible for the order
+ *  @param completionHandler block to handle async service response
  */
-- (void)rate:(int)rating withToken:(NSString *)ratingToken forSharedLocationUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler;
+- (void)rate:(int)rating withToken:(NSString *)ratingToken ratingURL:(NSString *)ratingURL withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler;
 
 /**
  *  tels if the customer is signed in

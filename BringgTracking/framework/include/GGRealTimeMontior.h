@@ -11,10 +11,19 @@
 
 #define BTRealtimeServer @"realtime-api.bringg.com"
 
+@class GGOrder;
+@class GGDriver;
 
 
 @interface GGRealTimeMontior : NSObject<SocketIODelegate>
 
 -(void)useSecureConnection:(BOOL)shouldUse;
 
+-(BOOL)hasNetwork;
+
+- (void)addAndUpdateOrder:(GGOrder *_Nonnull)order;
+- (void)addAndUpdateDriver:(GGDriver *_Nonnull)driver;
+
+-(GGOrder * _Nullable)getOrderWithUUID:(NSString * _Nonnull)uuid;
+-(GGDriver * _Nullable)getDriverWithUUID:(NSString * _Nonnull)uuid;
 @end

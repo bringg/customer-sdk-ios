@@ -11,6 +11,8 @@
 
 #define BTRealtimeServer @"realtime-api.bringg.com"
 
+@class GGOrder;
+@class GGDriver;
 
 
 @interface GGRealTimeMontior : NSObject<SocketIODelegate>

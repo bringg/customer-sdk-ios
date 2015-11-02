@@ -23,21 +23,21 @@
  *  @warning make sure the singleton is already intiialized before using this accessor
  *  @return the http manager singelton
  */
-+ (id)manager;
++ (nonnull id)manager;
 
 /**
  *  get a singelton reference to the http client manager
  *  @param developerToken   the developer token acquired when registering as a developer in Bringg website
  *  @return the http manager singelton
  */
-+ (id)managerWithDeveloperToken:(NSString *)developerToken;
++ (nonnull id)managerWithDeveloperToken:(NSString *_Nullable)developerToken;
 
 /**
  *  set the developer token for the singelton
  *  @warning it is prefered to init the singelton with a developer token instead of using this method
  *  @param devToken
  */
-- (void)setDeveloperToken:(NSString *)devToken;
+- (void)setDeveloperToken:(NSString * _Nullable)devToken;
 
 
 /**
@@ -49,6 +49,12 @@
 
 
 
+/**
+ *  adds custom http header fields for all requests
+ *
+ *  @param headers NSDictionary
+ */
+- (void)setCustomAuthenticationHeaders:(NSDictionary * _Nullable)headers;
 
 /**
  *  perform a sign in request with a specific customers credentials
@@ -60,12 +66,14 @@
  *  @param extras            additional arguments to add to the call
  *  @param completionHandler block to handle async service response
  */
-- (void)signInWithName:(NSString *)name
-                 phone:(NSString *)phone
-      confirmationCode:(NSString *)confirmationCode
-            merchantId:(NSString *)merchantId
-                extras:(NSDictionary *)extras
-     completionHandler:(void (^)(BOOL success, GGCustomer *customer, NSError *error))completionHandler;
+- (void)signInWithName:(NSString * _Nullable)name
+                 phone:(NSString * _Nullable)phone
+                 email:(NSString * _Nullable)email
+              password:(NSString * _Nullable)password
+      confirmationCode:(NSString * _Nullable)confirmationCode
+            merchantId:(NSString * _Nonnull)merchantId
+                extras:(NSDictionary * _Nullable)extras
+     completionHandler:(void (^ _Nullable)(BOOL success, NSDictionary * _Nullable response,  GGCustomer * _Nullable customer, NSError * _Nullable error))completionHandler;
 
 /**
  *  retrieves an updated order object
@@ -73,7 +81,9 @@
  *  @param orderId           the Id of the order to be retrieved
  *  @param completionHandler block to handle async service response
  */
-- (void)getOrderByID:(NSUInteger)orderId withCompletionHandler:(void (^)(BOOL success, GGOrder *order, NSError *error))completionHandler;
+- (void)getOrderByID:(NSUInteger)orderId
+              extras:(NSDictionary * _Nullable)extras
+withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
 
 /**
  *  get an updated shared location object from the service
@@ -81,7 +91,9 @@
  *  @param sharedLocationUUID id of shared location object obtained from a specific order
  *  @param completionHandler  block to handle async service response
  */
-- (void)getSharedLocationByUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGSharedLocation *sharedLocation, NSError *error))completionHandler;
+- (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
+                         extras:(NSDictionary * _Nullable)extras
+          withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error))completionHandler;
  
 /**
  *  send customer rating for a specific driver
@@ -93,7 +105,11 @@
  *  @param ratingURL         rating url is provided with the shared location object responsible for the order
  *  @param completionHandler block to handle async service response
  */
-- (void)rate:(int)rating withToken:(NSString *)ratingToken ratingURL:(NSString *)ratingURL withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler;
+- (void)rate:(int)rating
+   withToken:(NSString * _Nonnull)ratingToken
+   ratingURL:(NSString *_Nonnull)ratingURL
+      extras:(NSDictionary * _Nullable)extras
+withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error))completionHandler;
 
 /**
  *  tels if the customer is signed in

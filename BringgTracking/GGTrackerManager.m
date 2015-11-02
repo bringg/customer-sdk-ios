@@ -104,9 +104,12 @@
 
 - (void)restartLiveMonitor{
     // for the live monitor itself set the tracker as the delegated
-    [self.liveMonitor setRealTimeConnectionDelegate:self];
+    [self setRealTimeDelegate:self.trackerRealtimeDelegate];
+    
+    
+    
     if (![self isConnected]) {
-        NSLog(@"******** RESTART TRACKER CONNECTION ********");
+        NSLog(@"******** RESTART TRACKER CONNECTION (delegate: %@)********", self.trackerRealtimeDelegate);
         
         [self connectUsingSecureConnection:self.useSSL];
     }else{
@@ -261,7 +264,7 @@
                 [self.polledLocations addObject:activeOrder.sharedLocationUUID];
                 
                 // ask our REST to poll
-                [[GGHTTPClientManager manager] getSharedLocationByUUID:activeOrder.sharedLocationUUID withCompletionHandler:^(BOOL success, GGSharedLocation *sharedLocation, NSError *error) {
+                [[GGHTTPClientManager manager] getSharedLocationByUUID:activeOrder.sharedLocationUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error) {
                     //
                     
                     // removed from the polled list
@@ -281,8 +284,7 @@
                         });
                         
                     }
-                    
-                    
+ 
                 }];
             }
         }
@@ -315,8 +317,7 @@
                 
                 __weak __typeof(&*self)weakSelf = self;
                 
-                [[GGHTTPClientManager manager] getOrderByID:activeOrder.orderid withCompletionHandler:^(BOOL success, GGOrder *order, NSError *error) {
-                    
+                [[GGHTTPClientManager manager] getOrderByID:activeOrder.orderid  extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                     // remove from polled orders
                     [weakSelf.polledOrders removeObject:orderUUID];
                     
@@ -325,7 +326,7 @@
                     if (!error && order != nil) {
                         // check that is is the update we were waiting for
                         if ([order.uuid isEqualToString:activeOrder.uuid]) {
-
+                            
                             
                             BOOL hasStatusChanged = NO;
                             // check if there was a status change
@@ -340,7 +341,7 @@
                             if ([[order sharedLocation] driver]) {
                                 [_liveMonitor addAndUpdateDriver:[[order sharedLocation] driver]];
                             }
-
+                            
                             if (hasStatusChanged) {
                                 
                                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -352,6 +353,7 @@
                         }
                     }
                     
+                 
                 }];
             }
             
@@ -429,7 +431,7 @@
     NSLog(@"DISCONNECTING TRACKER");
     
     // remove internal delegate
-    [self.liveMonitor setRealTimeConnectionDelegate:nil];
+    [self.liveMonitor setRealtimeDelegate:nil];
     
     // stop all watching
     //[self stopWatchingAllOrders];

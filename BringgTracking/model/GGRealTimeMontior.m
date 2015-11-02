@@ -57,7 +57,9 @@
         self.activeOrders = [NSMutableDictionary dictionary];
         // let the real time manager handle socket events
         self.socketIO = [[SocketIO alloc] initWithDelegate:self];
-        
+     
+        // start reachability monitor
+        [self configureReachability];
     }
     
     return self;
@@ -70,7 +72,7 @@
     self.reachability = reachability;
     reachability.reachableBlock = ^(Reachability*reach) {
         NSLog(@"Reachable!");
-        if (![self.socketIO isConnected] && ![self.socketIO isConnecting]) {
+        if (![self.socketIO isConnected] && ![self.socketIO isConnecting] && self.developerToken) {
             [self connect];
 
         }
@@ -92,13 +94,13 @@
 
 
 - (void) setRealTimeConnectionDelegate:(id<RealTimeDelegate>) connectionDelegate{
-    realtimeDelegate = connectionDelegate;
+    self.realtimeDelegate = connectionDelegate;
 }
 
 -(void)sendConnectionError:(NSError *)error{
     
-    if (realtimeDelegate && [realtimeDelegate respondsToSelector:@selector(trackerDidDisconnectWithError:)]) {
-        [realtimeDelegate trackerDidDisconnectWithError:error];
+    if (self.realtimeDelegate && [self.realtimeDelegate respondsToSelector:@selector(trackerDidDisconnectWithError:)]) {
+        [self.realtimeDelegate trackerDidDisconnectWithError:error];
     }
 }
 
@@ -189,6 +191,19 @@
             
         }
     } else {
+        
+        if (!self.developerToken) {
+            if (completionHandler) {
+                NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
+                                                 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid Developer Token", @"eng/heb")}];
+                completionHandler(NO, error);
+                
+            }
+
+            
+            return;
+        }
+        
         NSLog(@"websocket connected %@", server);
         if (self.reachability.isReachableViaWiFi) {
             [self.socketIO connectToHost:server

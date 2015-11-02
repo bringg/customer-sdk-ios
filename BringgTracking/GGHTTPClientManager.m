@@ -57,6 +57,7 @@
 
 @property (nonatomic, strong) NSOperationQueue *serviceOperationQueue;
 @property (nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
+@property (nonatomic, strong) NSDictionary *customAHeaders;
 @property (nonatomic, assign) BOOL useSSL;
 
 -(void)addAuthinticationToParams:(NSMutableDictionary **)params;
@@ -81,7 +82,7 @@
     dispatch_once(&onceToken, ^{
         
         // init the tracker
-        sharedObject = [[self alloc] initClient];
+        sharedObject = [[self alloc] init];
         
         // set the developer token
         sharedObject->_developerToken = developerToken;
@@ -94,21 +95,13 @@
     return sharedObject;
 }
 
-- (id) initClient{
-    if (self = [super init]) {
-        self.sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    }
-    return self;
-}
+
 
 -(id)init{
     
-    // we want to prevent the developer from using normal intializers
-    // the http manager class should only be used as a singelton
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-init is not a valid initializer for the class GGHTTPClientManager. Please use class method initializer"
-                                 userInfo:nil];
-    
+    if (self = [super init]) {
+        self.sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    }
     return self;
 }
 
@@ -126,8 +119,16 @@
 #pragma mark - Helpers
 
 - (NSDictionary *)authenticationHeaders{
-        return @{@"CLIENT": @"BRINGG SDK iOS",
-             @"CLIENT-VERSION": SDK_VERSION};
+    
+    NSMutableDictionary *retval = @{@"CLIENT": @"BRINGG SDK iOS",
+                                    @"CLIENT-VERSION": SDK_VERSION}.mutableCopy;
+    
+    if (self.customAHeaders) {
+        [retval addEntriesFromDictionary:self.customAHeaders];
+    }
+    
+    return retval;
+ 
 }
 
 - (NSString *)getServerURLWithMethod:(NSString *)method path:(NSString *)path {
@@ -322,6 +323,10 @@
     self.useSSL = isSecured;
 }
 
+- (void)setCustomAuthenticationHeaders:(NSDictionary * _Nullable)headers{
+    self.customAHeaders = headers;
+}
+
 #pragma mark - Getters
 
 - (NSOperationQueue *)serviceOperationQueue {
@@ -344,12 +349,14 @@
 
 #pragma mark - HTTP Actions
 
-- (void)signInWithName:(NSString *)name
-                 phone:(NSString *)phone
-      confirmationCode:(NSString *)confirmationCode
-            merchantId:(NSString *)merchantId
-                extras:(NSDictionary *)extras
-     completionHandler:(void (^)(BOOL success, GGCustomer *customer, NSError *error))completionHandler {
+- (void)signInWithName:(NSString * _Nullable)name
+                 phone:(NSString * _Nullable)phone
+                 email:(NSString * _Nullable)email
+              password:(NSString * _Nullable)password
+      confirmationCode:(NSString * _Nullable)confirmationCode
+            merchantId:(NSString * _Nonnull)merchantId
+                extras:(NSDictionary * _Nullable)extras
+     completionHandler:(void (^ _Nullable)(BOOL success, NSDictionary * _Nullable response,  GGCustomer * _Nullable customer, NSError * _Nullable error))completionHandler {
     
     // build params for sign in
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
@@ -357,20 +364,32 @@
         [params setObject:self.developerToken forKey:BCDeveloperTokenKey];
         
     }
-    if (name) {
+    if (name && name.length > 0) {
         
         [params setObject:name forKey:PARAM_NAME];
-        
-        
+
     }
-    if (phone) {
+    
+    if (phone && phone.length > 0) {
         [params setObject:phone forKey:PARAM_PHONE];
         
     }
-    if (confirmationCode) {
+    if (confirmationCode && confirmationCode.length > 0) {
         [params setObject:confirmationCode forKey:BCConfirmationCodeKey];
         
     }
+    
+    
+    if (email && email.length > 0) {
+        [params setObject:email forKey:PARAM_EMAIL];
+        
+    }
+    
+    if (password && password.length > 0) {
+        [params setObject:password forKey:@"password"];
+        
+    }
+
     if (merchantId) {
         [params setObject:merchantId forKey:PARAM_MERCHANT_ID];
         
@@ -400,7 +419,7 @@
 
                            NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
                            
-                           completionHandler(NO, nil, responseError);
+                           completionHandler(NO, nil, nil, responseError);
                        }
                        
                        weakSelf.customer = nil;
@@ -412,7 +431,7 @@
                    weakSelf.customer = customer;
                    
                    if (completionHandler) {
-                       completionHandler(success, customer, error);
+                       completionHandler(success, JSON, customer, error);
                    }
                                                            
         //
@@ -420,7 +439,12 @@
  
 }
 
-- (void)rate:(int)rating withToken:(NSString *)ratingToken ratingURL:(NSString *)ratingURL withCompletionHandler:(void (^)(BOOL success, GGRating *rating, NSError *error))completionHandler{
+- (void)rate:(int)rating
+   withToken:(NSString * _Nonnull)ratingToken
+   ratingURL:(NSString *_Nonnull)ratingURL
+      extras:(NSDictionary * _Nullable)extras
+withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error))completionHandler{
+    
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     
     [params setObject:@(rating) forKey:BCRatingKey];
@@ -428,6 +452,10 @@
     
  
     [self addAuthinticationToParams:&params];
+    
+    if (extras) {
+        [params addEntriesFromDictionary:extras];
+    }
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodPost
@@ -444,7 +472,7 @@
                    }
                    
                    if (completionHandler) {
-                       completionHandler(success, rating, error);
+                       completionHandler(success, JSON, rating, error);
                    }
                    //
                }]];
@@ -477,7 +505,9 @@
 
 #pragma mark - HTTP GETTERS
 
-- (void)getOrderByID:(NSUInteger)orderId withCompletionHandler:(void (^)(BOOL success, GGOrder *order, NSError *error))completionHandler{
+- (void)getOrderByID:(NSUInteger)orderId
+              extras:(NSDictionary * _Nullable)extras
+withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
@@ -485,6 +515,10 @@
     
     if (_customer) {
         [params setObject:_customer.phone forKey:PARAM_PHONE];
+    }
+    
+    if (extras) {
+        [params addEntriesFromDictionary:extras];
     }
     
     [self.serviceOperationQueue addOperation:
@@ -498,17 +532,23 @@
                    if (success) order = [[GGOrder alloc] initOrderWithData:JSON];
                    
                    if (completionHandler) {
-                       completionHandler(success, order, error);
+                       completionHandler(success, JSON, order, error);
                    }
         //
     }]];
     
 }
 
-- (void)getSharedLocationByUUID:(NSString *)sharedLocationUUID withCompletionHandler:(void (^)(BOOL success, GGSharedLocation *sharedLocation, NSError *error))completionHandler{
+- (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
+                         extras:(NSDictionary * _Nullable)extras
+          withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error))completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
+    
+    if (extras) {
+        [params addEntriesFromDictionary:extras];
+    }
     
     [self.serviceOperationQueue addOperation:
      [self httpRequestWithMethod:BCRESTMethodGet
@@ -521,7 +561,7 @@
                    if (success) sharedLocation = [[GGSharedLocation alloc] initWithData:JSON];
                    
                    if (completionHandler) {
-                       completionHandler(success, sharedLocation, error);
+                       completionHandler(success, JSON, sharedLocation, error);
                    }
                    //
                }]];

@@ -112,7 +112,7 @@
 
 - (void)addAndUpdateOrder:(GGOrder *)order{
     // add this order to the orders active list if needed;
-    if (order) {
+    if (order != nil && order.uuid != nil) {
         
         if (![self.activeOrders objectForKey:order.uuid]) {
             [self.activeOrders setObject:order forKey:order.uuid];
@@ -127,7 +127,7 @@
 }
 - (void)addAndUpdateDriver:(GGDriver *)driver{
     // add this driver to the drivers active list if needed
-    if (driver) {
+    if (driver != nil && driver.uuid != nil) {
         
         if (![self.activeDrivers objectForKey:driver.uuid]) {
             [self.activeDrivers setObject:driver forKey:driver.uuid];
@@ -179,11 +179,21 @@
 #pragma mark - SocketIO actions
 
 - (void)webSocketConnectWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
-    NSString *server = BTRealtimeServer;
+    
+    NSString *server;
+    
+    if (self.realtimeConnectionDelegate && [self.realtimeConnectionDelegate respondsToSelector:@selector(hostDomainForRealTimeMonitor:)]) {
+        server = [self.realtimeConnectionDelegate hostDomainForRealTimeMonitor:self];
+    }
+    
+    if (!server) {
+        server = BTRealtimeServer;
+    }
     
     self.socketIO.useSecure = self.useSSL;
     
     if ([self.socketIO isConnected] || [self.socketIO isConnecting]) {
+       
         if (completionHandler) {
             NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
                                              userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Already connected.", @"eng/heb")}];
@@ -204,21 +214,18 @@
             return;
         }
         
-        NSLog(@"websocket connected %@", server);
-        if (self.reachability.isReachableViaWiFi) {
-            [self.socketIO connectToHost:server
-                                  onPort:0
-                              withParams:@{@"developer_access_token":self.developerToken}
-             /*withTransport:SocketIOTransportWebSocket*/];
-            
-        } else {
-            [self.socketIO connectToHost:server
-                                  onPort:0
-                              withParams:@{@"developer_access_token":self.developerToken}
-             /* withTransport:SocketIOTransportXHRPolling*/];
-            
-        }
         self.socketIOConnectedBlock = completionHandler;
+        
+        if (self.reachability.isReachable) {
+            
+            NSLog(@"websocket connecting %@", server);
+            
+            
+            [self.socketIO connectToHost:server
+                                  onPort:0
+                              withParams:@{@"developer_access_token":self.developerToken}];
+        }
+        
         
     }
 }
@@ -230,10 +237,12 @@
 
 
 - (void)connect {
-    NSLog(@"Connecting!");
+    NSLog(@"Trying Connecting!");
     [self webSocketConnectWithCompletionHandler:^(BOOL success, NSError *error) {
+        
         self.connected = success;
         NSLog(@"Connected: %d ", success);
+        
         if (success) {
             [self.realtimeDelegate trackerDidConnect];
             
@@ -328,6 +337,9 @@
     self.connected = YES;
     
     if (self.socketIOConnectedBlock) {
+        
+         NSLog(@"\t\thandling connect success");
+        
         self.socketIOConnectedBlock(YES, nil);
         self.socketIOConnectedBlock = nil;
         

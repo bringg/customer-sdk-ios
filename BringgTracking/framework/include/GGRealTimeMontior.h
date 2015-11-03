@@ -13,7 +13,13 @@
 
 @class GGOrder;
 @class GGDriver;
+@class GGRealTimeMontior;
 
+@protocol GGRealTimeMonitorConnectionDelegate <NSObject>
+
+-(NSString * __nonnull)hostDomainForRealTimeMonitor:(GGRealTimeMontior *__nonnull)realTimeMonitor;
+
+@end
 
 @interface GGRealTimeMontior : NSObject<SocketIODelegate>
 

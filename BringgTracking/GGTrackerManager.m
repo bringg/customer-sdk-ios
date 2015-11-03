@@ -9,9 +9,6 @@
 #import "GGTrackerManager_Private.h"
 
 #import "GGHTTPClientManager.h"
-#import "GGHTTPClientManager_Private.h"
-
-#import "GGRealTimeMontior+Private.h"
 #import "GGRealTimeMontior.h"
 
 
@@ -59,6 +56,7 @@
         
         // init the real time monitor
         sharedObject->_liveMonitor = [GGRealTimeMontior sharedInstance];
+        sharedObject->_liveMonitor.realtimeConnectionDelegate = sharedObject;
         
         // init polled
         sharedObject->_polledOrders = [NSMutableSet set];
@@ -646,8 +644,11 @@
         // if delegate isnt null than start watching again
         if (orderDelegate && ![orderDelegate isEqual: [NSNull null]]) {
             
-            [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
-            
+            if ([orderDelegate respondsToSelector:@selector(trackerWillReviveWatchedOrder:)]) {
+                
+                [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
+            }
+ 
             [self startWatchingOrderWithUUID:orderUUID delegate:orderDelegate];
             
         }
@@ -676,7 +677,11 @@
         // if delegate isnt null than start watching again
         if (driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
             
-            [driverDelegate trackerWillReviveWatchedDriver:driverUUID withSharedUUID:sharedUUID];
+            if ([driverDelegate respondsToSelector:@selector(trackerWillReviveWatchedDriver:withSharedUUID:)]) {
+                [driverDelegate trackerWillReviveWatchedDriver:driverUUID withSharedUUID:sharedUUID];
+            }
+            
+            
             
             [self startWatchingDriverWithUUID:driverUUID shareUUID:sharedUUID delegate:driverDelegate];
             
@@ -697,7 +702,9 @@
         // if delegate isnt null than start watching again
         if (wpDelegate && ![wpDelegate isEqual: [NSNull null]]) {
         
-            [wpDelegate trackerWillReviveWatchedWaypoint:waypointId];
+            if ([wpDelegate respondsToSelector:@selector(trackerWillReviveWatchedWaypoint:)]) {
+                [wpDelegate trackerWillReviveWatchedWaypoint:waypointId];
+            }
             
             [self startWatchingWaypointWithWaypointId:waypointId delegate:wpDelegate];
             
@@ -741,6 +748,8 @@
     }
 }
 
+
+
 -(void)trackerDidDisconnectWithError:(NSError *)error{
 
     NSLog(@"tracker disconnected with error %@", error);
@@ -770,6 +779,23 @@
     }
 }
 
+#pragma mark - Real Time Monitor Connection Delegate
+-(NSString *)hostDomainForRealTimeMonitor:(GGRealTimeMontior *)realTimeMonitor{
+    
+    NSString *retval;
+    
+    if (self.trackerRealtimeDelegate && [self.trackerRealtimeDelegate respondsToSelector:@selector(hostDomainForTrackerManager:)]) {
+        
+        retval = [self.trackerRealtimeDelegate hostDomainForTrackerManager:self];
+        
+    }
+    
+    if (!retval) {
+        retval = BTRealtimeServer;
+    }
+    
+    return retval;
+}
 
 #pragma mark - Real Time status checks
 

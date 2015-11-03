@@ -10,6 +10,7 @@
 
  
 #import "BringgGlobals.h"
+#import "GGRealTimeMontior.h"
 
 @class GGRealTimeMontior;
 @class GGHTTPClientManager;
@@ -18,6 +19,7 @@
 @class GGDriver;
 @class GGRating;
 @class GGCustomer;
+@class GGTrackerManager;
 
 @protocol RealTimeDelegate <NSObject>
 
@@ -31,25 +33,35 @@
  *  @usage the tracker manager handles connection recoveries by its own if network allows it. so this notifications is just to give the delegete a change to updates its own model to whatever he desiers
  *  @param error an error describing connection error (might be nill if forced)
  */
-- (void)trackerDidDisconnectWithError:(NSError *)error;
+- (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
 
+@optional
 
+/**
+ *  asks the delegate for a custom domain host for the tracker manager.
+ *  if no domain is provided the tracker manager will resolve to its default
+ *
+ *  @param trackerManager the tracker manager request
+ *
+ *  @return the domain to connect the tracker manager
+ */
+-(NSString * _Nullable)hostDomainForTrackerManager:(GGTrackerManager *_Nonnull)trackerManager;
 
 @end
 
 
 
-@interface GGTrackerManager : NSObject <RealTimeDelegate>
+@interface GGTrackerManager : NSObject <RealTimeDelegate, GGRealTimeMonitorConnectionDelegate>
 
-@property (nonatomic, readonly) GGRealTimeMontior * liveMonitor;
-@property (nonatomic, getter=customer) GGCustomer *appCustomer;
+@property (nonatomic, readonly) GGRealTimeMontior * _Nullable liveMonitor;
+@property (nonatomic, getter=customer) GGCustomer * _Nullable appCustomer;
 
 
 /**
  *  creates if needed and returns an initialized tracker singelton
  *  @return the tracker singelton
  */
-+ (id)tracker;
++ (nonnull id)tracker;
 
 /**
  *  creates if needed an singelton Bringg Tracker object
@@ -60,13 +72,13 @@
  *
  *  @return the Bringg Tracker singelton
  */
-+ (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate;
++ (nonnull id)trackerWithCustomerToken:(NSString * _Nullable)customerToken andDeveloperToken:(NSString *_Nullable)devToken andDelegate:(id <RealTimeDelegate> _Nullable)delegate;
 
 /**
  *  set the developer token for the singelton
  *  @param devToken
  */
-- (void)setDeveloperToken:(NSString *)devToken;
+- (void)setDeveloperToken:(NSString * _Nullable)devToken;
 
 
 /**
@@ -74,7 +86,7 @@
  *
  *  @param delegate a delegate confirming to RealTimeDelegate protocol
  */
-- (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate;
+- (void)setRealTimeDelegate:(id <RealTimeDelegate> _Nullable)delegate;
 
 
 /**
@@ -95,7 +107,7 @@
  *  @warning Customer objects are obtained via performing sign in operations with the GGHTTPClientManager.h
  *  @param customer the Customer object representing the logged in customer
  */
-- (void)setCustomer:(GGCustomer *)customer;
+- (void)setCustomer:(GGCustomer * _Nullable)customer;
 
 
 
@@ -122,7 +134,7 @@
  *
  *  @return BOOL
  */
-- (BOOL)isWatchingOrderWithUUID:(NSString *)uuid;
+- (BOOL)isWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
 
 /**
  *  tell if any drivers are being watched
@@ -138,7 +150,7 @@
  *
  *  @return BOOL
  */
-- (BOOL)isWatchingDriverWithUUID:(NSString *)uuid;
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
 
 /**
  *  tell if any waypoints are being watched
@@ -154,7 +166,7 @@
  *
  *  @return BOOL
  */
-- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId;
+- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId;
 
 
 // track actions
@@ -165,8 +177,8 @@
  *  @param delegate object to recieve order callbacks
  *  @see OrderDelegate
  */
-- (void)startWatchingOrderWithUUID:(NSString *)uuid
-                          delegate:(id <OrderDelegate>)delegate;
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
  *  asks the real time service to start tracking a specific driver
@@ -176,9 +188,9 @@
  *  @param delegate  object to recieve driver callbacks
  *  @see DriverDelegate
  */
-- (void)startWatchingDriverWithUUID:(NSString *)uuid
-                          shareUUID:(NSString *)shareUUID
-                           delegate:(id <DriverDelegate>)delegate;
+- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
+                          shareUUID:(NSString *_Nonnull)shareUUID
+                           delegate:(id <DriverDelegate> _Nullable)delegate;
 
 /**
  *  asks the real time service to start tracking a specific waypoint
@@ -187,8 +199,8 @@
  *  @param delegate   object to recieve waypoint callbacks
  *  @see WaypointDelegate
  */
-- (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId
-                                   delegate:(id <WaypointDelegate>)delegate;
+- (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId
+                                   delegate:(id <WaypointDelegate> _Nullable)delegate;
 
 
 /**
@@ -196,7 +208,7 @@
  *
  *  @param uuid uuid of order
  */
-- (void)stopWatchingOrderWithUUID:(NSString *)uuid;
+- (void)stopWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
 
 /**
  *  stop watching all orders
@@ -209,8 +221,8 @@
  *  @param uuid      uuid of driver
  *  @param shareUUID uuid of shared location object associated with a specific order
  */
-- (void)stopWatchingDriverWithUUID:(NSString *)uuid
-                         shareUUID:(NSString *)shareUUID;
+- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid
+                         shareUUID:(NSString *_Nullable)shareUUID;
 /**
  *  stops watching all drivers
  */
@@ -221,7 +233,7 @@
  *
  *  @param waypointId id of waypoint
  */
-- (void)stopWatchingWaypointWithWaypointId:(NSNumber *)waypointId;
+- (void)stopWatchingWaypointWithWaypointId:(NSNumber * _Nonnull)waypointId;
 
 /**
  *  stops tracking all waypoints
@@ -255,7 +267,7 @@
  *
  *  @return a list of order uuid's
  */
-- (NSArray *)monitoredOrders;
+- (NSArray * _Nullable)monitoredOrders;
 
 /**
  *  get a list of monitored drivers
@@ -263,13 +275,13 @@
  *  @return a list of driver uuid's
  */
 
-- (NSArray *)monitoredDrivers;
+- (NSArray * _Nullable)monitoredDrivers;
 
 /**
  *  get a list of monitored waypoints
  *
  *  @return a list of waypoint id's
  */
-- (NSArray *)monitoredWaypoints;
+- (NSArray * _Nullable)monitoredWaypoints;
 
 @end

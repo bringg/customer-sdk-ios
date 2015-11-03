@@ -11,6 +11,8 @@
 #import "GGTrackerManager.h"
 #import "Reachability.h"
 
+
+
 @interface GGRealTimeMontior ()
 
 typedef void (^CompletionBlock)(BOOL success, NSError *error);
@@ -32,7 +34,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 @property (nonatomic,strong) SocketIO *socketIO;
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
 @property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
-
+@property (nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
 
 @property (nonatomic, strong) Reachability* reachability;
 

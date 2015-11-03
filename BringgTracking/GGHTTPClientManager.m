@@ -55,13 +55,59 @@
 
 @interface GGHTTPClientManager ()
 
-@property (nonatomic, strong) NSOperationQueue *serviceOperationQueue;
-@property (nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
-@property (nonatomic, strong) NSDictionary *customAHeaders;
+@property (nonatomic, strong) NSOperationQueue * _Nonnull serviceOperationQueue;
+@property (nonatomic, strong) NSURLSessionConfiguration * _Nonnull sessionConfiguration;
+@property (nonatomic, strong) NSDictionary * _Nullable customHeaders;
 @property (nonatomic, assign) BOOL useSSL;
 
--(void)addAuthinticationToParams:(NSMutableDictionary **)params;
 
+/**
+ *  adds authentication params to the regular params of a call
+ *
+ *  @param params a pointer to the actual params
+ */
+-(void)addAuthinticationToParams:(NSMutableDictionary *__autoreleasing __nonnull*)params;
+
+
+/**
+ *  adds custom extra params to params group
+ *
+ *  @param extras the extra dictionary
+ *  @param params  pointer to the actual params
+ */
+-(void)injectCustomExtras:(NSDictionary *)extras toParams:(NSMutableDictionary *__autoreleasing __nonnull*)params;
+
+/**
+ *  returns an authentication header to use
+ *
+ *  @return NSDictionary
+ */
+- (NSDictionary * _Nonnull)authenticationHeaders;
+
+/**
+ *  parses and returns a mutated path base on the method and SSL configuration
+ *
+ *  @param method http method
+ *  @param path   path of call
+ *
+ *  @return modifed and final path of call
+ */
+- (NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull)path;
+
+/**
+ *  create and adds a http request to the service Q
+ *
+ *  @param method            HTTP method (GET/POST etc)
+ *  @param path              path of request
+ *  @param params            params to pass into the request
+ *  @param completionHandler completion handler block
+ *
+ *  @return an NSOperation object that handles the http request
+ */
+- (NSOperation * _Nullable)httpRequestWithMethod:(NSString * _Nonnull)method
+                                            path:(NSString *_Nonnull)path
+                                          params:(NSDictionary * _Nullable)params
+                               completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler;
 @end
 
 
@@ -118,23 +164,31 @@
 
 #pragma mark - Helpers
 
-- (NSDictionary *)authenticationHeaders{
+- (NSDictionary * _Nonnull)authenticationHeaders{
     
     NSMutableDictionary *retval = @{@"CLIENT": @"BRINGG SDK iOS",
                                     @"CLIENT-VERSION": SDK_VERSION}.mutableCopy;
     
-    if (self.customAHeaders) {
-        [retval addEntriesFromDictionary:self.customAHeaders];
+    if (self.customHeaders) {
+        [retval addEntriesFromDictionary:self.customHeaders];
     }
     
     return retval;
  
 }
 
-- (NSString *)getServerURLWithMethod:(NSString *)method path:(NSString *)path {
+- (NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull)path {
     NSString *server;
     
-    server = BCRealtimeServer;
+    if (self.delegate) {
+        server = [self.delegate hostDomainForClientManager:self];
+    }
+    
+    if (!server || [server length] == 0) {
+        server = BCRealtimeServer;
+    }
+    
+    
     
     // remove current prefix
     if ([server hasPrefix:HTTPS_FORMAT]) {
@@ -162,7 +216,24 @@
     
 }
 
--(void)addAuthinticationToParams:(NSMutableDictionary **)params{
+-(void)injectCustomExtras:(NSDictionary *)extras toParams:(NSMutableDictionary *__autoreleasing __nonnull*)params{
+    
+    [extras enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        //check if value is not NSNull
+        if (![obj isKindOfClass:[NSNull class]]) {
+            [*params setObject:obj forKey:key];
+        }else{
+            
+            // value is NSNull check if key already exists in params
+            // if so we should remove it
+            if ([*params objectForKey:key]) {
+                [*params removeObjectForKey:key];
+            }
+        }
+    }];
+}
+
+-(void)addAuthinticationToParams:(NSMutableDictionary *__autoreleasing __nonnull*)params{
     NSAssert([*params isKindOfClass:[NSMutableDictionary class]], @"http paras must be mutable");
     
     [*params setObject:_developerToken forKey:BCDeveloperTokenKey];
@@ -177,10 +248,10 @@
     
 }
 
-- (NSOperation *)httpRequestWithMethod:(NSString *)method
-                                  path:(NSString *)path
-                                params:(NSDictionary *)params
-                     completionHandler:(void (^)(BOOL success, id JSON, NSError *error))completionHandler{
+- (NSOperation * _Nullable)httpRequestWithMethod:(NSString * _Nonnull)method
+                                  path:(NSString *_Nonnull)path
+                                params:(NSDictionary * _Nullable)params
+                     completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler{
     
     
     NSLog(@"%@, params: %@ & path: %@",  method, params, path);
@@ -189,8 +260,9 @@
     NSURL *CTSURL = [NSURL URLWithString:server];
     AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:CTSURL sessionConfiguration:self.sessionConfiguration];
     sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
-    sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-    sessionManager.responseSerializer.acceptableContentTypes = [sessionManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    sessionManager.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
+    sessionManager.responseSerializer.acceptableContentTypes =  [sessionManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    
     
     
     NSError *jsonError;
@@ -324,7 +396,7 @@
 }
 
 - (void)setCustomAuthenticationHeaders:(NSDictionary * _Nullable)headers{
-    self.customAHeaders = headers;
+    self.customHeaders = headers;
 }
 
 #pragma mark - Getters
@@ -396,7 +468,7 @@
     }
     
     if (extras) {
-        [params addEntriesFromDictionary:extras];
+        [self injectCustomExtras:extras toParams:&params];
     }
     
     __weak __typeof(&*self)weakSelf = self;
@@ -454,7 +526,7 @@ withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable
     [self addAuthinticationToParams:&params];
     
     if (extras) {
-        [params addEntriesFromDictionary:extras];
+        [self injectCustomExtras:extras toParams:&params];
     }
     
     [self.serviceOperationQueue addOperation:
@@ -518,7 +590,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
     }
     
     if (extras) {
-        [params addEntriesFromDictionary:extras];
+        [self injectCustomExtras:extras toParams:&params];
     }
     
     [self.serviceOperationQueue addOperation:
@@ -547,7 +619,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
     [self addAuthinticationToParams:&params];
     
     if (extras) {
-        [params addEntriesFromDictionary:extras];
+        [self injectCustomExtras:extras toParams:&params];
     }
     
     [self.serviceOperationQueue addOperation:

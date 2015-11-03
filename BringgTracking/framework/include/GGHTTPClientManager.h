@@ -14,8 +14,27 @@
 @class GGDriver;
 @class GGRating;
 @class GGOrderBuilder;
+@class GGHTTPClientManager;
+
+@protocol GGHTTPClientConnectionDelegate <NSObject>
+
+@optional
+
+/**
+ *  asks the delegate for a custom domain host for the http manager.
+ *  if no domain is provided the http manager will resolve to its default
+ *
+ *  @param clientManager the client manager request
+ *
+ *  @return the domain to connect the http manager
+ */
+-(NSString * _Nullable)hostDomainForClientManager:(GGHTTPClientManager *_Nonnull)clientManager;
+
+@end
 
 @interface GGHTTPClientManager : NSObject
+
+@property (nonatomic, weak) id<GGHTTPClientConnectionDelegate> delegate;
 
 
 /**

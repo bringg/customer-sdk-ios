@@ -8,11 +8,14 @@
 
 #import "GGTrackerManager.h"
 #import "BringgGlobals.h"
+#import "GGRealTimeMontior+Private.h"
+#import "GGHTTPClientManager_Private.h"
 
 #define DRIVER_COMPOUND_SEPERATOR @"|"
 #define POLLING_SEC 30
 
-@interface GGTrackerManager ()
+
+@interface GGTrackerManager()
 
 @property (nonatomic, getter=isSecuredConnection) BOOL  useSSL;
 

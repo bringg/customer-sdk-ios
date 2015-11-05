@@ -67,6 +67,13 @@
 - (void)useSecuredConnection:(BOOL)isSecured;
 
 
+/**
+ *  provides a customer object for the manager to use when authenticating  requests
+ *
+ *  @param customer GGCustomer
+ */
+- (void)useCustomer:(GGCustomer * _Nullable)customer;
+
 
 /**
  *  adds custom http header fields for all requests
@@ -151,5 +158,12 @@ withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable
  */
 - (BOOL)hasMerchantId;
 
+
+/**
+ *  retriesve the customer object of the signed in customer
+ *
+ *  @return GGCustomer
+ */
+- (nullable GGCustomer *)signedInCustomer;
  
 @end

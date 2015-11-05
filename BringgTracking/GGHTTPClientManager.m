@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 
-#define SDK_VERSION @"1.2"
+#define SDK_VERSION @"1.5"
 //-----------------------------------------------------------------------cu------
 
 #import "GGHTTPClientManager.h"
@@ -53,62 +53,6 @@
 #define HTTP_FORMAT @"http://%@"
 #define HTTPS_FORMAT @"https://%@"
 
-@interface GGHTTPClientManager ()
-
-@property (nonatomic, strong) NSOperationQueue * _Nonnull serviceOperationQueue;
-@property (nonatomic, strong) NSURLSessionConfiguration * _Nonnull sessionConfiguration;
-@property (nonatomic, strong) NSDictionary * _Nullable customHeaders;
-@property (nonatomic, assign) BOOL useSSL;
-
-
-/**
- *  adds authentication params to the regular params of a call
- *
- *  @param params a pointer to the actual params
- */
--(void)addAuthinticationToParams:(NSMutableDictionary *__autoreleasing __nonnull*)params;
-
-
-/**
- *  adds custom extra params to params group
- *
- *  @param extras the extra dictionary
- *  @param params  pointer to the actual params
- */
--(void)injectCustomExtras:(NSDictionary *)extras toParams:(NSMutableDictionary *__autoreleasing __nonnull*)params;
-
-/**
- *  returns an authentication header to use
- *
- *  @return NSDictionary
- */
-- (NSDictionary * _Nonnull)authenticationHeaders;
-
-/**
- *  parses and returns a mutated path base on the method and SSL configuration
- *
- *  @param method http method
- *  @param path   path of call
- *
- *  @return modifed and final path of call
- */
-- (NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull)path;
-
-/**
- *  create and adds a http request to the service Q
- *
- *  @param method            HTTP method (GET/POST etc)
- *  @param path              path of request
- *  @param params            params to pass into the request
- *  @param completionHandler completion handler block
- *
- *  @return an NSOperation object that handles the http request
- */
-- (NSOperation * _Nullable)httpRequestWithMethod:(NSString * _Nonnull)method
-                                            path:(NSString *_Nonnull)path
-                                          params:(NSDictionary * _Nullable)params
-                               completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler;
-@end
 
 
 @implementation GGHTTPClientManager
@@ -177,7 +121,7 @@
  
 }
 
-- (NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull)path {
+- (nonnull NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull * _Nonnull)path {
     NSString *server;
     
     if (self.delegate) {
@@ -188,7 +132,7 @@
         server = BCRealtimeServer;
     }
     
-    
+   
     
     // remove current prefix
     if ([server hasPrefix:HTTPS_FORMAT]) {
@@ -197,6 +141,11 @@
     
     if ([server hasPrefix:HTTP_FORMAT]) {
         server = [server stringByReplacingOccurrencesOfString:HTTP_FORMAT withString:@""];
+    }
+    
+    // if path for some reason contains the server? remove it from the string
+    if ([*path rangeOfString:server].location != NSNotFound) {
+        *path = [*path stringByReplacingOccurrencesOfString:server withString:@""];
     }
     
     // add prefix according to ssl flag
@@ -236,14 +185,17 @@
 -(void)addAuthinticationToParams:(NSMutableDictionary *__autoreleasing __nonnull*)params{
     NSAssert([*params isKindOfClass:[NSMutableDictionary class]], @"http paras must be mutable");
     
-    [*params setObject:_developerToken forKey:BCDeveloperTokenKey];
+    if (_developerToken) {
+         [*params setObject:_developerToken forKey:BCDeveloperTokenKey];
+    }
+   
+    NSString *auth = [_customer getAuthIdentifier];
+    
     
     if (_customer) {
         [*params setObject:_customer.customerToken forKey:PARAM_ACCESS_TOKEN];
         [*params setObject:_customer.merchantId forKey:PARAM_MERCHANT_ID];
-        if (_customer.getAuthIdentifier) {
-            [*params setObject:_customer.getAuthIdentifier forKey:PARAM_PHONE];
-        }
+        if (auth) [*params setObject:auth forKey:PARAM_PHONE];
     }
     
 }
@@ -255,7 +207,10 @@
     
     
     NSLog(@"%@, params: %@ & path: %@",  method, params, path);
-    NSString *server = [self getServerURLWithMethod:method path:path];
+    NSString *server = [self getServerURLWithMethod:method path:&path];
+    
+    
+   
     
     NSURL *CTSURL = [NSURL URLWithString:server];
     AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:CTSURL sessionConfiguration:self.sessionConfiguration];
@@ -352,6 +307,9 @@
            
         }
         
+#if DEBUG
+        NSLog(@"GOT HTTP Response (%@) For Path %@:", responseObject, path);
+#endif
        
         if (completionHandler) {
             completionHandler(result, responseObject, error);
@@ -359,6 +317,10 @@
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         //
+#if DEBUG
+        NSLog(@"GOT HTTP ERROR (%@) For Path %@:", error, path);
+#endif
+        
         if (completionHandler) {
             
             if (error && error.code >= 500 && error.code < 600) {
@@ -399,6 +361,11 @@
     self.customHeaders = headers;
 }
 
+
+- (void)useCustomer:(GGCustomer * _Nullable)customer{
+    self.customer = customer;
+}
+
 #pragma mark - Getters
 
 - (NSOperationQueue *)serviceOperationQueue {
@@ -417,6 +384,10 @@
 }
 - (BOOL)hasMerchantId{
     return _customer && _customer.merchantId;
+}
+
+- (nullable GGCustomer *)signedInCustomer{
+    return _customer;
 }
 
 #pragma mark - HTTP Actions
@@ -584,10 +555,6 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
     
-    
-    if (_customer) {
-        [params setObject:_customer.phone forKey:PARAM_PHONE];
-    }
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];

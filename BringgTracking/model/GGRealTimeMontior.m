@@ -121,8 +121,6 @@
         }
         
     }
-    
-    
 
 }
 - (void)addAndUpdateDriver:(GGDriver *)driver{
@@ -400,7 +398,7 @@
         
         // get most updated model
         GGOrder *order = [self.activeOrders objectForKey:orderUUID];
-        GGDriver *driver = [self.activeOrders objectForKey:updatedDriver.uuid];
+        GGDriver *driver = [self.activeDrivers objectForKey:updatedDriver.uuid];
         
         //test get order method
 //        NSNumber *orderID = [eventData objectForKey:PARAM_ID];
@@ -464,7 +462,7 @@
         
         // get most updated model
         GGOrder *order = [self.activeOrders objectForKey:orderUUID];
-        GGDriver *driver = [self.activeOrders objectForKey:updatedDriver.uuid];
+        GGDriver *driver = [self.activeDrivers objectForKey:updatedDriver.uuid];
 
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];

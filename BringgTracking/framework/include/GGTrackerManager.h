@@ -63,16 +63,18 @@
  */
 + (nonnull id)tracker;
 
+
 /**
  *  creates if needed an singelton Bringg Tracker object
  *  @warning call this method only when obtained valid customer access token and developer access token
  *  @param customerToken a valid customer access token
  *  @param devToken      a valid developer access token
  *  @param delegate      a delegate object to recive notification from the Bringg tracker object
+ *  @param httpManager   an http manager that will do the polling for the tracker
  *
  *  @return the Bringg Tracker singelton
  */
-+ (nonnull id)trackerWithCustomerToken:(NSString * _Nullable)customerToken andDeveloperToken:(NSString *_Nullable)devToken andDelegate:(id <RealTimeDelegate> _Nullable)delegate;
++ (nonnull id)trackerWithCustomerToken:(NSString * _Nullable)customerToken andDeveloperToken:(NSString *_Nullable)devToken andDelegate:(id <RealTimeDelegate> _Nullable)delegate andHTTPManager:(GGHTTPClientManager * _Nullable)httpManager;
 
 /**
  *  set the developer token for the singelton
@@ -80,6 +82,12 @@
  */
 - (void)setDeveloperToken:(NSString * _Nullable)devToken;
 
+/**
+ *  set the httpManager that will be used to poll data for the tracker
+ *
+ *  @param httpManager GGHTTPManager
+ */
+- (void)setHTTPManager:(GGHTTPClientManager * _Nullable)httpManager;
 
 /**
  *  sets the delegate to receieve real time updates
@@ -113,6 +121,7 @@
 
 // status checks
 
+
 /**
  *  test of tracker is connected to the real time update service
  *
@@ -126,6 +135,14 @@
  *  @return BOOL
  */
 - (BOOL)isWatchingOrders;
+
+
+/**
+ *  checks if the tracker is supporting polling
+ *  @usage to support polling the tracker needs an http manager that holds a customer object (for authentication)
+ *  @return BOOL
+ */
+- (BOOL)isPollingSupported;
 
 /**
  *  tell if a specific order is being watched
@@ -150,7 +167,7 @@
  *
  *  @return BOOL
  */
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID;
 
 /**
  *  tell if any waypoints are being watched

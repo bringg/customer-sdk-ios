@@ -221,6 +221,10 @@ static NSDateFormatter *dateFormat;
         if (newOrder.sharedLocationUUID && newOrder.sharedLocationUUID.length > 0) {
             self.sharedLocationUUID = newOrder.sharedLocationUUID;
         }
+        
+        if (newOrder.waypoints) {
+            self.waypoints = newOrder.waypoints;
+        }
     }
 }
 

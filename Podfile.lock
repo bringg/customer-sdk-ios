@@ -1,0 +1,19 @@
+PODS:
+  - DCKeyValueObjectMapping (1.5)
+  - OCHamcrest (4.3.0)
+  - OCMock (3.2)
+  - OCMockito (1.4.0):
+    - OCHamcrest (~> 4.0)
+
+DEPENDENCIES:
+  - DCKeyValueObjectMapping
+  - OCMock (~> 3.1)
+  - OCMockito (~> 1.4)
+
+SPEC CHECKSUMS:
+  DCKeyValueObjectMapping: c2eb5a6529da100b2e49ef6a599663578051f077
+  OCHamcrest: cd63d27f48a266d4412c0b295b01b8f0940efa81
+  OCMock: 28def049ef47f996b515a8eeea958be7ccab2dbb
+  OCMockito: 4981140c9a9ec06c31af40f636e3c0f25f27e6b2
+
+COCOAPODS: 0.39.0

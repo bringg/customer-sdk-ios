@@ -278,19 +278,27 @@
                     
                     if (!error && sharedLocation != nil) {
                         //
-                        activeOrder.sharedLocation = sharedLocation;
-                    }
-                    
-                    if (sharedLocation.driver) {
+                        if (!activeOrder.sharedLocation) {
+                             activeOrder.sharedLocation = sharedLocation;
+                        }else{
+                            [activeOrder.sharedLocation update:sharedLocation];
+                            
+                        }
+                        
+                        [_liveMonitor addAndUpdateOrder:activeOrder];
                         [_liveMonitor addAndUpdateDriver:sharedLocation.driver];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             // notify all interested parties that there has been a status change in the order
+                            [weakSelf notifyRESTUpdateForOrder:activeOrder.uuid];
+                            
+                            // notify all interested parties that there has been a status change in the order
                             [weakSelf notifyRESTUpdateForDriver:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
+                            
                         });
-                        
                     }
- 
+                    
+                    
                 }];
             }
         }
@@ -341,9 +349,13 @@
                             // update the local model in the live monitor
                             [_liveMonitor addAndUpdateOrder:order];
                             
+                            GGOrder *updatedOrder = [weakSelf.liveMonitor getOrderWithUUID:order.uuid];
+                            
+                            GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
+                            
                             // check if we can also update the driver related to the order
-                            if ([[order sharedLocation] driver]) {
-                                [_liveMonitor addAndUpdateDriver:[[order sharedLocation] driver]];
+                            if (sharedLocationDriver) {
+                                [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
                             }
                             
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -373,8 +385,29 @@
 - (void)notifyRESTUpdateForOrder:(NSString *)orderUUID{
     
     GGOrder *order = [self.liveMonitor getOrderWithUUID:orderUUID];
-    GGDriver *driver = [self.liveMonitor getDriverWithUUID:order.driverUUID ? order.driverUUID : order.sharedLocation.driver.uuid];
+    NSString *driverUUID;
+    if (order.driverUUID) {
+        driverUUID = order.driverUUID;
+    }else if (order.sharedLocation.driver.uuid){
+        driverUUID = order.sharedLocation.driver.uuid;
+        
+    }else{
+        // sometimes rest order updates are missing relevent driver data
+        // so we wil try to get the driver object by driver id instead of uuid
+        
+        
+        
+        
+    }
     
+    GGDriver *driver;
+    
+    if (driverUUID) {
+        driver = [self.liveMonitor getDriverWithUUID:driverUUID];
+    }else{
+        driver = [self.liveMonitor getDriverWithID:@(order.driverId)];
+    }
+ 
     // update the order delegate
     id<OrderDelegate> delegate = [_liveMonitor.orderDelegates objectForKey:order.uuid];
     

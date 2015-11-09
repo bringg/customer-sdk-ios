@@ -30,23 +30,74 @@
         
         rating = [[GGRating alloc] initWithRatingToken:[GGBringgUtils stringFromJSON:[data objectForKey:PARAM_RATING_TOKEN] defaultTo:@""]];
         
-        driver = [[GGDriver alloc] initWithID:[GGBringgUtils integerFromJSON:data[@"user_id"] defaultTo:0]
-                                         uuid:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:nil]]
-                                         name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_NAME] defaultTo:nil]]
-                                        phone:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_PHONE] defaultTo:nil]]
-                                     latitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LAT] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_LAT] defaultTo:0]]
-                                    longitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LNG] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_LNG] defaultTo:0]]
-                                     activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ACTIVITY] defaultTo:0]]
-                                averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:-1]]
-                                  ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
-                                    ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_RATING_URL] defaultTo:nil]
-                                     imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
-                  ];
+        // create driver only if we have a valid driver uuid
+        NSString *driverUUID = [GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:nil];
+        
+        if (driverUUID) {
+            driver = [[GGDriver alloc] initWithID:[GGBringgUtils integerFromJSON:data[@"user_id"] defaultTo:0]
+                                             uuid:driverUUID
+                                             name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_NAME] defaultTo:nil]]
+                                            phone:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_PHONE] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_PHONE] defaultTo:nil]]
+                                         latitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LAT] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_LAT] defaultTo:0]]
+                                        longitude:[GGBringgUtils doubleFromJSON:data[PARAM_CURRENT_LNG] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_LNG] defaultTo:0]]
+                                         activity:(int)[GGBringgUtils integerFromJSON:data[PARAM_ACTIVITY] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_DRIVER_ACTIVITY] defaultTo:0]]
+                                    averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:-1]]
+                                      ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
+                                        ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_RATING_URL] defaultTo:nil]
+                                         imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
+                      ];
+
+        }
+        
+        
         
     }
     
     return self;
     
+}
+
+-(void)update:(GGSharedLocation *)newLocation{
+    if (newLocation) {
+        if (newLocation.orderUUID && newLocation.orderUUID.length > 0) {
+            self.orderUUID = newLocation.orderUUID ;
+        }
+        
+        if (newLocation.eta && newLocation.eta.length > 0) {
+            self.eta = newLocation.eta ;
+        }
+        
+        if (newLocation.trackingURL && newLocation.trackingURL.length > 0) {
+            self.trackingURL = newLocation.trackingURL ;
+        }
+        
+        if (newLocation.ratingURL && newLocation.ratingURL.length > 0) {
+            self.ratingURL = newLocation.ratingURL ;
+        }
+        
+        if (newLocation.eta && newLocation.eta.length > 0) {
+            self.eta = newLocation.eta ;
+        }
+        
+        if (newLocation.orderID && newLocation.orderID > 0) {
+            self.orderID = newLocation.orderID;
+        }
+        
+        if (newLocation.waypointID && newLocation.waypointID > 0) {
+            self.waypointID = newLocation.waypointID;
+        }
+
+
+        
+        if (newLocation.driver) {
+            if (!self.driver) {
+                self.driver = newLocation.driver;
+            }else{
+                [self.driver update:newLocation.driver];
+            }
+        }
+        
+    }
 }
 
 //MARK: NSCoding

@@ -58,6 +58,8 @@
         // let the real time manager handle socket events
         self.socketIO = [[SocketIO alloc] initWithDelegate:self];
      
+        self.connected = NO;
+        
         // start reachability monitor
         [self configureReachability];
     }
@@ -98,6 +100,8 @@
 }
 
 -(void)sendConnectionError:(NSError *)error{
+    
+    self.connected = NO;
     
     if (self.realtimeDelegate && [self.realtimeDelegate respondsToSelector:@selector(trackerDidDisconnectWithError:)]) {
         [self.realtimeDelegate trackerDidDisconnectWithError:error];
@@ -148,6 +152,12 @@
 
 -(GGDriver * _Nullable)getDriverWithUUID:(NSString * _Nonnull)uuid{
     return [self.activeDrivers objectForKey:uuid];
+}
+
+-(GGDriver * _Nullable)getDriverWithID:(NSNumber * _Nonnull)driverId{
+    NSArray *allActiveDrivers = [self.activeDrivers allValues];
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"driverid==%@", driverId];
+    return [[allActiveDrivers filteredArrayUsingPredicate:pred] firstObject];
 }
 
 
@@ -550,6 +560,9 @@
 }
 
 - (void) socketIO:(SocketIO *)socket onError:(NSError *)error {
+    
+    self.connected = [socket isConnected];
+    
     NSLog(@"Send error %@", error);
     
 }

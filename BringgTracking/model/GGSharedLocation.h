@@ -52,4 +52,11 @@
 -(nullable instancetype)initWithData:(NSDictionary * _Nullable)data;
 
 
+/**
+ *  tries to update current object with data from new object
+ *
+ *  @param newLocation new shared location to updated data from
+ */
+- (void)update:(GGSharedLocation *__nullable)newLocation;
+
 @end

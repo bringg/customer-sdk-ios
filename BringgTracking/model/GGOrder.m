@@ -215,7 +215,11 @@ static NSDateFormatter *dateFormat;
         }
         
         if (newOrder.sharedLocation) {
-            self.sharedLocation = newOrder.sharedLocation;
+            if (!self.sharedLocation) {
+                self.sharedLocation = newOrder.sharedLocation;
+            }else{
+                [self.sharedLocation update:newOrder.sharedLocation];
+            }
         }
         
         if (newOrder.sharedLocationUUID && newOrder.sharedLocationUUID.length > 0) {

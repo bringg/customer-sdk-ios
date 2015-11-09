@@ -184,7 +184,7 @@
 #pragma mark - Setters
 - (void)update:(GGDriver *__nullable)newDriver{
     if (newDriver) {
-        if (newDriver.uuid.length > 0) {
+        if (newDriver.uuid && newDriver.uuid.length > 0) {
             self.uuid = newDriver.uuid;
         }
         

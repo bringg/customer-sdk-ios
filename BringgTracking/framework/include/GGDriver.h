@@ -111,7 +111,7 @@
 /**
  *  tries to update current object with data from new object
  *
- *  @param newOrder new driver to updated data from
+ *  @param newDriver new driver to updated data from
  */
 - (void)update:(GGDriver *__nullable)newDriver;
 

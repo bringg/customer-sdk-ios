@@ -394,10 +394,7 @@
     }else{
         // sometimes rest order updates are missing relevent driver data
         // so we wil try to get the driver object by driver id instead of uuid
-        
-        
-        
-        
+  
     }
     
     GGDriver *driver;

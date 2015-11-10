@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 
-#define SDK_VERSION @"1.5"
-//-----------------------------------------------------------------------cu------
+
 
 #import "GGHTTPClientManager.h"
 #import "GGHTTPClientManager_Private.h"

@@ -59,6 +59,7 @@
         self.socketIO = [[SocketIO alloc] initWithDelegate:self];
      
         self.connected = NO;
+        self.wasManuallyConnected = NO;
         
         // start reachability monitor
         [self configureReachability];
@@ -74,7 +75,9 @@
     self.reachability = reachability;
     reachability.reachableBlock = ^(Reachability*reach) {
         NSLog(@"Reachable!");
-        if (![self.socketIO isConnected] && ![self.socketIO isConnecting] && self.developerToken) {
+        
+        // reconnect only if isnt already connecting and was at least once connected manually
+        if (![self.socketIO isConnected] && ![self.socketIO isConnecting] && self.developerToken && self.wasManuallyConnected) {
             [self connect];
 
         }
@@ -228,10 +231,12 @@
             
             NSLog(@"websocket connecting %@", server);
             
+            NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
+            
             
             [self.socketIO connectToHost:server
                                   onPort:0
-                              withParams:@{@"developer_access_token":self.developerToken}];
+                              withParams:connectionParams];
         }
         
         
@@ -252,7 +257,10 @@
         NSLog(@"Connected: %d ", success);
         
         if (success) {
+            
+            self.wasManuallyConnected = YES;
             [self.realtimeDelegate trackerDidConnect];
+            
             
         } else {
             [self.realtimeDelegate trackerDidDisconnectWithError:error];
@@ -274,13 +282,13 @@
     
 }
 
-- (void)sendEventWithName:(NSString *)name params:(NSDictionary *)params completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+- (void)sendEventWithName:(NSString *)name params:(NSDictionary *)params completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
     if (!self.connected) {
         if (completionHandler) {
             NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
                                              userInfo:@{NSLocalizedDescriptionKey: @"Web socket disconnected.",
                                                         NSLocalizedRecoverySuggestionErrorKey: @"Web socket disconnected."}];
-            completionHandler(NO, error);
+            completionHandler(NO, nil, error);
             
         }
         return;
@@ -293,10 +301,10 @@
             NSLog(@"SocketIOCallback argsData %@", argsData);
             NSError *error;
             if (![self errorAck:argsData error:&error]) {
-                completionHandler(YES, nil);
+                completionHandler(YES, argsData, nil);
                 
             } else {
-                completionHandler(NO, error);
+                completionHandler(NO, nil, error);
                 
             }
         };
@@ -568,7 +576,7 @@
 }
 
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
     NSLog(@"watch order");
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    uuid, @"order_uuid",
@@ -577,7 +585,7 @@
     
 }
 
-- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
     NSLog(@"watch driver");
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    uuid, @"driver_uuid",
@@ -587,7 +595,7 @@
     
 }
 
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
     NSLog(@"watch waypoint");
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    waypointId, @"way_point_id",

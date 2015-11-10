@@ -18,6 +18,7 @@
 @interface GGTrackerManager()
 
 @property (nonatomic, getter=isSecuredConnection) BOOL  useSSL;
+@property (nonatomic, assign) BOOL shouldReconnect;
 
 @property (nonatomic, strong) NSString * _Nullable customerToken;
 @property (nonatomic, strong) NSString * _Nullable developerToken;

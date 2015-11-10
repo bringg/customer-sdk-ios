@@ -65,6 +65,8 @@
         // setup http manager
         sharedObject->_httpManager = httpManager;
         
+        sharedObject->_shouldReconnect = YES;
+        
         // configure timeres
         [sharedObject configurePollingTimers];
         
@@ -104,15 +106,19 @@
 }
 
 - (void)restartLiveMonitor{
+    
+    
+    
     // for the live monitor itself set the tracker as the delegated
     [self setRealTimeDelegate:self.trackerRealtimeDelegate];
-    
     
     
     if (![self isConnected]) {
         NSLog(@"******** RESTART TRACKER CONNECTION (delegate: %@)********", self.trackerRealtimeDelegate);
         
-        [self connectUsingSecureConnection:self.useSSL];
+        if (self.shouldReconnect) {
+            [self connectUsingSecureConnection:self.useSSL];
+        }
     }else{
         NSLog(@">>>>> CAN'T RESTART CONNECTION - TRACKER IS ALREADY CONNECTED");
     }
@@ -139,6 +145,10 @@
         
         
     }
+}
+
+- (void)setShouldAutoReconnect:(BOOL)shouldAutoReconnect{
+    self.shouldReconnect = shouldAutoReconnect;
 }
 
 - (void)disconnect{
@@ -245,7 +255,12 @@
 
 - (void)locationPolling:(NSTimer *)timer {
     
-    if (![self isPollingSupported]) {
+    // location polling doesnt require authentication use it
+//    if (![self isPollingSupported]) {
+//        return;
+//    }
+
+    if (!self.httpManager) {
         return;
     }
     
@@ -261,7 +276,7 @@
         __weak __typeof(&*self)weakSelf = self;
         
         // if we have a shared location object for this order we can now poll
-        if (activeOrder.sharedLocation) {
+        if (activeOrder.sharedLocation || activeOrder.sharedLocationUUID) {
             
             // check that we arent already polling this
             if (![self.polledLocations containsObject:activeOrder.sharedLocationUUID]) {
@@ -481,15 +496,16 @@
         _liveMonitor.doMonitoringOrders = YES;
         id existingDelegate = [_liveMonitor.orderDelegates objectForKey:uuid];
         
-        GGOrder *order = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
+        __block GGOrder *order = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
         
         if (!existingDelegate) {
             @synchronized(self) {
                 [_liveMonitor.orderDelegates setObject:delegate forKey:uuid];
                 
             }
-            [_liveMonitor sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, NSError *error) {
+            [_liveMonitor sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
                 if (!success) {
+                    
                     id delegateToRemove = [_liveMonitor.orderDelegates objectForKey:uuid];
                     @synchronized(_liveMonitor) {
                         NSLog(@"SHOULD STOP WATCHING ORDER %@ with delegate %@", uuid, delegate);
@@ -504,7 +520,18 @@
                     }
                 }else{
                     
-                     NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", uuid, delegate);
+                    // check for share_uuid
+                    if (socketResponse && [socketResponse isKindOfClass:[NSDictionary class]]) {
+                        NSString *shareUUID = [socketResponse objectForKey:@"share_uuid"];
+                        if (shareUUID) {
+                            // updated the order model
+                            order.sharedLocationUUID = shareUUID;
+                            
+                            [_liveMonitor addAndUpdateOrder:order];
+                        }
+                    }
+                    
+                    NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", uuid, delegate);
                     
                     // with a little delay - also start polling orders
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -544,7 +571,7 @@
                 [_liveMonitor.driverDelegates setObject:delegate forKey:compoundKey];
                 
             }
-            [_liveMonitor sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success, NSError *error) {
+            [_liveMonitor sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success,id socketResponse, NSError *error) {
                 if (!success) {
                     
                     id delegateToRemove = [_liveMonitor.driverDelegates objectForKey:compoundKey];
@@ -596,7 +623,7 @@
                 [_liveMonitor.waypointDelegates setObject:delegate forKey:waypointId];
                 
             }
-            [_liveMonitor sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, NSError *error) {
+            [_liveMonitor sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, id socketResponse, NSError *error) {
                 if (!success) {
                     
                     NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);

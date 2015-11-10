@@ -104,6 +104,14 @@
  */
 - (void)connectUsingSecureConnection:(BOOL)useSecure;
 
+
+/**
+ *  sets should the tracket automaticaly reconnect when expereincing disconnections
+ *  @usage defaults to YES
+ *  @param shouldAutoReconnect BOOL
+ */
+- (void)setShouldAutoReconnect:(BOOL)shouldAutoReconnect;
+
 /**
  *  tells the tracker to disconnect from the real time update service asscosiated with the tracker
  */

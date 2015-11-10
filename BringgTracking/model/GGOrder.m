@@ -38,7 +38,7 @@ static NSDateFormatter *dateFormat;
         tip = [GGBringgUtils doubleFromJSON:data[@"tip"] defaultTo:0];
         leftToBePaid = [GGBringgUtils doubleFromJSON:data[@"left_to_be_paid"] defaultTo:0];
         
-        activeWaypointId = [GGBringgUtils integerFromJSON:data[@"active_way_point_id"] defaultTo:0];
+        activeWaypointId = [[GGBringgUtils numberFromJSON:data[@"active_way_point_id"] defaultTo:@0] integerValue];
         customerId = [GGBringgUtils integerFromJSON:data[@"customer_id"] defaultTo:0];
         merchantId = [GGBringgUtils integerFromJSON:data[@"merchant_id"] defaultTo:0];
         priority = [GGBringgUtils integerFromJSON:data[@"priority"] defaultTo:0];
@@ -196,6 +196,10 @@ static NSDateFormatter *dateFormat;
         
         if (newOrder.customerId > 0) {
             self.customerId = newOrder.customerId;
+        }
+        
+        if (newOrder.activeWaypointId > 0) {
+            self.activeWaypointId = newOrder.activeWaypointId;
         }
         
         if (newOrder.orderid  > 0) {

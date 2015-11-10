@@ -30,6 +30,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 @property (nonatomic, assign) BOOL doMonitoringWaypoints;
 @property (nonatomic, assign) BOOL connected;
 @property (nonatomic, assign) BOOL useSSL;
+@property (nonatomic, assign) BOOL wasManuallyConnected;
 
 @property (nonatomic,strong) SocketIO *socketIO;
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
@@ -54,11 +55,11 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 -(void)sendConnectionError:(NSError *)error;
 
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, NSError *error))completionHandler ;
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler ;
 
-- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, NSError *error))completionHandler;
+- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler;
 
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, NSError *error))completionHandler ;
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler ;
 
 
 

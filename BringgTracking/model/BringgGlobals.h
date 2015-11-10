@@ -9,6 +9,8 @@
 #ifndef BringgTracking_BringgGlobals_h
 #define BringgTracking_BringgGlobals_h
 
+#define SDK_VERSION @"1.5.0.2"
+//-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
 #define PARAM_CUSTOMER @"customer"

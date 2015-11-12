@@ -112,11 +112,10 @@
     // for the live monitor itself set the tracker as the delegated
     [self setRealTimeDelegate:self.trackerRealtimeDelegate];
     
-    
     if (![self isConnected]) {
-        NSLog(@"******** RESTART TRACKER CONNECTION (delegate: %@)********", self.trackerRealtimeDelegate);
-        
+
         if (self.shouldReconnect) {
+            NSLog(@"******** RESTART TRACKER CONNECTION (delegate: %@)********", self.trackerRealtimeDelegate);
             [self connectUsingSecureConnection:self.useSSL];
         }
     }else{
@@ -853,8 +852,8 @@
     [self.polledOrders removeAllObjects];
     
     
-    // check if there is network available - if yes > try to reconnect
-    if ([self.liveMonitor.reachability isReachable]) {
+    // on error check if there is network available - if yes > try to reconnect
+    if (error && [self.liveMonitor.reachability isReachable]) {
         [self restartLiveMonitor];
     }
 }

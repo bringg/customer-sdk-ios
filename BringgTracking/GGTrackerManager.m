@@ -250,7 +250,38 @@
 }
 
 
+- (void)startOrderPolling{
+    // with a little delay - also start polling orders
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //
+        if (self.orderPollingTimer && [self.orderPollingTimer isValid]) {
+            [self.orderPollingTimer fire];
+        }else{
+            [self resetPollingTimers];
+        }
+    });
+}
 
+- (BOOL)canPollForOrders{
+    return [self isPollingSupported];
+}
+
+- (BOOL)canPollForLocations{
+    return self.httpManager != nil;
+}
+
+- (void)startLocationPolling{
+    // with a little delay - also start polling orders
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //
+        if (self.locationPollingTimer && [self.locationPollingTimer isValid]) {
+            [self.locationPollingTimer fire];
+        }else{
+            [self resetPollingTimers];
+        }
+    });
+
+}
 
 - (void)locationPolling:(NSTimer *)timer {
     
@@ -259,7 +290,7 @@
 //        return;
 //    }
 
-    if (!self.httpManager) {
+    if (![self canPollForLocations]) {
         return;
     }
     
@@ -324,7 +355,7 @@
 
 - (void)orderPolling:(NSTimer *)timer{
     
-    if (![self isPollingSupported]) {
+    if (![self canPollForOrders]) {
         return;
     }
     
@@ -497,6 +528,8 @@
         
         __block GGOrder *order = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
         
+        [_liveMonitor addAndUpdateOrder:order];
+        
         if (!existingDelegate) {
             @synchronized(self) {
                 [_liveMonitor.orderDelegates setObject:delegate forKey:uuid];
@@ -505,18 +538,29 @@
             [_liveMonitor sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
                 if (!success) {
                     
-                    id delegateToRemove = [_liveMonitor.orderDelegates objectForKey:uuid];
-                    @synchronized(_liveMonitor) {
-                        NSLog(@"SHOULD STOP WATCHING ORDER %@ with delegate %@", uuid, delegate);
+                    id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
+//                    @synchronized(_liveMonitor) {
+//                        NSLog(@"SHOULD STOP WATCHING ORDER %@ with delegate %@", uuid, delegate);
+//                        
+//                        [_liveMonitor.orderDelegates removeObjectForKey:uuid];
+//                        
+//                    }
+                    
+                    // check if we can poll for orders if not - send error
+                    
+                    if ([self canPollForOrders]) {
                         
-                        [_liveMonitor.orderDelegates removeObjectForKey:uuid];
-                        
+                        // start polling if possible
+                        [self startOrderPolling];
+                    }else{
+                        // notify socket fail
+                        [delegateOfOrder watchOrderFailForOrder:order error:error];
                     }
-                    [delegateToRemove watchOrderFailForOrder:order error:error];
-                    if (![_liveMonitor.orderDelegates count]) {
-                        _liveMonitor.doMonitoringOrders = NO;
-                        
-                    }
+
+//                    if (![_liveMonitor.orderDelegates count]) {
+//                        _liveMonitor.doMonitoringOrders = NO;
+//                        
+//                    }
                 }else{
                     
                     // check for share_uuid
@@ -532,15 +576,7 @@
                     
                     NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", uuid, delegate);
                     
-                    // with a little delay - also start polling orders
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        //
-                        if (self.orderPollingTimer && [self.orderPollingTimer isValid]) {
-                            [self.orderPollingTimer fire];
-                        }else{
-                            [self resetPollingTimers];
-                        }
-                    });
+                    [self startOrderPolling];
                 }
             }];
         }
@@ -573,33 +609,33 @@
             [_liveMonitor sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success,id socketResponse, NSError *error) {
                 if (!success) {
                     
-                    id delegateToRemove = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+                    id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:compoundKey];
                     
-                    @synchronized(_liveMonitor) {
-                        
-                         NSLog(@"SHOULD STOP WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
-                        
-                        [_liveMonitor.driverDelegates removeObjectForKey:compoundKey];
-                        
+//                    @synchronized(_liveMonitor) {
+//                        
+//                         NSLog(@"SHOULD STOP WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
+//                        
+//                        [_liveMonitor.driverDelegates removeObjectForKey:compoundKey];
+//                        
+//                    }
+                    
+                    
+                    if ([self canPollForLocations]) {
+                        [self startLocationPolling];
+                    }else{
+                        [delegateOfDriver watchDriverFailedForDriver:driver error:error];
                     }
-                    [delegateToRemove watchDriverFailedForDriver:driver error:error];
-                    if (![_liveMonitor.driverDelegates count]) {
-                        _liveMonitor.doMonitoringDrivers = NO;
-                        
-                    }
+                    
+                    
+//                    if (![_liveMonitor.driverDelegates count]) {
+//                        _liveMonitor.doMonitoringDrivers = NO;
+//                        
+//                    }
                 }else{
                     
                      NSLog(@"SUCCESS START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
                     
-                    // with a little delay - also start polling orders
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        //
-                        if (self.locationPollingTimer && [self.locationPollingTimer isValid]) {
-                            [self.locationPollingTimer fire];
-                        }else{
-                            [self resetPollingTimers];
-                        }
-                    });
+                    [self startLocationPolling];
                 }
             }];
         }
@@ -627,12 +663,12 @@
                     
                     NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
                     
-                    id delegateToRemove = [_liveMonitor.waypointDelegates objectForKey:waypointId];
+                    id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:waypointId];
                     @synchronized(_liveMonitor) {
                         [_liveMonitor.waypointDelegates removeObjectForKey:waypointId];
                         
                     }
-                    [delegateToRemove watchWaypointFailedForWaypointId:waypointId error:error];
+                    [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
                     if (![_liveMonitor.waypointDelegates count]) {
                         _liveMonitor.doMonitoringWaypoints = NO;
                         

@@ -205,7 +205,12 @@
                      completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler{
     
     
-    NSLog(@"%@, params: %@ & path: %@",  method, params, path);
+#ifdef DEBUG
+     NSLog(@"%@,  path: %@",  method, path);
+#endif
+    
+   
+    
     NSString *server = [self getServerURLWithMethod:method path:&path];
     
     
@@ -213,6 +218,7 @@
     
     NSURL *CTSURL = [NSURL URLWithString:server];
     AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:CTSURL sessionConfiguration:self.sessionConfiguration];
+    
     sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
     sessionManager.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
     sessionManager.responseSerializer.acceptableContentTypes =  [sessionManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
@@ -221,6 +227,7 @@
     
     NSError *jsonError;
     NSMutableURLRequest *jsonRequest = [sessionManager.requestSerializer requestWithMethod:method URLString:[NSString stringWithFormat:@"%@%@",sessionManager.baseURL,path] parameters:params error:&jsonError];
+    jsonRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     
     
     if (jsonError) {
@@ -306,9 +313,9 @@
            
         }
         
-#if DEBUG
-        NSLog(@"GOT HTTP Response (%@) For Path %@:", responseObject, path);
-#endif
+ 
+        NSLog(@"GOT HTTP SUCCESS For Path %@:", path);
+ 
        
         if (completionHandler) {
             completionHandler(result, responseObject, error);

@@ -143,7 +143,7 @@ NSString* const SocketIOException = @"SocketIOException";
         
         // make a request
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:handshakeUrl]
-                                                 cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData 
+                                                 cachePolicy:NSURLRequestReloadIgnoringCacheData 
                                              timeoutInterval:connectionTimeout];
         
         if (_cookies != nil) {

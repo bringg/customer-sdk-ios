@@ -14,4 +14,6 @@
 
 +(nullable NSDictionary *)parseJsonFile:(NSString * _Nonnull)fileName;
 +(void)parseUpdateData:(NSDictionary * _Nonnull)eventData intoOrder:(GGOrder *_Nonnull *_Nonnull)order andDriver:(GGDriver *_Nonnull  *_Nonnull)driver;
++(nonnull NSString *)exampleOrderJsonData;
++(nonnull NSString *)exampleLocationJsonData;
 @end

@@ -64,14 +64,22 @@ static NSDateFormatter *dateFormat;
     if (self = [super init]){
         
         self.orderid = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyOrderID];
-        self.customerId = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyID];
-        self.orderid = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyCustomerID];
+        self.waypointId = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyID];
+        self.customerId = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyCustomerID];
         self.merchantId = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyMerchantID];
+        self.position = [aDecoder decodeIntegerForKey:GGWaypointStoreKeyPosition];
         
         self.done = [aDecoder decodeBoolForKey:GGWaypointStoreKeyDone];
         self.ASAP = [aDecoder decodeBoolForKey:GGWaypointStoreKeyASAP];
+        self.allowFindMe = [aDecoder decodeBoolForKey:GGWaypointStoreKeyAllowFindMe];
         
-        self.address = [[aDecoder decodeObjectForKey:GGWaypointStoreKeyAddress] stringValue];
+        self.address = [aDecoder decodeObjectForKey:GGWaypointStoreKeyAddress];
+        self.latitude = [aDecoder decodeDoubleForKey:GGWaypointStoreKeyLatitude];
+        self.longitude = [aDecoder decodeDoubleForKey:GGWaypointStoreKeyLongitude];
+        
+        self.ETA = [aDecoder decodeObjectForKey:GGWaypointStoreKeyETA];
+
+        
         self.startTime = [aDecoder decodeObjectForKey:GGWaypointStoreKeyStartTime];
         self.checkinTime = [aDecoder decodeObjectForKey:GGWaypointStoreKeyArriveTime];
         self.doneTime = [aDecoder decodeObjectForKey:GGWaypointStoreKeyDoneTime];
@@ -87,11 +95,18 @@ static NSDateFormatter *dateFormat;
     [aCoder encodeInteger:waypointId forKey:GGWaypointStoreKeyID];
     [aCoder encodeInteger:customerId forKey:GGWaypointStoreKeyCustomerID];
     [aCoder encodeInteger:merchantId forKey:GGWaypointStoreKeyMerchantID];
+    [aCoder encodeInteger:position forKey:GGWaypointStoreKeyPosition];
     
     [aCoder encodeBool:done forKey:GGWaypointStoreKeyDone];
     [aCoder encodeBool:ASAP forKey:GGWaypointStoreKeyASAP];
+    [aCoder encodeBool:allowFindMe forKey:GGWaypointStoreKeyAllowFindMe];
     
     [aCoder encodeObject:address forKey:GGWaypointStoreKeyAddress];
+    [aCoder encodeDouble:latitude forKey:GGWaypointStoreKeyLatitude];
+    [aCoder encodeDouble:longitude forKey:GGWaypointStoreKeyLongitude];
+    
+    [aCoder encodeObject:ETA forKey:GGWaypointStoreKeyETA];
+    
     [aCoder encodeObject:startTime forKey:GGWaypointStoreKeyStartTime];
     [aCoder encodeObject:checkinTime forKey:GGWaypointStoreKeyArriveTime];
     [aCoder encodeObject:doneTime forKey:GGWaypointStoreKeyDoneTime];

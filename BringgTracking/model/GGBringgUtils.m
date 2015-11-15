@@ -50,4 +50,74 @@
     return retVal;
 }
 
++ (nullable id )userPrintSafeDataFromData:(id __nullable)data{
+    
+    if (!data) {
+        return nil;
+    }
+    
+    
+    if ([data isKindOfClass:[NSString class]]) {
+        
+        NSString *key = data;
+        
+        // return either orignal or obfuscated result
+        if ([key rangeOfString:@"password"].location != NSNotFound || [key rangeOfString:@"token"].location != NSNotFound ) {
+            
+            return @"#######################";
+            
+        }else{
+            return data;
+        }
+        
+    }else if ([data isKindOfClass:[NSArray class]]){
+        NSArray *arr = (NSArray *)data;
+        __block NSMutableArray *muarr = [NSMutableArray array];
+        
+        [arr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            //
+            // return an array of obuscated results
+            id result = [self userPrintSafeDataFromData:obj];
+            
+            if (result) {
+                [muarr addObject:result];
+            }else{
+                [muarr addObject:obj];
+            }
+            
+        }];
+        
+        return muarr;
+        
+    }else if ([data isKindOfClass:[NSDictionary class]]){
+        
+        NSDictionary *dict = (NSDictionary *)data;
+        __block NSMutableDictionary *mudict = [NSMutableDictionary new];
+        
+        [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            //
+            
+            id result = [self userPrintSafeDataFromData:obj];
+            
+            if (result) {
+                [mudict setObject:result forKey:key];
+            }else{
+                [mudict setObject:obj forKey:key];
+            }
+            
+            if ([key rangeOfString:@"password"].location != NSNotFound || [key rangeOfString:@"token"].location != NSNotFound ) {
+                
+                [mudict setObject:@"#######################" forKey:key];
+                
+            }
+            
+        }];
+        
+        return mudict;
+    }else{
+        return data;
+    }
+    
+}
+
 @end

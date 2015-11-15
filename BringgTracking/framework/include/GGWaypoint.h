@@ -12,15 +12,21 @@
 
 
 #define GGWaypointStoreKeyOrderID @"orderid"
-#define GGWaypointStoreKeyID @"orderid"
+#define GGWaypointStoreKeyID @"waypointid"
 #define GGWaypointStoreKeyCustomerID @"customerId"
 #define GGWaypointStoreKeyMerchantID @"merchantId"
+#define GGWaypointStoreKeyPosition @"position"
+
 #define GGWaypointStoreKeyDone @"done"
 #define GGWaypointStoreKeyASAP @"asap"
+#define GGWaypointStoreKeyAllowFindMe @"findme"
+
 #define GGWaypointStoreKeyAddress @"address"
 #define GGWaypointStoreKeyLatitude @"latitude"
 #define GGWaypointStoreKeyLongitude @"longitude"
-#define GGWaypointStoreKeyAllowFindMe @"findme"
+
+#define GGWaypointStoreKeyETA @"eta"
+
 #define GGWaypointStoreKeyStartTime @"startTime"
 #define GGWaypointStoreKeyArriveTime @"arriveTime"
 #define GGWaypointStoreKeyDoneTime @"doneTime"

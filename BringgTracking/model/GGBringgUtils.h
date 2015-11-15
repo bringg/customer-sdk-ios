@@ -71,4 +71,14 @@
  */
 +(BOOL)isValidLatitude:(double)latitude andLongitude:(double)longitude;
 
+
+/**
+ *  creates a version of an object where sensetive data isnt printed
+ *
+ *  @param data original data object
+ *
+ *  @return Any object
+ */
++ (nullable id )userPrintSafeDataFromData:(id __nullable)data;
+
 @end

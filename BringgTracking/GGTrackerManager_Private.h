@@ -50,4 +50,11 @@
 - (void)reviveWatchedDrivers;
 - (void)reviveWatchedWaypoints;
 
+- (void)startOrderPolling;
+- (void)startLocationPolling;
+
+- (BOOL)canPollForOrders;
+- (BOOL)canPollForLocations;
+
+
 @end

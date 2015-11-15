@@ -74,8 +74,10 @@
     Reachability* reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
     self.reachability = reachability;
     reachability.reachableBlock = ^(Reachability*reach) {
+
+#ifdef DEBUG
         NSLog(@"Reachable!");
-        
+#endif
         // reconnect only if isnt already connecting and was at least once connected manually
         if (![self.socketIO isConnected] && ![self.socketIO isConnecting] && self.developerToken && self.wasManuallyConnected) {
             [self connect];
@@ -83,8 +85,10 @@
         }
     };
     reachability.unreachableBlock = ^(Reachability*reach) {
-        NSLog(@"Unreachable!");
         
+#ifdef DEBUG
+        NSLog(@"Unreachable!");
+#endif
         dispatch_async(dispatch_get_main_queue(), ^{
             [self disconnect];
         });
@@ -298,7 +302,7 @@
     if (completionHandler) {
         
         cb = ^(id argsData) {
-            NSLog(@"SocketIOCallback argsData %@", argsData);
+            //NSLog(@"SocketIOCallback argsData %@",  [GGBringgUtils userPrintSafeDictionaryFromDictionary:argsData]);
             NSError *error;
             if (![self errorAck:argsData error:&error]) {
                 completionHandler(YES, argsData, nil);
@@ -386,17 +390,24 @@
 }
 
 - (void) socketIO:(SocketIO *)socket didReceiveMessage:(SocketIOPacket *)packet {
-    NSLog(@"Received packet [%@]", packet.data);
+#ifdef DEBUG
+    NSLog(@"Received MESSAGE packet");
+#endif
     
 }
 
 - (void) socketIO:(SocketIO *)socket didReceiveJSON:(SocketIOPacket *)packet {
-    NSLog(@"Received packet [%@]", packet.data);
+#ifdef DEBUG
+    NSLog(@"Received JSON packet");
+#endif
     
 }
 
 - (void) socketIO:(SocketIO *)socket didReceiveEvent:(SocketIOPacket *)packet {
-    NSLog(@"Received packet [%@]", packet.data);
+#ifdef DEBUG
+    NSLog(@"Received EVENT packet [%@]", packet.name);
+#endif
+    
     if ([packet.name isEqualToString:EVENT_ORDER_UPDATE]) {
         
         NSDictionary *eventData = [packet.args firstObject];
@@ -428,9 +439,9 @@
 //        }];
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
-        
+#ifdef DEBUG
         NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus );
-        
+#endif
         if (existingDelegate) {
             switch ([orderStatus integerValue]) {
                 case OrderStatusAssigned:
@@ -484,9 +495,9 @@
 
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
-        
+#ifdef DEBUG
         NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid );
-        
+#endif
         if (existingDelegate) {
             [existingDelegate orderDidFinish:order  withDriver:driver];
             
@@ -509,8 +520,9 @@
             [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
             
             id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
-            
+#ifdef DEBUG
             NSLog(@"delegate: %@ should udpate location for driver :%@", existingDelegate, driver.uuid );
+#endif
             
             if (existingDelegate) {
                 [existingDelegate driverLocationDidChangeWithDriver:driver];
@@ -521,8 +533,9 @@
         
     } else if ([packet.name isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
         //activity change
-        NSLog(@"driver activity changed: %@", packet.args);
-        
+#ifdef DEBUG
+        NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:packet.args]);
+#endif
     } else if ([packet.name isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
         NSDictionary *etaUpdate = [packet.args firstObject];
         NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
@@ -530,8 +543,10 @@
         NSDate *etaToDate = [self dateFromString:eta];
         
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        
+        #ifdef DEBUG
         NSLog(@"delegate: %@ should udpate waypoint %@ ETA to: %@", existingDelegate, wpid, eta );
-       
+#endif
         if (existingDelegate) {
             [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
             
@@ -541,8 +556,9 @@
         NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
         
+        #ifdef DEBUG
         NSLog(@"delegate: %@ should udpate waypoint %@ arrived", existingDelegate, wpid );
-        
+#endif
         if (existingDelegate) {
             [existingDelegate waypointDidArrivedWaypointId:wpid];
             
@@ -552,9 +568,9 @@
         NSDictionary *waypointDone = [packet.args firstObject];
         NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
-        
+        #ifdef DEBUG
          NSLog(@"delegate: %@ should udpate waypoint %@ done", existingDelegate, wpid );
-        
+#endif
         if (existingDelegate) {
             [existingDelegate waypointDidArrivedWaypointId:wpid];
             
@@ -563,21 +579,24 @@
 }
 
 - (void) socketIO:(SocketIO *)socket didSendMessage:(SocketIOPacket *)packet {
-    NSLog(@"Packet sent [%@]", packet.data);
     
+    #ifdef DEBUG
+    NSLog(@"Packet sent OK");
+#endif
 }
 
 - (void) socketIO:(SocketIO *)socket onError:(NSError *)error {
     
     self.connected = [socket isConnected];
-    
+    #ifdef DEBUG
     NSLog(@"Send error %@", error);
-    
+#endif
 }
 
 
 - (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    NSLog(@"watch order");
+    
+    NSLog(@"watch order %@", uuid);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    uuid, @"order_uuid",
                                    nil];
@@ -586,7 +605,7 @@
 }
 
 - (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    NSLog(@"watch driver");
+    NSLog(@"watch driver %@ / %@", uuid, shareUUID);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    uuid, @"driver_uuid",
                                    shareUUID, @"share_uuid",
@@ -596,7 +615,7 @@
 }
 
 - (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    NSLog(@"watch waypoint");
+    NSLog(@"watch waypoint %@", waypointId);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    waypointId, @"way_point_id",
                                    nil];

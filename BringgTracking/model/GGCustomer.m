@@ -50,7 +50,10 @@
 -(nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder{
     if (self = [self init]) {
         
-        self.customerToken = [aDecoder decodeObjectForKey:GGCustomerStoreKeyToken];
+        //self.customerToken = [aDecoder decodeObjectForKey:GGCustomerStoreKeyToken];
+        
+        self.customerToken = nil;
+        
         self.phone = [aDecoder decodeObjectForKey:GGCustomerStoreKeyPhone];
         self.name = [aDecoder decodeObjectForKey:GGCustomerStoreKeyName];
         self.email = [aDecoder decodeObjectForKey:GGCustomerStoreKeyEmail];
@@ -71,7 +74,7 @@
 
 -(void)encodeWithCoder:(NSCoder * _Nonnull)aCoder{
     
-    [aCoder encodeObject:self.customerToken forKey:GGCustomerStoreKeyToken];
+    //[aCoder encodeObject:self.customerToken forKey:GGCustomerStoreKeyToken];
     [aCoder encodeObject:self.phone forKey:GGCustomerStoreKeyPhone];
     [aCoder encodeObject:self.name forKey:GGCustomerStoreKeyName];
     [aCoder encodeObject:self.email forKey:GGCustomerStoreKeyEmail];

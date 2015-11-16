@@ -614,10 +614,12 @@
     
 }
 
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    NSLog(@"watch waypoint %@", waypointId);
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
+    
+    NSLog(@"watch waypoint %@ for order %@", waypointId, orderUUID);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    waypointId, @"way_point_id",
+                                   orderUUID, @"order_uuid",
                                    nil];
     [self sendEventWithName:@"watch way point" params:params completionHandler:completionHandler];
     

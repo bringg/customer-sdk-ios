@@ -12,6 +12,7 @@
 #import "GGHTTPClientManager_Private.h"
 
 #define DRIVER_COMPOUND_SEPERATOR @"|"
+#define WAYPOINT_COMPOUND_SEPERATOR @"^"
 #define POLLING_SEC 30
 
 
@@ -31,6 +32,8 @@
 @property (nonatomic, weak) GGHTTPClientManager *httpManager;
 
 - (void)parseDriverCompoundKey:(NSString * _Nonnull)key toDriverUUID:(NSString *_Nonnull*_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID;
+- (void)parseWaypointCompoundKey:(NSString * _Nonnull)key toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andWaypointId:(NSString *_Nonnull*_Nonnull)waypointId;
+
 
 - (void)orderPolling:(NSTimer *_Nonnull)timer;
 - (void)locationPolling:(NSTimer *_Nonnull)timer;

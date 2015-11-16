@@ -821,7 +821,7 @@
 		A99163B91A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.5.0.4;
+				DYLIB_CURRENT_VERSION = 1.5.1.0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -839,7 +839,7 @@
 		A99163BA1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.5.0.4;
+				DYLIB_CURRENT_VERSION = 1.5.1.0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",

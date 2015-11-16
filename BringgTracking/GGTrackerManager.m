@@ -175,6 +175,21 @@
 
 }
 
+- (void)parseWaypointCompoundKey:(NSString *)key toOrderUUID:(NSString *__autoreleasing  _Nonnull *)orderUUID andWaypointId:(NSString *__autoreleasing  _Nonnull *)waypointId{
+    
+    NSArray *pair = [key componentsSeparatedByString:WAYPOINT_COMPOUND_SEPERATOR];
+    
+    @try {
+        *orderUUID = [pair objectAtIndex:0];
+        *waypointId = [pair objectAtIndex:1];
+    }
+    @catch (NSException *exception) {
+        //
+        NSLog(@"cant parse waypoint comound key %@ - error:%@", key, exception);
+    }
+    
+}
+
 #pragma mark - Setters
 
 - (void)setRealTimeDelegate:(id <RealTimeDelegate>)delegate {
@@ -646,29 +661,39 @@
     
 }
 
-- (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId delegate:(id <WaypointDelegate>)delegate {
+- (void)startWatchingWaypointWithWaypointId:(NSNumber *)waypointId
+                               andOrderUUID:(NSString * _Nonnull)orderUUID                                   delegate:(id <WaypointDelegate>)delegate {
     
      NSLog(@"SHOULD START WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
     
-    if (waypointId) {
+    if (waypointId && orderUUID) {
         _liveMonitor.doMonitoringWaypoints = YES;
-        id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:waypointId];
+        
+        // here the key is a match
+        __block NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
+        
+        id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+        
         if (!existingDelegate) {
             @synchronized(self) {
-                [_liveMonitor.waypointDelegates setObject:delegate forKey:waypointId];
+                [_liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
                 
             }
-            [_liveMonitor sendWatchWaypointWithWaypointId:waypointId completionHandler:^(BOOL success, id socketResponse, NSError *error) {
+            [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
                 if (!success) {
+ 
+                    id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
                     
-                    NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
-                    
-                    id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:waypointId];
                     @synchronized(_liveMonitor) {
-                        [_liveMonitor.waypointDelegates removeObjectForKey:waypointId];
+                        
+                        NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
+                        
+                        [_liveMonitor.waypointDelegates removeObjectForKey:compoundKey];
                         
                     }
+                    
                     [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
+                    
                     if (![_liveMonitor.waypointDelegates count]) {
                         _liveMonitor.doMonitoringWaypoints = NO;
                         
@@ -728,11 +753,18 @@
     }
 }
 
-- (void)stopWatchingWaypointWithWaypointId:(NSNumber *)waypointId {
-    id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:waypointId];
+- (void)stopWatchingWaypointWithWaypointId:(NSNumber * _Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID {
+    
+    NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
+    
+    
+    id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
     if (existingDelegate) {
         @synchronized(_liveMonitor) {
-            [_liveMonitor.waypointDelegates removeObjectForKey:waypointId];
+            
+             NSLog(@"SHOULD START WATCHING WAYPOINT %@ ORDER %@ with delegate %@", waypointId, orderUUID, existingDelegate);
+            
+            [_liveMonitor.waypointDelegates removeObjectForKey:compoundKey];
             
         }
     }
@@ -807,9 +839,19 @@
     
     [self.monitoredWaypoints enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //
-        NSNumber *waypointId = (NSNumber *)obj;
+        
+        
+        NSString *waypointCompoundKey = (NSString *)obj;
+        
+        
+        NSString *orderUUID;
+        NSString *waypointIdStr;
+        
+        [self parseWaypointCompoundKey:waypointCompoundKey toOrderUUID:&orderUUID andWaypointId:&waypointIdStr];
+        
+        NSNumber *waypointId = [NSNumber numberWithInteger:waypointIdStr.integerValue];
         //check there is still a delegate listening
-        id<WaypointDelegate> wpDelegate = [_liveMonitor.waypointDelegates objectForKey:waypointId];
+        id<WaypointDelegate> wpDelegate = [_liveMonitor.waypointDelegates objectForKey:waypointCompoundKey];
         
         // remove the old entry in the dictionary
         [_liveMonitor.waypointDelegates removeObjectForKey:waypointId];
@@ -821,7 +863,7 @@
                 [wpDelegate trackerWillReviveWatchedWaypoint:waypointId];
             }
             
-            [self startWatchingWaypointWithWaypointId:waypointId delegate:wpDelegate];
+            [self startWatchingWaypointWithWaypointId:waypointId andOrderUUID:orderUUID delegate:wpDelegate];
             
         }
     }];
@@ -952,8 +994,11 @@
     
 }
 
-- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId {
-    return ([_liveMonitor.waypointDelegates objectForKey:waypointId]) ? YES : NO;
+- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID {
+    
+     NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
+    
+    return ([_liveMonitor.waypointDelegates objectForKey:compoundKey]) ? YES : NO;
     
 }
 

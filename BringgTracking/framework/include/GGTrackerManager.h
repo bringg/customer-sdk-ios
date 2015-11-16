@@ -188,10 +188,10 @@
  *  tell if a specific waypoint is being watched
  *
  *  @param waypointId id of waypoint
- *
+ *  @param orderUUID uuid of order
  *  @return BOOL
  */
-- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId;
+- (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID;
 
 
 // track actions
@@ -221,10 +221,12 @@
  *  asks the real time service to start tracking a specific waypoint
  *
  *  @param waypointId id of waypoint
+ *  @param order uuid of of order handling the waypoint
  *  @param delegate   object to recieve waypoint callbacks
  *  @see WaypointDelegate
  */
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId
+                               andOrderUUID:(NSString * _Nonnull)orderUUID
                                    delegate:(id <WaypointDelegate> _Nullable)delegate;
 
 
@@ -257,8 +259,9 @@
  *  stops tracking a specific waypoint
  *
  *  @param waypointId id of waypoint
+ *  @param orderUUID uuid of order with waypoint
  */
-- (void)stopWatchingWaypointWithWaypointId:(NSNumber * _Nonnull)waypointId;
+- (void)stopWatchingWaypointWithWaypointId:(NSNumber * _Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID;
 
 /**
  *  stops tracking all waypoints

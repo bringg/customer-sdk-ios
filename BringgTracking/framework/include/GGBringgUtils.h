@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+#define DRIVER_COMPOUND_SEPERATOR @"|"
+#define WAYPOINT_COMPOUND_SEPERATOR @"^"
+
 @interface GGBringgUtils : NSObject
 
 /**
@@ -80,5 +83,27 @@
  *  @return Any object
  */
 + (nullable id )userPrintSafeDataFromData:(id __nullable)data;
+
+
+/**
+ *  parses driver compound key into a pointer to driver uuid and shared uuid
+ *
+ *  @param key        the compund key
+ *  @param driverUUID  order uuid pointer
+ *  @param sharedUUID waypoint id pointer
+ */
++ (void)parseDriverCompoundKey:(NSString * _Nonnull)key toDriverUUID:(NSString *_Nonnull*_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID;
+
+
+/**
+ *  parses waypoint compound key into a pointer to order uuid and waypoint id
+ *
+ *  @param key        the compund key
+ *  @param orderUUID  order uuid pointer
+ *  @param waypointId waypoint id pointer
+ */
++ (void)parseWaypointCompoundKey:(NSString * _Nonnull)key toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andWaypointId:(NSString *_Nonnull*_Nonnull)waypointId;
+
+
 
 @end

@@ -47,6 +47,15 @@
  */
 -(NSString * _Nullable)hostDomainForTrackerManager:(GGTrackerManager *_Nonnull)trackerManager;
 
+
+
+/**
+ *  delegate method to track the last date the tracker manager recieved data
+ *
+ *  @param eventDate date of event
+ */
+-(void)trackerDidRecieveDataEventAtDate:(NSDate * _Nonnull)eventDate;
+
 @end
 
 

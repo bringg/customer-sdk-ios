@@ -107,9 +107,8 @@
     
     [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
     
-    [self.trackerManager.liveMonitor addAndUpdateOrder:updatedOrder];
-    GGOrder *order = [self.trackerManager.liveMonitor.activeOrders objectForKey:updatedOrder.uuid];
-
+    GGOrder *order = [self.trackerManager.liveMonitor addAndUpdateOrder:updatedOrder];
+    
     
     [self.trackerManager.liveMonitor.orderDelegates setObject:self.realtimeDelegate forKey:order.uuid];
     
@@ -127,10 +126,10 @@
     
     [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
     
-    [self.trackerManager.liveMonitor addAndUpdateDriver:updatedDriver];
-    GGDriver *driver = [self.trackerManager.liveMonitor.activeDrivers objectForKey:updatedDriver.uuid];
+    GGDriver *driver = [self.trackerManager.liveMonitor addAndUpdateDriver:updatedDriver];
     
-     NSString *compoundKey = [[driver.uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:driver.uuid];
+    
+    NSString *compoundKey = [[driver.uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:driver.uuid];
     
     
     [self.trackerManager.liveMonitor.driverDelegates setObject:self.realtimeDelegate forKey:compoundKey];
@@ -145,7 +144,7 @@
     NSString *driverUUID;
     NSString *sharedUUID;
     
-    [self.trackerManager parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+    [GGBringgUtils parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
     
     XCTAssertTrue([driverUUID isEqualToString:sharedUUID]);
     

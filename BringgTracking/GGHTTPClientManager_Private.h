@@ -8,6 +8,8 @@
 
 #import "GGHTTPClientManager.h"
 
+#define POLLING_SEC 30
+#define MAX_WITHOUT_POLLING_SEC 240
 
 @interface GGHTTPClientManager ()
 @property (nullable, nonatomic, strong) NSString *developerToken;
@@ -55,9 +57,12 @@
  */
 - (nonnull NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull * _Nonnull)path;
 
+
+
 /**
- *  create and adds a http request to the service Q
+ *  creates and adds a REST request to the service Q to be executed asynchronously
  *
+ *  @usage                   it is recommended to use with subclasses of  the http manager or when writing requests for known BRINGG API calls that have not yet been implemented in this SDK
  *  @param method            HTTP method (GET/POST etc)
  *  @param path              path of request
  *  @param params            params to pass into the request
@@ -69,6 +74,14 @@
                                             path:(NSString *_Nonnull)path
                                           params:(NSDictionary * _Nullable)params
                                completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler;
+
+/**
+ *  check if it has been too long since a polling REST event
+ *
+ *  @usage if no http client exists this will always return NO
+ *  @return BOOL
+ */
+- (BOOL)isWaitingTooLongForHTTPEvent;
 
 
 @end

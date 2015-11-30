@@ -12,6 +12,7 @@
 #import "Reachability.h"
 
 
+#define MAX_WITHOUT_REALTIME_SEC 240
 
 @interface GGRealTimeMontior ()
 
@@ -61,6 +62,20 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 
 - (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler ;
 
+/**
+ *  check if it has been too long since a socket event
+ *
+ *  @usage if no live monitor exists this will always return NO
+ *  @return BOOL
+ */
+- (BOOL)isWaitingTooLongForSocketEvent;
 
+
+/**
+ *  checks if connection is active and that there has been a recent event
+ *
+ *  @return BOOL
+ */
+- (BOOL)isWorkingConnection;
 
 @end

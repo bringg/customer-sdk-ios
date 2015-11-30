@@ -8,6 +8,8 @@
 
 #import "GGBringgUtils.h"
 
+
+
 @implementation GGBringgUtils
 
 /*
@@ -116,6 +118,36 @@
         return mudict;
     }else{
         return data;
+    }
+    
+}
+
++ (void)parseDriverCompoundKey:(NSString *)key toDriverUUID:(NSString *__autoreleasing  _Nonnull *)driverUUID andSharedUUID:(NSString *__autoreleasing  _Nonnull *)sharedUUID{
+    
+    NSArray *pair = [key componentsSeparatedByString:DRIVER_COMPOUND_SEPERATOR];
+    
+    @try {
+        *driverUUID = [pair objectAtIndex:0];
+        *sharedUUID = [pair objectAtIndex:1];
+    }
+    @catch (NSException *exception) {
+        //
+        NSLog(@"cant parse driver comound key %@ - error:%@", key, exception);
+    }
+    
+}
+
++ (void)parseWaypointCompoundKey:(NSString *)key toOrderUUID:(NSString *__autoreleasing  _Nonnull *)orderUUID andWaypointId:(NSString *__autoreleasing  _Nonnull *)waypointId{
+    
+    NSArray *pair = [key componentsSeparatedByString:WAYPOINT_COMPOUND_SEPERATOR];
+    
+    @try {
+        *orderUUID = [pair objectAtIndex:0];
+        *waypointId = [pair objectAtIndex:1];
+    }
+    @catch (NSException *exception) {
+        //
+        NSLog(@"cant parse waypoint comound key %@ - error:%@", key, exception);
     }
     
 }

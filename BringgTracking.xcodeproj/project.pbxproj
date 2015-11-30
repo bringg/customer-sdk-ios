@@ -32,6 +32,7 @@
 		135692351B0B36E000100034 /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */; };
 		136CB2771B85C47400521029 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 136CB2761B85C47400521029 /* GGWaypoint.m */; };
 		136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 136CB2751B85C47400521029 /* GGWaypoint.h */; };
+		13BA52821C0C6A4400B6DB53 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */; };
 		13D5427F1BEB419000A6B48F /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D5427E1BEB419000A6B48F /* GGRealTimeMonitorTests.m */; };
 		13D542831BEB495200A6B48F /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 13D542811BEB495200A6B48F /* orderUpdate_onstart.json */; };
 		13D542841BEB495200A6B48F /* orderUpdate_onaccept.json in Resources */ = {isa = PBXBuildFile; fileRef = 13D542821BEB495200A6B48F /* orderUpdate_onaccept.json */; };
@@ -170,6 +171,8 @@
 		1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportXHR.m; sourceTree = "<group>"; };
 		136CB2751B85C47400521029 /* GGWaypoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGWaypoint.h; sourceTree = "<group>"; };
 		136CB2761B85C47400521029 /* GGWaypoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGWaypoint.m; sourceTree = "<group>"; };
+		13BA52801C0C6A4400B6DB53 /* NSObject+Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Observer.h"; sourceTree = "<group>"; };
+		13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Observer.m"; sourceTree = "<group>"; };
 		13D5427E1BEB419000A6B48F /* GGRealTimeMonitorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRealTimeMonitorTests.m; sourceTree = "<group>"; };
 		13D542811BEB495200A6B48F /* orderUpdate_onstart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onstart.json; sourceTree = "<group>"; };
 		13D542821BEB495200A6B48F /* orderUpdate_onaccept.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onaccept.json; sourceTree = "<group>"; };
@@ -296,6 +299,15 @@
 				1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */,
 			);
 			path = SocketIO;
+			sourceTree = "<group>";
+		};
+		13BA527F1C0C6A4400B6DB53 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				13BA52801C0C6A4400B6DB53 /* NSObject+Observer.h */,
+				13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */,
+			);
+			path = extensions;
 			sourceTree = "<group>";
 		};
 		13D6440A1B3C0F7300F9EA37 /* model */ = {
@@ -434,6 +446,7 @@
 				A99163E11A51582E008BADCD /* GGTrackerManager.m */,
 				134A8B751BE6188C001FFF34 /* GGTrackerManager_Private.h */,
 				A9AC3F6F1ADD0111004817ED /* GGHTTPClientManager_Private.h */,
+				13BA527F1C0C6A4400B6DB53 /* extensions */,
 				A9A2F6EE1AAD9AB3003038E8 /* GGHTTPClientManager.h */,
 				A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */,
 				13D6440A1B3C0F7300F9EA37 /* model */,
@@ -685,6 +698,7 @@
 				84DAC0891B84474A00FD2B75 /* UIRefreshControl+AFNetworking.m in Sources */,
 				84DAC07E1B84474A00FD2B75 /* AFURLConnectionOperation.m in Sources */,
 				84DAC07F1B84474A00FD2B75 /* AFURLRequestSerialization.m in Sources */,
+				13BA52821C0C6A4400B6DB53 /* NSObject+Observer.m in Sources */,
 				84DAC0811B84474A00FD2B75 /* AFURLSessionManager.m in Sources */,
 				84DAC0801B84474A00FD2B75 /* AFURLResponseSerialization.m in Sources */,
 				135692331B0B36E000100034 /* SocketIOPacket.m in Sources */,
@@ -821,7 +835,7 @@
 		A99163B91A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.6.0.0;
+				DYLIB_CURRENT_VERSION = 1.7.0.0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -839,7 +853,7 @@
 		A99163BA1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.6.0.0;
+				DYLIB_CURRENT_VERSION = 1.7.0.0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",

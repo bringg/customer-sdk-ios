@@ -35,6 +35,7 @@
 @interface GGHTTPClientManager : NSObject
 
 @property (nonatomic, weak) id<GGHTTPClientConnectionDelegate> delegate;
+@property (nullable, nonatomic, strong) NSDate *lastEventDate;
 
 
 /**
@@ -104,12 +105,39 @@
 /**
  *  retrieves an updated order object
  *  @warning the response Order object will have incomplete shared location object. to get the most updated location of an order you must use the tracker to track the order's driver
+ *  @param extras            additional arguments to add to the call
  *  @param orderId           the Id of the order to be retrieved
  *  @param completionHandler block to handle async service response
  */
 - (void)getOrderByID:(NSUInteger)orderId
               extras:(NSDictionary * _Nullable)extras
 withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
+
+/**
+ *  gets full data of watched order
+ *
+ *  @usage                   intended to use when frequently polling for the order
+ *  @param orderUUID         order uuid
+ *  @param extras            additional arguments to add to the call
+ *  @param completionHandler block to handle async service response
+ */
+-(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                      extras:(NSDictionary * _Nullable)extras
+       withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
+
+
+/**
+ *  get data of an order by its uuid
+ *
+ *  @param orderUUID         order uuid
+ *  @param shareUUID         shared location uuid
+ *  @param extras            additional arguments to add to the call
+ *  @param completionHandler block to handle async service response
+ */
+- (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
+         withShareUUID:(NSString * _Nonnull)shareUUID
+                extras:(NSDictionary * _Nullable)extras
+ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
 
 /**
  *  get an updated shared location object from the service
@@ -136,6 +164,9 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
    ratingURL:(NSString *_Nonnull)ratingURL
       extras:(NSDictionary * _Nullable)extras
 withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error))completionHandler;
+
+
+
 
 /**
  *  tels if the customer is signed in

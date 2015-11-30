@@ -18,6 +18,8 @@
 #import "GGSharedLocation.h"
 #import "GGRating.m"
 
+#import "NSObject+Observer.h"
+
 //#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
 
 
@@ -63,6 +65,8 @@
         
         // start reachability monitor
         [self configureReachability];
+        
+
     }
     
     return self;
@@ -80,6 +84,7 @@
 #endif
         // reconnect only if isnt already connecting and was at least once connected manually
         if (![self.socketIO isConnected] && ![self.socketIO isConnecting] && self.developerToken && self.wasManuallyConnected) {
+            
             [self connect];
 
         }
@@ -121,7 +126,7 @@
     self.useSSL = shouldUse;
 }
 
-- (void)addAndUpdateOrder:(GGOrder *)order{
+- (nullable GGOrder *)addAndUpdateOrder:(GGOrder *)order{
     // add this order to the orders active list if needed;
     if (order != nil && order.uuid != nil) {
         
@@ -131,10 +136,14 @@
             [[self.activeOrders objectForKey:order.uuid] update:order];
         }
         
+        return [self getOrderWithUUID:order.uuid];
+        
+    }else{
+        return nil;
     }
 
 }
-- (void)addAndUpdateDriver:(GGDriver *)driver{
+- (nullable GGDriver *)addAndUpdateDriver:(GGDriver *)driver{
     // add this driver to the drivers active list if needed
     if (driver != nil && driver.uuid != nil) {
         
@@ -144,6 +153,9 @@
             [[self.activeDrivers objectForKey:driver.uuid] update:driver];
         }
         
+        return [self getDriverWithUUID:driver.uuid];
+    }else{
+        return nil;
     }
 }
 
@@ -165,6 +177,19 @@
     NSArray *allActiveDrivers = [self.activeDrivers allValues];
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"driverid==%@", driverId];
     return [[allActiveDrivers filteredArrayUsingPredicate:pred] firstObject];
+}
+
+- (BOOL)isWaitingTooLongForSocketEvent{
+    
+    if (!self.lastEventDate) return NO;
+    
+    NSTimeInterval timeSinceRealTimeEvent = fabs([[NSDate date] timeIntervalSinceDate:self.lastEventDate]);
+    
+    return (timeSinceRealTimeEvent >= MAX_WITHOUT_REALTIME_SEC);
+}
+
+- (BOOL)isWorkingConnection{
+    return [self.socketIO isConnected] && ![self isWaitingTooLongForSocketEvent] && self.lastEventDate;
 }
 
 
@@ -408,6 +433,10 @@
     NSLog(@"Received EVENT packet [%@]", packet.name);
 #endif
     
+    
+    // update last date
+    self.lastEventDate = [NSDate date];
+    
     if ([packet.name isEqualToString:EVENT_ORDER_UPDATE]) {
         
         NSDictionary *eventData = [packet.args firstObject];
@@ -420,24 +449,15 @@
         GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
         GGDriver *updatedDriver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
         
-        // updated existing model
-        [self addAndUpdateOrder:updatedOrder];
-        [self addAndUpdateDriver:updatedDriver];
+        
+        
+        
     
+        // updated existing model and retrieve the updated file
+        GGOrder *order = [self addAndUpdateOrder:updatedOrder];
+        GGDriver *driver = [self addAndUpdateDriver:updatedDriver];
         
-        // get most updated model
-        GGOrder *order = [self.activeOrders objectForKey:orderUUID];
-        GGDriver *driver = [self.activeDrivers objectForKey:updatedDriver.uuid];
-        
-        //test get order method
-//        NSNumber *orderID = [eventData objectForKey:PARAM_ID];
-//
-//         
-//        [self orderWithOrderID:orderID completionHandler:^(BOOL success, NSNumber *status, NSError *error) {
-//            NSLog(@"status %@, error %@", status, error);
-//
-//        }];
-        
+ 
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
 #ifdef DEBUG
         NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus );
@@ -519,15 +539,36 @@
         if (driver) {
             [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
             
-            id existingDelegate = [self.driverDelegates objectForKey:driver.uuid];
-#ifdef DEBUG
-            NSLog(@"delegate: %@ should udpate location for driver :%@", existingDelegate, driver.uuid );
-#endif
             
-            if (existingDelegate) {
-                [existingDelegate driverLocationDidChangeWithDriver:driver];
+            // search for the delegates appropriate and notify
+            NSArray *monitoredDrivers = self.driverDelegates.allKeys;
+            
+            [monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *driverCompoundKey = (NSString *)obj;
                 
-            }
+                
+                NSString *driverUUID;
+                NSString *sharedUUID;
+                
+                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+                
+                //check there is still a delegate listening
+                id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:driverCompoundKey];
+                
+                
+                
+                if ([driverUUID isEqualToString:driver.uuid]) {
+                    
+#ifdef DEBUG
+                    NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, driver.uuid );
+#endif
+                    if (driverDelegate) {
+                        [driverDelegate driverLocationDidChangeWithDriver:driver];
+                    }
+                    
+                }
+            }];
+ 
         }
         
         

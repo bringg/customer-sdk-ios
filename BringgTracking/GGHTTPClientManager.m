@@ -40,10 +40,12 @@
 #define BCRESTMethodDelete @"DELETE"
 
 #define API_PATH_SIGN_IN @"/api/customer/sign_in"//method: POST; phone, name, confirmation_code, merchant_id, dev_access_token
-#define API_PATH_SHARED_LOCATION @"/api/shared/%@"
+#define API_PATH_SHARED_LOCATION @"/api/shared/%@/location/"
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
+#define API_PATH_WATCH_ORDER @"/api/shared/orders/%@" //method: GET; order_uuid
+#define API_PATH_GET_ORDER @"/api/watch/shared/%@" //method: GET; shared_location_uuid, order_uuid
 
 //PRIVATE
 #define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone
@@ -317,6 +319,9 @@
         NSLog(@"GOT HTTP SUCCESS For Path %@:", path);
  
        
+        // update last date
+        self.lastEventDate = [NSDate date];
+        
         if (completionHandler) {
             completionHandler(result, responseObject, error);
         }
@@ -356,6 +361,15 @@
 - (BOOL)isSignedIn {
     return self.customer ? YES : NO;
     
+}
+
+
+- (BOOL)isWaitingTooLongForHTTPEvent{
+    if (!self.lastEventDate) return NO;
+    
+    NSTimeInterval timeSinceHTTPEvent = fabs([[NSDate date] timeIntervalSinceDate:self.lastEventDate]);
+    
+    return (timeSinceHTTPEvent >= MAX_WITHOUT_POLLING_SEC);
 }
 
 #pragma mark - Setters
@@ -488,6 +502,51 @@
  
 }
 
+-(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                      extras:(NSDictionary * _Nullable)extras
+       withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler{
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [self addAuthinticationToParams:&params];
+    
+    [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
+    
+    if (extras) {
+        [self injectCustomExtras:extras toParams:&params];
+    }
+    
+    [self.serviceOperationQueue addOperation:
+     [self httpRequestWithMethod:BCRESTMethodGet
+                            path:[NSString stringWithFormat:API_PATH_WATCH_ORDER, orderUUID]
+                          params:params
+               completionHandler:^(BOOL success, id JSON, NSError *error) {
+                   
+                   GGOrder *order = nil;
+                   
+                   NSDictionary *orderUpdateData = [JSON objectForKey:@"order_update"];
+                   
+                   if (!orderUpdateData && !error) {
+                       NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                       if (completionHandler) {
+                           completionHandler(NO , JSON, order, responseError);
+                       }
+                   }else{
+                       if (success && orderUpdateData) {
+                           
+                           order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
+                           
+                       }
+                       
+                       if (completionHandler) {
+                           completionHandler(success, JSON, order, error);
+                       }
+                   }
+
+                   //
+               }]];
+
+}
+
 - (void)rate:(int)rating
    withToken:(NSString * _Nonnull)ratingToken
    ratingURL:(NSString *_Nonnull)ratingURL
@@ -582,6 +641,49 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
         //
     }]];
     
+}
+
+- (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
+         withShareUUID:(NSString * _Nonnull)shareUUID
+                extras:(NSDictionary * _Nullable)extras
+ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler{
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [self addAuthinticationToParams:&params];
+    
+    [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
+    
+    if (extras) {
+        [self injectCustomExtras:extras toParams:&params];
+    }
+    
+    [self.serviceOperationQueue addOperation:
+     [self httpRequestWithMethod:BCRESTMethodGet
+                            path:[NSString stringWithFormat:API_PATH_GET_ORDER, shareUUID]
+                          params:params
+               completionHandler:^(BOOL success, id JSON, NSError *error) {
+                   
+                   GGOrder *order = nil;
+                   
+                   NSDictionary *orderUpdateData = [JSON objectForKey:@"order_update"];
+                   
+                   if (!orderUpdateData && !error) {
+                        NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                       if (completionHandler) {
+                           completionHandler(NO , JSON, order, responseError);
+                       }
+                   }else{
+                       if (success && orderUpdateData) order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
+                       
+                       if (completionHandler) {
+                           completionHandler(success, JSON, order, error);
+                       }
+                   }
+                   
+                   
+                   //
+               }]];
+
 }
 
 - (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID

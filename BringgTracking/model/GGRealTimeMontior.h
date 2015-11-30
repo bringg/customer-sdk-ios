@@ -23,12 +23,14 @@
 
 @interface GGRealTimeMontior : NSObject<SocketIODelegate>
 
+@property (nullable, nonatomic, strong) NSDate *lastEventDate;
+
 -(void)useSecureConnection:(BOOL)shouldUse;
 
 -(BOOL)hasNetwork;
 
-- (void)addAndUpdateOrder:(GGOrder *_Nonnull)order;
-- (void)addAndUpdateDriver:(GGDriver *_Nonnull)driver;
+- (nullable GGOrder *)addAndUpdateOrder:(GGOrder *_Nonnull)order;
+- (nullable GGDriver *)addAndUpdateDriver:(GGDriver *_Nonnull)driver;
 
 
 -(GGOrder * _Nullable)getOrderWithUUID:(NSString * _Nonnull)uuid;

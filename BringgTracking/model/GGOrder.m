@@ -218,17 +218,23 @@ static NSDateFormatter *dateFormat;
             self.driverUUID = newOrder.driverUUID;
         }
         
+        if (newOrder.sharedLocationUUID && newOrder.sharedLocationUUID.length > 0) {
+            self.sharedLocationUUID = newOrder.sharedLocationUUID;
+        }
+        
         if (newOrder.sharedLocation) {
             if (!self.sharedLocation) {
                 self.sharedLocation = newOrder.sharedLocation;
             }else{
                 [self.sharedLocation update:newOrder.sharedLocation];
             }
+            
+            if ([newOrder.sharedLocation locationUUID]) {
+                self.sharedLocationUUID = [newOrder.sharedLocation locationUUID];
+            }
         }
         
-        if (newOrder.sharedLocationUUID && newOrder.sharedLocationUUID.length > 0) {
-            self.sharedLocationUUID = newOrder.sharedLocationUUID;
-        }
+        
         
         if (newOrder.waypoints) {
             self.waypoints = newOrder.waypoints;

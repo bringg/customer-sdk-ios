@@ -44,8 +44,8 @@
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
-#define API_PATH_WATCH_ORDER @"/api/shared/orders/%@" //method: GET; order_uuid
-#define API_PATH_GET_ORDER @"/api/watch/shared/%@" //method: GET; shared_location_uuid, order_uuid
+#define API_PATH_WATCH_ORDER @"/api/shared/orders/%@/" //method: GET; order_uuid
+#define API_PATH_GET_ORDER @"/api/watch/shared/%@/" //method: GET; shared_location_uuid, order_uuid
 
 //PRIVATE
 #define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone

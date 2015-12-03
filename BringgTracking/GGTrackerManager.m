@@ -809,12 +809,12 @@
                     // check for share_uuid
                     if (socketResponse && [socketResponse isKindOfClass:[NSDictionary class]]) {
                         NSString *shareUUID = [socketResponse objectForKey:@"share_uuid"];
-                        if (shareUUID) {
-                            // updated the order model
-                            order.sharedLocationUUID = shareUUID;
-                            
-                            [_liveMonitor addAndUpdateOrder:order];
-                        }
+                        GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
+                        
+                        // updated the order model
+                        order.sharedLocationUUID = shareUUID;
+                        order.sharedLocation = sharedLocation;
+                        [_liveMonitor addAndUpdateOrder:order];
                     }
                     
                     NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", uuid, delegate);

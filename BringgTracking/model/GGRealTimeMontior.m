@@ -525,6 +525,7 @@
     } else if ([packet.name isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
         NSDictionary *locationUpdate = [packet.args firstObject];
         NSString *driverUUID = [locationUpdate objectForKey:PARAM_DRIVER_UUID];
+        NSString *shareUUID = [locationUpdate objectForKey:PARAM_SHARE_UUID];
         NSNumber *lat = [locationUpdate objectForKey:@"lat"];
         NSNumber *lng = [locationUpdate objectForKey:@"lng"];
         
@@ -533,12 +534,27 @@
         
         // if no data get it from the current active drivers
         if (!driver) {
-            driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
+            // try to get driver from shared uuid
+            // to do this we go over all orders - check which has the specified shared uuid & shared location object and then get the driver related
+            NSArray *sharedLocations = [self.activeOrders valueForKeyPath:@"sharedLocation"];
+            if (sharedLocations.count > 0) {
+                GGSharedLocation *sl = [[sharedLocations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locationUUID == %@", shareUUID]] firstObject];
+                if (sl && sl.driver) {
+                    driver = sl.driver;
+                }else{
+                    driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
+                }
+            }else{
+                driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
+            }
+            
+            
         }
         
         if (driver) {
             [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
             
+            driver = [self addAndUpdateDriver:driver];
             
             // search for the delegates appropriate and notify
             NSArray *monitoredDrivers = self.driverDelegates.allKeys;

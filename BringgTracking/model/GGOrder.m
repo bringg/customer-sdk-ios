@@ -10,10 +10,11 @@
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
 #import "GGBringgUtils.h"
+#import "GGItem.h"
 
 @implementation GGOrder
 
-@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid, waypoints, scheduled, url,driverUUID, sharedLocationUUID;
+@synthesize orderid,status,uuid,sharedLocation,activeWaypointId,late,totalPrice,priority,driverId,title,customerId,merchantId,tip,leftToBePaid, waypoints, scheduled, url,driverUUID, sharedLocationUUID,items;
 
 static NSDateFormatter *dateFormat;
 
@@ -72,9 +73,21 @@ static NSDateFormatter *dateFormat;
             }];
             
             self.waypoints = wps;
-        }else{
+        }
+        
+        // get items
+        NSArray *itemsData = [data objectForKey:PARAM_TASK_INVENTORIES];
+        if (itemsData) {
             
+            __block NSMutableArray *itms = [NSMutableArray arrayWithCapacity:itemsData.count];
             
+            [itemsData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                GGItem *it = [[GGItem alloc] initItemWithData:obj];
+                [itms addObject:it];
+                
+            }];
+            
+            self.items = itms;
         }
         
         // get date
@@ -135,6 +148,20 @@ static NSDateFormatter *dateFormat;
             }
             
         }
+        
+        // decode the array of items
+        int itemsCounter = (int)[aDecoder decodeIntegerForKey:GGOrderStoreKeyItems];
+        
+        self.items = [NSMutableArray array];
+        
+        for (int i = 0; i < itemsCounter; i++) {
+            GGItem *it = (GGItem *)[aDecoder decodeObjectForKey:[NSString stringWithFormat:GGOrderStoreKeyItem, (unsigned long)i]];
+            
+            if (it) {
+                [self.items addObject:it];
+            }
+            
+        }
  
     }
     
@@ -162,6 +189,14 @@ static NSDateFormatter *dateFormat;
     [waypoints enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //
         [aCoder encodeObject:obj forKey:[NSString stringWithFormat:GGOrderStoreKeyWaypoint, (unsigned long)idx]];
+    }];
+    
+    // encode array of items
+    [aCoder encodeInteger:items.count forKey:GGOrderStoreKeyItems];
+    
+    [items enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        [aCoder encodeObject:obj forKey:[NSString stringWithFormat:GGOrderStoreKeyItem, (unsigned long)idx]];
     }];
     
  
@@ -238,6 +273,10 @@ static NSDateFormatter *dateFormat;
         
         if (newOrder.waypoints) {
             self.waypoints = newOrder.waypoints;
+        }
+        
+        if (newOrder.items) {
+            self.items = newOrder.items;
         }
     }
 }

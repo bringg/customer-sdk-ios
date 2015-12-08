@@ -91,14 +91,14 @@
  *
  *  @param orderUUID uuid of updated order
  */
-- (void)notifyRESTUpdateForOrder:(NSString * _Nonnull)orderUUID;
+- (void)notifyRESTUpdateForOrderWithUUID:(NSString * _Nonnull)orderUUID;
 /**
  *  due to REST polling notify driver delegates that a driver location has updated
  *
  *  @param driverUUID uuid of updated driver
  *  @param shareUUID  shared uuid of updated related location
  */
-- (void)notifyRESTUpdateForDriver:(NSString *_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull)shareUUID;
+- (void)notifyRESTUpdateForDriverWithUUID:(NSString *_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull)shareUUID;
 
 
 

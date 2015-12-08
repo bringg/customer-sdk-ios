@@ -28,6 +28,8 @@
 #define GGOrderStoreKeyCustomerID           @"customerId"
 #define GGOrderStoreKeyWaypoints            @"waypoints"
 #define GGOrderStoreKeyWaypoint             @"waypoint%lu"
+#define GGOrderStoreKeyItems                @"items"
+#define GGOrderStoreKeyItem                 @"item%lu"
 
 @interface GGOrder : NSObject <NSCoding>
 
@@ -57,6 +59,7 @@
 
 @property (nonatomic, assign) OrderStatus status;
 @property (nonatomic, strong) NSMutableArray * __nonnull waypoints;
+@property (nonatomic, strong) NSMutableArray * __nonnull items;
 @property (nonatomic, strong) NSDate * __nullable scheduled;
 /**
  *  init an Order object using json data recieved from a server response

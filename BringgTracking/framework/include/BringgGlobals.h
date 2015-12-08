@@ -45,12 +45,23 @@
 
 #define PARAM_SHARED_LOCATION @"shared_location"
 #define PARAM_WAYPOINTS @"way_points"
+#define PARAM_TASK_INVENTORIES @"task_inventories"
 #define PARAM_RATING_URL @"rating_url"
 #define PARAM_ACCESS_TOKEN @"access_token"
 #define PARAM_ETA @"eta"
 #define PARAM_RATING @"rating"
 #define PARAM_RATING_TOKEN @"rating_token"
 #define PARAM_DRIVER_NAME @"employee_name"
+
+
+
+#define PARAM_ITEM_INVENTORY_ID @"inventory_id"
+#define PARAM_ITEM_PENDING @"pending"
+#define PARAM_ITEM_PRICE @"price"
+#define PARAM_ITEM_QUANTITY @"quantity"
+#define PARAM_ITEM_SCAN @"scan_string"
+
+
 
 #import "GGBringgUtils.h"
 

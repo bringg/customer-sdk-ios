@@ -30,6 +30,8 @@
 		135692331B0B36E000100034 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922A1B0B36E000100034 /* SocketIOPacket.m */; };
 		135692341B0B36E000100034 /* SocketIOTransportWebsocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922D1B0B36E000100034 /* SocketIOTransportWebsocket.m */; };
 		135692351B0B36E000100034 /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = 1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */; };
+		135990D91C158F480088F87A /* GGItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 135990D81C158F480088F87A /* GGItem.m */; };
+		135990DA1C1598A90088F87A /* GGItem.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 135990D71C158F480088F87A /* GGItem.h */; };
 		136CB2771B85C47400521029 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 136CB2761B85C47400521029 /* GGWaypoint.m */; };
 		136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 136CB2751B85C47400521029 /* GGWaypoint.h */; };
 		13BA52821C0C6A4400B6DB53 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */; };
@@ -118,6 +120,7 @@
 			dstPath = include;
 			dstSubfolderSpec = 16;
 			files = (
+				135990DA1C1598A90088F87A /* GGItem.h in CopyFiles */,
 				13361E241B8B3D7B00388D14 /* GGBringgUtils.h in CopyFiles */,
 				136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */,
 				13DA44071B72263200C981B6 /* SRWebSocket.h in CopyFiles */,
@@ -169,6 +172,8 @@
 		1356922D1B0B36E000100034 /* SocketIOTransportWebsocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportWebsocket.m; sourceTree = "<group>"; };
 		1356922E1B0B36E000100034 /* SocketIOTransportXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransportXHR.h; sourceTree = "<group>"; };
 		1356922F1B0B36E000100034 /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportXHR.m; sourceTree = "<group>"; };
+		135990D71C158F480088F87A /* GGItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGItem.h; sourceTree = "<group>"; };
+		135990D81C158F480088F87A /* GGItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGItem.m; sourceTree = "<group>"; };
 		136CB2751B85C47400521029 /* GGWaypoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGWaypoint.h; sourceTree = "<group>"; };
 		136CB2761B85C47400521029 /* GGWaypoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGWaypoint.m; sourceTree = "<group>"; };
 		13BA52801C0C6A4400B6DB53 /* NSObject+Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Observer.h"; sourceTree = "<group>"; };
@@ -329,6 +334,8 @@
 				13D6440F1B3C0F8300F9EA37 /* GGCustomer.m */,
 				13D644111B3C0F9F00F9EA37 /* GGOrder.h */,
 				13D644121B3C0F9F00F9EA37 /* GGOrder.m */,
+				135990D71C158F480088F87A /* GGItem.h */,
+				135990D81C158F480088F87A /* GGItem.m */,
 				13D644241B413FF600F9EA37 /* GGOrderBuilder.h */,
 				13D644251B413FF600F9EA37 /* GGOrderBuilder.m */,
 				13D6441E1B3C18F900F9EA37 /* GGRating.h */,
@@ -707,6 +714,7 @@
 				A99163E21A51582E008BADCD /* GGTrackerManager.m in Sources */,
 				13D644201B3C18F900F9EA37 /* GGRating.m in Sources */,
 				84DAC07C1B84474A00FD2B75 /* AFNetworkReachabilityManager.m in Sources */,
+				135990D91C158F480088F87A /* GGItem.m in Sources */,
 				84DAC0871B84474A00FD2B75 /* UIImageView+AFNetworking.m in Sources */,
 				135692321B0B36E000100034 /* SocketIOJSONSerialization.m in Sources */,
 			);

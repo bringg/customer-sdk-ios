@@ -465,10 +465,10 @@
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     // notify all interested parties that there has been a status change in the order
-                    [weakSelf notifyRESTUpdateForOrder:activeOrder.uuid];
+                    [weakSelf notifyRESTUpdateForOrderWithUUID:activeOrder.uuid];
                     
                     // notify all interested parties that there has been a status change in the order
-                    [weakSelf notifyRESTUpdateForDriver:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
+                    [weakSelf notifyRESTUpdateForDriverWithUUID:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
                     
                 });
             }else{
@@ -581,7 +581,7 @@
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         // notify all interested parties that there has been a status change in the order
-                        [weakSelf notifyRESTUpdateForOrder:order.uuid];
+                        [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
                     });
                 }
             }else{
@@ -618,7 +618,7 @@
 }
 
 
-- (void)notifyRESTUpdateForOrder:(NSString *)orderUUID{
+- (void)notifyRESTUpdateForOrderWithUUID:(NSString *)orderUUID{
     
     GGOrder *order = [self.liveMonitor getOrderWithUUID:orderUUID];
     NSString *driverUUID;
@@ -675,7 +675,7 @@
 }
 
 
-- (void)notifyRESTUpdateForDriver:(NSString *)driverUUID andSharedUUID:(NSString *)shareUUID{
+- (void)notifyRESTUpdateForDriverWithUUID:(NSString *)driverUUID andSharedUUID:(NSString *)shareUUID{
      GGDriver *driver = [self.liveMonitor getDriverWithUUID:driverUUID];
     
      NSString *compoundKey = [[driverUUID stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
@@ -730,9 +730,9 @@
         _liveMonitor.doMonitoringOrders = YES;
         id existingDelegate = [_liveMonitor.orderDelegates objectForKey:uuid];
         
-        __block GGOrder *order = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
+        __block GGOrder *activeOrder = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
         
-        [_liveMonitor addAndUpdateOrder:order];
+        [_liveMonitor addAndUpdateOrder:activeOrder];
         
         if (!existingDelegate) {
             @synchronized(self) {
@@ -740,15 +740,48 @@
                 
             }
             [_liveMonitor sendWatchOrderWithOrderUUID:uuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
-                if (!success) {
+                
+                  __weak __typeof(&*self)weakSelf = self;
+                 __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
+                
+                void (^pollHandler)(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) =  ^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error){
                     
-                    __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
-//                    @synchronized(_liveMonitor) {
-//                        NSLog(@"SHOULD STOP WATCHING ORDER %@ with delegate %@", uuid, delegate);
-//                        
-//                        [_liveMonitor.orderDelegates removeObjectForKey:uuid];
-//                        
-//                    }
+                    if (success) {
+                        
+#if DEBUG
+                        NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, uuid);
+#endif
+                        // update the local model in the live monitor and retrieve
+                        GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+                        
+                        GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
+                        
+                        // check if we can also update the driver related to the order
+                        if (sharedLocationDriver) {
+                            [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
+                        }
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            // notify all interested parties that there has been a status change in the order
+                            [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
+                            
+                            // start actuall polling
+                            [self startOrderPolling];
+                        });
+                        
+                        
+                        
+                    }else{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            // notify socket fail
+                            [delegateOfOrder watchOrderFailForOrder:order error:error];
+                        });
+                        
+                    }
+                };
+                
+                if (!success) {
+ 
                     
                     // check if we can poll for orders if not - send error
                     
@@ -756,54 +789,15 @@
                         
                         // start polling if possible
                         // first get the full order data
-                        
-                         __weak __typeof(&*self)weakSelf = self;
-                        
-                        [self getWatchedOrderByOrderUUID:uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
-                            //
-                            if (success) {
-                                
-#if DEBUG
-                                NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, uuid);
-#endif
-                                // update the local model in the live monitor and retrieve
-                                GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
-                                
-                                GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
-                                
-                                // check if we can also update the driver related to the order
-                                if (sharedLocationDriver) {
-                                    [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
-                                }
-                                
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    // notify all interested parties that there has been a status change in the order
-                                    [weakSelf notifyRESTUpdateForOrder:order.uuid];
-                                    
-                                    // start actuall polling
-                                    [self startOrderPolling];
-                                });
 
-                                
-                               
-                            }else{
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    // notify socket fail
-                                    [delegateOfOrder watchOrderFailForOrder:order error:error];
-                                });
-                                
-                            }
-                        }];
+                        [self getWatchedOrderByOrderUUID:uuid withCompletionHandler:pollHandler];
                         
                     }else{
                         // notify socket fail
-                        [delegateOfOrder watchOrderFailForOrder:order error:error];
+                        [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
                     }
 
-//                    if (![_liveMonitor.orderDelegates count]) {
-//                        _liveMonitor.doMonitoringOrders = NO;
-//                        
-//                    }
+ 
                 }else{
                     
                     // check for share_uuid
@@ -812,12 +806,32 @@
                         GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
                         
                         // updated the order model
-                        order.sharedLocationUUID = shareUUID;
-                        order.sharedLocation = sharedLocation;
-                        [_liveMonitor addAndUpdateOrder:order];
+                        activeOrder.sharedLocationUUID = shareUUID;
+                        activeOrder.sharedLocation = sharedLocation;
+                        [_liveMonitor addAndUpdateOrder:activeOrder];
+                        
+                        
+                        if (self.httpManager && [sharedLocation orderID]) {
+                            // try to poll once for the full object
+                            
+                            if ([self.httpManager isSignedIn]) {
+                                [self.httpManager getOrderByID:[sharedLocation orderID] extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                                    //
+                                    if (success && order) {
+                                        [_liveMonitor addAndUpdateOrder:order];
+                                        [self notifyRESTUpdateForOrderWithUUID:order.uuid];
+                                    }
+                                }];
+                            }else if ([self canPollForOrders]){
+                                [self getWatchedOrderByOrderUUID:uuid withCompletionHandler:pollHandler];
+                            }
+ 
+
+                        }
                     }
                     
                     NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", uuid, delegate);
+                    
                     
                     //[self startOrderPolling];
                 }

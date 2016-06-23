@@ -35,6 +35,7 @@
 		136CB2771B85C47400521029 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 136CB2761B85C47400521029 /* GGWaypoint.m */; };
 		136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 136CB2751B85C47400521029 /* GGWaypoint.h */; };
 		13B62AB31D1C464600BDAC9B /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B62AB21D1C464600BDAC9B /* GGBringgUtilsTests.m */; };
+		13B62AB61D1C96D100BDAC9B /* GGFindMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B62AB51D1C96D100BDAC9B /* GGFindMe.m */; };
 		13BA52821C0C6A4400B6DB53 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */; };
 		13D5427F1BEB419000A6B48F /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D5427E1BEB419000A6B48F /* GGRealTimeMonitorTests.m */; };
 		13D542831BEB495200A6B48F /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 13D542811BEB495200A6B48F /* orderUpdate_onstart.json */; };
@@ -178,6 +179,8 @@
 		136CB2751B85C47400521029 /* GGWaypoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGWaypoint.h; sourceTree = "<group>"; };
 		136CB2761B85C47400521029 /* GGWaypoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGWaypoint.m; sourceTree = "<group>"; };
 		13B62AB21D1C464600BDAC9B /* GGBringgUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGBringgUtilsTests.m; sourceTree = "<group>"; };
+		13B62AB41D1C96D100BDAC9B /* GGFindMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGFindMe.h; sourceTree = "<group>"; };
+		13B62AB51D1C96D100BDAC9B /* GGFindMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGFindMe.m; sourceTree = "<group>"; };
 		13BA52801C0C6A4400B6DB53 /* NSObject+Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Observer.h"; sourceTree = "<group>"; };
 		13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Observer.m"; sourceTree = "<group>"; };
 		13D5427E1BEB419000A6B48F /* GGRealTimeMonitorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRealTimeMonitorTests.m; sourceTree = "<group>"; };
@@ -330,6 +333,8 @@
 				13D6440C1B3C0F7300F9EA37 /* GGDriver.m */,
 				13D6441B1B3C180D00F9EA37 /* GGSharedLocation.h */,
 				13D6441C1B3C180D00F9EA37 /* GGSharedLocation.m */,
+				13B62AB41D1C96D100BDAC9B /* GGFindMe.h */,
+				13B62AB51D1C96D100BDAC9B /* GGFindMe.m */,
 				13D6440E1B3C0F8300F9EA37 /* GGCustomer.h */,
 				136CB2751B85C47400521029 /* GGWaypoint.h */,
 				136CB2761B85C47400521029 /* GGWaypoint.m */,
@@ -695,6 +700,7 @@
 				A99163D71A515719008BADCD /* Reachability.m in Sources */,
 				13D644231B3C2F9300F9EA37 /* GGRealTimeMontior.m in Sources */,
 				13D644261B413FF600F9EA37 /* GGOrderBuilder.m in Sources */,
+				13B62AB61D1C96D100BDAC9B /* GGFindMe.m in Sources */,
 				A99163DF1A515719008BADCD /* SRWebSocket.m in Sources */,
 				136CB2771B85C47400521029 /* GGWaypoint.m in Sources */,
 				84DAC0831B84474A00FD2B75 /* AFNetworkActivityIndicatorManager.m in Sources */,

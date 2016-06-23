@@ -61,6 +61,9 @@
 #define PARAM_ITEM_QUANTITY @"quantity"
 #define PARAM_ITEM_SCAN @"scan_string"
 
+#define PARAM_FIND_ME_TOKEN @"find_me_token"
+#define PARAM_FIND_ME_URL @"find_me_url"
+#define PARAM_FIND_ME_ENABLED @"support_find_me"
 
 
 #import "GGBringgUtils.h"

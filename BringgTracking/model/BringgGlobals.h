@@ -9,7 +9,7 @@
 #ifndef BringgTracking_BringgGlobals_h
 #define BringgTracking_BringgGlobals_h
 
-#define SDK_VERSION @"1.7.0.0"
+#define SDK_VERSION @"1.7.5.0"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -183,6 +183,13 @@ typedef NS_ENUM(NSInteger, OrderStatus) {
     OrderStatusRejected = 8,
     OrderStatusRemotelyDeleted = 200
     
+};
+
+typedef NS_ENUM(NSInteger, GGErrorType) {
+    GGErrorTypeUnknown = -1,
+    GGErrorTypeNone = 0,
+    GGErrorTypeUUIDNotFound = 1,
+    GGErrorTypeInvalidUUID = 2,
 };
 
 #endif

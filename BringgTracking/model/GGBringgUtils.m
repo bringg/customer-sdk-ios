@@ -7,7 +7,7 @@
 //
 
 #import "GGBringgUtils.h"
-
+#import "BringgGlobals.h"
 
 
 @implementation GGBringgUtils
@@ -135,6 +135,33 @@
         NSLog(@"cant parse driver comound key %@ - error:%@", key, exception);
     }
     
+}
+
++ (void)parseOrderCompoundUUID:(NSString * _Nonnull)compoundUUID toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID error:(NSError * _Nullable *_Nullable)errorPointer{
+    
+    if (!compoundUUID) {
+        if (errorPointer) {
+            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing compound UUID"}];
+        }
+        return; 
+    }
+    
+    NSArray *pair = [compoundUUID componentsSeparatedByString:ORDER_UUID_COMPOUND_SEPERATOR];
+    
+    @try {
+        *orderUUID = [pair objectAtIndex:0];
+        *sharedUUID = [pair objectAtIndex:1];
+    }
+    @catch (NSException *exception) {
+        //
+        NSLog(@"cant parse driver comound key %@ - error:%@", compoundUUID, exception);
+        
+        if (errorPointer) {
+            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:exception.reason}];
+            
+        }
+    }
+
 }
 
 + (void)parseWaypointCompoundKey:(NSString *)key toOrderUUID:(NSString *__autoreleasing  _Nonnull *)orderUUID andWaypointId:(NSString *__autoreleasing  _Nonnull *)waypointId{

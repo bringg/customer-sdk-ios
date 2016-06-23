@@ -63,9 +63,32 @@
 
 @end
 
+
+@interface GGTrackerManagerTestClass : GGTrackerManager
+
+@end
+
+@implementation GGTrackerManagerTestClass
+
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+                        sharedUUID:(NSString *_Nullable)shareduuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate{
+    
+    NSLog(@"SHOULD START WATCHING ORDER %@ with delegate %@", uuid, delegate);
+    
+    // uuid is invalid if empty
+    if (!uuid || uuid.length == 0) {
+        [NSException raise:@"Invalid UUID" format:@"order UUID can not be nil or empty"];
+        return;
+    }
+
+}
+
+@end
+
 @interface GGTrackerManagerTests : XCTestCase
 
-@property (nonatomic, strong) GGTrackerManager *trackerManager;
+@property (nonatomic, strong) GGTrackerManagerTestClass *trackerManager;
 @property (nonatomic, strong) GGTestRealTimeDelegate  *realtimeDelegate;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
@@ -79,7 +102,7 @@
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
      self.realtimeDelegate = [[GGTestRealTimeDelegate alloc] init];
-    self.trackerManager = [GGTrackerManager trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:self.realtimeDelegate andHTTPManager:nil];
+    self.trackerManager = [GGTrackerManagerTestClass trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:self.realtimeDelegate andHTTPManager:nil];
    
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
@@ -212,5 +235,44 @@
 
 }
 
+- (void)testWatchingOrderUsingUUIDAndSharedUUID{
+    NSString *uuid = nil;
+    
+    XCTAssertThrows([self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:self.realtimeDelegate]);
+    
+    uuid = @"";
+    
+    XCTAssertThrows([self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:self.realtimeDelegate]);
+    
+    
+    uuid = @"asd_asd_asdads";
+    
+    XCTAssertNoThrow([self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:self.realtimeDelegate]);
+    
+}
+- (void)testWatchingOrderUsingCompoundUUID{
+    
+    NSString *compoundUUID = nil;
+    
+    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
+    
+    
+    compoundUUID = @"";
+    
+    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
+    
+    compoundUUID = @"SOME_ORDER_UUID";
+    
+    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
+    
+    // when doing a compound with the seperator - it should work even without a shared uuid
+    compoundUUID = @"SOME_ORDER_UUID$$";
+    
+    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
+    
+    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
+    
+    XCTAssertNoThrow([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
+}
 
 @end

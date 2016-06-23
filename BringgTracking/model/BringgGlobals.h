@@ -170,6 +170,13 @@ return _sharedObject;
 
 @end
 
+typedef void (^GGCustomerResponseHandler)(BOOL success, NSDictionary * _Nullable response,  GGCustomer * _Nullable customer, NSError * _Nullable error);
+
+typedef void (^GGOrderResponseHandler)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error);
+
+typedef void (^GGSharedLocationResponseHandler)(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error);
+
+typedef void (^GGRatingResponseHandler)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error);
 
 typedef NS_ENUM(NSInteger, OrderStatus) {
     OrderStatusInvalid = -1,

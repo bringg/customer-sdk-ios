@@ -419,7 +419,7 @@
       confirmationCode:(NSString * _Nullable)confirmationCode
             merchantId:(NSString * _Nonnull)merchantId
                 extras:(NSDictionary * _Nullable)extras
-     completionHandler:(void (^ _Nullable)(BOOL success, NSDictionary * _Nullable response,  GGCustomer * _Nullable customer, NSError * _Nullable error))completionHandler {
+     completionHandler:(nullable GGCustomerResponseHandler)completionHandler {
     
     // build params for sign in
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
@@ -504,7 +504,7 @@
 
 -(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
                       extras:(NSDictionary * _Nullable)extras
-       withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler{
+       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
@@ -551,7 +551,7 @@
    withToken:(NSString * _Nonnull)ratingToken
    ratingURL:(NSString *_Nonnull)ratingURL
       extras:(NSDictionary * _Nullable)extras
-withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error))completionHandler{
+withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     
@@ -615,7 +615,7 @@ withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable
 
 - (void)getOrderByID:(NSUInteger)orderId
               extras:(NSDictionary * _Nullable)extras
-withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler{
+withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
@@ -646,7 +646,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
 - (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
          withShareUUID:(NSString * _Nonnull)shareUUID
                 extras:(NSDictionary * _Nullable)extras
- withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler{
+ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
@@ -688,7 +688,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
 
 - (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
                          extras:(NSDictionary * _Nullable)extras
-          withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error))completionHandler{
+          withCompletionHandler:(nullable GGSharedLocationResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];

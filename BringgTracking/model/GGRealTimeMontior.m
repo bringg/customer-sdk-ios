@@ -653,12 +653,34 @@
 
 - (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
     
+    [self sendWatchOrderWithOrderUUID:uuid shareUUID:nil completionHandler:completionHandler];
+}
+
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL, id, NSError *))completionHandler{
+    
     NSLog(@"watch order %@", uuid);
+    
+    if (!uuid) {
+        if (completionHandler) {
+            NSError *error = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing UUID"}];
+            
+            completionHandler(NO, nil, error);
+        }
+        
+        return;
+    }
+
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    uuid, @"order_uuid",
                                    nil];
-    [self sendEventWithName:@"watch order" params:params completionHandler:completionHandler];
     
+    // if we have shared uuid - supply it as well
+    if (shareUUID) {
+        [params setObject:shareUUID forKey:@"share_uuid"];
+    }
+    
+    [self sendEventWithName:@"watch order" params:params completionHandler:completionHandler];
+
 }
 
 - (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {

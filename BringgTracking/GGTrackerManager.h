@@ -171,6 +171,15 @@
 - (BOOL)isWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
 
 /**
+ *  tell if a specific order is being watched
+ *
+ *  @param compoundUUID compound uuid of order in question
+ *
+ *  @return BOOL
+ */
+- (BOOL)isWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID;
+
+/**
  *  tell if any drivers are being watched
  *
  *  @return BOOL
@@ -215,6 +224,18 @@
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
+ *  asks the real time service to start tracking a specific order
+ *  this method throws if not valid compound uuid
+ *
+ *  @param compoundUUID order compound uuid
+ *  @param delegate object to recieve order callbacks
+ *  @see OrderDelegate
+ *  @throws exception if invalid compound uuid
+ */
+- (void)startWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
+
+/**
  *  asks the real time service to start tracking a specific driver
  *
  *  @param uuid      uuid of driver
@@ -245,6 +266,15 @@
  *  @param uuid uuid of order
  */
 - (void)stopWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
+
+/**
+ *  stops tracking a specific order
+ *  this method will throw an exception if compoundUUID is invalid
+ *
+ *  @param compoundUUID compound uuid of order
+ *  @throws exception if invalid compound uuid
+ */
+- (void)stopWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID;
 
 /**
  *  stop watching all orders

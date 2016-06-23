@@ -31,8 +31,8 @@
 
 
 
-@property (nonatomic, weak) id<RealTimeDelegate> trackerRealtimeDelegate;
-@property (nonatomic, weak) GGHTTPClientManager *httpManager;
+@property (nullable, nonatomic, weak) id<RealTimeDelegate> trackerRealtimeDelegate;
+@property (nullable, nonatomic, weak) GGHTTPClientManager *httpManager;
 
 @property (nonatomic, assign) NSUInteger numConnectionAttempts;
 
@@ -45,10 +45,21 @@
  *  @param completionHandler handle response callback
  */
 -(void)getWatchedOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-            withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
+                       sharedUUID:(NSString * _Nullable)sharedUUID
+            withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 
-
+/**
+ *  starts watching an order using both order uuid and shared uuid (optional)
+ *
+ *  @param uuid       order uuid
+ *  @param shareduuid shared uuid
+ *  @param delegate   delegate
+ *  @throws if invalid or missing order UUID
+ */
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+                        sharedUUID:(NSString *_Nullable)shareduuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
 /**
  *  the timer event handler to check if too much time passed between realtime events
  *

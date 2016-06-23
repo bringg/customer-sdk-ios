@@ -143,25 +143,36 @@
         if (errorPointer) {
             *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing compound UUID"}];
         }
-        return; 
+        return;
     }
     
     NSArray *pair = [compoundUUID componentsSeparatedByString:ORDER_UUID_COMPOUND_SEPERATOR];
     
-    @try {
-        *orderUUID = [pair objectAtIndex:0];
-        *sharedUUID = [pair objectAtIndex:1];
-    }
-    @catch (NSException *exception) {
-        //
-        NSLog(@"cant parse driver comound key %@ - error:%@", compoundUUID, exception);
-        
+    if (!pair || pair.count != 2) {
         if (errorPointer) {
-            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:exception.reason}];
+            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];
             
         }
+        
+        return;
     }
-
+    
+    *orderUUID = [pair objectAtIndex:0];
+    *sharedUUID = [pair objectAtIndex:1];
+    
+    if ([*orderUUID length] == 0 || [*sharedUUID length] == 0) {
+        // parsing is invalid if one of the uuid's are empty
+        *orderUUID = nil;
+        *sharedUUID = nil;
+        
+        if (errorPointer) {
+            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];
+            
+        }
+        
+        return;
+    }
+    
 }
 
 + (void)parseWaypointCompoundKey:(NSString *)key toOrderUUID:(NSString *__autoreleasing  _Nonnull *)orderUUID andWaypointId:(NSString *__autoreleasing  _Nonnull *)waypointId{

@@ -65,4 +65,55 @@
 
     
 }
+
+
+- (void)testURLStringValidation{
+    
+    NSString *testURL = @"http://www.google.com";
+    BOOL result = [GGBringgUtils isValidUrlString:testURL];
+    NSURL *nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue([nsurl.absoluteString isEqualToString:testURL] && result);
+    
+    testURL = @"https://www.google.com";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue([nsurl.absoluteString isEqualToString:testURL] && result);
+    
+    testURL = @"www.google.com";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue([nsurl.absoluteString isEqualToString:testURL] && result);
+    
+    testURL = @"www.google";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue([nsurl.absoluteString isEqualToString:testURL] && result);
+    
+    testURL = @"http://www.google";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue([nsurl.absoluteString isEqualToString:testURL] && result);
+    
+    
+    testURL = @"http://google/";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue([nsurl.absoluteString isEqualToString:testURL] && result);
+
+    // should fail due to illegal characters
+    testURL = @"http://mw1.google.com/mw-earth-vectordb/kml-samples/gp/seattle/gigapxl/$[level]/r$[y]_c$[x].jpg";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertFalse(result);
+    
+    
+}
+
 @end

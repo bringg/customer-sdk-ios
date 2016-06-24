@@ -211,8 +211,65 @@
  */
 - (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID;
 
+/**
+ *  return an order matching a uuid
+ *
+ *  @param uuid order uuid to search
+ *
+ *  @return GGOrder
+ */
+- (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid;
 
-// track actions
+/**
+ *  returns an order matching a compound uuid (combination of order uuid and shared location uuid)
+ *
+ *  @param compoundUUID compound order uuid
+ *
+ *  @return GGOrder
+ */
+- (nullable GGOrder *)orderWithCompoundUUID:(nonnull NSString *)compoundUUID;
+
+//MARK: track actions
+
+/**
+ *  sends a findme request for a specific order
+ *
+ *  @param uuid                 UUID of order
+ *  @param lat                 latitude
+ *  @param lng                 longitude
+ *  @param completionHandler    callback handler
+ */
+- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+                                 latitude:(double)lat
+                                longitude:(double)lng
+                    withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
+
+/**
+ *  sends a findme request for a specific order
+ *
+ *  @param compoundUUID      compound UUID of order
+ *  @param lat                 latitude
+ *  @param lng                 longitude
+ *  @param completionHandler callback handler
+ 
+ */
+- (void)sendFindMeRequestForOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID
+                                         latitude:(double)lat
+                                        longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
+
+/**
+ *  sends a findme request for a specific order
+ *
+ *  @param order             the order object
+ *  @param lat                 latitude
+ *  @param lng                 longitude
+ *  @param completionHandler callback handler
+ */
+- (void)sendFindMeRequestForOrder:(nonnull GGOrder *)order
+                         latitude:(double)lat
+                        longitude:(double)lng
+            withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
+
 /**
  *  asks the real time service to start tracking a specific order
  *

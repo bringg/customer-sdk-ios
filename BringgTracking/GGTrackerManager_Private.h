@@ -112,6 +112,13 @@
 - (void)notifyRESTUpdateForDriverWithUUID:(NSString *_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull)shareUUID;
 
 
+/**
+ *  notifies a change in the find me configuration for a specific order
+ *
+ *  @param orderUUID uuid of order
+ */
+- (void)notifyRESTFindMeUpdatedForOrderWithUUID:(NSString * _Nonnull)orderUUID;
+
 
 /**
  *  disconnectes the real time

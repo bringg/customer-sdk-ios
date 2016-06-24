@@ -36,6 +36,7 @@
 		136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 136CB2751B85C47400521029 /* GGWaypoint.h */; };
 		13B62AB31D1C464600BDAC9B /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B62AB21D1C464600BDAC9B /* GGBringgUtilsTests.m */; };
 		13B62AB61D1C96D100BDAC9B /* GGFindMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B62AB51D1C96D100BDAC9B /* GGFindMe.m */; };
+		13B62AB71D1DAE7400BDAC9B /* GGFindMe.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13B62AB41D1C96D100BDAC9B /* GGFindMe.h */; };
 		13BA52821C0C6A4400B6DB53 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 13BA52811C0C6A4400B6DB53 /* NSObject+Observer.m */; };
 		13D5427F1BEB419000A6B48F /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D5427E1BEB419000A6B48F /* GGRealTimeMonitorTests.m */; };
 		13D542831BEB495200A6B48F /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 13D542811BEB495200A6B48F /* orderUpdate_onstart.json */; };
@@ -122,6 +123,7 @@
 			dstPath = include;
 			dstSubfolderSpec = 16;
 			files = (
+				13B62AB71D1DAE7400BDAC9B /* GGFindMe.h in CopyFiles */,
 				135990DA1C1598A90088F87A /* GGItem.h in CopyFiles */,
 				13361E241B8B3D7B00388D14 /* GGBringgUtils.h in CopyFiles */,
 				136CB2781B85C4CE00521029 /* GGWaypoint.h in CopyFiles */,
@@ -853,7 +855,7 @@
 		A99163B91A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.7.5.0;
+				DYLIB_CURRENT_VERSION = 1.7.7.0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -871,7 +873,7 @@
 		A99163BA1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.7.5.0;
+				DYLIB_CURRENT_VERSION = 1.7.7.0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",

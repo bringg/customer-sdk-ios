@@ -117,6 +117,14 @@
     }
 }
 
+//MARK: Getters
+- (BOOL)canSendFindMe{
+    if (!findMe) {
+        return NO;
+    }
+    return [self.findMe canSendFindMe];
+}
+
 //MARK: NSCoding
 -(instancetype)initWithCoder:(NSCoder *)aDecoder{
     if (self = [self init]) {

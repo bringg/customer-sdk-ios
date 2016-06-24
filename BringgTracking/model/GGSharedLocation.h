@@ -62,4 +62,13 @@
  */
 - (void)update:(GGSharedLocation *__nullable)newLocation;
 
+/**
+ *  check if location find me is valid for request sending
+ *
+ *  @return BOOL
+ */
+- (BOOL)canSendFindMe;
+
+
+
 @end

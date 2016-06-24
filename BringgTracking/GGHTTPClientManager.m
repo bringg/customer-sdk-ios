@@ -184,7 +184,7 @@
 }
 
 -(void)addAuthinticationToParams:(NSMutableDictionary *__autoreleasing __nonnull*)params{
-    NSAssert([*params isKindOfClass:[NSMutableDictionary class]], @"http paras must be mutable");
+    NSAssert([*params isKindOfClass:[NSMutableDictionary class]], @"params must be mutable");
     
     if (_developerToken) {
          [*params setObject:_developerToken forKey:BCDeveloperTokenKey];
@@ -193,7 +193,7 @@
     NSString *auth = [_customer getAuthIdentifier];
     
     
-    if (_customer) {
+    if (_customer && auth) {
         [*params setObject:_customer.customerToken forKey:PARAM_ACCESS_TOKEN];
         [*params setObject:_customer.merchantId forKey:PARAM_MERCHANT_ID];
         if (auth) [*params setObject:auth forKey:PARAM_PHONE];
@@ -204,7 +204,7 @@
 - (NSOperation * _Nullable)httpRequestWithMethod:(NSString * _Nonnull)method
                                   path:(NSString *_Nonnull)path
                                 params:(NSDictionary * _Nullable)params
-                     completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler{
+                     completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
     
     
 #ifdef DEBUG
@@ -586,6 +586,46 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                }]];
 }
 
+
+- (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+    
+    // validate data
+    if (!findmeConfig || ![findmeConfig canSendFindMe]) {
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"current find request is not allowed"}]);
+        }
+        
+        return;
+    }
+    
+    // validate coordinates
+    if (![GGBringgUtils isValidCoordinatesWithLat:lat lng:lng]) {
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"coordinates values are invalid"}]);
+        }
+        
+        return;
+    }
+    
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"position":@{@"lat":@(lat), @"lng":@(lng)}, @"find_me_token":findmeConfig.token}];
+    
+    // inject authentication params
+     [self addAuthinticationToParams:&params];
+    
+    // find
+    [self.serviceOperationQueue addOperation:
+     [self httpRequestWithMethod:BCRESTMethodPost
+                            path:findmeConfig.url
+                          params:params
+               completionHandler:^(BOOL success, id JSON, NSError *error) {
+                   
+                   if (completionHandler) {
+                       completionHandler(success, error);
+                   }
+                   //
+               }]];
+}
 
 #warning TODO - add Order method to header once server is ready
 - (void)addOrderWith:(GGOrderBuilder *)orderBuilder withCompletionHandler:(void (^)(BOOL success, GGOrder *order, NSError *error))completionHandler{

@@ -12,7 +12,7 @@
 
 @implementation GGFindMe
 
-@synthesize url, token, enabled;
+@synthesize url, token, enabled, canSendFindMe;
 
 -(nullable instancetype)initWithData:(NSDictionary * _Nullable)data{
     
@@ -41,6 +41,11 @@
         
         enabled = newFindMe.enabled;
     }
+}
+
+//MARK: Getters
+- (BOOL)canSendFindMe{
+    return self.enabled && url && [GGBringgUtils isValidUrlString:url] && token && token.length > 0;
 }
 
 //MARK: NSCoding

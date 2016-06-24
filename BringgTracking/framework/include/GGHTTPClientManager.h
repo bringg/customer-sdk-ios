@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BringgGlobals.h"
 
 @class GGCustomer;
 @class GGOrder;
@@ -15,6 +16,7 @@
 @class GGRating;
 @class GGOrderBuilder;
 @class GGHTTPClientManager;
+@class GGFindMe;
 
 @protocol GGHTTPClientConnectionDelegate <NSObject>
 
@@ -34,7 +36,7 @@
 
 @interface GGHTTPClientManager : NSObject
 
-@property (nonatomic, weak) id<GGHTTPClientConnectionDelegate> delegate;
+@property (nullable, nonatomic, weak) id<GGHTTPClientConnectionDelegate> delegate;
 @property (nullable, nonatomic, strong) NSDate *lastEventDate;
 
 
@@ -100,7 +102,7 @@
       confirmationCode:(NSString * _Nullable)confirmationCode
             merchantId:(NSString * _Nonnull)merchantId
                 extras:(NSDictionary * _Nullable)extras
-     completionHandler:(void (^ _Nullable)(BOOL success, NSDictionary * _Nullable response,  GGCustomer * _Nullable customer, NSError * _Nullable error))completionHandler;
+     completionHandler:(nullable GGCustomerResponseHandler)completionHandler;
 
 /**
  *  retrieves an updated order object
@@ -111,7 +113,7 @@
  */
 - (void)getOrderByID:(NSUInteger)orderId
               extras:(NSDictionary * _Nullable)extras
-withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
+withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**
  *  gets full data of watched order
@@ -123,7 +125,18 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
  */
 -(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
                       extras:(NSDictionary * _Nullable)extras
-       withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
+       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
+
+
+/**
+ *  send a find me request for an order
+ *
+ *  @param findmeConfig        findme configuration object holding token and url
+ *  @param lat               latitude location
+ *  @param lng               longitude location
+ *  @param completionHandler remote handler
+ */
+- (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
 
 /**
@@ -137,7 +150,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
 - (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
          withShareUUID:(NSString * _Nonnull)shareUUID
                 extras:(NSDictionary * _Nullable)extras
- withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response,GGOrder * _Nullable order, NSError *_Nullable error))completionHandler;
+ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**
  *  get an updated shared location object from the service
@@ -147,7 +160,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
  */
 - (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
                          extras:(NSDictionary * _Nullable)extras
-          withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error))completionHandler;
+          withCompletionHandler:(nullable GGSharedLocationResponseHandler)completionHandler;
  
 /**
  *  send customer rating for a specific driver
@@ -163,7 +176,7 @@ withCompletionHandler:(void (^ __nullable)(BOOL success, NSDictionary * _Nullabl
    withToken:(NSString * _Nonnull)ratingToken
    ratingURL:(NSString *_Nonnull)ratingURL
       extras:(NSDictionary * _Nullable)extras
-withCompletionHandler:(void (^__nullable)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error))completionHandler;
+withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler;
 
 
 

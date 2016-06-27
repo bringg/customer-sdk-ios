@@ -225,6 +225,35 @@
     return _liveMonitor.waypointDelegates.allKeys;
 }
 
+- (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid{
+    
+    return [_liveMonitor getOrderWithUUID:uuid];
+}
+
+- (nullable GGOrder *)orderWithCompoundUUID:(nonnull NSString *)compoundUUID{
+    
+    
+    NSString *uuid;
+    NSString *sharedUUID;
+    NSError *error;
+    
+    error = nil;
+    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
+    
+    if (error) {
+        return nil;
+    }
+    
+    GGOrder *order = [_liveMonitor getOrderWithUUID:uuid];
+    
+    if (order && [order isWithSharedUUID:sharedUUID]) {
+        
+        return order;
+    }
+    
+    return nil;
+}
+
 
 #pragma mark - Observers
 - (void)configureObservers{
@@ -410,9 +439,7 @@
         NSString *orderUUID = (NSString *)obj;
        
         __block GGOrder *activeOrder = [self.liveMonitor getOrderWithUUID:orderUUID];
-       
-        
-        
+
         // if we have a shared location object for this order we can now poll
         if (activeOrder.sharedLocation || activeOrder.sharedLocationUUID) {
             
@@ -453,6 +480,12 @@
             
             if (!error && sharedLocation != nil) {
                 //
+                // detect if any change in findme configuration
+                __block BOOL oldCanFindMe = activeOrder.sharedLocation && [activeOrder.sharedLocation canSendFindMe];
+                
+                __block BOOL newCanFindMe = [sharedLocation canSendFindMe];
+                
+                // update shared location object
                 if (!activeOrder.sharedLocation) {
                     activeOrder.sharedLocation = sharedLocation;
                 }else{
@@ -469,6 +502,12 @@
                     
                     // notify all interested parties that there has been a status change in the order
                     [weakSelf notifyRESTUpdateForDriverWithUUID:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
+                    
+                    
+                    // notify findme change if relevant
+                    if (oldCanFindMe != newCanFindMe) {
+                        [weakSelf notifyRESTFindMeUpdatedForOrderWithUUID:activeOrder.uuid];
+                    }
                     
                 });
             }else{
@@ -576,6 +615,11 @@
                     
                     GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
                     
+                    // detect if any change in findme configuration
+                    __block BOOL oldCanFindMe = activeOrder.sharedLocation && [activeOrder.sharedLocation canSendFindMe];
+                    
+                    __block BOOL newCanFindMe = order.sharedLocation && [order.sharedLocation canSendFindMe];
+                    
                     // check if we can also update the driver related to the order
                     if (sharedLocationDriver) {
                         [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
@@ -584,6 +628,12 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         // notify all interested parties that there has been a status change in the order
                         [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
+                        
+                        // notify findme change if relevant
+                        if (oldCanFindMe != newCanFindMe) {
+                            [weakSelf notifyRESTFindMeUpdatedForOrderWithUUID:order.uuid];
+                        }
+
                     });
                 }
             }else{
@@ -678,6 +728,17 @@
     }
 }
 
+- (void)notifyRESTFindMeUpdatedForOrderWithUUID:(NSString * _Nonnull)orderUUID{
+    GGOrder *order = [self.liveMonitor getOrderWithUUID:orderUUID];
+   
+    // update the order delegate
+    id<OrderDelegate> delegate = [_liveMonitor.orderDelegates objectForKey:order.uuid];
+    
+    if (delegate) {
+        // notifiy delegate findme configuration has been updated
+        [delegate order:order didUpdateLocation:order.sharedLocation findMeConfiguration:order.sharedLocation.findMe];
+    }
+}
 
 - (void)notifyRESTUpdateForDriverWithUUID:(NSString *)driverUUID andSharedUUID:(NSString *)shareUUID{
      GGDriver *driver = [self.liveMonitor getDriverWithUUID:driverUUID];
@@ -693,14 +754,17 @@
 
 }
 
+
+
+
 -(void)getWatchedOrderByOrderUUID:(NSString * _Nonnull)orderUUID
                        sharedUUID:(NSString * _Nullable)sharedUUID
             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     if (!self.httpManager) {
         if (completionHandler) {
-
-            completionHandler(NO, nil, nil,  [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
+            
+            completionHandler(NO, nil, nil, [NSError errorWithDomain:@"SDKDomain" code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
     }else{
         
@@ -726,6 +790,104 @@
     [self disconnect];
 }
 
+- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+    
+    if (!self.httpManager) {
+        if (completionHandler) {
+            
+            completionHandler(NO, [NSError errorWithDomain:@"SDKDomain" code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
+        }
+        
+        return;
+    }
+    
+    
+    if (!uuid) {
+        if (completionHandler) {
+            
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"supplied order uuid is invalid"}]);
+        }
+        
+        return;
+    }
+
+    
+    GGOrder *order = [self orderWithUUID:uuid];
+    
+    if (!order) {
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with uuid %@", uuid]}]);
+        }
+        
+        return;
+        
+    }else{
+        [self sendFindMeRequestForOrder:order latitude:lat longitude:lng withCompletionHandler:completionHandler];
+    }
+}
+
+- (void)sendFindMeRequestForOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+    
+    if (!compoundUUID){
+        NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
+        
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"no compound uuid supplied"}]);
+        }
+        
+        return;
+    }
+
+    
+    // parse the uuid, then check for valid order and valid findme config
+    // first parse the compound - if it isnt valid raise an exception
+    NSString *uuid;
+    NSString *sharedUUID;
+    NSError *error;
+    
+    error = nil;
+    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
+    
+    if (error) {
+        
+        NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
+        
+        if (completionHandler) {
+            completionHandler(NO, error);
+        }
+ 
+        return;
+        
+    }else{
+        // get the matching order
+        GGOrder *order = [self orderWithCompoundUUID:compoundUUID];
+        
+        if (!order) {
+            if (completionHandler) {
+                completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with compound %@", compoundUUID]}]);
+            }
+            
+            return;
+            
+        }else{
+            [self sendFindMeRequestForOrder:order latitude:lat longitude:lng withCompletionHandler:completionHandler];
+        }
+        
+    }
+}
+
+- (void)sendFindMeRequestForOrder:(nonnull GGOrder *)order latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+    
+    if (!order.sharedLocation || ![order.sharedLocation canSendFindMe]) {
+        // order is not eligable for find me
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"order is not eligable for 'Find me' at this time"}]);
+        }
+        return;
+    }
+    
+    [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
+}
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
                         sharedUUID:(NSString *_Nullable)shareduuid
@@ -759,12 +921,13 @@
         }
         [_liveMonitor sendWatchOrderWithOrderUUID:uuid shareUUID:shareduuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
             
-            __weak __typeof(&*self)weakSelf = self;
-            __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
+             __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
             
             GGOrderResponseHandler pollHandler =  ^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error){
                 
                 if (success) {
+                    
+                    [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
                     
 #if DEBUG
                     NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, uuid);
@@ -774,6 +937,11 @@
                     
                     GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
                     
+                    // detect if any change in findme configuration
+                    __block BOOL oldCanFindMe = activeOrder.sharedLocation && [activeOrder.sharedLocation canSendFindMe];
+                    
+                    __block BOOL newCanFindMe = order.sharedLocation && [order.sharedLocation canSendFindMe];
+                    
                     // check if we can also update the driver related to the order
                     if (sharedLocationDriver) {
                         [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
@@ -782,6 +950,11 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         // notify all interested parties that there has been a status change in the order
                         [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
+                        
+                        // notify findme change if relevant
+                        if (oldCanFindMe != newCanFindMe) {
+                            [weakSelf notifyRESTFindMeUpdatedForOrderWithUUID:order.uuid];
+                        }
                         
                         // start actuall polling
                         [self startOrderPolling];
@@ -867,6 +1040,42 @@
         }];
     }
     
+}
+
+- (void)handleOrderUpdated:(GGOrder *)activeOrder withNewOrder:(GGOrder *)order andPoll:(BOOL)doPoll{
+#if DEBUG
+    NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, uuid);
+#endif
+    // update the local model in the live monitor and retrieve
+    GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+    
+    GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
+    
+    // detect if any change in findme configuration
+    __block BOOL oldCanFindMe = activeOrder.sharedLocation && [activeOrder.sharedLocation canSendFindMe];
+    
+    __block BOOL newCanFindMe = order.sharedLocation && [order.sharedLocation canSendFindMe];
+    
+    // check if we can also update the driver related to the order
+    if (sharedLocationDriver) {
+        [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
+    }
+    
+     __weak __typeof(&*self)weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // notify all interested parties that there has been a status change in the order
+        [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
+        
+        // notify findme change if relevant
+        if (oldCanFindMe != newCanFindMe) {
+            [weakSelf notifyRESTFindMeUpdatedForOrderWithUUID:order.uuid];
+        }
+        
+        // start actuall polling
+        if (doPoll) { [self startOrderPolling] };
+    });
+    
+
 }
 
 - (void)startWatchingOrderWithCompoundUUID:(NSString *)compoundUUID delegate:(id<OrderDelegate>)delegate{

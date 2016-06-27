@@ -171,6 +171,15 @@
 - (BOOL)isWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
 
 /**
+ *  tell if a specific order is being watched
+ *
+ *  @param compoundUUID compound uuid of order in question
+ *
+ *  @return BOOL
+ */
+- (BOOL)isWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID;
+
+/**
  *  tell if any drivers are being watched
  *
  *  @return BOOL
@@ -202,8 +211,65 @@
  */
 - (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID;
 
+/**
+ *  return an order matching a uuid
+ *
+ *  @param uuid order uuid to search
+ *
+ *  @return GGOrder
+ */
+- (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid;
 
-// track actions
+/**
+ *  returns an order matching a compound uuid (combination of order uuid and shared location uuid)
+ *
+ *  @param compoundUUID compound order uuid
+ *
+ *  @return GGOrder
+ */
+- (nullable GGOrder *)orderWithCompoundUUID:(nonnull NSString *)compoundUUID;
+
+//MARK: track actions
+
+/**
+ *  sends a findme request for a specific order
+ *
+ *  @param uuid                 UUID of order
+ *  @param lat                 latitude
+ *  @param lng                 longitude
+ *  @param completionHandler    callback handler
+ */
+- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+                                 latitude:(double)lat
+                                longitude:(double)lng
+                    withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
+
+/**
+ *  sends a findme request for a specific order
+ *
+ *  @param compoundUUID      compound UUID of order
+ *  @param lat                 latitude
+ *  @param lng                 longitude
+ *  @param completionHandler callback handler
+ 
+ */
+- (void)sendFindMeRequestForOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID
+                                         latitude:(double)lat
+                                        longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
+
+/**
+ *  sends a findme request for a specific order
+ *
+ *  @param order             the order object
+ *  @param lat                 latitude
+ *  @param lng                 longitude
+ *  @param completionHandler callback handler
+ */
+- (void)sendFindMeRequestForOrder:(nonnull GGOrder *)order
+                         latitude:(double)lat
+                        longitude:(double)lng
+            withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
+
 /**
  *  asks the real time service to start tracking a specific order
  *
@@ -212,6 +278,18 @@
  *  @see OrderDelegate
  */
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
+
+/**
+ *  asks the real time service to start tracking a specific order
+ *  this method throws if not valid compound uuid
+ *
+ *  @param compoundUUID order compound uuid
+ *  @param delegate object to recieve order callbacks
+ *  @see OrderDelegate
+ *  @throws exception if invalid compound uuid
+ */
+- (void)startWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
@@ -245,6 +323,15 @@
  *  @param uuid uuid of order
  */
 - (void)stopWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
+
+/**
+ *  stops tracking a specific order
+ *  this method will throw an exception if compoundUUID is invalid
+ *
+ *  @param compoundUUID compound uuid of order
+ *  @throws exception if invalid compound uuid
+ */
+- (void)stopWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID;
 
 /**
  *  stop watching all orders

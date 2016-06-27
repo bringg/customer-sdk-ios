@@ -116,5 +116,24 @@
 + (void)parseWaypointCompoundKey:(NSString * _Nonnull)key toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andWaypointId:(NSString *_Nonnull*_Nonnull)waypointId;
 
 
+/**
+ *  tests if string is a valid url string
+ *
+ *  @param urlTest the string to test
+ *  @return BOOL
+ */
++ (BOOL)isValidUrlString:(nonnull NSString *)urlTest;
+
+
+/**
+ *  test if coordiantes are actualy valid
+ *
+ *  @param lat latitude
+ *  @param lng longitude
+ *
+ *  @return BOOL
+ */
++ (BOOL)isValidCoordinatesWithLat:(double)lat lng:(double)lng;
+
 
 @end

@@ -86,6 +86,40 @@
 
 @end
 
+@interface GGHTTPClientManagerTestClass :  GGHTTPClientManager
+
+@end
+
+@implementation GGHTTPClientManagerTestClass
+
+- (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+    
+    // validate data
+    if (!findmeConfig || ![findmeConfig canSendFindMe]) {
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"current find request is not allowed"}]);
+        }
+        
+        return;
+    }
+    
+    // validate coordinates
+    if (![GGBringgUtils isValidCoordinatesWithLat:lat lng:lng]) {
+        if (completionHandler) {
+            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"coordinates values are invalid"}]);
+        }
+        
+        return;
+    }
+    
+    if (completionHandler) {
+        completionHandler(YES, nil);
+    }
+    
+}
+
+@end
+
 @interface GGTrackerManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGTrackerManagerTestClass *trackerManager;
@@ -107,6 +141,9 @@
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];
+    
+    GGHTTPClientManagerTestClass *mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
+    [self.trackerManager setHTTPManager:mockHttp];
 }
 
 - (void)tearDown {
@@ -273,6 +310,149 @@
     compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
     
     XCTAssertNoThrow([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
+}
+
+- (void)testRequestingFindMeUsingCompoundUUID{
+    
+
+    NSString *compoundUUID = nil;
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
+    }];
+    
+    compoundUUID = @"";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
+    }];
+    
+    compoundUUID = @"SOME_ORDER_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
+    }];
+    
+    compoundUUID = @"SOME_ORDER_UUID$$";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
+    }];
+    
+    // create an order with some other uuid
+    GGOrder *order = [[GGOrder alloc] initOrderWithUUID:@"SOME_OTHER_ORDER_UUID" atStatus:OrderStatusCreated];
+    
+    [self.trackerManager.liveMonitor addAndUpdateOrder:order];
+    
+    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
+    }];
+    
+    
+    // create an order with some other uuid
+    GGOrder *aorder = [[GGOrder alloc] initOrderWithUUID:@"SOME_ORDER_UUID" atStatus:OrderStatusCreated];
+    
+    [self.trackerManager.liveMonitor addAndUpdateOrder:aorder];
+    
+    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
+    }];
+    
+    
+    GGSharedLocation *sharedL = [[GGSharedLocation alloc] init];
+    sharedL.locationUUID = @"SOME_SHARE_UUID";
+    
+    aorder.sharedLocationUUID = @"SOME_SHARE_UUID";
+    aorder.sharedLocation = sharedL;
+    [self.trackerManager.liveMonitor addAndUpdateOrder:aorder];
+    
+    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        //
+        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
+    }];
+    
+    GGFindMe *findmeconfig = [[GGFindMe alloc] init];
+    findmeconfig.url = @"http://bringg.com/findme";
+    findmeconfig.token = @"SOME_TOKEN";
+    findmeconfig.enabled = YES;
+    
+    sharedL.findMe = findmeconfig;
+    [self.trackerManager.liveMonitor addAndUpdateOrder:aorder];
+    
+    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        // should fail since cooridantes are invalid
+        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
+    }];
+    
+    
+    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:23.1223 longitude:52.6546 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        
+        XCTAssertTrue(success);
+    }];
+}
+
+- (void)testRequestingFindMeUsingOrderUUID{
+    
+    NSString *uuid = nil;
+    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        
+         XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
+    }];
+    
+    uuid = @"";
+    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
+    }];
+    
+     GGOrder *order = [[GGOrder alloc] initOrderWithUUID:@"SOME_ORDER_UUID" atStatus:OrderStatusCreated];
+    [self.trackerManager.liveMonitor addAndUpdateOrder:order];
+    
+    uuid = @"SOME_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
+    }];
+    
+    
+    uuid = @"SOME_ORDER_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
+    }];
+    
+    
+    GGFindMe *findmeconfig = [[GGFindMe alloc] init];
+    findmeconfig.url = @"http://bringg.com/findme";
+    findmeconfig.token = @"SOME_TOKEN";
+    findmeconfig.enabled = YES;
+    
+    
+    GGSharedLocation *sharedL = [[GGSharedLocation alloc] init];
+    sharedL.locationUUID = @"SOME_SHARE_UUID";
+    sharedL.findMe = findmeconfig;
+    
+    order.sharedLocationUUID = @"SOME_SHARE_UUID";
+    order.sharedLocation = sharedL;
+
+    [self.trackerManager.liveMonitor addAndUpdateOrder:order];
+    
+    uuid = @"SOME_ORDER_UUID";
+    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        // should fail since cooridantes are invalid
+        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
+    }];
+    
+    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:12.1231 longitude:87.55 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        
+        XCTAssertTrue(success);
+    }];
+
+    
 }
 
 @end

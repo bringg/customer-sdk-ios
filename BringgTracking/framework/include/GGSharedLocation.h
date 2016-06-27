@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GGDriver.h"
 #import "GGRating.h"
+#import "GGFindMe.h"
 
 #define GGSharedLocationStoreKeyUUID @"locationUUID"
 #define GGSharedLocationStoreKeyOrderUUID @"orderUUID"
@@ -22,7 +23,7 @@
 #define GGSharedLocationStoreKeyOrderID @"orderID"
 #define GGSharedLocationStoreKeyWaypointID @"waypointID"
 
-
+#define GGSharedLocationStoreKeyFindMe @"findMe"
 
 @interface GGSharedLocation : NSObject<NSCoding>
 
@@ -39,6 +40,8 @@
 
 @property (nonatomic, strong) GGDriver *_Nullable driver;
 @property (nonatomic, strong) GGRating *_Nullable rating;
+
+@property (nonatomic, strong) GGFindMe *_Nullable findMe;
 
 
 
@@ -58,5 +61,14 @@
  *  @param newLocation new shared location to updated data from
  */
 - (void)update:(GGSharedLocation *__nullable)newLocation;
+
+/**
+ *  check if location find me is valid for request sending
+ *
+ *  @return BOOL
+ */
+- (BOOL)canSendFindMe;
+
+
 
 @end

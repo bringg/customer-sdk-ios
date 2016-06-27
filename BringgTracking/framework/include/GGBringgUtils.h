@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#define ORDER_UUID_COMPOUND_SEPERATOR @"$$" //FIXME: update this once defined by server
 #define DRIVER_COMPOUND_SEPERATOR @"|"
 #define WAYPOINT_COMPOUND_SEPERATOR @"^"
 
@@ -86,11 +87,21 @@
 
 
 /**
+ *  parse order special compound UUID into and order UUID & shared UUID
+ *
+ *  @param compoundUUID         an order compound UUID
+ *  @param orderUUID            order uuid pointer
+ *  @param sharedUUID           shared uuid pointer
+ *  @param errorPointer         pointer to an error object incase of exception
+ */
++ (void)parseOrderCompoundUUID:(NSString * _Nonnull)compoundUUID toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID error:(NSError * _Nullable *_Nullable)errorPointer;
+
+/**
  *  parses driver compound key into a pointer to driver uuid and shared uuid
  *
  *  @param key        the compund key
- *  @param driverUUID  order uuid pointer
- *  @param sharedUUID waypoint id pointer
+ *  @param driverUUID  driver uuid pointer
+ *  @param sharedUUID shared uuid pointer
  */
 + (void)parseDriverCompoundKey:(NSString * _Nonnull)key toDriverUUID:(NSString *_Nonnull*_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID;
 
@@ -104,6 +115,25 @@
  */
 + (void)parseWaypointCompoundKey:(NSString * _Nonnull)key toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andWaypointId:(NSString *_Nonnull*_Nonnull)waypointId;
 
+
+/**
+ *  tests if string is a valid url string
+ *
+ *  @param urlTest the string to test
+ *  @return BOOL
+ */
++ (BOOL)isValidUrlString:(nonnull NSString *)urlTest;
+
+
+/**
+ *  test if coordiantes are actualy valid
+ *
+ *  @param lat latitude
+ *  @param lng longitude
+ *
+ *  @return BOOL
+ */
++ (BOOL)isValidCoordinatesWithLat:(double)lat lng:(double)lng;
 
 
 @end

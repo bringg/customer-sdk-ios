@@ -12,7 +12,7 @@
 
 @implementation GGSharedLocation
 
-@synthesize locationUUID,orderUUID,waypointID,eta,driver,rating,trackingURL, orderID, ratingURL;
+@synthesize locationUUID,orderUUID,waypointID,eta,driver,rating,trackingURL, orderID, ratingURL, findMe;
 
 
 -(nullable instancetype)initWithData:(NSDictionary * _Nullable)data{
@@ -49,7 +49,16 @@
 
         }
         
-        
+        // check if we have object to build a find me object
+        if ([data objectForKey:PARAM_FIND_ME_TOKEN] && [data objectForKey:PARAM_FIND_ME_URL]) {
+            
+            NSDictionary *findMeConfig = @{PARAM_FIND_ME_TOKEN:[data objectForKey:PARAM_FIND_ME_TOKEN],
+                                           PARAM_FIND_ME_URL:[data objectForKey:PARAM_FIND_ME_URL], PARAM_FIND_ME_ENABLED : @([GGBringgUtils boolFromJSON:[data objectForKey:PARAM_FIND_ME_ENABLED] defaultTo:NO])};
+            
+            self.findMe = [[GGFindMe alloc] initWithData:findMeConfig];
+            
+            
+        }
         
     }
     
@@ -97,7 +106,23 @@
             }
         }
         
+        if (newLocation.findMe) {
+            if (!self.findMe) {
+                self.findMe = newLocation.findMe;
+            }else{
+                [self.findMe update:newLocation.findMe];
+            }
+        }
+        
     }
+}
+
+//MARK: Getters
+- (BOOL)canSendFindMe{
+    if (!findMe) {
+        return NO;
+    }
+    return [self.findMe canSendFindMe];
 }
 
 //MARK: NSCoding
@@ -115,7 +140,7 @@
         
         self.orderID        = [aDecoder decodeIntegerForKey:GGSharedLocationStoreKeyOrderID];
         self.waypointID     = [aDecoder decodeIntegerForKey:GGSharedLocationStoreKeyWaypointID];
-        
+        self.findMe         = [aDecoder decodeObjectForKey:GGSharedLocationStoreKeyFindMe];
     }
     
     return self;
@@ -135,6 +160,8 @@
     
     [aCoder encodeInteger:self.orderID forKey:GGSharedLocationStoreKeyOrderID];
     [aCoder encodeInteger:self.waypointID forKey:GGSharedLocationStoreKeyWaypointID];
+    
+    [aCoder encodeObject:self.findMe forKey:GGSharedLocationStoreKeyFindMe];
     
 }
 @end

@@ -190,4 +190,31 @@
     
 }
 
++ (BOOL)isValidUrlString:(nonnull NSString *)urlTest{
+    NSString *urlRegEx =
+    @"^(https?://)?([da-z.-]+).([a-z.]{2,6})([/w.-]*)*/?$";
+    NSPredicate *test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx];
+    return [test evaluateWithObject:urlTest];
+}
+
++ (BOOL)isValidCoordinatesWithLat:(double)lat lng:(double)lng{
+    // lat/lng of both ZERO are considered invalid
+    if (lat == 0.0 && lng == 0.0) {
+        return NO;
+    }
+    
+    // validate real world latitude (N/S) ranges
+    if (lat < -90 || lat > 90) {
+        return NO;
+    }
+    
+    // validate real world longitude (W/E) ranges
+    if (lng < -180 || lng > 180) {
+        return NO;
+    }
+    
+    return YES;
+
+}
+
 @end

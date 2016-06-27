@@ -16,6 +16,7 @@
 @class GGRating;
 @class GGOrderBuilder;
 @class GGHTTPClientManager;
+@class GGFindMe;
 
 @protocol GGHTTPClientConnectionDelegate <NSObject>
 
@@ -125,6 +126,17 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 -(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
                       extras:(NSDictionary * _Nullable)extras
        withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
+
+
+/**
+ *  send a find me request for an order
+ *
+ *  @param findmeConfig        findme configuration object holding token and url
+ *  @param lat               latitude location
+ *  @param lng               longitude location
+ *  @param completionHandler remote handler
+ */
+- (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
 
 /**

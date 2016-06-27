@@ -281,6 +281,9 @@ static NSDateFormatter *dateFormat;
     }
 }
 
-
+//MARK: Getters
+- (BOOL)isWithSharedUUID:(nonnull NSString *)sharedUUID{
+    return (self.sharedLocationUUID && [self.sharedLocationUUID isEqualToString:sharedUUID]) || (self.sharedLocation && self.sharedLocation.locationUUID && [self.sharedLocation.locationUUID isEqualToString:sharedUUID]);
+}
 
 @end

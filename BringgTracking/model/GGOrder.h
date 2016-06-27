@@ -95,4 +95,13 @@
  */
 - (void)update:(GGOrder *__nullable)newOrder;
 
+/**
+ *  check if order is using a specific shared location uuid
+ *
+ *  @param sharedUUID shared uuid to check
+ *
+ *  @return BOOL
+ */
+- (BOOL)isWithSharedUUID:(nonnull NSString *)sharedUUID;
+
 @end

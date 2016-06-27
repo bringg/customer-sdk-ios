@@ -39,7 +39,7 @@
     
     [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&sharedUUID error:&error];
     
-    // since comound uuid is empty we should have an error
+    // since compound uuid is empty we should have an error
     XCTAssertNotNil(error);
     XCTAssertEqual(error.code, GGErrorTypeUUIDNotFound);
     
@@ -49,7 +49,7 @@
     
     [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&sharedUUID error:&error];
     
-    // since comound uuid is empty we should have an error
+    // since compound uuid is of unfamiliar structure we should have an error
     XCTAssertNotNil(error);
     XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
     

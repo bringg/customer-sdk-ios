@@ -599,45 +599,14 @@
             
             // remove from polled orders
             [weakSelf.polledOrders removeObject:activeOrder.uuid];
-            
-            
-            //
-            if (!error && order != nil) {
-#if DEBUG
-                NSLog(@"GOT POLLED ORDER %@ when active is %@", order.uuid, activeOrder.uuid);
-#endif
-                // check that is is the update we were waiting for
-                if ([order.uuid isEqualToString:activeOrder.uuid]) {
-                    
-                    
-                    // update and retrieve the updated model
-                    GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
-                    
-                    GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
-                    
-                    // detect if any change in findme configuration
-                    __block BOOL oldCanFindMe = activeOrder.sharedLocation && [activeOrder.sharedLocation canSendFindMe];
-                    
-                    __block BOOL newCanFindMe = order.sharedLocation && [order.sharedLocation canSendFindMe];
-                    
-                    // check if we can also update the driver related to the order
-                    if (sharedLocationDriver) {
-                        [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        // notify all interested parties that there has been a status change in the order
-                        [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
-                        
-                        // notify findme change if relevant
-                        if (oldCanFindMe != newCanFindMe) {
-                            [weakSelf notifyRESTFindMeUpdatedForOrderWithUUID:order.uuid];
-                        }
 
-                    });
-                }
+            //
+            if (success) {
+      
+                [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:NO];
+
             }else{
-                NSLog(@"ERROR POLLING FOR ORDER %@:\n%@", activeOrder.uuid, error.localizedDescription);
+                if (error) NSLog(@"ERROR POLLING FOR ORDER %@:\n%@", activeOrder.uuid, error.localizedDescription);
             }
             
         }];
@@ -921,6 +890,7 @@
         }
         [_liveMonitor sendWatchOrderWithOrderUUID:uuid shareUUID:shareduuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
             
+            __weak __typeof(&*self)weakSelf = self;
              __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
             
             GGOrderResponseHandler pollHandler =  ^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error){
@@ -929,43 +899,11 @@
                     
                     [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
                     
-#if DEBUG
-                    NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, uuid);
-#endif
-                    // update the local model in the live monitor and retrieve
-                    GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
-                    
-                    GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
-                    
-                    // detect if any change in findme configuration
-                    __block BOOL oldCanFindMe = activeOrder.sharedLocation && [activeOrder.sharedLocation canSendFindMe];
-                    
-                    __block BOOL newCanFindMe = order.sharedLocation && [order.sharedLocation canSendFindMe];
-                    
-                    // check if we can also update the driver related to the order
-                    if (sharedLocationDriver) {
-                        [_liveMonitor addAndUpdateDriver:sharedLocationDriver];
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        // notify all interested parties that there has been a status change in the order
-                        [weakSelf notifyRESTUpdateForOrderWithUUID:order.uuid];
-                        
-                        // notify findme change if relevant
-                        if (oldCanFindMe != newCanFindMe) {
-                            [weakSelf notifyRESTFindMeUpdatedForOrderWithUUID:order.uuid];
-                        }
-                        
-                        // start actuall polling
-                        [self startOrderPolling];
-                    });
-                    
-                    
                     
                 }else{
                     dispatch_async(dispatch_get_main_queue(), ^{
                         // notify socket fail
-                        [delegateOfOrder watchOrderFailForOrder:order error:error];
+                        [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
                     });
                     
                 }
@@ -1043,11 +981,20 @@
 }
 
 - (void)handleOrderUpdated:(GGOrder *)activeOrder withNewOrder:(GGOrder *)order andPoll:(BOOL)doPoll{
+    
+    if (!activeOrder || !order) {
+        return;
+    }
+    
+    if (![activeOrder.uuid isEqualToString:order.uuid]) {
+        return;
+    }
+    
 #if DEBUG
-    NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, uuid);
+    NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, activeOrder.uuid);
 #endif
     // update the local model in the live monitor and retrieve
-    GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+    GGOrder *updatedOrder = [self.liveMonitor addAndUpdateOrder:order];
     
     GGDriver *sharedLocationDriver = [[updatedOrder sharedLocation] driver];
     
@@ -1072,7 +1019,9 @@
         }
         
         // start actuall polling
-        if (doPoll) { [self startOrderPolling] };
+        if (doPoll) {
+            [self startOrderPolling];
+        };
     });
     
 

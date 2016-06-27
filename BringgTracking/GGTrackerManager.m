@@ -245,7 +245,9 @@
     }
     
     GGOrder *order = [_liveMonitor getOrderWithUUID:uuid];
-    if (order && ([order.sharedLocationUUID isEqualToString:sharedUUID] || [order.sharedLocation.locationUUID isEqualToString:sharedUUID])) {
+    
+    if (order && [order isWithSharedUUID:sharedUUID]) {
+        
         return order;
     }
     

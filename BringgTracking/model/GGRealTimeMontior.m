@@ -9,7 +9,7 @@
 #import "GGRealTimeMontior.h"
 #import "GGRealTimeMontior+Private.h"
 
-#import "SocketIOPacket.h"
+#import "GGRealTimeAdapter.h"
 
 
 #import "GGDriver.h"
@@ -19,6 +19,9 @@
 #import "GGRating.m"
 
 #import "NSObject+Observer.h"
+#import "GGRealTimeInternals.h"
+
+#import <SocketIOClientSwift/SocketIOClientSwift-Swift.h>
 
 //#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
 
@@ -35,7 +38,9 @@
 
 
 
+@interface GGRealTimeMontior()<SocketIOClientDelegate>
 
+@end
 
 @implementation GGRealTimeMontior
 
@@ -58,8 +63,8 @@
         self.activeDrivers = [NSMutableDictionary dictionary];
         self.activeOrders = [NSMutableDictionary dictionary];
         // let the real time manager handle socket events
-        self.socketIO = [[SocketIO alloc] initWithDelegate:self];
-     
+        self.socketIO = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:BTRealtimeServer] options:nil];
+        
         self.connected = NO;
         self.wasManuallyConnected = NO;
         
@@ -73,6 +78,13 @@
     
 }
 
+- (BOOL)isSocketIOConnected{
+    return self.socketIO.status == SocketIOClientStatusConnected;
+}
+
+- (BOOL)isSocketIOConnecting{
+    return self.socketIO.status == SocketIOClientStatusConnecting;
+}
 
 - (void)configureReachability {
     Reachability* reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
@@ -83,7 +95,10 @@
         NSLog(@"Reachable!");
 #endif
         // reconnect only if isnt already connecting and was at least once connected manually
-        if (![self.socketIO isConnected] && ![self.socketIO isConnecting] && self.developerToken && self.wasManuallyConnected) {
+        if (![self isSocketIOConnected] &&
+            ![self isSocketIOConnecting] &&
+            self.developerToken &&
+            self.wasManuallyConnected) {
             
             [self connect];
 
@@ -189,7 +204,7 @@
 }
 
 - (BOOL)isWorkingConnection{
-    return [self.socketIO isConnected] && ![self isWaitingTooLongForSocketEvent] && self.lastEventDate;
+    return [self isSocketIOConnected] && ![self isWaitingTooLongForSocketEvent] && self.lastEventDate;
 }
 
 
@@ -230,9 +245,23 @@
         server = BTRealtimeServer;
     }
     
-    self.socketIO.useSecure = self.useSSL;
+    NSNumber *showLogs = @NO;
     
-    if ([self.socketIO isConnected] || [self.socketIO isConnecting]) {
+#ifdef DEBUG
+    showLogs = @YES;
+#endif
+    
+    NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
+    
+
+    
+    NSDictionary *connectionOptions = @{@"log":showLogs, @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"extraHeaders":connectionParams};
+    
+    self.socketIO = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:server] options:connectionOptions];
+    
+    
+    
+    if ([self isSocketIOConnected] || [self isSocketIOConnecting]) {
        
         if (completionHandler) {
             NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
@@ -260,16 +289,20 @@
             
             NSLog(@"websocket connecting %@", server);
             
-            NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
+            [self.socketIO connect];
             
-            
-            [self.socketIO connectToHost:server
-                                  onPort:0
-                              withParams:connectionParams];
+
         }
         
         
     }
+}
+
+- (void)addSocketHandlers{
+    [GGRealTimeAdapter addConnectionHandlerToClient:self.socketIO andDelegate:self];
+    [GGRealTimeAdapter addDisconnectionHandlerToClient:self.socketIO andDelegate:self];
+    [GGRealTimeAdapter addEventHandlerToClient:self.socketIO andDelegate:self];
+    [GGRealTimeAdapter addErrorHandlerToClient:self.socketIO andDelegate:self];
 }
 
 - (void)setDeveloperToken:(NSString *)developerToken{
@@ -311,72 +344,67 @@
     
 }
 
-- (void)sendEventWithName:(NSString *)name params:(NSDictionary *)params completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    if (!self.connected) {
+#pragma mark - Watch Actions
+
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(SocketResponseBlock)completionHandler {
+    
+    [self sendWatchOrderWithOrderUUID:uuid shareUUID:nil completionHandler:completionHandler];
+}
+
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler{
+    
+    NSLog(@"watch order %@", uuid);
+    
+    if (!uuid) {
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
-                                             userInfo:@{NSLocalizedDescriptionKey: @"Web socket disconnected.",
-                                                        NSLocalizedRecoverySuggestionErrorKey: @"Web socket disconnected."}];
+            NSError *error = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing UUID"}];
+            
             completionHandler(NO, nil, error);
-            
         }
+        
         return;
-        
-    }
-    SocketIOCallback cb;
-    if (completionHandler) {
-        
-        cb = ^(id argsData) {
-            //NSLog(@"SocketIOCallback argsData %@",  [GGBringgUtils userPrintSafeDictionaryFromDictionary:argsData]);
-            NSError *error;
-            if (![self errorAck:argsData error:&error]) {
-                completionHandler(YES, argsData, nil);
-                
-            } else {
-                completionHandler(NO, nil, error);
-                
-            }
-        };
     }
     
-    [self.socketIO sendEvent:name withData:params andAcknowledge:cb];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   uuid, @"order_uuid",
+                                   nil];
+    
+    // if we have shared uuid - supply it as well
+    if (shareUUID) {
+        [params setObject:shareUUID forKey:@"share_uuid"];
+    }
+    
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"watch order" params:params completionHandler:completionHandler];
+    
+}
+
+- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler {
+    
+    NSLog(@"watch driver %@ / %@", uuid, shareUUID);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   uuid, @"driver_uuid",
+                                   shareUUID, @"share_uuid",
+                                   nil];
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"watch driver" params:params completionHandler:completionHandler];
+    
+}
+
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler {
+    
+    NSLog(@"watch waypoint %@ for order %@", waypointId, orderUUID);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   waypointId, @"way_point_id",
+                                   orderUUID, @"order_uuid",
+                                   nil];
+    
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"watch way point" params:params completionHandler:completionHandler];
     
 }
 
 
+#pragma mark - SocketIOClient callbacks
 
-- (BOOL)errorAck:(id)argsData error:(NSError **)error {
-    BOOL errorResult = NO;
-    NSString *message;
-    if ([argsData isKindOfClass:[NSString class]]) {
-        NSString *data = (NSString *)argsData;
-        if ([[data lowercaseString] rangeOfString:@"error"].location != NSNotFound) {
-            errorResult = YES;
-            message = data;
-        }
-        
-    } else if ([argsData isKindOfClass:[NSDictionary class]]) {
-        NSNumber *success = [argsData objectForKey:@"success"];
-        message = [argsData objectForKey:@"message"];
-        if (![success boolValue]) {
-            errorResult = YES;
-            
-        }
-    }
-    if (errorResult) {
-        *error = [NSError errorWithDomain:@"BringgRealTime" code:0
-                                 userInfo:@{NSLocalizedDescriptionKey:message,
-                                            NSLocalizedRecoverySuggestionErrorKey:message}];
-        
-    }
-    return errorResult;
-    
-}
-
-
-#pragma mark - SocketIO callbacks
-
-- (void) socketIODidConnect:(SocketIO *)socket {
+- (void) socketIODidConnect:(SocketIOClient *)socketIO {
     NSLog(@"websocket connected");
     
     self.connected = YES;
@@ -392,7 +420,7 @@
     
 }
 
-- (void) socketIODidDisconnect:(SocketIO *)socket disconnectedWithError:(NSError *)error {
+- (void) socketIODidDisconnect:(SocketIOClient *)socketIO disconnectedWithError:(NSError *)error {
     NSLog(@"websocket disconnected, error %@", error);
     
     // set the real timemonitor as disconnected
@@ -404,7 +432,6 @@
         self.socketIOConnectedBlock = nil;
         
     } else {
-        
         // report connection error
         [self sendConnectionError:error];
     
@@ -414,32 +441,19 @@
   
 }
 
-- (void) socketIO:(SocketIO *)socket didReceiveMessage:(SocketIOPacket *)packet {
-#ifdef DEBUG
-    NSLog(@"Received MESSAGE packet");
-#endif
-    
-}
 
-- (void) socketIO:(SocketIO *)socket didReceiveJSON:(SocketIOPacket *)packet {
+- (void) socketIO:(SocketIOClient *)socketIO didReceiveEvent:(NSString *)eventName withData:(NSArray *)eventDataItems {
 #ifdef DEBUG
-    NSLog(@"Received JSON packet");
-#endif
-    
-}
-
-- (void) socketIO:(SocketIO *)socket didReceiveEvent:(SocketIOPacket *)packet {
-#ifdef DEBUG
-    NSLog(@"Received EVENT packet [%@]", packet.name);
+    NSLog(@"Received EVENT packet [%@]", eventName);
 #endif
     
     
     // update last date
     self.lastEventDate = [NSDate date];
     
-    if ([packet.name isEqualToString:EVENT_ORDER_UPDATE]) {
+    if ([eventName isEqualToString:EVENT_ORDER_UPDATE]) {
         
-        NSDictionary *eventData = [packet.args firstObject];
+        NSDictionary *eventData = [eventDataItems firstObject];
         
         NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
         NSNumber *orderStatus = [eventData objectForKey:PARAM_STATUS];
@@ -488,8 +502,8 @@
             }
             
         }
-    } else if ([packet.name isEqualToString:EVENT_ORDER_DONE]) {
-        NSDictionary *eventData = [packet.args firstObject];
+    } else if ([eventName isEqualToString:EVENT_ORDER_DONE]) {
+        NSDictionary *eventData = [eventDataItems firstObject];
 
         NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
         
@@ -522,8 +536,8 @@
             [existingDelegate orderDidFinish:order  withDriver:driver];
             
         }
-    } else if ([packet.name isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
-        NSDictionary *locationUpdate = [packet.args firstObject];
+    } else if ([eventName isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
+        NSDictionary *locationUpdate = [eventDataItems firstObject];
         NSString *driverUUID = [locationUpdate objectForKey:PARAM_DRIVER_UUID];
         NSString *shareUUID = [locationUpdate objectForKey:PARAM_SHARE_UUID];
         NSNumber *lat = [locationUpdate objectForKey:@"lat"];
@@ -588,13 +602,13 @@
         }
         
         
-    } else if ([packet.name isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
+    } else if ([eventName isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
         //activity change
 #ifdef DEBUG
-        NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:packet.args]);
+        NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:eventDataItems]);
 #endif
-    } else if ([packet.name isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
-        NSDictionary *etaUpdate = [packet.args firstObject];
+    } else if ([eventName isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
+        NSDictionary *etaUpdate = [eventDataItems firstObject];
         NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
         NSString *eta = [etaUpdate objectForKey:@"eta"];
         NSDate *etaToDate = [self dateFromString:eta];
@@ -608,8 +622,8 @@
             [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
             
         }
-    } else if ([packet.name isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
-        NSDictionary *waypointArrived = [packet.args firstObject];
+    } else if ([eventName isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
+        NSDictionary *waypointArrived = [eventDataItems firstObject];
         NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
         
@@ -621,8 +635,8 @@
             
         }
         
-    } else if ([packet.name isEqualToString:EVENT_WAY_POINT_DONE]) {
-        NSDictionary *waypointDone = [packet.args firstObject];
+    } else if ([eventName isEqualToString:EVENT_WAY_POINT_DONE]) {
+        NSDictionary *waypointDone = [eventDataItems firstObject];
         NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
         id existingDelegate = [self.waypointDelegates objectForKey:wpid];
         #ifdef DEBUG
@@ -635,76 +649,13 @@
     }
 }
 
-- (void) socketIO:(SocketIO *)socket didSendMessage:(SocketIOPacket *)packet {
+- (void)socketIO:(SocketIOClient *)socketIO onError:(NSError *)error {
     
-    #ifdef DEBUG
-    NSLog(@"Packet sent OK");
-#endif
-}
-
-- (void) socketIO:(SocketIO *)socket onError:(NSError *)error {
-    
-    self.connected = [socket isConnected];
+    self.connected = [self isSocketIOConnected];
     #ifdef DEBUG
     NSLog(@"Send error %@", error);
 #endif
 }
-
-
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    
-    [self sendWatchOrderWithOrderUUID:uuid shareUUID:nil completionHandler:completionHandler];
-}
-
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL, id, NSError *))completionHandler{
-    
-    NSLog(@"watch order %@", uuid);
-    
-    if (!uuid) {
-        if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing UUID"}];
-            
-            completionHandler(NO, nil, error);
-        }
-        
-        return;
-    }
-
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   uuid, @"order_uuid",
-                                   nil];
-    
-    // if we have shared uuid - supply it as well
-    if (shareUUID) {
-        [params setObject:shareUUID forKey:@"share_uuid"];
-    }
-    
-    [self sendEventWithName:@"watch order" params:params completionHandler:completionHandler];
-
-}
-
-- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    NSLog(@"watch driver %@ / %@", uuid, shareUUID);
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   uuid, @"driver_uuid",
-                                   shareUUID, @"share_uuid",
-                                   nil];
-    [self sendEventWithName:@"watch driver" params:params completionHandler:completionHandler];
-    
-}
-
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler {
-    
-    NSLog(@"watch waypoint %@ for order %@", waypointId, orderUUID);
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   waypointId, @"way_point_id",
-                                   orderUUID, @"order_uuid",
-                                   nil];
-    [self sendEventWithName:@"watch way point" params:params completionHandler:completionHandler];
-    
-}
-
-
 
 
 @end

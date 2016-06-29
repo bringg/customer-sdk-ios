@@ -11,12 +11,13 @@
 #import "GGTrackerManager.h"
 #import "Reachability.h"
 
+#import <SocketIOClientSwift/SocketIOClientSwift-Swift.h>
 
 #define MAX_WITHOUT_REALTIME_SEC 240
 
 @interface GGRealTimeMontior ()
 
-typedef void (^CompletionBlock)(BOOL success, NSError *error);
+
 
 @property (nonatomic, strong) NSString *developerToken;
 
@@ -33,7 +34,7 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL wasManuallyConnected;
 
-@property (nonatomic,strong) SocketIO *socketIO;
+@property (nonatomic,strong) SocketIOClient *socketIO;
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
 @property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
 @property (nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
@@ -56,13 +57,13 @@ typedef void (^CompletionBlock)(BOOL success, NSError *error);
 -(void)sendConnectionError:(NSError *)error;
 
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler ;
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(SocketResponseBlock)completionHandler ;
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler;
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler;
 
-- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler;
+- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler;
 
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(void (^)(BOOL success, id socketResponse, NSError *error))completionHandler ;
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler ;
 
 /**
  *  check if it has been too long since a socket event

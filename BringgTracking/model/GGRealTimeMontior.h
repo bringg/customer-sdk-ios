@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SocketIO.h"
 
 #define BTRealtimeServer @"realtime-api.bringg.com"
 
@@ -21,7 +20,7 @@
 
 @end
 
-@interface GGRealTimeMontior : NSObject<SocketIODelegate>
+@interface GGRealTimeMontior : NSObject
 
 @property (nullable, nonatomic, strong) NSDate *lastEventDate;
 

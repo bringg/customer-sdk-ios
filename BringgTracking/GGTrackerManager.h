@@ -21,44 +21,6 @@
 @class GGCustomer;
 @class GGTrackerManager;
 
-@protocol RealTimeDelegate <NSObject>
-
-/**
- *  notifies delegate that a socket connection has been made
- */
-- (void)trackerDidConnect;
-
-/**
- *  notifies the delegate that the tracker has disconnected the socket connection w/o and error
- *  @usage the tracker manager handles connection recoveries by its own if network allows it. so this notifications is just to give the delegete a change to updates its own model to whatever he desiers
- *  @param error an error describing connection error (might be nill if forced)
- */
-- (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
-
-@optional
-
-/**
- *  asks the delegate for a custom domain host for the tracker manager.
- *  if no domain is provided the tracker manager will resolve to its default
- *
- *  @param trackerManager the tracker manager request
- *
- *  @return the domain to connect the tracker manager
- */
--(NSString * _Nullable)hostDomainForTrackerManager:(GGTrackerManager *_Nonnull)trackerManager;
-
-
-
-/**
- *  delegate method to track the last date the tracker manager recieved data
- *
- *  @param eventDate date of event
- */
--(void)trackerDidRecieveDataEventAtDate:(NSDate * _Nonnull)eventDate;
-
-@end
-
-
 
 @interface GGTrackerManager : NSObject <RealTimeDelegate, GGRealTimeMonitorConnectionDelegate>
 

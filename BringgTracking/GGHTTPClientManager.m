@@ -18,7 +18,7 @@
 #import "GGorderBuilder.h"
 #import "BringgGlobals.h"
 
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 
 
 #define BCRealtimeServer @"realtime-api.bringg.com"

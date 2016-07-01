@@ -10,7 +10,7 @@
 		</data>
 		<key>Headers/SocketIOClientSwift-Swift.h</key>
 		<data>
-		5HZgvS8aC2/oyRFf0TAVm7hHL2Y=
+		pWZ3wj//Hnfsieb4vAgDv0LLnYA=
 		</data>
 		<key>Info.plist</key>
 		<data>
@@ -18,11 +18,11 @@
 		</data>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm.swiftdoc</key>
 		<data>
-		DCoJQ7KUp/6GSkQd3ZmDBxc9YQc=
+		WstVAIhL1iRlJ8jyO7abLFQ7FQY=
 		</data>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm.swiftmodule</key>
 		<data>
-		hNxdSF6pqznOeA/cRukBaDTMTKo=
+		Ozj91JYcmV3E8VGnltunb0/5xMM=
 		</data>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		+3DZ6jVKmuSlz43XJnWokBdSlm8=
+		GTW//cz4bYhrpR8qb1mBC/30miI=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -54,33 +54,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			5HZgvS8aC2/oyRFf0TAVm7hHL2Y=
+			pWZ3wj//Hnfsieb4vAgDv0LLnYA=
 			</data>
 			<key>hash2</key>
 			<data>
-			IyZ30tiwg4Ebd6OMXWllYU/XF4vo/HM60PGxQ06sB6I=
+			HAb8af1z3lJBo9R+TUGhFS7keZIkAqHHFKxiKy/c4Gw=
 			</data>
 		</dict>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			DCoJQ7KUp/6GSkQd3ZmDBxc9YQc=
+			WstVAIhL1iRlJ8jyO7abLFQ7FQY=
 			</data>
 			<key>hash2</key>
 			<data>
-			ApgzYZCHVt66ismK8nDTOzEJQw3MJLcpaoDdFHDBpac=
+			5I4/PWTTCSxWin8K+NeWxWuQ+pNAaHcwq/zL/vatf/o=
 			</data>
 		</dict>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			hNxdSF6pqznOeA/cRukBaDTMTKo=
+			Ozj91JYcmV3E8VGnltunb0/5xMM=
 			</data>
 			<key>hash2</key>
 			<data>
-			b/DSWkuWEzaGlsr5yyHptJ6hxOgLFlfq7WMFP3Fyi08=
+			XUfep4JLL5p8AC9UdZB3jLWWEHPmts8NMEa3wBSlZ4I=
 			</data>
 		</dict>
 		<key>Modules/SocketIOClientSwift.swiftmodule/arm64.swiftdoc</key>
@@ -98,11 +98,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			+3DZ6jVKmuSlz43XJnWokBdSlm8=
+			GTW//cz4bYhrpR8qb1mBC/30miI=
 			</data>
 			<key>hash2</key>
 			<data>
-			U9UC/9978jgEONOGcnvCblIakJoOedZ7Dy6Cj3HwzkU=
+			Tz4qyYi+lvNJX5cAYAZiS0ihuyG/pn8D3vPTw530p20=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

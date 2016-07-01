@@ -16,7 +16,6 @@
 #import "GGCustomer.h"
 #import "GGOrder.h"
 #import "GGSharedLocation.h"
-#import "GGRating.m"
 
 #import "NSObject+Observer.h"
 #import "GGRealTimeInternals.h"
@@ -255,7 +254,7 @@
     
 
     
-    NSDictionary *connectionOptions = @{@"log":showLogs, @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"extraHeaders":connectionParams};
+    NSDictionary *connectionOptions = @{@"log":showLogs, @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"connectParams":connectionParams};
     
     self.socketIO = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:server] options:connectionOptions];
     
@@ -289,7 +288,14 @@
             
             NSLog(@"websocket connecting %@", server);
             
-            [self.socketIO connect];
+            @try {
+                [self.socketIO connect];
+                
+            } @catch (NSException *exception) {
+
+                NSLog(@"error connected: %@", exception);
+            }
+            
             
 
         }

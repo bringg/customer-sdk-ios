@@ -210,51 +210,16 @@ SWIFT_CLASS("_TtC19SocketIOClientSwift19SocketClientManager")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@protocol SocketEngineClient;
 @class NSHTTPCookie;
+@class NSURLSession;
 @class NSURL;
 @class WebSocket;
+@protocol SocketEngineClient;
 enum SocketEnginePacketType : NSInteger;
-
-SWIFT_PROTOCOL("_TtP19SocketIOClientSwift16SocketEngineSpec_")
-@protocol SocketEngineSpec
-@property (nonatomic, weak) id <SocketEngineClient> _Nullable client;
-@property (nonatomic, readonly) BOOL closed;
-@property (nonatomic, readonly) BOOL connected;
-@property (nonatomic, copy) NSDictionary<NSString *, id> * _Nullable connectParams;
-@property (nonatomic, readonly) BOOL doubleEncodeUTF8;
-@property (nonatomic, readonly, copy) NSArray<NSHTTPCookie *> * _Nullable cookies;
-@property (nonatomic, readonly, copy) NSDictionary<NSString *, NSString *> * _Nullable extraHeaders;
-@property (nonatomic, readonly) BOOL fastUpgrade;
-@property (nonatomic, readonly) BOOL forcePolling;
-@property (nonatomic, readonly) BOOL forceWebsockets;
-@property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified parseQueue;
-@property (nonatomic, readonly) BOOL polling;
-@property (nonatomic, readonly) BOOL probing;
-@property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified emitQueue;
-@property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified handleQueue;
-@property (nonatomic, readonly, copy) NSString * _Nonnull sid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull socketPath;
-@property (nonatomic, readonly, strong) NSURL * _Nonnull urlPolling;
-@property (nonatomic, readonly, strong) NSURL * _Nonnull urlWebSocket;
-@property (nonatomic, readonly) BOOL websocket;
-@property (nonatomic, readonly, strong) WebSocket * _Nullable ws;
-- (nonnull instancetype)initWithClient:(id <SocketEngineClient> _Nonnull)client url:(NSURL * _Nonnull)url options:(NSDictionary * _Nullable)options;
-- (void)connect;
-- (void)didError:(NSString * _Nonnull)error;
-- (void)disconnect:(NSString * _Nonnull)reason;
-- (void)doFastUpgrade;
-- (void)flushWaitingForPostToWebSocket;
-- (void)parseEngineData:(NSData * _Nonnull)data;
-- (void)parseEngineMessage:(NSString * _Nonnull)message fromPolling:(BOOL)fromPolling;
-- (void)write:(NSString * _Nonnull)msg withType:(enum SocketEnginePacketType)type withData:(NSArray<NSData *> * _Nonnull)data;
-@end
-
-@class NSURLSession;
 @class NSError;
 
 SWIFT_CLASS("_TtC19SocketIOClientSwift12SocketEngine")
-@interface SocketEngine : NSObject <SocketEngineSpec>
+@interface SocketEngine : NSObject
 @property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified emitQueue;
 @property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified handleQueue;
 @property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified parseQueue;
@@ -318,6 +283,40 @@ typedef SWIFT_ENUM(NSInteger, SocketEnginePacketType) {
   SocketEnginePacketTypeNoop = 6,
 };
 
+
+SWIFT_PROTOCOL("_TtP19SocketIOClientSwift16SocketEngineSpec_")
+@protocol SocketEngineSpec
+@property (nonatomic, weak) id <SocketEngineClient> _Nullable client;
+@property (nonatomic, readonly) BOOL closed;
+@property (nonatomic, readonly) BOOL connected;
+@property (nonatomic, copy) NSDictionary<NSString *, id> * _Nullable connectParams;
+@property (nonatomic, readonly) BOOL doubleEncodeUTF8;
+@property (nonatomic, readonly, copy) NSArray<NSHTTPCookie *> * _Nullable cookies;
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, NSString *> * _Nullable extraHeaders;
+@property (nonatomic, readonly) BOOL fastUpgrade;
+@property (nonatomic, readonly) BOOL forcePolling;
+@property (nonatomic, readonly) BOOL forceWebsockets;
+@property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified parseQueue;
+@property (nonatomic, readonly) BOOL polling;
+@property (nonatomic, readonly) BOOL probing;
+@property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified emitQueue;
+@property (nonatomic, readonly, strong) dispatch_queue_t _Null_unspecified handleQueue;
+@property (nonatomic, readonly, copy) NSString * _Nonnull sid;
+@property (nonatomic, readonly, copy) NSString * _Nonnull socketPath;
+@property (nonatomic, readonly, strong) NSURL * _Nonnull urlPolling;
+@property (nonatomic, readonly, strong) NSURL * _Nonnull urlWebSocket;
+@property (nonatomic, readonly) BOOL websocket;
+@property (nonatomic, readonly, strong) WebSocket * _Nullable ws;
+- (nonnull instancetype)initWithClient:(id <SocketEngineClient> _Nonnull)client url:(NSURL * _Nonnull)url options:(NSDictionary * _Nullable)options;
+- (void)connect;
+- (void)didError:(NSString * _Nonnull)error;
+- (void)disconnect:(NSString * _Nonnull)reason;
+- (void)doFastUpgrade;
+- (void)flushWaitingForPostToWebSocket;
+- (void)parseEngineData:(NSData * _Nonnull)data;
+- (void)parseEngineMessage:(NSString * _Nonnull)message fromPolling:(BOOL)fromPolling;
+- (void)write:(NSString * _Nonnull)msg withType:(enum SocketEnginePacketType)type withData:(NSArray<NSData *> * _Nonnull)data;
+@end
 
 enum SocketIOClientStatus : NSInteger;
 @class NSUUID;

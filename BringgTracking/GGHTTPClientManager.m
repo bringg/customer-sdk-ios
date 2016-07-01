@@ -21,7 +21,7 @@
 #import "AFNetworking.h"
 
 
-#define BCRealtimeServer @"realtime-api.bringg.com"
+#define BCRealtimeServer @"realtime2-api.bringg.com"
 
 #define BCSuccessKey @"success"
 #define BCSuccessAlternateKey @"status"

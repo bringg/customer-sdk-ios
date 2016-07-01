@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BringgGlobals.h"
+#import <BringgTracking/BringgGlobals.h>
 
 @class GGCustomer;
 @class GGOrder;

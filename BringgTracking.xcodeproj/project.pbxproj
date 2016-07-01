@@ -69,6 +69,7 @@
 		13D6442B1B416F5500F9EA37 /* GGRating.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441E1B3C18F900F9EA37 /* GGRating.h */; };
 		13D644771B4185D000F9EA37 /* BringgGlobals.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 13D6441A1B3C179500F9EA37 /* BringgGlobals.h */; };
 		13DA44071B72263200C981B6 /* SRWebSocket.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A99163D51A515719008BADCD /* SRWebSocket.h */; };
+		3AE04AAB47F12CDC510F9F10 /* libPods-BringgTrackingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D1DB893E3568503726E1731 /* libPods-BringgTrackingTests.a */; };
 		84DAC0791B84474A00FD2B75 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DAC0531B84474A00FD2B75 /* AFHTTPRequestOperation.m */; };
 		84DAC07A1B84474A00FD2B75 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DAC0551B84474A00FD2B75 /* AFHTTPRequestOperationManager.m */; };
 		84DAC07B1B84474A00FD2B75 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DAC0571B84474A00FD2B75 /* AFHTTPSessionManager.m */; };
@@ -96,7 +97,6 @@
 		A99163E61A515884008BADCD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E51A515884008BADCD /* CFNetwork.framework */; };
 		A99163E81A515893008BADCD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99163E71A515893008BADCD /* Security.framework */; };
 		A9A2F6F01AAD9AB3003038E8 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */; };
-		D3504D43119CDA64CA6230BD /* libPods-BringgTrackingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E410D265A9E50F9D65C02D8 /* libPods-BringgTrackingTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -208,8 +208,8 @@
 		13D644241B413FF600F9EA37 /* GGOrderBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGOrderBuilder.h; sourceTree = "<group>"; };
 		13D644251B413FF600F9EA37 /* GGOrderBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGOrderBuilder.m; sourceTree = "<group>"; };
 		13D644271B41618E00F9EA37 /* GGRealTimeMontior+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GGRealTimeMontior+Private.h"; sourceTree = "<group>"; };
-		5E410D265A9E50F9D65C02D8 /* libPods-BringgTrackingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BringgTrackingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6E86BEDC3DF2137CDEC39795 /* Pods-BringgTrackingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTrackingTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTrackingTests/Pods-BringgTrackingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4D1DB893E3568503726E1731 /* libPods-BringgTrackingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BringgTrackingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E246F79E9DB9430EBBCD835 /* Pods-BringgTrackingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTrackingTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTrackingTests/Pods-BringgTrackingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		84DAC0521B84474A00FD2B75 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		84DAC0531B84474A00FD2B75 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		84DAC0541B84474A00FD2B75 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -266,8 +266,7 @@
 		A9A2F6EE1AAD9AB3003038E8 /* GGHTTPClientManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGHTTPClientManager.h; sourceTree = "<group>"; };
 		A9A2F6EF1AAD9AB3003038E8 /* GGHTTPClientManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGHTTPClientManager.m; sourceTree = "<group>"; };
 		A9AC3F6F1ADD0111004817ED /* GGHTTPClientManager_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGHTTPClientManager_Private.h; sourceTree = "<group>"; };
-		ED8F793D4BEA78910BEE4098 /* Pods-BringgTrackingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTrackingTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTrackingTests/Pods-BringgTrackingTests.release.xcconfig"; sourceTree = "<group>"; };
-		EF843EE8AD3EA258A3F5B194 /* libPods-BringgTracking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BringgTracking.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB3CBC0AE9CDE17AE2DBF5F6 /* Pods-BringgTrackingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTrackingTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTrackingTests/Pods-BringgTrackingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,7 +286,7 @@
 			files = (
 				13D542891BEB4BF000A6B48F /* libicucore.tbd in Frameworks */,
 				A99163B01A51523C008BADCD /* libBringgTracking.a in Frameworks */,
-				D3504D43119CDA64CA6230BD /* libPods-BringgTrackingTests.a in Frameworks */,
+				3AE04AAB47F12CDC510F9F10 /* libPods-BringgTrackingTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,19 +356,9 @@
 			isa = PBXGroup;
 			children = (
 				13D542881BEB4BF000A6B48F /* libicucore.tbd */,
-				EF843EE8AD3EA258A3F5B194 /* libPods-BringgTracking.a */,
-				5E410D265A9E50F9D65C02D8 /* libPods-BringgTrackingTests.a */,
+				4D1DB893E3568503726E1731 /* libPods-BringgTrackingTests.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5550055FAAA6CC804B3ECE69 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				6E86BEDC3DF2137CDEC39795 /* Pods-BringgTrackingTests.debug.xcconfig */,
-				ED8F793D4BEA78910BEE4098 /* Pods-BringgTrackingTests.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		84DAC0501B84474A00FD2B75 /* AFNetworking */ = {
@@ -442,7 +431,7 @@
 				A99163B31A51523C008BADCD /* BringgTrackingTests */,
 				A99163A51A51523C008BADCD /* Products */,
 				51714AA7A87F5BD99D489D8B /* Frameworks */,
-				5550055FAAA6CC804B3ECE69 /* Pods */,
+				AD2AA0C6F0BF3D030E1A7F97 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -528,6 +517,15 @@
 			path = SocketRocket;
 			sourceTree = "<group>";
 		};
+		AD2AA0C6F0BF3D030E1A7F97 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7E246F79E9DB9430EBBCD835 /* Pods-BringgTrackingTests.debug.xcconfig */,
+				BB3CBC0AE9CDE17AE2DBF5F6 /* Pods-BringgTrackingTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -553,12 +551,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A99163BB1A51523C008BADCD /* Build configuration list for PBXNativeTarget "BringgTrackingTests" */;
 			buildPhases = (
-				3C2DB9D58783BC4C615B1C56 /* Check Pods Manifest.lock */,
+				675989D2EBF00014C1602CE7 /* [CP] Check Pods Manifest.lock */,
 				A99163AB1A51523C008BADCD /* Sources */,
 				A99163AC1A51523C008BADCD /* Frameworks */,
 				A99163AD1A51523C008BADCD /* Resources */,
-				6AF51E4DB6928E6BDB59EF59 /* Embed Pods Frameworks */,
-				DB518BE8065B9E394C09CA2F /* Copy Pods Resources */,
+				21904C823FE01523431CC387 /* [CP] Embed Pods Frameworks */,
+				719EF48FE2FD3FE1EC5F9A41 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -636,29 +634,14 @@
 			shellPath = /bin/sh;
 			shellScript = "#define output folder environment variable\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -target BringgTracking ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\nxcodebuild -target BringgTracking ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\"\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 2. Create universal binary file using lipo  \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\"\n\n# Last touch. copy the header files. Just for convenience\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/include\" \"${UNIVERSAL_OUTPUTFOLDER}/\"";
 		};
-		3C2DB9D58783BC4C615B1C56 /* Check Pods Manifest.lock */ = {
+		21904C823FE01523431CC387 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		6AF51E4DB6928E6BDB59EF59 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -666,14 +649,29 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTrackingTests/Pods-BringgTrackingTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DB518BE8065B9E394C09CA2F /* Copy Pods Resources */ = {
+		675989D2EBF00014C1602CE7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		719EF48FE2FD3FE1EC5F9A41 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -855,7 +853,7 @@
 		A99163B91A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.7.7.0;
+				DYLIB_CURRENT_VERSION = 1.7.7.5;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -873,7 +871,7 @@
 		A99163BA1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DYLIB_CURRENT_VERSION = 1.7.7.0;
+				DYLIB_CURRENT_VERSION = 1.7.7.5;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AFNetworking/**",
@@ -890,7 +888,7 @@
 		};
 		A99163BC1A51523C008BADCD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6E86BEDC3DF2137CDEC39795 /* Pods-BringgTrackingTests.debug.xcconfig */;
+			baseConfigurationReference = 7E246F79E9DB9430EBBCD835 /* Pods-BringgTrackingTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -910,7 +908,7 @@
 		};
 		A99163BD1A51523C008BADCD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ED8F793D4BEA78910BEE4098 /* Pods-BringgTrackingTests.release.xcconfig */;
+			baseConfigurationReference = BB3CBC0AE9CDE17AE2DBF5F6 /* Pods-BringgTrackingTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

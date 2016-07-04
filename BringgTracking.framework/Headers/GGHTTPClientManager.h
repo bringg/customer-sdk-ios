@@ -18,6 +18,8 @@
 @class GGHTTPClientManager;
 @class GGFindMe;
 
+
+
 @protocol GGHTTPClientConnectionDelegate <NSObject>
 
 @optional

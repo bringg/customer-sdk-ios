@@ -244,15 +244,26 @@
         server = BTRealtimeServer;
     }
     
+    
+    
     NSNumber *showLogs = @NO;
     
 #ifdef DEBUG
     showLogs = @YES;
 #endif
     
+    // add correct scheme to server address
+    [GGBringgUtils fixURLString:&server forSSL:self.useSSL];
+    
+    
+    if (!self.useSSL) {
+        
+        server = [server stringByReplacingOccurrencesOfString:@"3000" withString:@"3030"];
+
+    }
+    
     NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
     
-
     
     NSDictionary *connectionOptions = @{@"log":showLogs, @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"connectParams":connectionParams};
     
@@ -281,6 +292,8 @@
             
             return;
         }
+        
+        [self addSocketHandlers];
         
         self.socketIOConnectedBlock = completionHandler;
         

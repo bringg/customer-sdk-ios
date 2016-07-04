@@ -9,6 +9,8 @@
 #import "GGBringgUtils.h"
 #import "BringgGlobals.h"
 
+#define HTTP_FORMAT @"http://%@"
+#define HTTPS_FORMAT @"https://%@"
 
 @implementation GGBringgUtils
 
@@ -216,5 +218,41 @@
     return YES;
 
 }
+
++ (void)fixURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString forSSL:(BOOL)useSSL{
+    // remove existing prefixes
+    [self removeSchemeFromURLString:urlString];
+    
+    
+    // add prefix according to ssl configuration
+    [self addSchemeFromURLString:urlString withSSL:useSSL];
+    
+}
+
++ (BOOL)isPathSchemeSSL:(nonnull NSString *)path{
+    return [path hasPrefix:@"https://"];
+}
+
++ (void)addSchemeFromURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString withSSL:(BOOL)useSSL{
+    
+    if (useSSL) {
+        *urlString = [NSString stringWithFormat:HTTPS_FORMAT, *urlString];
+    }else{
+        *urlString = [NSString stringWithFormat:HTTP_FORMAT, *urlString];
+    }
+}
+
+
++ (void)removeSchemeFromURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString{
+    // remove existing prefixes
+    if ([self isPathSchemeSSL:*urlString]) {
+        *urlString = [*urlString stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+    }else{
+        *urlString = [*urlString stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+    }
+    
+    
+}
+
 
 @end

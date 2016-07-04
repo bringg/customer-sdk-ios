@@ -4,33 +4,9 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Frameworks/libswiftCore.dylib</key>
-		<data>
-		hXtsU+dNSobe9J18zTbgJva88hU=
-		</data>
-		<key>Frameworks/libswiftCoreGraphics.dylib</key>
-		<data>
-		ufnuyYKu8BV+tS+rpyoRX27SoWI=
-		</data>
-		<key>Frameworks/libswiftDarwin.dylib</key>
-		<data>
-		8a3G/2Pg8tnLlWnn7JtUY87YXNs=
-		</data>
-		<key>Frameworks/libswiftDispatch.dylib</key>
-		<data>
-		1iRqufe+zeB2TPAd9kp2hp3haxg=
-		</data>
-		<key>Frameworks/libswiftFoundation.dylib</key>
-		<data>
-		WFrTzTO0DcOUJSi1+tEC8shSwwE=
-		</data>
-		<key>Frameworks/libswiftObjectiveC.dylib</key>
-		<data>
-		jrbVDhy+OXs+N99xt8gPxPO8SR4=
-		</data>
 		<key>Headers/BringgGlobals.h</key>
 		<data>
-		KBmYyHcTAsa9NM6XsC3jNO5AIkE=
+		r/C73nVIS6EWq/t3gggOpJ7q8ss=
 		</data>
 		<key>Headers/BringgTracking.h</key>
 		<data>
@@ -38,7 +14,7 @@
 		</data>
 		<key>Headers/GGBringgUtils.h</key>
 		<data>
-		jlch5huT9Uh1hUSAkMBcBgehBfg=
+		dnosBD7PMxb+dCkTwHklyxEVAT4=
 		</data>
 		<key>Headers/GGCustomer.h</key>
 		<data>
@@ -54,7 +30,7 @@
 		</data>
 		<key>Headers/GGHTTPClientManager.h</key>
 		<data>
-		cCdoPFhtkdGNrtuckbVyZd6W9Ts=
+		DhQOzW+fUIW3vuZKGAkDlcCg4xE=
 		</data>
 		<key>Headers/GGItem.h</key>
 		<data>
@@ -95,81 +71,15 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Frameworks/libswiftCore.dylib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			hXtsU+dNSobe9J18zTbgJva88hU=
-			</data>
-			<key>hash2</key>
-			<data>
-			as8yir5lEkSnLAK1ZuZ2f60ydzledYrwcVPSruwY30M=
-			</data>
-		</dict>
-		<key>Frameworks/libswiftCoreGraphics.dylib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			ufnuyYKu8BV+tS+rpyoRX27SoWI=
-			</data>
-			<key>hash2</key>
-			<data>
-			wYu6niKA+/Uke5yCvwWOl2mCUDsOaINEkRHLji+dNZM=
-			</data>
-		</dict>
-		<key>Frameworks/libswiftDarwin.dylib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			8a3G/2Pg8tnLlWnn7JtUY87YXNs=
-			</data>
-			<key>hash2</key>
-			<data>
-			FAQIbcjKoblzSzwZrnABNf81WfEAZAKUp2xxe9Vexws=
-			</data>
-		</dict>
-		<key>Frameworks/libswiftDispatch.dylib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			1iRqufe+zeB2TPAd9kp2hp3haxg=
-			</data>
-			<key>hash2</key>
-			<data>
-			bHBy3/qjI8bNEZCGgncfPcNXmtWxVo4In1XgMLgrN1s=
-			</data>
-		</dict>
-		<key>Frameworks/libswiftFoundation.dylib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			WFrTzTO0DcOUJSi1+tEC8shSwwE=
-			</data>
-			<key>hash2</key>
-			<data>
-			lMTzQ0fG6Zl0CrVjGSF5ZQxOuoBk+oA2AcNXV87c7PI=
-			</data>
-		</dict>
-		<key>Frameworks/libswiftObjectiveC.dylib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			jrbVDhy+OXs+N99xt8gPxPO8SR4=
-			</data>
-			<key>hash2</key>
-			<data>
-			asNfg5eIrtvCH0kgd5EhM+lZOdEquiL5akSAnQbfdgE=
-			</data>
-		</dict>
 		<key>Headers/BringgGlobals.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			KBmYyHcTAsa9NM6XsC3jNO5AIkE=
+			r/C73nVIS6EWq/t3gggOpJ7q8ss=
 			</data>
 			<key>hash2</key>
 			<data>
-			ifGRM9qlvIg2d9kbYHfeqaMtFcQKsCYsTrjJJm+lFMs=
+			3LToruwdWsDVXu6/6BzeHPHVhnBEJB/QtDm3tcsHFu4=
 			</data>
 		</dict>
 		<key>Headers/BringgTracking.h</key>
@@ -187,11 +97,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			jlch5huT9Uh1hUSAkMBcBgehBfg=
+			dnosBD7PMxb+dCkTwHklyxEVAT4=
 			</data>
 			<key>hash2</key>
 			<data>
-			MYjvpd68+GYyfE+M4sAF0ZelJlM/PV9fRWTXws0tocA=
+			4gDeYDSr6Wysow8V0CtS0HHNnt9XbhFxjj9MreEKXvM=
 			</data>
 		</dict>
 		<key>Headers/GGCustomer.h</key>
@@ -231,11 +141,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			cCdoPFhtkdGNrtuckbVyZd6W9Ts=
+			DhQOzW+fUIW3vuZKGAkDlcCg4xE=
 			</data>
 			<key>hash2</key>
 			<data>
-			396qn4CYNER1bDnEJDZqo/3ZIuqfmf4PjxHwU5PS5BI=
+			DUPEu8RpUdUwDU0ULoFfKsDkFOD1Lm0/1bADyX5w4zs=
 			</data>
 		</dict>
 		<key>Headers/GGItem.h</key>

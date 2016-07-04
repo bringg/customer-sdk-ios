@@ -9,7 +9,7 @@
 #ifndef BringgTracking_BringgGlobals_h
 #define BringgTracking_BringgGlobals_h
 
-#define SDK_VERSION @"1.8.0.0"
+#define SDK_VERSION @"1.9.0.0"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"

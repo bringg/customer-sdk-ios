@@ -136,4 +136,41 @@
 + (BOOL)isValidCoordinatesWithLat:(double)lat lng:(double)lng;
 
 
+
+
+/**
+ *  check if path has SSL supporting scheme (https)
+ *
+ *  @param path path to check
+ *
+ *  @return BOOL
+ */
++ (BOOL)isPathSchemeSSL:(nonnull NSString *)path;
+
+
+/**
+ *  takes a url string, removes current scheme and adds a new scheme to it (http || https)
+ *
+ *  @param urlString the url string to manipulate
+ *  @param useSSL    should scheme be SSL
+ */
++ (void)fixURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString forSSL:(BOOL)useSSL;
+
+/**
+ *  takes a url string and adds a url scheme to it (http || https)
+ *
+ *  @param urlString  the url string to manipulate
+ *  @param useSSL    should scheme be SSL
+ */
++ (void)addSchemeFromURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString withSSL:(BOOL)useSSL;
+
+
+/**
+ *  takes a url string and removes the scheme from it (http || https)
+ *
+ *  @param urlString the url string to manipulate
+ */
++ (void)removeSchemeFromURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString;
+
+
 @end

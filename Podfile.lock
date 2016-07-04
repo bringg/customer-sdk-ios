@@ -1,21 +1,47 @@
 PODS:
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
   - DCKeyValueObjectMapping (1.5)
   - OCHamcrest (4.3.0)
-  - OCMock (3.3)
+  - OCMock (3.3.1)
   - OCMockito (1.4.0):
     - OCHamcrest (~> 4.0)
+  - Socket.IO-Client-Swift (6.1.4)
 
 DEPENDENCIES:
+  - AFNetworking (= 2.6.3)
   - DCKeyValueObjectMapping
   - OCMock (~> 3.1)
   - OCMockito (~> 1.4)
+  - Socket.IO-Client-Swift
 
 SPEC CHECKSUMS:
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   DCKeyValueObjectMapping: c2eb5a6529da100b2e49ef6a599663578051f077
   OCHamcrest: cd63d27f48a266d4412c0b295b01b8f0940efa81
-  OCMock: d68685bde31f69cb61d518dcb39269080c78b5ed
+  OCMock: f3f61e6eaa16038c30caa5798c5e49d3307b6f22
   OCMockito: 4981140c9a9ec06c31af40f636e3c0f25f27e6b2
+  Socket.IO-Client-Swift: 79dfbbe170d7816c84e2d3cc2baa3d227549e067
 
-PODFILE CHECKSUM: 854bd2b72e4ee97d7c86bb9b6dc6ef7ff04495e6
+PODFILE CHECKSUM: a2123de07a4934888faa69bfb0a29654c61c8201
 
 COCOAPODS: 1.0.1

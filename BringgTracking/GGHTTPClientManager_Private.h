@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 
-#import "GGHTTPClientManager.h"
+#import <BringgTracking/GGHTTPClientManager.h>
 
 #define POLLING_SEC 30
 #define MAX_WITHOUT_POLLING_SEC 240

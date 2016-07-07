@@ -97,8 +97,8 @@
     [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
-    [request addValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
-    [request addValue:@"text/plain" forHTTPHeaderField:@"Accept"];
+    //[request addValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+    //[request addValue:@"text/plain" forHTTPHeaderField:@"Accept"];
     
     // set method
     [request setHTTPMethod:method];
@@ -106,7 +106,7 @@
     
     // set the authentication headers of the request
     [headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [request setValue:obj forHTTPHeaderField:key];
+        [request addValue:obj forHTTPHeaderField:key];
         
     }];
     
@@ -136,10 +136,10 @@
         NSError *jsonError = nil;
         
         
-        NSError *responseError = nil;
-        BOOL responseSuccess = NO;
+        __block NSError *responseError = nil;
+        __block BOOL responseSuccess = NO;
         
-        id responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
+        __block id responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
         
         
         if (jsonError) {
@@ -158,8 +158,10 @@
         
         // execute completion handler
         if (completionHandler){
-            
-            completionHandler(responseSuccess, [responseObject isKindOfClass:[NSDictionary class]] ? responseObject : nil, responseError);
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 
+                 completionHandler(responseSuccess, [responseObject isKindOfClass:[NSDictionary class]] ? responseObject : nil, responseError);
+             });
         }
         
         
@@ -179,21 +181,23 @@
     
     if (completionHandler) {
     
-        // check if error code implies server unavailable
-        if (error && error.code >= 500 && error.code < 600) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // check if error code implies server unavailable
+            if (error && error.code >= 500 && error.code < 600) {
+                
+                NSMutableDictionary *info = [NSMutableDictionary dictionaryWithDictionary:error.userInfo];
+                [info setObject:@"server temporarily unavailable, please try again later." forKey:NSLocalizedDescriptionKey];
+                
+                // create new error object and send it
+                NSError *newError = [NSError errorWithDomain:error.domain code:error.code userInfo:info];
+                completionHandler(NO, nil, newError);
+                
+            }else{
+                // execute failure completion
+                completionHandler(NO, nil, error);
+            }
             
-            NSMutableDictionary *info = [NSMutableDictionary dictionaryWithDictionary:error.userInfo];
-            [info setObject:@"server temporarily unavailable, please try again later." forKey:NSLocalizedDescriptionKey];
-            
-            // create new error object and send it
-            NSError *newError = [NSError errorWithDomain:error.domain code:error.code userInfo:info];
-            completionHandler(NO, nil, newError);
-            
-        }else{
-            // execute failure completion
-            completionHandler(NO, nil, error);
-        }
-        
+        });
         
     }
     
@@ -227,6 +231,7 @@
     // create data task for session
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
+        
 
         // handle competion for data task
         if (error) {
@@ -239,6 +244,8 @@
         }
  
     }];
+    
+    NSLog(@"created data task for path %@ %@", server,  path);
     
     return dataTask;
     

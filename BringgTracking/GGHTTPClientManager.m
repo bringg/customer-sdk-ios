@@ -213,7 +213,7 @@
     
     
     // create a data task with the intended request
-    NSURLSessionDataTask *dataTask = [GGNetworkUtils httpRequestWithSession:_session
+    NSURLSessionDataTask *dataTask = [GGNetworkUtils httpRequestWithSession:self.session
                                                                      server:server
                                                                      method:method
                                                                        path:path
@@ -222,6 +222,9 @@
                                                           completionHandler:completionHandler];
     
     if (dataTask) {
+        
+        NSLog(@"executing request %@,  path: %@",  method, path);
+        
         // run the task now
         [dataTask resume];
     }
@@ -266,6 +269,7 @@
 - (NSURLSessionConfiguration *)sessionConfiguration{
     if (!_sessionConfiguration) {
         _sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        
     }
     
     return _sessionConfiguration;
@@ -273,7 +277,7 @@
 
 - (NSURLSession *)session{
     if (!_session) {
-        _session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.serviceOperationQueue];
+        _session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.serviceOperationQueue];//];
     }
     
     return _session;
@@ -668,5 +672,18 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
 }
 
 
+//MARK: - Session Delegate
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * __nullable credential))completionHandler{
+    
+    
+    NSLog(@"session received challange %@", challenge);
+}
+
+
+- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(nullable NSError *)error{
+    
+    NSLog(@"session invalidated with %@", error ?: @"no error");
+}
 
 @end

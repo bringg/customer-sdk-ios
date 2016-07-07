@@ -9,7 +9,7 @@
 #ifndef BringgTracking_BringgGlobals_h
 #define BringgTracking_BringgGlobals_h
 
-#define SDK_VERSION @"1.9.0.0"
+#define SDK_VERSION @"1.9.5.0"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -65,6 +65,10 @@
 #define PARAM_FIND_ME_URL @"find_me_url"
 #define PARAM_FIND_ME_ENABLED @"support_find_me"
 
+
+#define BCSuccessKey @"success"
+#define BCSuccessAlternateKey @"status"
+#define BCMessageKey @"message"
 
 #import "GGBringgUtils.h"
 

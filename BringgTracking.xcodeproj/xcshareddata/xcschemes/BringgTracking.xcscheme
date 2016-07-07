@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0A6506C9E1F6F89BEC052F5889E5D628"
+               BlueprintIdentifier = "04C20FEED12A52B2E682FE2C4C15B756"
                BuildableName = "Pods_BringgTracking.framework"
                BlueprintName = "Pods-BringgTracking"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">

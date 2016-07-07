@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) NSOperationQueue * _Nonnull serviceOperationQueue;
 @property (nonatomic, strong) NSURLSessionConfiguration * _Nonnull sessionConfiguration;
+@property (nonatomic, strong) NSURLSession * _Nonnull session;
 @property (nonatomic, strong) NSDictionary * _Nullable customHeaders;
 @property (nonatomic, assign) BOOL useSSL;
 
@@ -55,7 +56,7 @@
  *
  *  @return modifed and final path of call
  */
-- (nonnull NSString *)getServerURLWithMethod:(NSString * _Nonnull)method path:(NSString * _Nonnull * _Nonnull)path;
+- (nonnull NSString *)getServerURL;
 
 
 

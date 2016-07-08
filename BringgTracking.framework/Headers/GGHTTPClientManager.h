@@ -117,17 +117,18 @@
               extras:(NSDictionary * _Nullable)extras
 withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
+
 /**
- *  gets full data of watched order
+ *  gets  data of an order this can be without the shared location object of an order (if its done or cancled, or not started yet(
  *
- *  @usage                   intended to use when frequently polling for the order
  *  @param orderUUID         order uuid
- *  @param extras            additional arguments to add to the call
+ *  @param extras            block to handle async service response
  *  @param completionHandler block to handle async service response
  */
--(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                      extras:(NSDictionary * _Nullable)extras
-       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
+-(void)getOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                    extras:(NSDictionary * _Nullable)extras
+     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
+
 
 
 /**
@@ -142,17 +143,17 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 
 /**
- *  get data of an order by its uuid
+ *  this methods start a watch action on an order and in returns the data of a watched order by its uuid and shared uuid
  *
  *  @param orderUUID         order uuid
  *  @param shareUUID         shared location uuid
  *  @param extras            additional arguments to add to the call
  *  @param completionHandler block to handle async service response
  */
-- (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
-         withShareUUID:(NSString * _Nonnull)shareUUID
-                extras:(NSDictionary * _Nullable)extras
- withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
+- (void)watchOrderByUUID:(NSString * _Nonnull)orderUUID
+           withShareUUID:(NSString * _Nonnull)shareUUID
+                  extras:(NSDictionary * _Nullable)extras
+   withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**
  *  get an updated shared location object from the service

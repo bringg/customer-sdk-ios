@@ -9,14 +9,54 @@
 #import "GGNetworkUtils.h"
 #import "BringgGlobals.h"
 
+@interface GGNetworkUtils ()<NSURLSessionDelegate>
+
+@end
+
 @implementation GGNetworkUtils
 
 
+//MARK: - Helper
++ (nonnull NSString *)queryStringFromParams:(nullable NSDictionary *)params{
+    
+    if (!params || params.allKeys.count == 0) {
+        return @"";
+    }
+    __block NSMutableArray<NSString *> *urlVars = [NSMutableArray new];
+    
+    [params enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull k, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        
+        // for url vars to work we must convert the value object to a string
+        id value = obj;
+        if (![obj isKindOfClass:[NSString class]]) {
+            value = [obj stringValue];
+        }
+        
+        // get url encoded string value
+        NSString *encodedValue =  [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        
+        if (encodedValue) {
+            // build the url var it self (k=v)
+            NSString *urlVar = [NSString stringWithFormat:@"%@=%@", k, encodedValue];
+            [urlVars addObject:urlVar];
+        }
+        
+    }];
+    
+    if (urlVars.count == 0) {
+        return @"";
+    }
+    
+    // return query string
+    return [NSString stringWithFormat:@"?%@", [urlVars componentsJoinedByString:@"&"]];
+    
+    
+}
 
 + (void)parseStatusOfJSONResponse:(nonnull NSDictionary *)responseObject
                         toSuccess:(BOOL  * _Nonnull )successResult
                          andError:(NSError *__autoreleasing __nonnull* __nonnull)error{
- 
+    
     
     *successResult = NO;
     
@@ -54,8 +94,8 @@
             
             if ([message isKindOfClass:[NSString class]]) {
                 *error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
-                                        userInfo:@{NSLocalizedDescriptionKey: message,
-                                                   NSLocalizedRecoverySuggestionErrorKey: message}];
+                                         userInfo:@{NSLocalizedDescriptionKey: message,
+                                                    NSLocalizedRecoverySuggestionErrorKey: message}];
                 
             } else {
                 
@@ -66,26 +106,50 @@
                     *successResult = YES;
                 }else{
                     *error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
-                                            userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
-                                                       NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
+                                                        NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
                 }
                 
             }
         }
     }
-
+    
 }
 
-+ (NSMutableURLRequest * _Nullable)jsonRequestForServer:(nonnull NSString *)server
-                                                 method:(NSString * _Nonnull)method
-                                                   path:(NSString *_Nonnull)path
-                                                headers:(NSDictionary * _Nonnull)headers
-                                                 params:(NSDictionary * _Nullable)params
-                                                  error:(NSError *__autoreleasing __nonnull*)error{
++ (NSMutableURLRequest * _Nullable)jsonGetRequestWithSession:(NSURLSession * _Nonnull)session
+                                                      server:(NSString * _Nonnull)server                                                 method:(NSString * _Nonnull)method
+                                                        path:(NSString *_Nonnull)path
+                                                      params:(NSDictionary * _Nullable)params{
     
     
+    // url is a combination of server path and query string
+    NSURL *CTSURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",server,path,[self queryStringFromParams:params] ]];
     
-    NSURL *CTSURL = [NSURL URLWithString:server];
+    
+    // build mutable request with url
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:CTSURL
+                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                       timeoutInterval:30.0];
+    
+    
+    // set method
+    [request setHTTPMethod:method];
+    
+    // return request
+    return request;
+    
+}
+
++ (NSMutableURLRequest * _Nullable)jsonUpdateRequestWithSession:(NSURLSession * _Nonnull)session
+                                                         server:(NSString * _Nonnull)server                                                 method:(NSString * _Nonnull)method
+                                                           path:(NSString *_Nonnull)path
+                                                         params:(NSDictionary * _Nullable)params
+                                                          error:(NSError *__autoreleasing __nonnull* __nonnull)error{
+    
+    
+    NSURL *CTSURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",server,path]];
+    
+    
     
     // build mutable request with url
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:CTSURL
@@ -103,14 +167,6 @@
     // set method
     [request setHTTPMethod:method];
     
-    
-    // set the authentication headers of the request
-    [headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [request addValue:obj forHTTPHeaderField:key];
-        
-    }];
-    
-    
     // build the params as json serialized
     NSError *jsonParamsError;
     
@@ -124,7 +180,10 @@
     
     // add params data to body
     [request setHTTPBody:paramsData];
-
+    
+    
+    
+    
     return request;
 }
 
@@ -158,10 +217,10 @@
         
         // execute completion handler
         if (completionHandler){
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 
-                 completionHandler(responseSuccess, [responseObject isKindOfClass:[NSDictionary class]] ? responseObject : nil, responseError);
-             });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                completionHandler(responseSuccess, [responseObject isKindOfClass:[NSDictionary class]] ? responseObject : nil, responseError);
+            });
         }
         
         
@@ -180,7 +239,7 @@
 #endif
     
     if (completionHandler) {
-    
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             // check if error code implies server unavailable
             if (error && error.code >= 500 && error.code < 600) {
@@ -204,18 +263,23 @@
 }
 
 
-+ (NSURLSessionDataTask * _Nullable) httpRequestWithSession:(NSURLSession *)session
-                                                     server:(nonnull NSString *)server
++ (NSURLSessionDataTask * _Nullable) httpRequestWithSession:(NSURLSession * _Nonnull)session
+                                                     server:(NSString * _Nonnull)server
                                                      method:(NSString * _Nonnull)method
                                                        path:(NSString *_Nonnull)path
-                                                    headers:(NSDictionary * _Nonnull)headers
                                                      params:(NSDictionary * _Nullable)params
                                           completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
     
     NSError *jsonRequestError;
     
     // build mutable request with url
-    NSMutableURLRequest *request = [ self jsonRequestForServer:server method:method path:path headers:headers params:params error:&jsonRequestError];
+    NSMutableURLRequest *request;
+    
+    if ([method isEqualToString:@"GET"]) {
+        request = [self jsonGetRequestWithSession:session server:server method:method path:path params:params];
+    }else{
+        request = [self jsonUpdateRequestWithSession:session server:server method:method path:path params:params error:&jsonRequestError];
+    }
     
     if (jsonRequestError) {
         NSLog(@" error creating json params for request request in %s : %@", __PRETTY_FUNCTION__, jsonRequestError);
@@ -226,13 +290,12 @@
         
         return nil;
     }
-
+    
     
     // create data task for session
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         
-
         // handle competion for data task
         if (error) {
             // handle error
@@ -242,7 +305,7 @@
             // handle success response
             [self handleDataSuccessResponseWithData:data completionHandler:completionHandler];
         }
- 
+        
     }];
     
     NSLog(@"created data task for path %@ %@", server,  path);
@@ -253,5 +316,21 @@
     
     
 }
+
+//MARK: - Session Delegate
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * __nullable credential))completionHandler{
+    
+    completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+    
+    NSLog(@"session received challange %@", challenge);
+}
+
+
+- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(nullable NSError *)error{
+    
+    NSLog(@"session invalidated with %@", error ?: @"no error");
+}
+
 
 @end

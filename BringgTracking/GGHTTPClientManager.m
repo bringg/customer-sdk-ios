@@ -42,8 +42,8 @@
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
-#define API_PATH_WATCH_ORDER @"/shared/orders/%@/" //method: GET; order_uuid
-#define API_PATH_GET_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid, order_uuid
+#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid
+#define API_PATH_WATCH_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid,  params - order_uuid
 
 //PRIVATE
 #define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone
@@ -217,7 +217,6 @@
                                                                      server:server
                                                                      method:method
                                                                        path:path
-                                                                    headers:[self authenticationHeaders]
                                                                      params:params
                                                           completionHandler:completionHandler];
     
@@ -269,7 +268,7 @@
 - (NSURLSessionConfiguration *)sessionConfiguration{
     if (!_sessionConfiguration) {
         _sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        
+        _sessionConfiguration.HTTPAdditionalHeaders = [self authenticationHeaders];
     }
     
     return _sessionConfiguration;
@@ -400,9 +399,10 @@
  
 }
 
--(void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                      extras:(NSDictionary * _Nullable)extras
-       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
+- (void)watchOrderByUUID:(NSString * _Nonnull)orderUUID
+           withShareUUID:(NSString * _Nonnull)shareUUID
+                  extras:(NSDictionary * _Nullable)extras
+   withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
@@ -413,8 +413,9 @@
         [self injectCustomExtras:extras toParams:&params];
     }
     
+    
     [self httpRequestWithMethod:BCRESTMethodGet
-                           path:[NSString stringWithFormat:API_PATH_WATCH_ORDER, orderUUID]
+                           path:[NSString stringWithFormat:API_PATH_WATCH_ORDER, shareUUID]
                          params:params
               completionHandler:^(BOOL success, id JSON, NSError *error) {
                   
@@ -431,21 +432,19 @@
                           completionHandler(NO , JSON, order, responseError);
                       }
                   }else{
-                      if (success && orderUpdateData) {
-                          
-                          order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
-                          
-                      }
+                      if (success && orderUpdateData) order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
                       
                       if (completionHandler) {
                           completionHandler(success, JSON, order, error);
                       }
                   }
                   
+                  
                   //
               }];
-
+    
 }
+
 
 - (void)rate:(int)rating
    withToken:(NSString * _Nonnull)ratingToken
@@ -595,51 +594,52 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
 }
 
-- (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
-         withShareUUID:(NSString * _Nonnull)shareUUID
-                extras:(NSDictionary * _Nullable)extras
- withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
+
+-(void)getOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                    extras:(NSDictionary * _Nullable)extras
+     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
-    
-    [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];
     }
     
+    [self httpRequestWithMethod:BCRESTMethodGet
+                           path:[NSString stringWithFormat:API_PATH_ORDER_UUID, orderUUID]
+                         params:params
+              completionHandler:^(BOOL success, id JSON, NSError *error) {
+                  
+                  // update last date
+                  self.lastEventDate = [NSDate date];
+                  
+                  GGOrder *order = nil;
+                  
+                  NSDictionary *orderUpdateData = [JSON objectForKey:@"order_update"];
+                  
+                  if (!orderUpdateData && !error) {
+                      NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                      if (completionHandler) {
+                          completionHandler(NO , JSON, order, responseError);
+                      }
+                  }else{
+                      if (success && orderUpdateData) {
+                          
+                          order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
+                          
+                      }
+                      
+                      if (completionHandler) {
+                          completionHandler(success, JSON, order, error);
+                      }
+                  }
+                  
+                  //
+              }];
     
-     [self httpRequestWithMethod:BCRESTMethodGet
-                            path:[NSString stringWithFormat:API_PATH_GET_ORDER, shareUUID]
-                          params:params
-               completionHandler:^(BOOL success, id JSON, NSError *error) {
-                   
-                   // update last date
-                   self.lastEventDate = [NSDate date];
-                   
-                   GGOrder *order = nil;
-                   
-                   NSDictionary *orderUpdateData = [JSON objectForKey:@"order_update"];
-                   
-                   if (!orderUpdateData && !error) {
-                        NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
-                       if (completionHandler) {
-                           completionHandler(NO , JSON, order, responseError);
-                       }
-                   }else{
-                       if (success && orderUpdateData) order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
-                       
-                       if (completionHandler) {
-                           completionHandler(success, JSON, order, error);
-                       }
-                   }
-                   
-                   
-                   //
-               }];
-
 }
+
 
 - (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
                          extras:(NSDictionary * _Nullable)extras
@@ -676,8 +676,9 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * __nullable credential))completionHandler{
     
-    
-    NSLog(@"session received challange %@", challenge);
+    completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+
+   
 }
 
 

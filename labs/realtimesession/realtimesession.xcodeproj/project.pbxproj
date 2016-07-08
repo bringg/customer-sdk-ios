@@ -512,6 +512,7 @@
 				13A6A8991D2ED56000D00544 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		13A6A89A1D2ED56000D00544 /* Build configuration list for PBXNativeTarget "realtimesessionTests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +521,7 @@
 				13A6A89C1D2ED56000D00544 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		13A6A89D1D2ED56000D00544 /* Build configuration list for PBXNativeTarget "realtimesessionUITests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +530,7 @@
 				13A6A89F1D2ED56000D00544 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

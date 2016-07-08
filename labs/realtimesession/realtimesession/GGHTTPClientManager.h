@@ -87,7 +87,14 @@
      completionHandler:(nullable GGNetworkResponseHandler)completionHandler;
 
 
+//
+- (void)getOrderByID:(NSUInteger)orderId
+              params:(NSDictionary * __nonnull)params
+withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler;
 
-
+//
+- (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
+                params:(NSDictionary * __nonnull)iparams
+ withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler;
  
 @end

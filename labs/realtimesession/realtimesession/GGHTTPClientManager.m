@@ -193,7 +193,7 @@
                                                                      server:server
                                                                      method:method
                                                                        path:path
-                                                                    headers:[self authenticationHeaders]
+                                                                     
                                                                      params:params
                                                           completionHandler:completionHandler];
     
@@ -239,7 +239,7 @@
 - (NSURLSessionConfiguration *)sessionConfiguration{
     if (!_sessionConfiguration) {
         _sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        
+        _sessionConfiguration.HTTPAdditionalHeaders = [self authenticationHeaders];
     }
     
     return _sessionConfiguration;
@@ -247,10 +247,15 @@
 
 - (NSURLSession *)session{
     if (!_session) {
-        _session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.serviceOperationQueue];//];
+        _session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.serviceOperationQueue];
     }
     
     return _session;
+}
+
+- (nonnull NSURLSession *)factorySDKSession{
+    
+    return [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.serviceOperationQueue];
 }
 
 
@@ -327,7 +332,7 @@
               completionHandler:^(BOOL success, id JSON, NSError *error) {
                   
                   // update last date
-                  self.lastEventDate = [NSDate date];
+                  weakSelf.lastEventDate = [NSDate date];
                   
                   
                   //
@@ -339,12 +344,66 @@
 }
 
 
+- (void)getOrderByID:(NSUInteger)orderId
+              params:(NSDictionary * __nonnull)params
+withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler{
+    
+     __weak __typeof(&*self)weakSelf = self;
+    [self httpRequestWithMethod:BCRESTMethodGet
+                           path:[NSString stringWithFormat:API_PATH_ORDER, @(orderId)]
+                         params:params
+              completionHandler:^(BOOL success, id JSON, NSError *error) {
+                  
+                  // update last date
+                  weakSelf.lastEventDate = [NSDate date];
+ 
+                  //
+                  if (completionHandler) {
+                      completionHandler(success, JSON, error);
+                  }
+
+                  //
+              }];
+    
+}
+
+- (void)getOrderByUUID:(NSString * _Nonnull)orderUUID
+                params:(NSDictionary * __nonnull)iparams
+ withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler{
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:iparams];
+    
+    [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
+    
+    
+    __weak __typeof(&*self)weakSelf = self;
+
+    [self httpRequestWithMethod:BCRESTMethodGet
+                           path:[NSString stringWithFormat:API_PATH_WATCH_ORDER, orderUUID]
+                         params:params
+              completionHandler:^(BOOL success, id JSON, NSError *error) {
+                  
+                  // update last date
+                  weakSelf.lastEventDate = [NSDate date];
+                  
+                  //
+                  if (completionHandler) {
+                      completionHandler(success, JSON, error);
+                  }
+                  
+                  //
+              }];
+    
+}
+
+
 
 //MARK: - Session Delegate
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * __nullable credential))completionHandler{
     
-    
+    completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+
     NSLog(@"session received challange %@", challenge);
 }
 

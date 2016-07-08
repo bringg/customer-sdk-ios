@@ -24,12 +24,11 @@
 
 
 /**
- *  adds authentication params to the regular params of a call
+ *  generates a session object
  *
- *  @param params a pointer to the actual params
+ *  @return NSURLSession value description
  */
--(void)addAuthinticationToParams:(NSMutableDictionary *_Nonnull* _Nonnull)params;
-
+- (nonnull NSURLSession *)factorySDKSession;
 
 /**
  *  adds custom extra params to params group

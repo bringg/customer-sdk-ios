@@ -115,7 +115,7 @@
     [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
 
     //
-    [self.httpManager getOrderByID:updatedOrder.orderid extras:nil withCompletionHandler:nil];
+    [self.httpManager getOrderByOrderUUID:updatedOrder.uuid extras:nil withCompletionHandler:nil];
 }
 
 

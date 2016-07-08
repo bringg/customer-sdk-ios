@@ -520,7 +520,7 @@
     }else{
         
         // try to poll for the watched order to get its shared uuid
-        [self.httpManager watchOrderByOrderUUID:activeOrder.uuid
+        [self.httpManager getOrderByOrderUUID:activeOrder.uuid
                                          extras:activeOrder.sharedLocationUUID ?  @{PARAM_SHARE_UUID:activeOrder.sharedLocationUUID} : nil
                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
@@ -594,7 +594,9 @@
     __weak __typeof(&*self)weakSelf = self;
     if (activeOrder.sharedLocationUUID) {
         
-        [self.httpManager getOrderByUUID:activeOrder.uuid withShareUUID:activeOrder.sharedLocationUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+        [self.httpManager getOrderByOrderUUID:activeOrder.uuid
+                                       extras:activeOrder.sharedLocationUUID ?  @{PARAM_SHARE_UUID:activeOrder.sharedLocationUUID} : nil
+                        withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
             
             // remove from polled orders
@@ -615,7 +617,7 @@
         
         // try to poll for the watched order to get its shared uuid
         
-        [self.httpManager watchOrderByOrderUUID:activeOrder.uuid
+        [self.httpManager getOrderByOrderUUID:activeOrder.uuid
                                          extras:activeOrder.sharedLocationUUID ?  @{PARAM_SHARE_UUID:activeOrder.sharedLocationUUID} : nil
                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
@@ -736,10 +738,8 @@
             completionHandler(NO, nil, nil, [NSError errorWithDomain:@"SDKDomain" code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
     }else{
+        [self.httpManager watchOrderByUUID:orderUUID withShareUUID:sharedUUID extras:nil withCompletionHandler:completionHandler];
         
-        [self.httpManager watchOrderByOrderUUID:orderUUID
-                                         extras:sharedUUID ? @{PARAM_SHARE_UUID:sharedUUID} : nil
-                          withCompletionHandler:completionHandler];
     }
     
 }
@@ -952,7 +952,8 @@
                         // try to poll once for the full object
                         
                         if ([self.httpManager isSignedIn]) {
-                            [self.httpManager getOrderByID:[sharedLocation orderID] extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                            
+                            [self.httpManager getOrderByOrderUUID:[sharedLocation orderUUID]  extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                                 //
                                 if (success && order) {
                                     [_liveMonitor addAndUpdateOrder:order];

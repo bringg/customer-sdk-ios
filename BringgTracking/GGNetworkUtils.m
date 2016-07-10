@@ -26,20 +26,25 @@
     
     [params enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull k, id  _Nonnull obj, BOOL * _Nonnull stop) {
         
-        // for url vars to work we must convert the value object to a string
-        id value = obj;
-        if (![obj isKindOfClass:[NSString class]]) {
-            value = [obj stringValue];
+        // for query strings to work - key must be string
+        if ([k isKindOfClass:[NSString class]]) {
+            // for url vars to work we must convert the value object to a string
+            id value = obj;
+            if (![obj isKindOfClass:[NSString class]]) {
+                value = [obj stringValue];
+            }
+            
+            // get url encoded string value
+            NSString *encodedValue =  [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+            
+            if (encodedValue) {
+                // build the url var it self (k=v)
+                NSString *urlVar = [NSString stringWithFormat:@"%@=%@", k, encodedValue];
+                [urlVars addObject:urlVar];
+            }
+
         }
         
-        // get url encoded string value
-        NSString *encodedValue =  [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        
-        if (encodedValue) {
-            // build the url var it self (k=v)
-            NSString *urlVar = [NSString stringWithFormat:@"%@=%@", k, encodedValue];
-            [urlVars addObject:urlVar];
-        }
         
     }];
     
@@ -60,18 +65,31 @@
     
     *successResult = NO;
     
+    //protect agains nil response
+    if (!responseObject) {
+        *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid
+                                 userInfo:@{NSLocalizedDescriptionKey: @"can not parse nil response"}];
+        
+        return;
+    }
+    
     // there are two params that represent success
     id success = [responseObject objectForKey:BCSuccessKey];
     
+    BOOL successObjValid = YES;
+    
     // if it's "success" then then check for valid data (should be bool)
-    if (success && [success isKindOfClass:[NSNumber class]]) {
+    if (success) {
         
-        *successResult = [success boolValue];
-        
+        if ([success isKindOfClass:[NSNumber class]] || [success isKindOfClass:[NSString class]]) {
+            *successResult = [success boolValue];
+        }else{
+            successObjValid = NO;
+        }
     }
     
     // check if there is another success params to indicate response status
-    if (!success) {
+    if (!success || !successObjValid) {
         
         // "status" could also represent a succesfull call - status here will be a string
         id status = [responseObject objectForKey:BCSuccessAlternateKey];
@@ -93,7 +111,11 @@
             // but other data will be present so we should conisder it
             
             if ([message isKindOfClass:[NSString class]]) {
-                *error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
+                
+                // check if response has also response code
+                NSInteger rc = [responseObject objectForKey:@"rc"] ?  [[responseObject objectForKey:@"rc"] integerValue] : 0;
+                
+                *error = [NSError errorWithDomain:kSDKDomainResponse code:rc
                                          userInfo:@{NSLocalizedDescriptionKey: message,
                                                     NSLocalizedRecoverySuggestionErrorKey: message}];
                 
@@ -105,7 +127,7 @@
                     // the response is legit
                     *successResult = YES;
                 }else{
-                    *error = [NSError errorWithDomain:@"BringgHTTPClient" code:0
+                    *error = [NSError errorWithDomain:kSDKDomainResponse code:GGErrorTypeUnknown
                                              userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
                                                         NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
                 }
@@ -116,21 +138,41 @@
     
 }
 
-+ (NSMutableURLRequest * _Nullable)jsonGetRequestWithSession:(NSURLSession * _Nonnull)session
-                                                      server:(NSString * _Nonnull)server                                                 method:(NSString * _Nonnull)method
++ (NSMutableURLRequest * _Nullable)jsonGetRequestWithServer:(NSString * _Nonnull)server
+                                                     method:(NSString * _Nonnull)method
                                                         path:(NSString *_Nonnull)path
                                                       params:(NSDictionary * _Nullable)params{
     
+    
+    // guard against invalid method arguments
+    if ( !server || !method || !path) {
+
+        NSException *exp = [NSException exceptionWithName:@"InvalidArgumentsException" reason:@"arguments can not be nil" userInfo:nil];
+        
+        @throw exp;
+        
+        
+        return nil;
+    }
+
     
     // url is a combination of server path and query string
     NSURL *CTSURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",server,path,[self queryStringFromParams:params] ]];
     
     
+    if (!CTSURL) {
+        NSException *exp = [NSException exceptionWithName:@"InvalidArgumentsException" reason:@"URL can not be nil" userInfo:nil];
+        
+        @throw exp;
+        
+        
+        return nil;
+    }
+    
     // build mutable request with url
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:CTSURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                        timeoutInterval:30.0];
-    
     
     // set method
     [request setHTTPMethod:method];
@@ -140,16 +182,38 @@
     
 }
 
-+ (NSMutableURLRequest * _Nullable)jsonUpdateRequestWithSession:(NSURLSession * _Nonnull)session
-                                                         server:(NSString * _Nonnull)server                                                 method:(NSString * _Nonnull)method
++ (NSMutableURLRequest * _Nullable)jsonUpdateRequestWithServer:(NSString * _Nonnull)server
+                                                        method:(NSString * _Nonnull)method
                                                            path:(NSString *_Nonnull)path
                                                          params:(NSDictionary * _Nullable)params
                                                           error:(NSError *__autoreleasing __nonnull* __nonnull)error{
     
     
+    // guard against invalid method arguments
+    if ( !server || !method || !path) {
+        
+        NSException *exp = [NSException exceptionWithName:@"InvalidArgumentsException" reason:@"arguments can not be nil" userInfo:nil];
+        
+        @throw exp;
+        
+        
+        return nil;
+    }
+
+    
     NSURL *CTSURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",server,path]];
     
     
+    
+    if (!CTSURL) {
+        NSException *exp = [NSException exceptionWithName:@"InvalidArgumentsException" reason:@"URL can not be nil" userInfo:nil];
+        
+        @throw exp;
+        
+        
+        return nil;
+    }
+
     
     // build mutable request with url
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:CTSURL
@@ -270,16 +334,37 @@
                                                      params:(NSDictionary * _Nullable)params
                                           completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
     
+    
+    // guard against invalid method arguments
+    if (!session || !server || !method || !path) {
+        
+        NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"invalid method arguments. arguments can not be nil"}];
+        
+        if (completionHandler) {
+            completionHandler(NO, nil, error);
+        }
+        
+        return nil;
+    }
+    
     NSError *jsonRequestError;
     
     // build mutable request with url
     NSMutableURLRequest *request;
     
-    if ([method isEqualToString:@"GET"]) {
-        request = [self jsonGetRequestWithSession:session server:server method:method path:path params:params];
-    }else{
-        request = [self jsonUpdateRequestWithSession:session server:server method:method path:path params:params error:&jsonRequestError];
+    @try {
+        if ([method isEqualToString:@"GET"]) {
+            request = [self jsonGetRequestWithServer:server method:method path:path params:params];
+        }else{
+            request = [self jsonUpdateRequestWithServer:server method:method path:path params:params error:&jsonRequestError];
+        }
+
+    } @catch (NSException *exception) {
+        // convert the exception to an error
+        jsonRequestError = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:exception.name, NSLocalizedFailureReasonErrorKey:exception.reason}];
     }
+    
+    
     
     if (jsonRequestError) {
         NSLog(@" error creating json params for request request in %s : %@", __PRETTY_FUNCTION__, jsonRequestError);

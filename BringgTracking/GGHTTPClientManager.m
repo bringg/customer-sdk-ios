@@ -17,7 +17,6 @@
 #import "GGRating.h"
 #import "GGorderBuilder.h"
 #import "BringgGlobals.h"
-
 #import "GGNetworkUtils.h"
 
 
@@ -372,12 +371,12 @@
                   
                   if (success) customer = [[GGCustomer alloc] initWithData:[JSON objectForKey:PARAM_CUSTOMER] ];
                   
-                  // if customer doesnt have an access token treet this as an error
+                  // if customer doesnt have an access token treat this as an error
                   if (customer && (!customer.customerToken || [customer.customerToken isEqualToString:@""])) {
                       // token invalid report error
                       if (completionHandler) {
                           
-                          NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                          NSError *responseError = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing valid customer access token"}];
                           
                           completionHandler(NO, nil, nil, responseError);
                       }
@@ -427,7 +426,7 @@
                   NSDictionary *orderUpdateData = [JSON objectForKey:@"order_update"];
                   
                   if (!orderUpdateData && !error) {
-                      NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                      NSError *responseError = [NSError errorWithDomain:kSDKDomainResponse code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"response does not contain valid order data"}];
                       if (completionHandler) {
                           completionHandler(NO , JSON, order, responseError);
                       }
@@ -494,7 +493,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
     // validate data
     if (!findmeConfig || ![findmeConfig canSendFindMe]) {
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"current find request is not allowed"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"current find request is not allowed"}]);
         }
         
         return;
@@ -503,7 +502,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
     // validate coordinates
     if (![GGBringgUtils isValidCoordinatesWithLat:lat lng:lng]) {
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"coordinates values are invalid"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"coordinates values are invalid"}]);
         }
         
         return;
@@ -619,7 +618,7 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
                   NSDictionary *orderUpdateData = [JSON objectForKey:@"order_update"];
                   
                   if (!orderUpdateData && !error) {
-                      NSError *responseError = [NSError errorWithDomain:@"SDKDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+                      NSError *responseError = [NSError errorWithDomain:kSDKDomainResponse code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"response does not contain valid order data"}];
                       if (completionHandler) {
                           completionHandler(NO , JSON, order, responseError);
                       }

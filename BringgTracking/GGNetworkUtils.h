@@ -56,37 +56,37 @@
 /**
  *  creates a json url request with for update actions (POST, PUT, PATCH, DELETE)
  *
- *  @param session session for task
  *  @param server  server
  *  @param method  method
  *  @param path    path
  *  @param params  params
  *  @param error   error in creation
- *
+ *  @throws error if arguemnts are invalid
+ 
  *  @return URLRequest
  */
-+ (NSMutableURLRequest * _Nullable)jsonUpdateRequestWithSession:(NSURLSession * _Nonnull)session
-                                                         server:(NSString * _Nonnull)server                                                 method:(NSString * _Nonnull)method
-                                                           path:(NSString *_Nonnull)path
-                                                         params:(NSDictionary * _Nullable)params
-                                                          error:(NSError *__autoreleasing __nonnull* __nonnull)error;
++ (NSMutableURLRequest * _Nullable)jsonUpdateRequestWithServer:(NSString * _Nonnull)server
+                                                        method:(NSString * _Nonnull)method
+                                                          path:(NSString *_Nonnull)path
+                                                        params:(NSDictionary * _Nullable)params
+                                                         error:(NSError *__autoreleasing __nonnull* __nonnull)error;
 
 
 /**
  *  creates a json url request with for GET action (GET)
  *
- *  @param session session for task
  *  @param server  server
  *  @param method  method
  *  @param path    path
  *  @param params  params
+ *  @throws error if arguemnts are invalid
  *
  *  @return URLRequest
  */
-+ (NSMutableURLRequest * _Nullable)jsonGetRequestWithSession:(NSURLSession * _Nonnull)session
-                                                      server:(NSString * _Nonnull)server                                                 method:(NSString * _Nonnull)method
-                                                        path:(NSString *_Nonnull)path
-                                                      params:(NSDictionary * _Nullable)params;
++ (NSMutableURLRequest * _Nullable)jsonGetRequestWithServer:(NSString * _Nonnull)server
+                                                     method:(NSString * _Nonnull)method
+                                                       path:(NSString *_Nonnull)path
+                                                     params:(NSDictionary * _Nullable)params;
 
 /**
  *  generates an http request action

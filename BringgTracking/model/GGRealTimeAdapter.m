@@ -38,7 +38,7 @@
         }
     }
     if (errorResult) {
-        *error = [NSError errorWithDomain:@"BringgRealTime" code:0
+        *error = [NSError errorWithDomain:kSDKDomainRealTime code:0
                                  userInfo:@{NSLocalizedDescriptionKey:message,
                                             NSLocalizedRecoverySuggestionErrorKey:message}];
         
@@ -70,7 +70,7 @@
         NSError *error;
         
         if (reason) {
-            error = [NSError errorWithDomain:@"BringgRealTime" code:0 userInfo:@{NSLocalizedDescriptionKey:reason}];
+            error = [NSError errorWithDomain:kSDKDomainRealTime code:0 userInfo:@{NSLocalizedDescriptionKey:reason}];
         }
         
         [delegate socketIODidDisconnect:socketIO disconnectedWithError:error];
@@ -109,7 +109,7 @@
             return;
         }
 
-        NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0 userInfo:@{NSLocalizedDescriptionKey:reason}];
+        NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0 userInfo:@{NSLocalizedDescriptionKey:reason}];
         
         [delegate socketIO:socketIO onError:error];
         
@@ -123,7 +123,7 @@
     
     if (![self isSocketClientConnected:socketIO]) {
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
+            NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0
                                              userInfo:@{NSLocalizedDescriptionKey: @"Web socket disconnected.",
                                                         NSLocalizedRecoverySuggestionErrorKey: @"Web socket disconnected."}];
             completionHandler(NO, nil, error);
@@ -151,7 +151,7 @@
             
             if (completionHandler) {
                 
-                NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:-1
+                NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:-1
                                                  userInfo:@{NSLocalizedDescriptionKey: @"invalid data repsonse"}];
                 
                 completionHandler(NO, nil, error);
@@ -168,7 +168,7 @@
             
             if (completionHandler) {
                 
-                NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
+                NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0
                                                  userInfo:@{NSLocalizedDescriptionKey: @"socket took too long to respond"}];
                 
                 completionHandler(NO, nil, error);

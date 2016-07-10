@@ -735,7 +735,7 @@
     if (!self.httpManager) {
         if (completionHandler) {
             
-            completionHandler(NO, nil, nil, [NSError errorWithDomain:@"SDKDomain" code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
+            completionHandler(NO, nil, nil, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
     }else{
         [self.httpManager watchOrderByUUID:orderUUID withShareUUID:sharedUUID extras:nil withCompletionHandler:completionHandler];
@@ -764,7 +764,7 @@
     if (!self.httpManager) {
         if (completionHandler) {
             
-            completionHandler(NO, [NSError errorWithDomain:@"SDKDomain" code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
         
         return;
@@ -774,7 +774,7 @@
     if (!uuid) {
         if (completionHandler) {
             
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"supplied order uuid is invalid"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"supplied order uuid is invalid"}]);
         }
         
         return;
@@ -785,7 +785,7 @@
     
     if (!order) {
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with uuid %@", uuid]}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with uuid %@", uuid]}]);
         }
         
         return;
@@ -801,7 +801,7 @@
         NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
         
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"no compound uuid supplied"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"no compound uuid supplied"}]);
         }
         
         return;
@@ -833,7 +833,7 @@
         
         if (!order) {
             if (completionHandler) {
-                completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with compound %@", compoundUUID]}]);
+                completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with compound %@", compoundUUID]}]);
             }
             
             return;
@@ -850,7 +850,7 @@
     if (!order.sharedLocation || ![order.sharedLocation canSendFindMe]) {
         // order is not eligable for find me
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"order is not eligable for 'Find me' at this time"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"order is not eligable for 'Find me' at this time"}]);
         }
         return;
     }

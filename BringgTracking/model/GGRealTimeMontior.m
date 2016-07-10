@@ -274,7 +274,7 @@
     if ([self isSocketIOConnected] || [self isSocketIOConnecting]) {
        
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
+            NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0
                                              userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Already connected.", @"eng/heb")}];
             completionHandler(NO, error);
             
@@ -283,7 +283,7 @@
         
         if (!self.developerToken) {
             if (completionHandler) {
-                NSError *error = [NSError errorWithDomain:@"BringgRealTime" code:0
+                NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0
                                                  userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Invalid Developer Token", @"eng/heb")}];
                 completionHandler(NO, error);
                 
@@ -376,7 +376,7 @@
     
     if (!uuid) {
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing UUID"}];
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing UUID"}];
             
             completionHandler(NO, nil, error);
         }

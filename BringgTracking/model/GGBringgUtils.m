@@ -143,7 +143,7 @@
     
     if (!compoundUUID) {
         if (errorPointer) {
-            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing compound UUID"}];
+            *errorPointer = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing compound UUID"}];
         }
         return;
     }
@@ -152,7 +152,7 @@
     
     if (!pair || pair.count != 2) {
         if (errorPointer) {
-            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];
+            *errorPointer = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];
             
         }
         
@@ -168,7 +168,7 @@
         *sharedUUID = nil;
         
         if (errorPointer) {
-            *errorPointer = [NSError errorWithDomain:@"BringgData" code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];
+            *errorPointer = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];
             
         }
         

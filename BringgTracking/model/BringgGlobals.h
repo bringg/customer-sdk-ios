@@ -9,6 +9,11 @@
 #ifndef BringgTracking_BringgGlobals_h
 #define BringgTracking_BringgGlobals_h
 
+#define kSDKDomainSetup @"GGSDKSetupDomain"
+#define kSDKDomainData @"GGSDKDataDomain"
+#define kSDKDomainResponse @"GGSDKResponseDomain"
+#define kSDKDomainRealTime @"GGSDKRealTimeDomain"
+
 #define SDK_VERSION @"1.9.5.0"
 //-----------------------------------------------------------------------------
 
@@ -305,14 +310,17 @@ typedef NS_ENUM(NSInteger, OrderStatus) {
 };
 
 typedef NS_ENUM(NSInteger, GGErrorType) {
-    GGErrorTypeUnknown = -1,
     GGErrorTypeNone = 0,
-    GGErrorTypeUUIDNotFound = 1,
-    GGErrorTypeInvalidUUID = 2,
-    GGErrorTypeActionNotAllowed = 3,
-    GGErrorTypeOrderNotFound = 4,
-    GGErrorTypeHTTPManagerNotSet = 5,
-    GGErrorTypeTrackerNotSet = 6,
+    GGErrorTypeUnknown = -1,
+    GGErrorTypeInvalid = -2,
+    GGErrorTypeUUIDNotFound = -101,
+    GGErrorTypeInvalidUUID = -102,
+    GGErrorTypeActionNotAllowed = -201,
+    GGErrorTypeOrderNotFound = -301,
+    GGErrorTypeHTTPManagerNotSet = -401,
+    GGErrorTypeTrackerNotSet = -402,
+    GGErrorTypeMissing = -11,
+    
 };
 
 #endif

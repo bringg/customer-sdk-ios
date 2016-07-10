@@ -70,6 +70,7 @@
 		136D17671D25C878002B32D0 /* GGHTTPClientManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1330891A1D2583EC006FD8E7 /* GGHTTPClientManager_Private.h */; };
 		1371B4F21D2EAD8C00DE9775 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1371B4F01D2EAD8C00DE9775 /* GGNetworkUtils.h */; };
 		1371B4F31D2EAD8C00DE9775 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1371B4F11D2EAD8C00DE9775 /* GGNetworkUtils.m */; };
+		13A6A8A91D32360100D00544 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13A6A8A81D32360100D00544 /* GGNetworkUtilsTests.m */; };
 		13D989F21D2A4CC500991B8B /* GGRealTimeAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 133089381D2583EC006FD8E7 /* GGRealTimeAdapter.m */; };
 		13D989F91D2A544200991B8B /* GGRealTimeMontior.m in Sources */ = {isa = PBXBuildFile; fileRef = 1330893C1D2583EC006FD8E7 /* GGRealTimeMontior.m */; };
 		5C2636B0DACF66B985235A36 /* Pods_BringgTrackingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCD8FE1D518A992C499B0F4E /* Pods_BringgTrackingTests.framework */; };
@@ -133,6 +134,7 @@
 		13478F311BEB86FB0055A059 /* GGHTTPManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGHTTPManagerTests.m; sourceTree = "<group>"; };
 		1371B4F01D2EAD8C00DE9775 /* GGNetworkUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGNetworkUtils.h; sourceTree = "<group>"; };
 		1371B4F11D2EAD8C00DE9775 /* GGNetworkUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGNetworkUtils.m; sourceTree = "<group>"; };
+		13A6A8A81D32360100D00544 /* GGNetworkUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGNetworkUtilsTests.m; sourceTree = "<group>"; };
 		13B62AB21D1C464600BDAC9B /* GGBringgUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGBringgUtilsTests.m; sourceTree = "<group>"; };
 		13D5427E1BEB419000A6B48F /* GGRealTimeMonitorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRealTimeMonitorTests.m; sourceTree = "<group>"; };
 		13D542811BEB495200A6B48F /* orderUpdate_onstart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onstart.json; sourceTree = "<group>"; };
@@ -301,6 +303,7 @@
 				13D542851BEB49FE00A6B48F /* GGTestUtils.h */,
 				13D542861BEB49FE00A6B48F /* GGTestUtils.m */,
 				13308A001D258CD7006FD8E7 /* BringgTrackingTests.m */,
+				13A6A8A81D32360100D00544 /* GGNetworkUtilsTests.m */,
 				13308A011D258CD7006FD8E7 /* Info.plist */,
 			);
 			path = BringgTrackingTests;
@@ -576,6 +579,7 @@
 			files = (
 				133089FC1D258CAF006FD8E7 /* GGHTTPManagerTests.m in Sources */,
 				13308A021D258CD7006FD8E7 /* BringgTrackingTests.m in Sources */,
+				13A6A8A91D32360100D00544 /* GGNetworkUtilsTests.m in Sources */,
 				133089FD1D258CAF006FD8E7 /* GGBringgUtilsTests.m in Sources */,
 				133089FA1D258CAF006FD8E7 /* GGRealTimeMonitorTests.m in Sources */,
 				133089FB1D258CAF006FD8E7 /* GGTrackerManagerTests.m in Sources */,

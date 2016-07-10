@@ -97,7 +97,7 @@
     // validate data
     if (!findmeConfig || ![findmeConfig canSendFindMe]) {
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"current find request is not allowed"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"current find request is not allowed"}]);
         }
         
         return;
@@ -106,7 +106,7 @@
     // validate coordinates
     if (![GGBringgUtils isValidCoordinatesWithLat:lat lng:lng]) {
         if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:@"BringgData" code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"coordinates values are invalid"}]);
+            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"coordinates values are invalid"}]);
         }
         
         return;

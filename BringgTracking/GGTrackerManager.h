@@ -242,6 +242,20 @@
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
+
+
+/**
+ *  starts watching an order using both order uuid and shared uuid (optional)
+ *
+ *  @param uuid       order uuid
+ *  @param shareduuid shared uuid
+ *  @param delegate   delegate
+ *  @throws if invalid or missing order UUID
+ */
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+                        sharedUUID:(NSString *_Nullable)shareduuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
+
 /**
  *  asks the real time service to start tracking a specific order
  *  this method throws if not valid compound uuid

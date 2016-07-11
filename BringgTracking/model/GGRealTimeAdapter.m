@@ -66,7 +66,15 @@
     [socketIO on:@"disconnect" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
         //
         
-        NSString *reason = [data firstObject] ? [[data firstObject] stringValue] : nil;
+        id reasonObj = [data firstObject] ?: nil;
+        
+        
+        NSString *reason;
+        if ([reasonObj isKindOfClass:[NSString class]]) {
+            reason = reasonObj;
+        }else{
+            reason = [reasonObj stringValue];
+        }
         NSError *error;
         
         if (reason) {
@@ -147,7 +155,7 @@
         id response = [data firstObject];
         
         
-        if (!response || ![response isKindOfClass:[NSString class]]) {
+        if (!response || (![response isKindOfClass:[NSString class]] && ![response isKindOfClass:[NSDictionary class]])) {
             
             if (completionHandler) {
                 
@@ -161,8 +169,8 @@
         }
         
         //
-        NSString *responseAck = (NSString *)response;
-        BOOL isTimeoutError = [responseAck isEqualToString:@"NO ACK"];
+       
+        BOOL isTimeoutError = [response isKindOfClass:[NSString class]] &&[response isEqualToString:@"NO ACK"];
         
         if (isTimeoutError) {
             
@@ -179,7 +187,7 @@
         
         NSError *error;
         if (![self errorAck:response error:&error]) {
-            completionHandler(YES, responseAck, nil);
+            completionHandler(YES, response, nil);
             
         } else {
             completionHandler(NO, nil, error);

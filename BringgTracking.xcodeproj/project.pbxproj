@@ -47,7 +47,6 @@
 		133089811D2583ED006FD8E7 /* GGOrderBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 133089341D2583EC006FD8E7 /* GGOrderBuilder.m */; };
 		133089821D2583ED006FD8E7 /* GGRating.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089351D2583EC006FD8E7 /* GGRating.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		133089831D2583ED006FD8E7 /* GGRating.m in Sources */ = {isa = PBXBuildFile; fileRef = 133089361D2583EC006FD8E7 /* GGRating.m */; };
-		133089841D2583ED006FD8E7 /* GGRealTimeAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089371D2583EC006FD8E7 /* GGRealTimeAdapter.h */; };
 		133089861D2583ED006FD8E7 /* GGRealTimeInternals.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089391D2583EC006FD8E7 /* GGRealTimeInternals.h */; };
 		133089871D2583ED006FD8E7 /* GGRealTimeMontior+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1330893A1D2583EC006FD8E7 /* GGRealTimeMontior+Private.h */; };
 		133089881D2583ED006FD8E7 /* GGRealTimeMontior.h in Headers */ = {isa = PBXBuildFile; fileRef = 1330893B1D2583EC006FD8E7 /* GGRealTimeMontior.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -70,6 +69,7 @@
 		136D17671D25C878002B32D0 /* GGHTTPClientManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1330891A1D2583EC006FD8E7 /* GGHTTPClientManager_Private.h */; };
 		1371B4F21D2EAD8C00DE9775 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1371B4F01D2EAD8C00DE9775 /* GGNetworkUtils.h */; };
 		1371B4F31D2EAD8C00DE9775 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1371B4F11D2EAD8C00DE9775 /* GGNetworkUtils.m */; };
+		1380134C1D339F6A00D86213 /* GGRealTimeAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089371D2583EC006FD8E7 /* GGRealTimeAdapter.h */; };
 		13A6A8A91D32360100D00544 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13A6A8A81D32360100D00544 /* GGNetworkUtilsTests.m */; };
 		13D989F21D2A4CC500991B8B /* GGRealTimeAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 133089381D2583EC006FD8E7 /* GGRealTimeAdapter.m */; };
 		13D989F91D2A544200991B8B /* GGRealTimeMontior.m in Sources */ = {isa = PBXBuildFile; fileRef = 1330893C1D2583EC006FD8E7 /* GGRealTimeMontior.m */; };
@@ -332,8 +332,8 @@
 				133089801D2583ED006FD8E7 /* GGOrderBuilder.h in Headers */,
 				133089511D2583EC006FD8E7 /* NSObject+Observer.h in Headers */,
 				1330897E1D2583ED006FD8E7 /* GGOrder.h in Headers */,
+				1380134C1D339F6A00D86213 /* GGRealTimeAdapter.h in Headers */,
 				1330898C1D2583ED006FD8E7 /* GGWaypoint.h in Headers */,
-				133089841D2583ED006FD8E7 /* GGRealTimeAdapter.h in Headers */,
 				1371B4F21D2EAD8C00DE9775 /* GGNetworkUtils.h in Headers */,
 				1330896C1D2583EC006FD8E7 /* GGTrackerManager.h in Headers */,
 				133089701D2583EC006FD8E7 /* Reachability.h in Headers */,

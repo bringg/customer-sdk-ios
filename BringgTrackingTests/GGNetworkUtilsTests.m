@@ -185,4 +185,25 @@
     
 }
 
+- (void)testParsingJsonContradictingResponse{
+    NSDictionary *json = @{@"rc":@0, @"success":@0};
+    BOOL success = YES;
+    NSError *err;
+    
+    [GGNetworkUtils parseStatusOfJSONResponse:json toSuccess:&success andError:&err];
+    
+    XCTAssertTrue(success);
+    XCTAssertNil(err); // should be nil since no error message
+    
+    json = @{@"rc":@0, @"success":@0, @"message":@"some error happened"};
+    success = YES;
+    err = nil;
+    
+    [GGNetworkUtils parseStatusOfJSONResponse:json toSuccess:&success andError:&err];
+    
+    XCTAssertFalse(success);
+    XCTAssertNotNil(err);
+    
+}
+
 @end

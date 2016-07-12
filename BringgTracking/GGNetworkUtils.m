@@ -108,7 +108,7 @@
     BOOL successObjValid = YES;
     
     // if it's "success" then then check for valid data (should be bool)
-    if (success) {
+    if (success != nil) {
         
         if ([success isKindOfClass:[NSNumber class]] || [success isKindOfClass:[NSString class]]) {
             *successResult = [success boolValue];
@@ -118,7 +118,7 @@
     }
     
     // check if there is another success params to indicate response status
-    if (!success || !successObjValid) {
+    if (success == nil || !*successResult || !successObjValid) {
         
         // "status" could also represent a succesfull call - status here will be a string
         id status = [responseObject objectForKey:BCSuccessAlternateKey];

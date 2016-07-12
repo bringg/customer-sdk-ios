@@ -135,6 +135,10 @@
             
             id message = [responseObject objectForKey:BCMessageKey];
             
+            // if success response is valid and is false and no message - create a message
+            if (!message && *successResult == NO && successObjValid) {
+                message = @"Unknown Error";
+            }
             
             // some times the success key is part of a legitimate response object - so no message will exits
             // but other data will be present so we should conisder it

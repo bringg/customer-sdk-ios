@@ -193,8 +193,11 @@
 }
 
 + (BOOL)isValidUrlString:(nonnull NSString *)urlTest{
-    NSString *urlRegEx =
-    @"^(https?://)?([da-z.-]+).([a-z.]{2,6})([/w.-]*)*/?$";
+    NSString *urlRegEx = @"^((ht|f)tp(s?)://)?([0-9a-zA-Z])([-.w]*[0-9a-zA-Z])*(:(0-9)*)*(/?)([a-zA-Z0-9-‌​.?,'/\\+&amp;%$#_]*)?$";
+    //@"^(https?://)?([da-z.-]+).([a-z.]{2,6})([/w.-]*)*/?$";
+    
+   // @"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-‌​\.\?\,\'\/\\\+&amp;%\$#_]*)?$";
+    
     NSPredicate *test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", urlRegEx];
     return [test evaluateWithObject:urlTest];
 }

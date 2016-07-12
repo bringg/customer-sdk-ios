@@ -8,6 +8,7 @@
 
 #import "GGNetworkUtils.h"
 #import "BringgGlobals.h"
+#import "GGBringgUtils.h"
 
 @interface GGNetworkUtils ()<NSURLSessionDelegate>
 
@@ -17,6 +18,34 @@
 
 
 //MARK: - Helper
+
++(void)parseFullPath:(nonnull NSString*)fullPath toServer:(NSString *__autoreleasing __nonnull* __nonnull)server relativePath:(NSString *__autoreleasing __nonnull* __nonnull)relativePath{
+    
+    // break down full path to server and path
+    NSURL *tmpURL = [NSURL URLWithString:fullPath];
+    if (tmpURL) {
+        *relativePath = [NSString stringWithFormat:@"%@", tmpURL.path];
+        *server = [fullPath stringByReplacingOccurrencesOfString:*relativePath withString:@""];
+    }else{
+        *relativePath = nil;
+        *server = nil;
+    }
+
+    
+}
+
++ (BOOL)isFullPath:(nonnull NSString *)path{
+    
+    
+    if (!path) {
+        return NO;
+    }
+    
+    // use the util to determin valid full url
+    return [GGBringgUtils isValidUrlString:path];
+
+}
+
 + (nonnull NSString *)queryStringFromParams:(nullable NSDictionary *)params{
     
     if (!params || params.allKeys.count == 0) {
@@ -278,7 +307,7 @@
             }
             
         }
-        
+
         // execute completion handler
         if (completionHandler){
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -296,7 +325,10 @@
                 completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
     
     
-    NSString *path = response.URL.relativePath;
+    NSString *path = [error.userInfo objectForKey:NSURLErrorFailingURLErrorKey];
+    if (!path) {
+        path = response.URL.absoluteString;
+    }
     
 #if DEBUG
     NSLog(@"GOT HTTP ERROR (%@) For Path %@:", error, path);
@@ -380,12 +412,17 @@
     // create data task for session
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
-        
+    
         // handle competion for data task
         if (error) {
             // handle error
             [self handleDataFailureResponse:response error:error completionHandler:completionHandler];
         }else{
+            
+            
+#ifdef DEBUG
+            NSLog(@"Got response for %@ %@\n%@", method, path, [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil]);
+#endif
             
             // handle success response
             [self handleDataSuccessResponseWithData:data completionHandler:completionHandler];

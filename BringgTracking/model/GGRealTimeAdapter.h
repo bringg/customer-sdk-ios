@@ -15,15 +15,16 @@
 @interface GGRealTimeAdapter : NSObject
 
 
-+ (void)addConnectionHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
++ (nonnull NSUUID *)addConnectionHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
 
 
-+ (void)addDisconnectionHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
++ (nonnull NSUUID *)addDisconnectionHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
+
+
++ (nonnull NSUUID *)addErrorHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
 
 
 + (void)addEventHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
-
-+ (void)addErrorHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
 
 + (void)sendEventWithClient:(nonnull SocketIOClient *)socketIO eventName:(nonnull NSString *)eventName params:(nullable NSDictionary *)params completionHandler:(nullable SocketResponseBlock)completionHandler;
 

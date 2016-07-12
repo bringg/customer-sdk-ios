@@ -155,6 +155,12 @@
         
  
     }
+    
+    if (!self.useSSL) {
+        
+        server = [server stringByReplacingOccurrencesOfString:@"3000" withString:@"3030"];
+        
+    }
 
     return server;
     
@@ -207,15 +213,34 @@
 #endif
     
    
+   
+    
     // get the server of the request
     NSString *server = [self getServerURL];
+    NSString *parsedPath = path;
+    
+     //path might sometime include full url. in those cases break the path to server and url
+    BOOL isFullPath = NO;
+    isFullPath = [GGNetworkUtils isFullPath:path];
+    
+    if (isFullPath) {
+        
+        [GGNetworkUtils parseFullPath:path toServer:&server relativePath:&parsedPath];
+        
+        // make sure parse was valid
+        if (!server || !parsedPath) {
+            //bad parse
+            return nil;
+        }
+        
+    }
     
     
     // create a data task with the intended request
     NSURLSessionDataTask *dataTask = [GGNetworkUtils httpRequestWithSession:self.session
                                                                      server:server
                                                                      method:method
-                                                                       path:path
+                                                                       path:parsedPath
                                                                      params:params
                                                           completionHandler:completionHandler];
     

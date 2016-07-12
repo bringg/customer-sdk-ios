@@ -49,6 +49,7 @@
 #define PARAM_DRIVER_PHONE @"employee_phone"
 
 #define PARAM_SHARED_LOCATION @"shared_location"
+#define PARAM_SHARED_LOCATION_ALTERNATE @"sharedLocation"
 #define PARAM_WAYPOINTS @"way_points"
 #define PARAM_TASK_INVENTORIES @"task_inventories"
 #define PARAM_RATING_URL @"rating_url"
@@ -68,7 +69,7 @@
 
 #define PARAM_FIND_ME_TOKEN @"find_me_token"
 #define PARAM_FIND_ME_URL @"find_me_url"
-#define PARAM_FIND_ME_ENABLED @"support_find_me"
+#define PARAM_FIND_ME_ENABLED @"allow_customer_find_me"
 
 
 #define BCSuccessKey @"success"

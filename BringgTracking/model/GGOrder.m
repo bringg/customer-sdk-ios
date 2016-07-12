@@ -57,6 +57,12 @@ static NSDateFormatter *dateFormat;
         // get shared location model
         sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
         
+        // check alternative shared location param
+        if (!sharedLocation) {
+            sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE]] : nil;
+        }
+        
+        
         sharedLocationUUID = sharedLocation ? sharedLocation.locationUUID : nil;
         
         self.waypoints = [NSMutableArray array];

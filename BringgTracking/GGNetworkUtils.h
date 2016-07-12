@@ -12,6 +12,24 @@
 @interface GGNetworkUtils : NSObject
 
 /**
+ *  takes a full url string and breaks it down to server and relative path
+ *
+ *  @param fullPath     full path
+ *  @param server       server pointer
+ *  @param relativePath relative path pointer
+ */
++(void)parseFullPath:(nonnull NSString*)fullPath toServer:(NSString *__autoreleasing __nonnull* __nonnull)server relativePath:(NSString *__autoreleasing __nonnull* __nonnull)relativePath;
+
+/**
+ *  checks if the supplied path represent full url or relative
+ *
+ *  @param path path to check
+ *
+ *  @return BOOL
+ */
++ (BOOL)isFullPath:(nonnull NSString *)path;
+
+/**
  *  takes request parameters dictionary and converts it to querry string
  *
  *  @param params dictionary params

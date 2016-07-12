@@ -114,6 +114,13 @@
     XCTAssertFalse(result);
     
     
+    testURL = @"http://10.0.1.148:3030/api/public_alert/f7bc05e0-4835-11e6-bb5e-91d8c6caeffa";
+    result = [GGBringgUtils isValidUrlString:testURL];
+    nsurl = [NSURL URLWithString:testURL];
+    XCTAssertNotNil(nsurl);
+    XCTAssertTrue(result);
+    
+    
 }
 
 @end

@@ -23,6 +23,9 @@
         token = [GGBringgUtils stringFromJSON:[data objectForKey:PARAM_FIND_ME_TOKEN] defaultTo:nil];
         
         enabled = [GGBringgUtils boolFromJSON:[data objectForKey:PARAM_FIND_ME_ENABLED] defaultTo:NO];
+        
+ 
+        
     }
     
     return self;
@@ -39,7 +42,14 @@
             token = newFindMe.token;
         }
         
-        enabled = newFindMe.enabled;
+        // udpate enabled only if changed to positive
+        if (newFindMe.enabled) {
+             enabled = newFindMe.enabled;
+        }
+        
+       
+        
+ 
     }
 }
 

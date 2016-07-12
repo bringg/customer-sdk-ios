@@ -463,14 +463,20 @@
         return  ;
     }
     
-    // mark as being polled
-    [self.polledLocations addObject:activeOrder.sharedLocationUUID];
+    if (!activeOrder){
+        return;
+    }
+    
+   
     
     __weak __typeof(&*self)weakSelf = self;
     // we can only poll with a shared location uuid
     // if its missing we should try to retireve it
     if (activeOrder.sharedLocationUUID) {
     
+        // mark as being polled
+        [self.polledLocations addObject:activeOrder.sharedLocationUUID];
+        
         // ask our REST to poll
         [self.httpManager getSharedLocationByUUID:activeOrder.sharedLocationUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error) {
             //
@@ -517,7 +523,7 @@
             
             
         }];
-    }else{
+    }else if (activeOrder.uuid){
         
         // try to poll for the watched order to get its shared uuid
         [self.httpManager getOrderByOrderUUID:activeOrder.uuid
@@ -948,12 +954,12 @@
                     [_liveMonitor addAndUpdateOrder:activeOrder];
                     
                     
-                    if (self.httpManager && [sharedLocation orderID]) {
+                    if (self.httpManager && activeOrder.uuid) {
                         // try to poll once for the full object
                         
                         if ([self.httpManager isSignedIn]) {
                             
-                            [self.httpManager getOrderByOrderUUID:[sharedLocation orderUUID]  extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                            [self.httpManager getOrderByOrderUUID:activeOrder.uuid  extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                                 //
                                 if (success && order) {
                                     [_liveMonitor addAndUpdateOrder:order];

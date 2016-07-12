@@ -49,9 +49,9 @@
 
 
 //MARK: - Real Time Handlers
-+ (void)addConnectionHandlerToClient:(SocketIOClient *)socketIO  andDelegate:(id<SocketIOClientDelegate>)delegate{
++ (nonnull NSUUID *)addConnectionHandlerToClient:(SocketIOClient *)socketIO  andDelegate:(id<SocketIOClientDelegate>)delegate{
     
-    [socketIO on:@"connect" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
+    return [socketIO on:@"connect" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
         //
         NSLog(@"websocket connected %@", ack);
         
@@ -61,9 +61,9 @@
     
 }
 
-+ (void)addDisconnectionHandlerToClient:(SocketIOClient *)socketIO andDelegate:(id<SocketIOClientDelegate>)delegate{
++ (nonnull NSUUID *)addDisconnectionHandlerToClient:(SocketIOClient *)socketIO andDelegate:(id<SocketIOClientDelegate>)delegate{
     
-    [socketIO on:@"disconnect" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
+    return [socketIO on:@"disconnect" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
         //
         
         id reasonObj = [data firstObject] ?: nil;
@@ -75,6 +75,7 @@
         }else{
             reason = [reasonObj stringValue];
         }
+        
         NSError *error;
         
         if (reason) {
@@ -85,6 +86,33 @@
         
     }];
 }
+
+
++ (nonnull NSUUID *)addErrorHandlerToClient:(SocketIOClient *)socketIO andDelegate:(id<SocketIOClientDelegate>)delegate{
+    
+    return [socketIO on:@"error" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
+        //
+        
+        id reasonObj = [data firstObject] ?: nil;
+        
+        if (!reasonObj) {
+            return;
+        }
+        
+        NSString *reason;
+        if ([reasonObj isKindOfClass:[NSString class]]) {
+            reason = reasonObj;
+        }else{
+            reason = [reasonObj stringValue];
+        }
+        
+        NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0 userInfo:@{NSLocalizedDescriptionKey:reason}];
+        
+        [delegate socketIO:socketIO onError:error];
+        
+    }];
+}
+
 
 + (void)addEventHandlerToClient:(SocketIOClient *)socketIO andDelegate:(id<SocketIOClientDelegate>)delegate{
     
@@ -105,24 +133,6 @@
     }];
 }
 
-
-+ (void)addErrorHandlerToClient:(SocketIOClient *)socketIO andDelegate:(id<SocketIOClientDelegate>)delegate{
-    
-    [socketIO on:@"error" callback:^(NSArray * _Nonnull data, SocketAckEmitter * _Nonnull ack) {
-        //
-        
-        NSString *reason = [data firstObject] ? [[data firstObject] stringValue] : nil;
-        
-        if (!reason) {
-            return;
-        }
-
-        NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0 userInfo:@{NSLocalizedDescriptionKey:reason}];
-        
-        [delegate socketIO:socketIO onError:error];
-        
-    }];
-}
 
 //MARK: - Real Time Action
 

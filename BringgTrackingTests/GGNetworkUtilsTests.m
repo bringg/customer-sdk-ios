@@ -160,4 +160,29 @@
     }
 }
 
+- (void)testCheckingForFullPaths{
+    NSString *fullPath = @"http://10.0.1.148:3030/api/customer/task/351/find_me/";
+    NSString *relativePath = @"/api/customer/confirmation/request";
+    
+    XCTAssertTrue([GGNetworkUtils isFullPath:fullPath]);
+    XCTAssertFalse([GGNetworkUtils isFullPath:relativePath]);
+}
+
+- (void)testParsingFullPath{
+    
+     NSString *fullPath = @"http://10.0.1.148:3030/api/customer/task/351/find_me/5838da10-483b-11e6-992b-876217ca31ee";
+    
+    NSString *server = nil;
+    NSString *relativePath = nil;
+    
+    [GGNetworkUtils parseFullPath:fullPath toServer:&server relativePath:&relativePath];
+    
+    XCTAssertNotNil(server);
+    XCTAssertTrue([server isEqualToString:@"http://10.0.1.148:3030"]);
+    
+    XCTAssertNotNil(relativePath);
+    XCTAssertTrue([relativePath isEqualToString:@"/api/customer/task/351/find_me/5838da10-483b-11e6-992b-876217ca31ee"]);
+    
+}
+
 @end

@@ -445,6 +445,12 @@
     // set the real timemonitor as disconnected
     self.connected = NO;
     
+    if (self.socketIO) {
+        // remove all handlers. they will be added again in the future once a connection is retried
+        [self.socketIO removeAllHandlers];
+    }
+    
+    
     // try to execture connection blocks
     if (self.socketIOConnectedBlock) {
         self.socketIOConnectedBlock(NO, error);

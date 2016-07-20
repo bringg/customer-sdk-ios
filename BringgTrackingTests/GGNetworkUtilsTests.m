@@ -86,7 +86,8 @@
     jsonDict = @{BCSuccessKey:@NO, @"somedata":@[@"array"]};
     [GGNetworkUtils parseStatusOfJSONResponse:jsonDict toSuccess:&didSuccedd andError:&didError];
     XCTAssertFalse(didSuccedd); // expected false since value in json is false
-    XCTAssertNil(didError);
+    XCTAssertNotNil(didError);
+    XCTAssertTrue([[didError.userInfo objectForKey:NSLocalizedDescriptionKey] isEqualToString:@"Undefined Error"]);
     
     didSuccedd = YES;
     didError = nil;
@@ -101,7 +102,8 @@
     jsonDict = @{BCSuccessKey:@"false", @"somedata":@[@"array"]};
     [GGNetworkUtils parseStatusOfJSONResponse:jsonDict toSuccess:&didSuccedd andError:&didError];
     XCTAssertFalse(didSuccedd); // expected false since value in json is false
-    XCTAssertNil(didError);
+    XCTAssertNotNil(didError);
+    XCTAssertTrue([[didError.userInfo objectForKey:NSLocalizedDescriptionKey] isEqualToString:@"Undefined Error"]);
     
     didSuccedd = YES;
     didError = nil;
@@ -123,17 +125,16 @@
     didError = nil;
     jsonDict = @{BCSuccessKey:@[@"false"]};
     [GGNetworkUtils parseStatusOfJSONResponse:jsonDict toSuccess:&didSuccedd andError:&didError];
-    XCTAssertFalse(didSuccedd); // expected false since value in json success is invalid and there is no other data to process in json
-    XCTAssertNotNil(didError); // there should be an error since success key isinvalid which makes the util job's imposbile
-    XCTAssertTrue([[didError.userInfo objectForKey:NSLocalizedDescriptionKey] isEqualToString:@"Undefined Error"]);
+    XCTAssertTrue(didSuccedd); // expected true since default success is TRUE and no error in json
+    XCTAssertNil(didError); // there should be an error since success key isinvalid which makes the util job's imposbile
+    //XCTAssertTrue([[didError.userInfo objectForKey:NSLocalizedDescriptionKey] isEqualToString:@"Undefined Error"]);
     
     didSuccedd = YES;
     didError = nil;
     jsonDict = @{};
     [GGNetworkUtils parseStatusOfJSONResponse:jsonDict toSuccess:&didSuccedd andError:&didError];
-    XCTAssertFalse(didSuccedd); // expected false since value in json success is invalid and there is no other data to process in json
-    XCTAssertNotNil(didError); // there should be an error since success key isinvalid which makes the util job's imposbile
-    XCTAssertTrue([[didError.userInfo objectForKey:NSLocalizedDescriptionKey] isEqualToString:@"Undefined Error"]);
+    XCTAssertTrue(didSuccedd); // expected true since default success is TRUE
+    XCTAssertNil(didError); // there should be an error since success key isinvalid which makes the util job's imposbile
     
     didSuccedd = YES;
     didError = nil;
@@ -192,9 +193,9 @@
     
     [GGNetworkUtils parseStatusOfJSONResponse:json toSuccess:&success andError:&err];
     
-    XCTAssertTrue(success);
-    XCTAssertNil(err); // should be nil since no error message
-    
+    XCTAssertFalse(success);
+    XCTAssertNotNil(err); // should be nil since no error message
+    XCTAssertTrue(err.code == 0);
     json = @{@"rc":@0, @"success":@0, @"message":@"some error happened"};
     success = YES;
     err = nil;
@@ -203,6 +204,7 @@
     
     XCTAssertFalse(success);
     XCTAssertNotNil(err);
+    XCTAssertTrue(err.code == 0);
     
 }
 

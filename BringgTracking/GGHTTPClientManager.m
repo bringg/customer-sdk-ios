@@ -18,6 +18,7 @@
 #import "GGorderBuilder.h"
 #import "BringgGlobals.h"
 #import "GGNetworkUtils.h"
+#import "GGBringgUtils.h"
 
 
 #define BCRealtimeServer @"realtime2-api.bringg.com"
@@ -125,7 +126,7 @@
 - (nonnull NSString *)getServerURL{
     NSString *server;
     
-    if (self.delegate) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(hostDomainForClientManager:)]) {
         server = [self.delegate hostDomainForClientManager:self];
     }
     
@@ -398,17 +399,27 @@
                   
                   // if customer doesnt have an access token treat this as an error
                   if (customer && (!customer.customerToken || [customer.customerToken isEqualToString:@""])) {
-                      // token invalid report error
-                      if (completionHandler) {
+                      
+                      // check if json has access token response
+                      
+                      NSString *ct = [GGBringgUtils stringFromJSON:JSON[@"access_token"] defaultTo:nil] ;
+                      
+                      if (ct) {
+                          customer.customerToken = ct;
+                      }else{
+                          // token invalid report error
+                          if (completionHandler) {
+                              
+                              NSError *responseError = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing valid customer access token"}];
+                              
+                              completionHandler(NO, nil, nil, responseError);
+                          }
                           
-                          NSError *responseError = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing valid customer access token"}];
+                          weakSelf.customer = nil;
                           
-                          completionHandler(NO, nil, nil, responseError);
+                           return ;
                       }
-                      
-                      weakSelf.customer = nil;
-                      
-                      return ;
+
                   }
                   
                   
@@ -534,7 +545,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
     }
     
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"position":@{@"lat":@(lat), @"lng":@(lng)}, @"find_me_token":findmeConfig.token}];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"position":@{@"coords":@{@"lat":@(lat), @"lng":@(lng)}}, @"find_me_token":findmeConfig.token}];
     
     // inject authentication params
      [self addAuthinticationToParams:&params];

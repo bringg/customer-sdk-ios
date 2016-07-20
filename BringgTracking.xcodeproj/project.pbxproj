@@ -25,7 +25,6 @@
 		133089511D2583EC006FD8E7 /* NSObject+Observer.h in Headers */ = {isa = PBXBuildFile; fileRef = 133088FD1D2583EC006FD8E7 /* NSObject+Observer.h */; };
 		133089521D2583EC006FD8E7 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 133088FE1D2583EC006FD8E7 /* NSObject+Observer.m */; };
 		133089691D2583EC006FD8E7 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089181D2583EC006FD8E7 /* GGHTTPClientManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1330896A1D2583EC006FD8E7 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 133089191D2583EC006FD8E7 /* GGHTTPClientManager.m */; };
 		1330896C1D2583EC006FD8E7 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1330891B1D2583EC006FD8E7 /* GGTrackerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1330896D1D2583EC006FD8E7 /* GGTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1330891C1D2583EC006FD8E7 /* GGTrackerManager.m */; };
 		133089701D2583EC006FD8E7 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089211D2583EC006FD8E7 /* Reachability.h */; };
@@ -61,6 +60,7 @@
 		1371B4F21D2EAD8C00DE9775 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1371B4F01D2EAD8C00DE9775 /* GGNetworkUtils.h */; };
 		1371B4F31D2EAD8C00DE9775 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1371B4F11D2EAD8C00DE9775 /* GGNetworkUtils.m */; };
 		1380134C1D339F6A00D86213 /* GGRealTimeAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 133089371D2583EC006FD8E7 /* GGRealTimeAdapter.h */; };
+		13A15EE91D3FBFDE002D450C /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 133089191D2583EC006FD8E7 /* GGHTTPClientManager.m */; };
 		13B58C2E1D352F1C00BEB866 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 133088D41D2582EF006FD8E7 /* BringgTracking.framework */; };
 		13B58C341D352F3200BEB866 /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B62AB21D1C464600BDAC9B /* GGBringgUtilsTests.m */; };
 		13B58C351D352F4600BEB866 /* GGTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D542861BEB49FE00A6B48F /* GGTestUtils.m */; };
@@ -553,10 +553,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13A15EE91D3FBFDE002D450C /* GGHTTPClientManager.m in Sources */,
 				13D989F21D2A4CC500991B8B /* GGRealTimeAdapter.m in Sources */,
 				1330898D1D2583ED006FD8E7 /* GGWaypoint.m in Sources */,
 				133089791D2583ED006FD8E7 /* GGDriver.m in Sources */,
-				1330896A1D2583EC006FD8E7 /* GGHTTPClientManager.m in Sources */,
 				133089521D2583EC006FD8E7 /* NSObject+Observer.m in Sources */,
 				1330898B1D2583ED006FD8E7 /* GGSharedLocation.m in Sources */,
 				1330897D1D2583ED006FD8E7 /* GGItem.m in Sources */,

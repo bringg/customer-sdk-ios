@@ -115,57 +115,51 @@
         }else{
             successObjValid = NO;
         }
+    }else{
+        
+        // "status" could also represent a succesfull call - status here will be a string
+        success = [responseObject objectForKey:BCSuccessAlternateKey];
+        
+        // check if status field is valid and if success
+        if ([success isKindOfClass:[NSString class]] &&
+            [success isEqualToString:@"ok"]) {
+            
+            *successResult = YES;
+            
+        }else{
+            successObjValid = NO;
+        }
     }
+ 
     
     // check if there is another success params to indicate response status
     if (success == nil || !*successResult || !successObjValid) {
         
-        // "status" could also represent a succesfull call - status here will be a string
-        id status = [responseObject objectForKey:BCSuccessAlternateKey];
+        // for sure we have a failed response - both success params tests failed
         
-        // check if status field is valid and if success
-        if ([status isKindOfClass:[NSString class]] &&
-            [status isEqualToString:@"ok"]) {
+        id message = [responseObject objectForKey:BCMessageKey];
+        
+        // if success response is valid and is false and no message - create a message
+        if (!message && *successResult == NO && successObjValid) {
+            message = @"Undefined Error";
+        }
+        
+        // some times the success key is part of a legitimate response object - so no message will exits
+        // but other data will be present so we should conisder it
+        
+        if (message && [message isKindOfClass:[NSString class]]) {
             
-            *successResult = YES;
+            // check if response has also response code
+            NSInteger rc = [responseObject objectForKey:@"rc"] ?  [[responseObject objectForKey:@"rc"] integerValue] : 0;
+            
+            *error = [NSError errorWithDomain:kSDKDomainResponse code:rc
+                                     userInfo:@{NSLocalizedDescriptionKey: message,
+                                                NSLocalizedRecoverySuggestionErrorKey: message}];
             
         } else {
             
-            // for sure we have a failed response - both success params tests failed
+            *successResult = YES;
             
-            id message = [responseObject objectForKey:BCMessageKey];
-            
-            // if success response is valid and is false and no message - create a message
-            if (!message && *successResult == NO && successObjValid) {
-                message = @"Unknown Error";
-            }
-            
-            // some times the success key is part of a legitimate response object - so no message will exits
-            // but other data will be present so we should conisder it
-            
-            if ([message isKindOfClass:[NSString class]]) {
-                
-                // check if response has also response code
-                NSInteger rc = [responseObject objectForKey:@"rc"] ?  [[responseObject objectForKey:@"rc"] integerValue] : 0;
-                
-                *error = [NSError errorWithDomain:kSDKDomainResponse code:rc
-                                         userInfo:@{NSLocalizedDescriptionKey: message,
-                                                    NSLocalizedRecoverySuggestionErrorKey: message}];
-                
-            } else {
-                
-                // check if there is other data
-                if (!message && [[responseObject allKeys] count] > 1) {
-                    
-                    // the response is legit
-                    *successResult = YES;
-                }else{
-                    *error = [NSError errorWithDomain:kSDKDomainResponse code:GGErrorTypeUnknown
-                                             userInfo:@{NSLocalizedDescriptionKey: @"Undefined Error",
-                                                        NSLocalizedRecoverySuggestionErrorKey: @"Undefined Error"}];
-                }
-                
-            }
         }
     }
     

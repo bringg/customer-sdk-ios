@@ -1,6 +1,0 @@
-framework module BringgTracking {
-  umbrella header "BringgTracking.h"
-
-  export *
-  module * { export * }
-}

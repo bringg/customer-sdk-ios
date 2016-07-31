@@ -118,6 +118,75 @@
     [self.httpManager getOrderByOrderUUID:updatedOrder.uuid extras:nil withCompletionHandler:nil];
 }
 
+- (void)testFalseNegativeGetOrderById {
+    // test to prove bug reported https://app.asana.com/0/32014397880520/160164813262190
+    const NSString *devToken = @"5KBxNkjHoTyPQ-NtcshW";
+    
+    [self.httpManager setDeveloperToken:devToken];
+    
+    const NSNumber *merchantId = @10263;
+    const NSString *customerName = @"Thomas In Sook Holmen";
+    const NSString *confirmationCode = @"8356";
+    const NSString *phone = @"+4510000003";
+    
+    // this is a test with production data
+    
+      NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
+    __block BOOL didRespond = NO;
+    __block BOOL didSucceed = NO;
+    __block GGCustomer *resultCustomer;
+    
+    // try sign in
+    [self.httpManager signInWithName:customerName phone:phone email:nil password:nil confirmationCode:confirmationCode merchantId:merchantId extras:nil completionHandler:^(BOOL success, NSDictionary * _Nullable response, GGCustomer * _Nullable customer, NSError * _Nullable error) {
+        //
+        
+        didRespond = YES;
+        didSucceed = success;
+        
+        resultCustomer = customer;
+    }];
+    
+    while (!didRespond && [loopUntil timeIntervalSinceNow] > 0) {
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }
+    
+    XCTAssertTrue(didRespond);
+    XCTAssertTrue(didSucceed);
+    XCTAssertNotNil(resultCustomer);
+    XCTAssertTrue([resultCustomer.name isEqualToString:customerName]);
+    
+    // not try to get problematic order
+    const NSNumber *orderId = @961031;
+    
+    loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
+    didRespond = NO;
+    didSucceed = NO;
+    __block GGOrder *resultOrder;
+    
+    [self.httpManager getOrderByID:orderId.integerValue extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+        //
+        
+        didRespond = YES;
+        didSucceed = success;
+        
+        resultOrder = order;
+        
+    }];
+    
+    while (!didRespond && [loopUntil timeIntervalSinceNow] > 0) {
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }
 
+
+    XCTAssertTrue(didRespond);
+    XCTAssertTrue(didSucceed);
+    XCTAssertNotNil(resultOrder);
+    
+    XCTAssertTrue(resultOrder.orderid == orderId.integerValue);
+}
 
 @end

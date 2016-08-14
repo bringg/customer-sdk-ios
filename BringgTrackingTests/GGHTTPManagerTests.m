@@ -120,14 +120,14 @@
 
 - (void)testFalseNegativeGetOrderById {
     // test to prove bug reported https://app.asana.com/0/32014397880520/160164813262190
-    const NSString *devToken = @"5KBxNkjHoTyPQ-NtcshW";
+    const NSString *devToken = @"zwp-i8j9R3xSk4xCScKx";// @"5KBxNkjHoTyPQ-NtcshW";
     
     [self.httpManager setDeveloperToken:devToken];
     
     const NSNumber *merchantId = @10263;
     const NSString *customerName = @"Thomas In Sook Holmen";
-    const NSString *confirmationCode = @"8356";
-    const NSString *phone = @"+4510000003";
+    const NSString *confirmationCode = @"5320";
+    const NSString *phone = @"+4510000002";
     
     // this is a test with production data
     
@@ -158,7 +158,7 @@
     XCTAssertTrue([resultCustomer.name isEqualToString:customerName]);
     
     // not try to get problematic order
-    const NSNumber *orderId = @961031;
+    const NSNumber *orderId = @953191;
     
     loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
     didRespond = NO;

@@ -545,7 +545,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
     }
     
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"position":@{@"coords":@{@"lat":@(lat), @"lng":@(lng)}}, @"find_me_token":findmeConfig.token}];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"position":@{@"coords":@{@"latitude":@(lat), @"longitude":@(lng)}}, @"find_me_token":findmeConfig.token}];
     
     // inject authentication params
      [self addAuthinticationToParams:&params];

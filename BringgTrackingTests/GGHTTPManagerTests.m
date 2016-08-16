@@ -24,11 +24,14 @@
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
 #import "GGCustomer.h"
+#import "GGTrackerManager.h"
+
+@class GGHTTPClientManageDelegate;
 
 @interface GGHTTPManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGHTTPClientManager *httpManager;
-
+@property (nonatomic, strong) GGHTTPClientManageDelegate *httpManagerDelegate;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
 
@@ -36,13 +39,36 @@
 
 @end
 
+
+@interface GGHTTPClientManageDelegate : NSObject <RealTimeDelegate>
+    
+@end
+    
+@implementation GGHTTPClientManageDelegate
+
+    
+- (NSString *)hostDomainForClientManager:(GGHTTPClientManager *)clientManager{
+    return @"10.0.1.148:3030";
+}
+
+- (NSString *)hostDomainForTrackerManager:(GGTrackerManager *)trackerManager{
+    return @"10.0.1.148:3000";
+}
+    
+@end
+
+
 @implementation GGHTTPManagerTests
 
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-    self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:nil];
+    self.httpManager = [GGHTTPClientManagerTestClient managerWithDeveloperToken:nil];
+    self.httpManagerDelegate = [[GGHTTPClientManageDelegate alloc] init];
+    
+    [self.httpManager setDelegate:self.httpManagerDelegate];
+    [self.httpManager useSecuredConnection:NO];
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];
@@ -155,7 +181,7 @@
     XCTAssertTrue(didRespond);
     XCTAssertTrue(didSucceed);
     XCTAssertNotNil(resultCustomer);
-    XCTAssertTrue([resultCustomer.name isEqualToString:customerName]);
+    XCTAssertTrue([resultCustomer.name.lowercaseString isEqualToString:customerName.lowercaseString]);
     
     // not try to get problematic order
     const NSNumber *orderId = @953191;
@@ -188,5 +214,169 @@
     
     XCTAssertTrue(resultOrder.orderid == orderId.integerValue);
 }
+
+
+- (void)testFineMeLiveUsingHttpManagerOnly{
+    // to exectute this test you must have an active order and customer (that must be allowed to login)
+    
+    const NSString *devToken = @"rvWLCySWSJFyP3kBbkZB";//@"xHDAaSnfBFcd9DRzJQpc";
+    
+    [self.httpManager setDeveloperToken:devToken];
+    
+    const NSNumber *merchantId = @1;//@9800;
+    const NSString *customerName = @"Alex trost";//@"Matan Poreh";
+    const NSString *confirmationCode = @"6926";//@"7305";
+    const NSString *phone = @"+972526511950";// @"+972545541748";
+    
+    // this is a test with production data
+    
+    NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
+    __block BOOL didRespond = NO;
+    __block BOOL didSucceed = NO;
+    __block GGCustomer *resultCustomer;
+    
+    // try sign in
+    [self.httpManager signInWithName:customerName phone:phone email:nil password:nil confirmationCode:confirmationCode merchantId:merchantId extras:nil completionHandler:^(BOOL success, NSDictionary * _Nullable response, GGCustomer * _Nullable customer, NSError * _Nullable error) {
+        //
+        
+        didRespond = YES;
+        didSucceed = success;
+        
+        resultCustomer = customer;
+    }];
+    
+    while (!didRespond && [loopUntil timeIntervalSinceNow] > 0) {
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }
+    
+    XCTAssertTrue(didRespond);
+    XCTAssertTrue(didSucceed);
+    XCTAssertNotNil(resultCustomer);
+    XCTAssertTrue([resultCustomer.name.lowercaseString isEqualToString:customerName.lowercaseString]);
+    
+    
+    if (!didSucceed) {
+        return;
+    }
+    
+    const NSNumber *orderId = @109;//@1027197;
+    
+    loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
+    didRespond = NO;
+    didSucceed = NO;
+    __block GGOrder *resultOrder;
+    
+    [self.httpManager getOrderByID:orderId.integerValue extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+        //
+        
+        didRespond = YES;
+        didSucceed = success;
+        
+        resultOrder = order;
+        
+    }];
+    
+    while (!didRespond && [loopUntil timeIntervalSinceNow] > 0) {
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }
+    
+    
+    
+    XCTAssertTrue(didRespond);
+    XCTAssertTrue(didSucceed);
+    XCTAssertNotNil(resultOrder);
+    
+    XCTAssertTrue(resultOrder.orderid == orderId.integerValue);
+    
+    XCTAssertNotNil(resultOrder.sharedLocation);
+    XCTAssertNotNil(resultOrder.sharedLocation.findMe);
+    XCTAssertNotNil(resultOrder.sharedLocation.findMe.url);
+    
+    if (!resultOrder.sharedLocation.findMe.url) {
+        return;
+    }
+    
+    NSString *findMeURL = [resultOrder.sharedLocation.findMe.url stringByReplacingOccurrencesOfString:@"localhost" withString:@"10.0.1.148"];
+    
+    GGFindMe *findMeConfig =resultOrder.sharedLocation.findMe;
+    [findMeConfig setUrl:findMeURL];
+    
+    XCTAssertTrue([findMeConfig canSendFindMe]);
+    
+    
+    // now call get order id again to see that findme url is still the same
+    loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
+    didRespond = NO;
+    didSucceed = NO;
+    resultOrder;
+    
+    [self.httpManager getOrderByID:orderId.integerValue extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+        //
+        
+        didRespond = YES;
+        didSucceed = success;
+        
+        resultOrder = order;
+        
+    }];
+    
+    while (!didRespond && [loopUntil timeIntervalSinceNow] > 0) {
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }
+    
+
+    XCTAssertTrue(didRespond);
+    XCTAssertTrue(didSucceed);
+    XCTAssertNotNil(resultOrder);
+    
+    XCTAssertTrue(resultOrder.orderid == orderId.integerValue);
+    
+    XCTAssertNotNil(resultOrder.sharedLocation);
+    XCTAssertNotNil(resultOrder.sharedLocation.findMe);
+    XCTAssertNotNil(resultOrder.sharedLocation.findMe.url);
+    
+    if (!resultOrder.sharedLocation.findMe.url) {
+        return;
+    }
+    
+    NSString *findMeURLB = [resultOrder.sharedLocation.findMe.url stringByReplacingOccurrencesOfString:@"localhost" withString:@"10.0.1.148"];
+    
+    GGFindMe *findMeConfigB = resultOrder.sharedLocation.findMe;
+    [findMeConfigB setUrl:findMeURLB];
+    
+    XCTAssertTrue([findMeConfigB canSendFindMe]);
+    XCTAssertTrue([findMeURLB isEqualToString:findMeURL]);
+    
+    loopUntil = [NSDate dateWithTimeIntervalSinceNow:12];
+    didRespond = NO;
+    didSucceed = NO;
+   
+    
+
+    [self.httpManager sendFindMeRequestWithFindMeConfiguration:findMeConfig latitude:32.08653f longitude:34.79226f withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
+        
+        didRespond = YES;
+        didSucceed = success;
+        
+        //
+    }];
+    
+    while (!didRespond && [loopUntil timeIntervalSinceNow] > 0) {
+        
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }
+    
+    XCTAssertTrue(didRespond);
+    XCTAssertTrue(didSucceed);
+}
+
+
 
 @end

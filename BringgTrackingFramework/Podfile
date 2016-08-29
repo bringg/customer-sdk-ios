@@ -1,0 +1,44 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, ‘8.0’
+use_frameworks!
+
+
+# ignore all warnings from all pods
+inhibit_all_warnings!
+
+def pods()
+    pod 'Socket.IO-Client-Swift'
+end
+
+def testpods()
+    pod 'OCMockito', '~>1.4'
+    pod 'OCMock', '~> 3.1'
+    pod 'DCKeyValueObjectMapping'
+    pod 'Socket.IO-Client-Swift'
+
+end
+
+
+target 'BringgTracking-iOS' do
+    pods()
+end
+
+target 'BringgTracking-iOSTests' do
+    testpods()
+end
+
+target 'BringgTracking-OSX' do
+    pods()
+end
+
+target 'BringgTracking-OSXTests' do
+    testpods()
+end
+
+target 'BringgTracking-TVOS' do
+    pods()
+end
+
+target 'BringgTracking-TVOSTests' do
+    testpods()
+end

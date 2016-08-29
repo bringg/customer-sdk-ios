@@ -1,0 +1,1596 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0ED6CEFC7682E8BAF13728D6 /* Pods_BringgTracking_TVOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB045B949099575EBFE9417E /* Pods_BringgTracking_TVOS.framework */; };
+		1101373E1D74CE66005E10C4 /* BringgTracking.h in Headers */ = {isa = PBXBuildFile; fileRef = 1101373D1D74CE66005E10C4 /* BringgTracking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137451D74CE66005E10C4 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1101373B1D74CE66005E10C4 /* BringgTracking.framework */; };
+		1101374A1D74CE66005E10C4 /* BringgTracking_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 110137491D74CE66005E10C4 /* BringgTracking_iOSTests.m */; };
+		1101375A1D74CE72005E10C4 /* BringgTracking-TVOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 110137591D74CE72005E10C4 /* BringgTracking-TVOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137611D74CE73005E10C4 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110137571D74CE72005E10C4 /* BringgTracking.framework */; };
+		110137661D74CE73005E10C4 /* BringgTracking_TVOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 110137651D74CE73005E10C4 /* BringgTracking_TVOSTests.m */; };
+		110137761D74CE7E005E10C4 /* BringgTracking-OSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 110137751D74CE7E005E10C4 /* BringgTracking-OSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1101377D1D74CE7E005E10C4 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110137731D74CE7E005E10C4 /* BringgTracking.framework */; };
+		110137821D74CE7E005E10C4 /* BringgTracking_OSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 110137811D74CE7E005E10C4 /* BringgTracking_OSXTests.m */; };
+		1101378A1D74CF75005E10C4 /* GGHTTPClientManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */; };
+		1101378B1D74CF75005E10C4 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; };
+		1101378C1D74CF75005E10C4 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */; };
+		1101378D1D74CF75005E10C4 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */; };
+		1101378E1D74CF75005E10C4 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */; };
+		1101378F1D74CF75005E10C4 /* GGTrackerManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAE1D74BF9000DB13F4 /* GGTrackerManager_Private.h */; };
+		110137901D74CF75005E10C4 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */; };
+		110137911D74CF75005E10C4 /* GGTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */; };
+		110137921D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */; };
+		110137931D74CF76005E10C4 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; };
+		110137941D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */; };
+		110137951D74CF76005E10C4 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */; };
+		110137961D74CF76005E10C4 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */; };
+		110137971D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAE1D74BF9000DB13F4 /* GGTrackerManager_Private.h */; };
+		110137981D74CF76005E10C4 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */; };
+		110137991D74CF76005E10C4 /* GGTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */; };
+		1101379A1D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */; };
+		1101379B1D74CF76005E10C4 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1101379C1D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */; };
+		1101379D1D74CF76005E10C4 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */; };
+		1101379E1D74CF76005E10C4 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */; };
+		1101379F1D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAE1D74BF9000DB13F4 /* GGTrackerManager_Private.h */; };
+		110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137A11D74CF76005E10C4 /* GGTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */; };
+		110137A21D74CF7C005E10C4 /* BringgGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD651D74BF2400DB13F4 /* BringgGlobals.h */; };
+		110137A31D74CF7C005E10C4 /* GGBringgUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD661D74BF2400DB13F4 /* GGBringgUtils.h */; };
+		110137A41D74CF7C005E10C4 /* GGBringgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD671D74BF2400DB13F4 /* GGBringgUtils.m */; };
+		110137A51D74CF7C005E10C4 /* GGCustomer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD681D74BF2400DB13F4 /* GGCustomer.h */; };
+		110137A61D74CF7C005E10C4 /* GGCustomer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD691D74BF2400DB13F4 /* GGCustomer.m */; };
+		110137A71D74CF7C005E10C4 /* GGDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6A1D74BF2400DB13F4 /* GGDriver.h */; };
+		110137A81D74CF7C005E10C4 /* GGDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6B1D74BF2400DB13F4 /* GGDriver.m */; };
+		110137A91D74CF7C005E10C4 /* GGFindMe.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6C1D74BF2400DB13F4 /* GGFindMe.h */; };
+		110137AA1D74CF7C005E10C4 /* GGFindMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6D1D74BF2400DB13F4 /* GGFindMe.m */; };
+		110137AB1D74CF7C005E10C4 /* GGItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6E1D74BF2400DB13F4 /* GGItem.h */; };
+		110137AC1D74CF7C005E10C4 /* GGItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6F1D74BF2400DB13F4 /* GGItem.m */; };
+		110137AD1D74CF7C005E10C4 /* GGOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD701D74BF2400DB13F4 /* GGOrder.h */; };
+		110137AE1D74CF7C005E10C4 /* GGOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD711D74BF2400DB13F4 /* GGOrder.m */; };
+		110137AF1D74CF7C005E10C4 /* GGOrderBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD721D74BF2400DB13F4 /* GGOrderBuilder.h */; };
+		110137B01D74CF7C005E10C4 /* GGOrderBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD731D74BF2400DB13F4 /* GGOrderBuilder.m */; };
+		110137B11D74CF7C005E10C4 /* GGRating.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD741D74BF2400DB13F4 /* GGRating.h */; };
+		110137B21D74CF7C005E10C4 /* GGRating.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD751D74BF2400DB13F4 /* GGRating.m */; };
+		110137B31D74CF7C005E10C4 /* GGRealTimeAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD761D74BF2400DB13F4 /* GGRealTimeAdapter.h */; };
+		110137B41D74CF7C005E10C4 /* GGRealTimeAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD771D74BF2400DB13F4 /* GGRealTimeAdapter.m */; };
+		110137B51D74CF7C005E10C4 /* GGRealTimeInternals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD781D74BF2400DB13F4 /* GGRealTimeInternals.h */; };
+		110137B61D74CF7C005E10C4 /* GGRealTimeMontior+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD791D74BF2400DB13F4 /* GGRealTimeMontior+Private.h */; };
+		110137B71D74CF7C005E10C4 /* GGRealTimeMontior.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */; };
+		110137B81D74CF7C005E10C4 /* GGRealTimeMontior.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7B1D74BF2400DB13F4 /* GGRealTimeMontior.m */; };
+		110137B91D74CF7C005E10C4 /* GGSharedLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7C1D74BF2400DB13F4 /* GGSharedLocation.h */; };
+		110137BA1D74CF7C005E10C4 /* GGSharedLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */; };
+		110137BB1D74CF7C005E10C4 /* GGWaypoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7E1D74BF2400DB13F4 /* GGWaypoint.h */; };
+		110137BC1D74CF7C005E10C4 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7F1D74BF2400DB13F4 /* GGWaypoint.m */; };
+		110137BD1D74CF7D005E10C4 /* BringgGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD651D74BF2400DB13F4 /* BringgGlobals.h */; };
+		110137BE1D74CF7D005E10C4 /* GGBringgUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD661D74BF2400DB13F4 /* GGBringgUtils.h */; };
+		110137BF1D74CF7D005E10C4 /* GGBringgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD671D74BF2400DB13F4 /* GGBringgUtils.m */; };
+		110137C01D74CF7D005E10C4 /* GGCustomer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD681D74BF2400DB13F4 /* GGCustomer.h */; };
+		110137C11D74CF7D005E10C4 /* GGCustomer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD691D74BF2400DB13F4 /* GGCustomer.m */; };
+		110137C21D74CF7D005E10C4 /* GGDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6A1D74BF2400DB13F4 /* GGDriver.h */; };
+		110137C31D74CF7D005E10C4 /* GGDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6B1D74BF2400DB13F4 /* GGDriver.m */; };
+		110137C41D74CF7D005E10C4 /* GGFindMe.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6C1D74BF2400DB13F4 /* GGFindMe.h */; };
+		110137C51D74CF7D005E10C4 /* GGFindMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6D1D74BF2400DB13F4 /* GGFindMe.m */; };
+		110137C61D74CF7D005E10C4 /* GGItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6E1D74BF2400DB13F4 /* GGItem.h */; };
+		110137C71D74CF7D005E10C4 /* GGItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6F1D74BF2400DB13F4 /* GGItem.m */; };
+		110137C81D74CF7D005E10C4 /* GGOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD701D74BF2400DB13F4 /* GGOrder.h */; };
+		110137C91D74CF7D005E10C4 /* GGOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD711D74BF2400DB13F4 /* GGOrder.m */; };
+		110137CA1D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD721D74BF2400DB13F4 /* GGOrderBuilder.h */; };
+		110137CB1D74CF7D005E10C4 /* GGOrderBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD731D74BF2400DB13F4 /* GGOrderBuilder.m */; };
+		110137CC1D74CF7D005E10C4 /* GGRating.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD741D74BF2400DB13F4 /* GGRating.h */; };
+		110137CD1D74CF7D005E10C4 /* GGRating.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD751D74BF2400DB13F4 /* GGRating.m */; };
+		110137CE1D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD761D74BF2400DB13F4 /* GGRealTimeAdapter.h */; };
+		110137CF1D74CF7D005E10C4 /* GGRealTimeAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD771D74BF2400DB13F4 /* GGRealTimeAdapter.m */; };
+		110137D01D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD781D74BF2400DB13F4 /* GGRealTimeInternals.h */; };
+		110137D11D74CF7D005E10C4 /* GGRealTimeMontior+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD791D74BF2400DB13F4 /* GGRealTimeMontior+Private.h */; };
+		110137D21D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */; };
+		110137D31D74CF7D005E10C4 /* GGRealTimeMontior.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7B1D74BF2400DB13F4 /* GGRealTimeMontior.m */; };
+		110137D41D74CF7D005E10C4 /* GGSharedLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7C1D74BF2400DB13F4 /* GGSharedLocation.h */; };
+		110137D51D74CF7D005E10C4 /* GGSharedLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */; };
+		110137D61D74CF7D005E10C4 /* GGWaypoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7E1D74BF2400DB13F4 /* GGWaypoint.h */; };
+		110137D71D74CF7D005E10C4 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7F1D74BF2400DB13F4 /* GGWaypoint.m */; };
+		110137D81D74CF7D005E10C4 /* BringgGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD651D74BF2400DB13F4 /* BringgGlobals.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137D91D74CF7D005E10C4 /* GGBringgUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD661D74BF2400DB13F4 /* GGBringgUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137DA1D74CF7D005E10C4 /* GGBringgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD671D74BF2400DB13F4 /* GGBringgUtils.m */; };
+		110137DB1D74CF7D005E10C4 /* GGCustomer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD681D74BF2400DB13F4 /* GGCustomer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137DC1D74CF7D005E10C4 /* GGCustomer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD691D74BF2400DB13F4 /* GGCustomer.m */; };
+		110137DD1D74CF7D005E10C4 /* GGDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6A1D74BF2400DB13F4 /* GGDriver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137DE1D74CF7D005E10C4 /* GGDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6B1D74BF2400DB13F4 /* GGDriver.m */; };
+		110137DF1D74CF7D005E10C4 /* GGFindMe.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6C1D74BF2400DB13F4 /* GGFindMe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137E01D74CF7D005E10C4 /* GGFindMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6D1D74BF2400DB13F4 /* GGFindMe.m */; };
+		110137E11D74CF7D005E10C4 /* GGItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6E1D74BF2400DB13F4 /* GGItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137E21D74CF7D005E10C4 /* GGItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD6F1D74BF2400DB13F4 /* GGItem.m */; };
+		110137E31D74CF7D005E10C4 /* GGOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD701D74BF2400DB13F4 /* GGOrder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137E41D74CF7D005E10C4 /* GGOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD711D74BF2400DB13F4 /* GGOrder.m */; };
+		110137E51D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD721D74BF2400DB13F4 /* GGOrderBuilder.h */; };
+		110137E61D74CF7D005E10C4 /* GGOrderBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD731D74BF2400DB13F4 /* GGOrderBuilder.m */; };
+		110137E71D74CF7D005E10C4 /* GGRating.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD741D74BF2400DB13F4 /* GGRating.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137E81D74CF7D005E10C4 /* GGRating.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD751D74BF2400DB13F4 /* GGRating.m */; };
+		110137E91D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD761D74BF2400DB13F4 /* GGRealTimeAdapter.h */; };
+		110137EA1D74CF7D005E10C4 /* GGRealTimeAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD771D74BF2400DB13F4 /* GGRealTimeAdapter.m */; };
+		110137EB1D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD781D74BF2400DB13F4 /* GGRealTimeInternals.h */; };
+		110137EC1D74CF7D005E10C4 /* GGRealTimeMontior+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD791D74BF2400DB13F4 /* GGRealTimeMontior+Private.h */; };
+		110137ED1D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137EE1D74CF7D005E10C4 /* GGRealTimeMontior.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7B1D74BF2400DB13F4 /* GGRealTimeMontior.m */; };
+		110137EF1D74CF7D005E10C4 /* GGSharedLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7C1D74BF2400DB13F4 /* GGSharedLocation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137F01D74CF7D005E10C4 /* GGSharedLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */; };
+		110137F11D74CF7D005E10C4 /* GGWaypoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7E1D74BF2400DB13F4 /* GGWaypoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137F21D74CF7D005E10C4 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7F1D74BF2400DB13F4 /* GGWaypoint.m */; };
+		110137F31D74CF83005E10C4 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD621D74BF2400DB13F4 /* Reachability.h */; };
+		110137F41D74CF83005E10C4 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD631D74BF2400DB13F4 /* Reachability.m */; };
+		110137F51D74CF83005E10C4 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD621D74BF2400DB13F4 /* Reachability.h */; };
+		110137F61D74CF83005E10C4 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD631D74BF2400DB13F4 /* Reachability.m */; };
+		110137F71D74CF84005E10C4 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD621D74BF2400DB13F4 /* Reachability.h */; };
+		110137F81D74CF84005E10C4 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD631D74BF2400DB13F4 /* Reachability.m */; };
+		110137F91D74CF88005E10C4 /* NSObject+Observer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD561D74BF2400DB13F4 /* NSObject+Observer.h */; };
+		110137FA1D74CF88005E10C4 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD571D74BF2400DB13F4 /* NSObject+Observer.m */; };
+		110137FB1D74CF89005E10C4 /* NSObject+Observer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD561D74BF2400DB13F4 /* NSObject+Observer.h */; };
+		110137FC1D74CF89005E10C4 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD571D74BF2400DB13F4 /* NSObject+Observer.m */; };
+		110137FD1D74CF89005E10C4 /* NSObject+Observer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD561D74BF2400DB13F4 /* NSObject+Observer.h */; };
+		110137FE1D74CF89005E10C4 /* NSObject+Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD571D74BF2400DB13F4 /* NSObject+Observer.m */; };
+		110137FF1D74CF99005E10C4 /* BringgTrackingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */; };
+		110138001D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */; };
+		110138011D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */; };
+		110138021D74CF99005E10C4 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */; };
+		110138031D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */; };
+		110138041D74CF99005E10C4 /* GGTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */; };
+		110138051D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */; };
+		110138061D74CF99005E10C4 /* BringgTrackingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */; };
+		110138071D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */; };
+		110138081D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */; };
+		110138091D74CF99005E10C4 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */; };
+		1101380A1D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */; };
+		1101380B1D74CF99005E10C4 /* GGTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */; };
+		1101380C1D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */; };
+		1101380D1D74CF9A005E10C4 /* BringgTrackingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */; };
+		1101380E1D74CF9A005E10C4 /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */; };
+		1101380F1D74CF9A005E10C4 /* GGHTTPManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */; };
+		110138101D74CF9A005E10C4 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */; };
+		110138111D74CF9A005E10C4 /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */; };
+		110138121D74CF9A005E10C4 /* GGTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */; };
+		110138131D74CF9A005E10C4 /* GGTrackerManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */; };
+		110138141D74CFA0005E10C4 /* orderUpdate_onaccept.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */; };
+		110138151D74CFA0005E10C4 /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */; };
+		110138161D74CFA0005E10C4 /* orderUpdate_onaccept.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */; };
+		110138171D74CFA0005E10C4 /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */; };
+		110138181D74CFA1005E10C4 /* orderUpdate_onaccept.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */; };
+		110138191D74CFA1005E10C4 /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */; };
+		61DE788337BC26A523C02270 /* Pods_BringgTracking_OSXTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */; };
+		6391E2210B56DEC97DA9E352 /* Pods_BringgTracking_TVOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B1D9299A840C6762AFA50F /* Pods_BringgTracking_TVOSTests.framework */; };
+		BC2A8A735F34D514DF13E0B3 /* Pods_BringgTracking_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8665E6EF39161F825BE58B /* Pods_BringgTracking_iOSTests.framework */; };
+		E8E6411EAFD7F5A178118409 /* Pods_BringgTracking_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DEE02458BF7AE24D183A18 /* Pods_BringgTracking_OSX.framework */; };
+		F40454C9CDF918C11FE25B06 /* Pods_BringgTracking_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B5F2AAA658440FB96EC5B3D /* Pods_BringgTracking_iOS.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		110137461D74CE66005E10C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 115EDCDC1D74BBDE00DB13F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1101373A1D74CE66005E10C4;
+			remoteInfo = "BringgTracking-iOS";
+		};
+		110137621D74CE73005E10C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 115EDCDC1D74BBDE00DB13F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 110137561D74CE72005E10C4;
+			remoteInfo = "BringgTracking-TVOS";
+		};
+		1101377E1D74CE7E005E10C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 115EDCDC1D74BBDE00DB13F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 110137721D74CE7E005E10C4;
+			remoteInfo = "BringgTracking-OSX";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1101373B1D74CE66005E10C4 /* BringgTracking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BringgTracking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1101373D1D74CE66005E10C4 /* BringgTracking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BringgTracking.h; sourceTree = "<group>"; };
+		1101373F1D74CE66005E10C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		110137441D74CE66005E10C4 /* BringgTracking-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BringgTracking-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		110137491D74CE66005E10C4 /* BringgTracking_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BringgTracking_iOSTests.m; sourceTree = "<group>"; };
+		1101374B1D74CE66005E10C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		110137571D74CE72005E10C4 /* BringgTracking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BringgTracking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		110137591D74CE72005E10C4 /* BringgTracking-TVOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BringgTracking-TVOS.h"; sourceTree = "<group>"; };
+		1101375B1D74CE72005E10C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		110137601D74CE73005E10C4 /* BringgTracking-TVOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BringgTracking-TVOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		110137651D74CE73005E10C4 /* BringgTracking_TVOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BringgTracking_TVOSTests.m; sourceTree = "<group>"; };
+		110137671D74CE73005E10C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		110137731D74CE7E005E10C4 /* BringgTracking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BringgTracking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		110137751D74CE7E005E10C4 /* BringgTracking-OSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BringgTracking-OSX.h"; sourceTree = "<group>"; };
+		110137771D74CE7E005E10C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1101377C1D74CE7E005E10C4 /* BringgTracking-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BringgTracking-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		110137811D74CE7E005E10C4 /* BringgTracking_OSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BringgTracking_OSXTests.m; sourceTree = "<group>"; };
+		110137831D74CE7E005E10C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		115EDD561D74BF2400DB13F4 /* NSObject+Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Observer.h"; sourceTree = "<group>"; };
+		115EDD571D74BF2400DB13F4 /* NSObject+Observer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Observer.m"; sourceTree = "<group>"; };
+		115EDD621D74BF2400DB13F4 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		115EDD631D74BF2400DB13F4 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		115EDD651D74BF2400DB13F4 /* BringgGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BringgGlobals.h; sourceTree = "<group>"; };
+		115EDD661D74BF2400DB13F4 /* GGBringgUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGBringgUtils.h; sourceTree = "<group>"; };
+		115EDD671D74BF2400DB13F4 /* GGBringgUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGBringgUtils.m; sourceTree = "<group>"; };
+		115EDD681D74BF2400DB13F4 /* GGCustomer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGCustomer.h; sourceTree = "<group>"; };
+		115EDD691D74BF2400DB13F4 /* GGCustomer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGCustomer.m; sourceTree = "<group>"; };
+		115EDD6A1D74BF2400DB13F4 /* GGDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGDriver.h; sourceTree = "<group>"; };
+		115EDD6B1D74BF2400DB13F4 /* GGDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGDriver.m; sourceTree = "<group>"; };
+		115EDD6C1D74BF2400DB13F4 /* GGFindMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGFindMe.h; sourceTree = "<group>"; };
+		115EDD6D1D74BF2400DB13F4 /* GGFindMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGFindMe.m; sourceTree = "<group>"; };
+		115EDD6E1D74BF2400DB13F4 /* GGItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGItem.h; sourceTree = "<group>"; };
+		115EDD6F1D74BF2400DB13F4 /* GGItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGItem.m; sourceTree = "<group>"; };
+		115EDD701D74BF2400DB13F4 /* GGOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGOrder.h; sourceTree = "<group>"; };
+		115EDD711D74BF2400DB13F4 /* GGOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGOrder.m; sourceTree = "<group>"; };
+		115EDD721D74BF2400DB13F4 /* GGOrderBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGOrderBuilder.h; sourceTree = "<group>"; };
+		115EDD731D74BF2400DB13F4 /* GGOrderBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGOrderBuilder.m; sourceTree = "<group>"; };
+		115EDD741D74BF2400DB13F4 /* GGRating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGRating.h; sourceTree = "<group>"; };
+		115EDD751D74BF2400DB13F4 /* GGRating.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRating.m; sourceTree = "<group>"; };
+		115EDD761D74BF2400DB13F4 /* GGRealTimeAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGRealTimeAdapter.h; sourceTree = "<group>"; };
+		115EDD771D74BF2400DB13F4 /* GGRealTimeAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRealTimeAdapter.m; sourceTree = "<group>"; };
+		115EDD781D74BF2400DB13F4 /* GGRealTimeInternals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGRealTimeInternals.h; sourceTree = "<group>"; };
+		115EDD791D74BF2400DB13F4 /* GGRealTimeMontior+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GGRealTimeMontior+Private.h"; sourceTree = "<group>"; };
+		115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGRealTimeMontior.h; sourceTree = "<group>"; };
+		115EDD7B1D74BF2400DB13F4 /* GGRealTimeMontior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRealTimeMontior.m; sourceTree = "<group>"; };
+		115EDD7C1D74BF2400DB13F4 /* GGSharedLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGSharedLocation.h; sourceTree = "<group>"; };
+		115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGSharedLocation.m; sourceTree = "<group>"; };
+		115EDD7E1D74BF2400DB13F4 /* GGWaypoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGWaypoint.h; sourceTree = "<group>"; };
+		115EDD7F1D74BF2400DB13F4 /* GGWaypoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGWaypoint.m; sourceTree = "<group>"; };
+		115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGHTTPClientManager_Private.h; sourceTree = "<group>"; };
+		115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGHTTPClientManager.h; sourceTree = "<group>"; };
+		115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGHTTPClientManager.m; sourceTree = "<group>"; };
+		115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGNetworkUtils.h; sourceTree = "<group>"; };
+		115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGNetworkUtils.m; sourceTree = "<group>"; };
+		115EDDAE1D74BF9000DB13F4 /* GGTrackerManager_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGTrackerManager_Private.h; sourceTree = "<group>"; };
+		115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGTrackerManager.h; sourceTree = "<group>"; };
+		115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGTrackerManager.m; sourceTree = "<group>"; };
+		115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BringgTrackingTests.m; sourceTree = "<group>"; };
+		115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGBringgUtilsTests.m; sourceTree = "<group>"; };
+		115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGHTTPManagerTests.m; sourceTree = "<group>"; };
+		115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGNetworkUtilsTests.m; sourceTree = "<group>"; };
+		115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGRealTimeMonitorTests.m; sourceTree = "<group>"; };
+		115EDE0D1D74C1E800DB13F4 /* GGTestUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGTestUtils.h; sourceTree = "<group>"; };
+		115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGTestUtils.m; sourceTree = "<group>"; };
+		115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGTrackerManagerTests.m; sourceTree = "<group>"; };
+		115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onaccept.json; sourceTree = "<group>"; };
+		115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onstart.json; sourceTree = "<group>"; };
+		210C6BF2E8F959A6F8F15986 /* Pods-BringgTracking-OSXTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-OSXTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-OSXTests/Pods-BringgTracking-OSXTests.release.xcconfig"; sourceTree = "<group>"; };
+		4438BE5512019235F3F83E3A /* Pods-BringgTracking-iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-iOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-iOSTests/Pods-BringgTracking-iOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		4C8665E6EF39161F825BE58B /* Pods_BringgTracking_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D6D6B94CFACE9E7888AC818 /* Pods-BringgTracking-iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-iOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-iOSTests/Pods-BringgTracking-iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6ADF013DBBB38F917D7A6485 /* Pods-BringgTracking-TVOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-TVOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-TVOSTests/Pods-BringgTracking-TVOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		72B73A79B5B585F6086B83D8 /* Pods-BringgTracking-TVOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-TVOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-TVOS/Pods-BringgTracking-TVOS.debug.xcconfig"; sourceTree = "<group>"; };
+		7B5F2AAA658440FB96EC5B3D /* Pods_BringgTracking_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		809DB351663E641899C8703A /* Pods-BringgTracking-OSXTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-OSXTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-OSXTests/Pods-BringgTracking-OSXTests.debug.xcconfig"; sourceTree = "<group>"; };
+		80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_OSXTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		83DEE02458BF7AE24D183A18 /* Pods_BringgTracking_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9047C1488D8A996267031F98 /* Pods-BringgTracking-OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-OSX/Pods-BringgTracking-OSX.debug.xcconfig"; sourceTree = "<group>"; };
+		A0921BDDFEB36E2C86CE31F1 /* Pods-BringgTracking-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-iOS/Pods-BringgTracking-iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A2FEB2E784DABF4A96F050A6 /* Pods-BringgTracking-TVOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-TVOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-TVOS/Pods-BringgTracking-TVOS.release.xcconfig"; sourceTree = "<group>"; };
+		C70E2493414B79BA05498A9B /* Pods-BringgTracking-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-iOS/Pods-BringgTracking-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		DB045B949099575EBFE9417E /* Pods_BringgTracking_TVOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_TVOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC6AECE3113541846F1574B1 /* Pods-BringgTracking-OSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-OSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-OSX/Pods-BringgTracking-OSX.release.xcconfig"; sourceTree = "<group>"; };
+		F2B1D9299A840C6762AFA50F /* Pods_BringgTracking_TVOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_TVOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F51F6D4B092D03AB5FA690D5 /* Pods-BringgTracking-TVOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-TVOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-TVOSTests/Pods-BringgTracking-TVOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		110137371D74CE66005E10C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F40454C9CDF918C11FE25B06 /* Pods_BringgTracking_iOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137411D74CE66005E10C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137451D74CE66005E10C4 /* BringgTracking.framework in Frameworks */,
+				BC2A8A735F34D514DF13E0B3 /* Pods_BringgTracking_iOSTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137531D74CE72005E10C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0ED6CEFC7682E8BAF13728D6 /* Pods_BringgTracking_TVOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1101375D1D74CE73005E10C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137611D74CE73005E10C4 /* BringgTracking.framework in Frameworks */,
+				6391E2210B56DEC97DA9E352 /* Pods_BringgTracking_TVOSTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1101376F1D74CE7E005E10C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8E6411EAFD7F5A178118409 /* Pods_BringgTracking_OSX.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137791D74CE7E005E10C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1101377D1D74CE7E005E10C4 /* BringgTracking.framework in Frameworks */,
+				61DE788337BC26A523C02270 /* Pods_BringgTracking_OSXTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1101373C1D74CE66005E10C4 /* BringgTracking-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1101373D1D74CE66005E10C4 /* BringgTracking.h */,
+				1101373F1D74CE66005E10C4 /* Info.plist */,
+			);
+			path = "BringgTracking-iOS";
+			sourceTree = "<group>";
+		};
+		110137481D74CE66005E10C4 /* BringgTracking-iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				110137491D74CE66005E10C4 /* BringgTracking_iOSTests.m */,
+				1101374B1D74CE66005E10C4 /* Info.plist */,
+			);
+			path = "BringgTracking-iOSTests";
+			sourceTree = "<group>";
+		};
+		110137581D74CE72005E10C4 /* BringgTracking-TVOS */ = {
+			isa = PBXGroup;
+			children = (
+				110137591D74CE72005E10C4 /* BringgTracking-TVOS.h */,
+				1101375B1D74CE72005E10C4 /* Info.plist */,
+			);
+			path = "BringgTracking-TVOS";
+			sourceTree = "<group>";
+		};
+		110137641D74CE73005E10C4 /* BringgTracking-TVOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				110137651D74CE73005E10C4 /* BringgTracking_TVOSTests.m */,
+				110137671D74CE73005E10C4 /* Info.plist */,
+			);
+			path = "BringgTracking-TVOSTests";
+			sourceTree = "<group>";
+		};
+		110137741D74CE7E005E10C4 /* BringgTracking-OSX */ = {
+			isa = PBXGroup;
+			children = (
+				110137751D74CE7E005E10C4 /* BringgTracking-OSX.h */,
+				110137771D74CE7E005E10C4 /* Info.plist */,
+			);
+			path = "BringgTracking-OSX";
+			sourceTree = "<group>";
+		};
+		110137801D74CE7E005E10C4 /* BringgTracking-OSXTests */ = {
+			isa = PBXGroup;
+			children = (
+				110137811D74CE7E005E10C4 /* BringgTracking_OSXTests.m */,
+				110137831D74CE7E005E10C4 /* Info.plist */,
+			);
+			path = "BringgTracking-OSXTests";
+			sourceTree = "<group>";
+		};
+		115EDCDB1D74BBDE00DB13F4 = {
+			isa = PBXGroup;
+			children = (
+				115EDE071D74C1E800DB13F4 /* tests */,
+				115EDD531D74BF2300DB13F4 /* sources */,
+				1101373C1D74CE66005E10C4 /* BringgTracking-iOS */,
+				110137481D74CE66005E10C4 /* BringgTracking-iOSTests */,
+				110137581D74CE72005E10C4 /* BringgTracking-TVOS */,
+				110137641D74CE73005E10C4 /* BringgTracking-TVOSTests */,
+				110137741D74CE7E005E10C4 /* BringgTracking-OSX */,
+				110137801D74CE7E005E10C4 /* BringgTracking-OSXTests */,
+				115EDCE61D74BBDE00DB13F4 /* Products */,
+				725DFF87C14C5EA490D9DA91 /* Pods */,
+				90D5B85E6B5F39C7BCEFFE9D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		115EDCE61D74BBDE00DB13F4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1101373B1D74CE66005E10C4 /* BringgTracking.framework */,
+				110137441D74CE66005E10C4 /* BringgTracking-iOSTests.xctest */,
+				110137571D74CE72005E10C4 /* BringgTracking.framework */,
+				110137601D74CE73005E10C4 /* BringgTracking-TVOSTests.xctest */,
+				110137731D74CE7E005E10C4 /* BringgTracking.framework */,
+				1101377C1D74CE7E005E10C4 /* BringgTracking-OSXTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		115EDD531D74BF2300DB13F4 /* sources */ = {
+			isa = PBXGroup;
+			children = (
+				115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */,
+				115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */,
+				115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */,
+				115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */,
+				115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */,
+				115EDDAE1D74BF9000DB13F4 /* GGTrackerManager_Private.h */,
+				115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */,
+				115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */,
+				115EDD551D74BF2400DB13F4 /* extensions */,
+				115EDD601D74BF2400DB13F4 /* libs */,
+				115EDD641D74BF2400DB13F4 /* model */,
+			);
+			name = sources;
+			path = ../sources;
+			sourceTree = "<group>";
+		};
+		115EDD551D74BF2400DB13F4 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				115EDD561D74BF2400DB13F4 /* NSObject+Observer.h */,
+				115EDD571D74BF2400DB13F4 /* NSObject+Observer.m */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
+		115EDD601D74BF2400DB13F4 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				115EDD611D74BF2400DB13F4 /* Reachibility */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		115EDD611D74BF2400DB13F4 /* Reachibility */ = {
+			isa = PBXGroup;
+			children = (
+				115EDD621D74BF2400DB13F4 /* Reachability.h */,
+				115EDD631D74BF2400DB13F4 /* Reachability.m */,
+			);
+			path = Reachibility;
+			sourceTree = "<group>";
+		};
+		115EDD641D74BF2400DB13F4 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				115EDD651D74BF2400DB13F4 /* BringgGlobals.h */,
+				115EDD661D74BF2400DB13F4 /* GGBringgUtils.h */,
+				115EDD671D74BF2400DB13F4 /* GGBringgUtils.m */,
+				115EDD681D74BF2400DB13F4 /* GGCustomer.h */,
+				115EDD691D74BF2400DB13F4 /* GGCustomer.m */,
+				115EDD6A1D74BF2400DB13F4 /* GGDriver.h */,
+				115EDD6B1D74BF2400DB13F4 /* GGDriver.m */,
+				115EDD6C1D74BF2400DB13F4 /* GGFindMe.h */,
+				115EDD6D1D74BF2400DB13F4 /* GGFindMe.m */,
+				115EDD6E1D74BF2400DB13F4 /* GGItem.h */,
+				115EDD6F1D74BF2400DB13F4 /* GGItem.m */,
+				115EDD701D74BF2400DB13F4 /* GGOrder.h */,
+				115EDD711D74BF2400DB13F4 /* GGOrder.m */,
+				115EDD721D74BF2400DB13F4 /* GGOrderBuilder.h */,
+				115EDD731D74BF2400DB13F4 /* GGOrderBuilder.m */,
+				115EDD741D74BF2400DB13F4 /* GGRating.h */,
+				115EDD751D74BF2400DB13F4 /* GGRating.m */,
+				115EDD761D74BF2400DB13F4 /* GGRealTimeAdapter.h */,
+				115EDD771D74BF2400DB13F4 /* GGRealTimeAdapter.m */,
+				115EDD781D74BF2400DB13F4 /* GGRealTimeInternals.h */,
+				115EDD791D74BF2400DB13F4 /* GGRealTimeMontior+Private.h */,
+				115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */,
+				115EDD7B1D74BF2400DB13F4 /* GGRealTimeMontior.m */,
+				115EDD7C1D74BF2400DB13F4 /* GGSharedLocation.h */,
+				115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */,
+				115EDD7E1D74BF2400DB13F4 /* GGWaypoint.h */,
+				115EDD7F1D74BF2400DB13F4 /* GGWaypoint.m */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		115EDE071D74C1E800DB13F4 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */,
+				115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */,
+				115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */,
+				115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */,
+				115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */,
+				115EDE0D1D74C1E800DB13F4 /* GGTestUtils.h */,
+				115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */,
+				115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */,
+				115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */,
+				115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */,
+			);
+			name = tests;
+			path = ../tests;
+			sourceTree = "<group>";
+		};
+		725DFF87C14C5EA490D9DA91 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9047C1488D8A996267031F98 /* Pods-BringgTracking-OSX.debug.xcconfig */,
+				EC6AECE3113541846F1574B1 /* Pods-BringgTracking-OSX.release.xcconfig */,
+				809DB351663E641899C8703A /* Pods-BringgTracking-OSXTests.debug.xcconfig */,
+				210C6BF2E8F959A6F8F15986 /* Pods-BringgTracking-OSXTests.release.xcconfig */,
+				72B73A79B5B585F6086B83D8 /* Pods-BringgTracking-TVOS.debug.xcconfig */,
+				A2FEB2E784DABF4A96F050A6 /* Pods-BringgTracking-TVOS.release.xcconfig */,
+				F51F6D4B092D03AB5FA690D5 /* Pods-BringgTracking-TVOSTests.debug.xcconfig */,
+				6ADF013DBBB38F917D7A6485 /* Pods-BringgTracking-TVOSTests.release.xcconfig */,
+				C70E2493414B79BA05498A9B /* Pods-BringgTracking-iOS.debug.xcconfig */,
+				A0921BDDFEB36E2C86CE31F1 /* Pods-BringgTracking-iOS.release.xcconfig */,
+				4D6D6B94CFACE9E7888AC818 /* Pods-BringgTracking-iOSTests.debug.xcconfig */,
+				4438BE5512019235F3F83E3A /* Pods-BringgTracking-iOSTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		90D5B85E6B5F39C7BCEFFE9D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				83DEE02458BF7AE24D183A18 /* Pods_BringgTracking_OSX.framework */,
+				80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */,
+				DB045B949099575EBFE9417E /* Pods_BringgTracking_TVOS.framework */,
+				F2B1D9299A840C6762AFA50F /* Pods_BringgTracking_TVOSTests.framework */,
+				7B5F2AAA658440FB96EC5B3D /* Pods_BringgTracking_iOS.framework */,
+				4C8665E6EF39161F825BE58B /* Pods_BringgTracking_iOSTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		110137381D74CE66005E10C4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1101373E1D74CE66005E10C4 /* BringgTracking.h in Headers */,
+				110137DB1D74CF7D005E10C4 /* GGCustomer.h in Headers */,
+				110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */,
+				110137DD1D74CF7D005E10C4 /* GGDriver.h in Headers */,
+				1101379B1D74CF76005E10C4 /* GGHTTPClientManager.h in Headers */,
+				110137F11D74CF7D005E10C4 /* GGWaypoint.h in Headers */,
+				110137DF1D74CF7D005E10C4 /* GGFindMe.h in Headers */,
+				110137D91D74CF7D005E10C4 /* GGBringgUtils.h in Headers */,
+				110137D81D74CF7D005E10C4 /* BringgGlobals.h in Headers */,
+				110137ED1D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */,
+				110137E31D74CF7D005E10C4 /* GGOrder.h in Headers */,
+				110137E71D74CF7D005E10C4 /* GGRating.h in Headers */,
+				110137EF1D74CF7D005E10C4 /* GGSharedLocation.h in Headers */,
+				110137E11D74CF7D005E10C4 /* GGItem.h in Headers */,
+				1101379F1D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */,
+				110137E51D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */,
+				1101379A1D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */,
+				110137EB1D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */,
+				1101379D1D74CF76005E10C4 /* GGNetworkUtils.h in Headers */,
+				110137E91D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */,
+				110137FD1D74CF89005E10C4 /* NSObject+Observer.h in Headers */,
+				110137EC1D74CF7D005E10C4 /* GGRealTimeMontior+Private.h in Headers */,
+				110137F71D74CF84005E10C4 /* Reachability.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137541D74CE72005E10C4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1101375A1D74CE72005E10C4 /* BringgTracking-TVOS.h in Headers */,
+				110137C01D74CF7D005E10C4 /* GGCustomer.h in Headers */,
+				110137981D74CF76005E10C4 /* GGTrackerManager.h in Headers */,
+				110137971D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */,
+				110137C21D74CF7D005E10C4 /* GGDriver.h in Headers */,
+				110137CA1D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */,
+				110137931D74CF76005E10C4 /* GGHTTPClientManager.h in Headers */,
+				110137921D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */,
+				110137D01D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */,
+				110137D61D74CF7D005E10C4 /* GGWaypoint.h in Headers */,
+				110137C41D74CF7D005E10C4 /* GGFindMe.h in Headers */,
+				110137BE1D74CF7D005E10C4 /* GGBringgUtils.h in Headers */,
+				110137951D74CF76005E10C4 /* GGNetworkUtils.h in Headers */,
+				110137CE1D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */,
+				110137BD1D74CF7D005E10C4 /* BringgGlobals.h in Headers */,
+				110137FB1D74CF89005E10C4 /* NSObject+Observer.h in Headers */,
+				110137D21D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */,
+				110137D11D74CF7D005E10C4 /* GGRealTimeMontior+Private.h in Headers */,
+				110137F51D74CF83005E10C4 /* Reachability.h in Headers */,
+				110137C81D74CF7D005E10C4 /* GGOrder.h in Headers */,
+				110137CC1D74CF7D005E10C4 /* GGRating.h in Headers */,
+				110137D41D74CF7D005E10C4 /* GGSharedLocation.h in Headers */,
+				110137C61D74CF7D005E10C4 /* GGItem.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137701D74CE7E005E10C4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137761D74CE7E005E10C4 /* BringgTracking-OSX.h in Headers */,
+				110137A51D74CF7C005E10C4 /* GGCustomer.h in Headers */,
+				110137901D74CF75005E10C4 /* GGTrackerManager.h in Headers */,
+				1101378F1D74CF75005E10C4 /* GGTrackerManager_Private.h in Headers */,
+				110137A71D74CF7C005E10C4 /* GGDriver.h in Headers */,
+				110137AF1D74CF7C005E10C4 /* GGOrderBuilder.h in Headers */,
+				1101378B1D74CF75005E10C4 /* GGHTTPClientManager.h in Headers */,
+				1101378A1D74CF75005E10C4 /* GGHTTPClientManager_Private.h in Headers */,
+				110137B51D74CF7C005E10C4 /* GGRealTimeInternals.h in Headers */,
+				110137BB1D74CF7C005E10C4 /* GGWaypoint.h in Headers */,
+				110137A91D74CF7C005E10C4 /* GGFindMe.h in Headers */,
+				110137A31D74CF7C005E10C4 /* GGBringgUtils.h in Headers */,
+				1101378D1D74CF75005E10C4 /* GGNetworkUtils.h in Headers */,
+				110137B31D74CF7C005E10C4 /* GGRealTimeAdapter.h in Headers */,
+				110137A21D74CF7C005E10C4 /* BringgGlobals.h in Headers */,
+				110137F91D74CF88005E10C4 /* NSObject+Observer.h in Headers */,
+				110137B71D74CF7C005E10C4 /* GGRealTimeMontior.h in Headers */,
+				110137B61D74CF7C005E10C4 /* GGRealTimeMontior+Private.h in Headers */,
+				110137F31D74CF83005E10C4 /* Reachability.h in Headers */,
+				110137AD1D74CF7C005E10C4 /* GGOrder.h in Headers */,
+				110137B11D74CF7C005E10C4 /* GGRating.h in Headers */,
+				110137B91D74CF7C005E10C4 /* GGSharedLocation.h in Headers */,
+				110137AB1D74CF7C005E10C4 /* GGItem.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1101373A1D74CE66005E10C4 /* BringgTracking-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1101374C1D74CE66005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-iOS" */;
+			buildPhases = (
+				CB76693D05E8BDED4DB4B9F3 /* [CP] Check Pods Manifest.lock */,
+				110137361D74CE66005E10C4 /* Sources */,
+				110137371D74CE66005E10C4 /* Frameworks */,
+				110137381D74CE66005E10C4 /* Headers */,
+				110137391D74CE66005E10C4 /* Resources */,
+				9F4E295D98B1548C45E9C3B8 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BringgTracking-iOS";
+			productName = "BringgTracking-iOS";
+			productReference = 1101373B1D74CE66005E10C4 /* BringgTracking.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		110137431D74CE66005E10C4 /* BringgTracking-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1101374F1D74CE66005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-iOSTests" */;
+			buildPhases = (
+				1AF20ACF981460CCDD75A2B4 /* [CP] Check Pods Manifest.lock */,
+				110137401D74CE66005E10C4 /* Sources */,
+				110137411D74CE66005E10C4 /* Frameworks */,
+				110137421D74CE66005E10C4 /* Resources */,
+				D85D8ADCF59F654423D3ABB3 /* [CP] Embed Pods Frameworks */,
+				A4123D66AFA03D38703F48B4 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				110137471D74CE66005E10C4 /* PBXTargetDependency */,
+			);
+			name = "BringgTracking-iOSTests";
+			productName = "BringgTracking-iOSTests";
+			productReference = 110137441D74CE66005E10C4 /* BringgTracking-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		110137561D74CE72005E10C4 /* BringgTracking-TVOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 110137681D74CE73005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-TVOS" */;
+			buildPhases = (
+				C21CCA0CF8A66AFBD57C585A /* [CP] Check Pods Manifest.lock */,
+				110137521D74CE72005E10C4 /* Sources */,
+				110137531D74CE72005E10C4 /* Frameworks */,
+				110137541D74CE72005E10C4 /* Headers */,
+				110137551D74CE72005E10C4 /* Resources */,
+				2FAE5FF151448683DEE3A2FF /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BringgTracking-TVOS";
+			productName = "BringgTracking-TVOS";
+			productReference = 110137571D74CE72005E10C4 /* BringgTracking.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1101375F1D74CE73005E10C4 /* BringgTracking-TVOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1101376B1D74CE73005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-TVOSTests" */;
+			buildPhases = (
+				3DF546FA7D4EED7CB04ED6D6 /* [CP] Check Pods Manifest.lock */,
+				1101375C1D74CE73005E10C4 /* Sources */,
+				1101375D1D74CE73005E10C4 /* Frameworks */,
+				1101375E1D74CE73005E10C4 /* Resources */,
+				1B4C563AADA027D183C17147 /* [CP] Embed Pods Frameworks */,
+				B5AE547B802FF3645D72461D /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				110137631D74CE73005E10C4 /* PBXTargetDependency */,
+			);
+			name = "BringgTracking-TVOSTests";
+			productName = "BringgTracking-TVOSTests";
+			productReference = 110137601D74CE73005E10C4 /* BringgTracking-TVOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		110137721D74CE7E005E10C4 /* BringgTracking-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 110137841D74CE7E005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-OSX" */;
+			buildPhases = (
+				1E6D57F3CA98A402BF905B22 /* [CP] Check Pods Manifest.lock */,
+				1101376E1D74CE7E005E10C4 /* Sources */,
+				1101376F1D74CE7E005E10C4 /* Frameworks */,
+				110137701D74CE7E005E10C4 /* Headers */,
+				110137711D74CE7E005E10C4 /* Resources */,
+				57872EC3F3A7B325F87C2116 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BringgTracking-OSX";
+			productName = "BringgTracking-OSX";
+			productReference = 110137731D74CE7E005E10C4 /* BringgTracking.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1101377B1D74CE7E005E10C4 /* BringgTracking-OSXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 110137871D74CE7E005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-OSXTests" */;
+			buildPhases = (
+				C5FDFAD956E65F6C01F98142 /* [CP] Check Pods Manifest.lock */,
+				110137781D74CE7E005E10C4 /* Sources */,
+				110137791D74CE7E005E10C4 /* Frameworks */,
+				1101377A1D74CE7E005E10C4 /* Resources */,
+				07DD240BE461F81797E8AF30 /* [CP] Embed Pods Frameworks */,
+				144294B4A051061ACD120CB5 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1101377F1D74CE7E005E10C4 /* PBXTargetDependency */,
+			);
+			name = "BringgTracking-OSXTests";
+			productName = "BringgTracking-OSXTests";
+			productReference = 1101377C1D74CE7E005E10C4 /* BringgTracking-OSXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		115EDCDC1D74BBDE00DB13F4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = Bringg;
+				TargetAttributes = {
+					1101373A1D74CE66005E10C4 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					110137431D74CE66005E10C4 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					110137561D74CE72005E10C4 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					1101375F1D74CE73005E10C4 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					110137721D74CE7E005E10C4 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					1101377B1D74CE7E005E10C4 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 115EDCDF1D74BBDE00DB13F4 /* Build configuration list for PBXProject "BringgTracking" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 115EDCDB1D74BBDE00DB13F4;
+			productRefGroup = 115EDCE61D74BBDE00DB13F4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1101373A1D74CE66005E10C4 /* BringgTracking-iOS */,
+				110137431D74CE66005E10C4 /* BringgTracking-iOSTests */,
+				110137561D74CE72005E10C4 /* BringgTracking-TVOS */,
+				1101375F1D74CE73005E10C4 /* BringgTracking-TVOSTests */,
+				110137721D74CE7E005E10C4 /* BringgTracking-OSX */,
+				1101377B1D74CE7E005E10C4 /* BringgTracking-OSXTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		110137391D74CE66005E10C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137421D74CE66005E10C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110138181D74CFA1005E10C4 /* orderUpdate_onaccept.json in Resources */,
+				110138191D74CFA1005E10C4 /* orderUpdate_onstart.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137551D74CE72005E10C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1101375E1D74CE73005E10C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110138161D74CFA0005E10C4 /* orderUpdate_onaccept.json in Resources */,
+				110138171D74CFA0005E10C4 /* orderUpdate_onstart.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137711D74CE7E005E10C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1101377A1D74CE7E005E10C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110138141D74CFA0005E10C4 /* orderUpdate_onaccept.json in Resources */,
+				110138151D74CFA0005E10C4 /* orderUpdate_onstart.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		07DD240BE461F81797E8AF30 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-OSXTests/Pods-BringgTracking-OSXTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		144294B4A051061ACD120CB5 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-OSXTests/Pods-BringgTracking-OSXTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1AF20ACF981460CCDD75A2B4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		1B4C563AADA027D183C17147 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-TVOSTests/Pods-BringgTracking-TVOSTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1E6D57F3CA98A402BF905B22 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		2FAE5FF151448683DEE3A2FF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-TVOS/Pods-BringgTracking-TVOS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3DF546FA7D4EED7CB04ED6D6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		57872EC3F3A7B325F87C2116 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-OSX/Pods-BringgTracking-OSX-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9F4E295D98B1548C45E9C3B8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-iOS/Pods-BringgTracking-iOS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A4123D66AFA03D38703F48B4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-iOSTests/Pods-BringgTracking-iOSTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B5AE547B802FF3645D72461D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-TVOSTests/Pods-BringgTracking-TVOSTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C21CCA0CF8A66AFBD57C585A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C5FDFAD956E65F6C01F98142 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CB76693D05E8BDED4DB4B9F3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D85D8ADCF59F654423D3ABB3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-iOSTests/Pods-BringgTracking-iOSTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		110137361D74CE66005E10C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137EE1D74CF7D005E10C4 /* GGRealTimeMontior.m in Sources */,
+				110137EA1D74CF7D005E10C4 /* GGRealTimeAdapter.m in Sources */,
+				110137E21D74CF7D005E10C4 /* GGItem.m in Sources */,
+				1101379E1D74CF76005E10C4 /* GGNetworkUtils.m in Sources */,
+				110137DE1D74CF7D005E10C4 /* GGDriver.m in Sources */,
+				1101379C1D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */,
+				110137E81D74CF7D005E10C4 /* GGRating.m in Sources */,
+				110137F01D74CF7D005E10C4 /* GGSharedLocation.m in Sources */,
+				110137DA1D74CF7D005E10C4 /* GGBringgUtils.m in Sources */,
+				110137E01D74CF7D005E10C4 /* GGFindMe.m in Sources */,
+				110137F81D74CF84005E10C4 /* Reachability.m in Sources */,
+				110137F21D74CF7D005E10C4 /* GGWaypoint.m in Sources */,
+				110137E61D74CF7D005E10C4 /* GGOrderBuilder.m in Sources */,
+				110137FE1D74CF89005E10C4 /* NSObject+Observer.m in Sources */,
+				110137E41D74CF7D005E10C4 /* GGOrder.m in Sources */,
+				110137DC1D74CF7D005E10C4 /* GGCustomer.m in Sources */,
+				110137A11D74CF76005E10C4 /* GGTrackerManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137401D74CE66005E10C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1101374A1D74CE66005E10C4 /* BringgTracking_iOSTests.m in Sources */,
+				110138111D74CF9A005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
+				110138131D74CF9A005E10C4 /* GGTrackerManagerTests.m in Sources */,
+				1101380D1D74CF9A005E10C4 /* BringgTrackingTests.m in Sources */,
+				1101380E1D74CF9A005E10C4 /* GGBringgUtilsTests.m in Sources */,
+				1101380F1D74CF9A005E10C4 /* GGHTTPManagerTests.m in Sources */,
+				110138121D74CF9A005E10C4 /* GGTestUtils.m in Sources */,
+				110138101D74CF9A005E10C4 /* GGNetworkUtilsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137521D74CE72005E10C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137D31D74CF7D005E10C4 /* GGRealTimeMontior.m in Sources */,
+				110137CF1D74CF7D005E10C4 /* GGRealTimeAdapter.m in Sources */,
+				110137C71D74CF7D005E10C4 /* GGItem.m in Sources */,
+				110137961D74CF76005E10C4 /* GGNetworkUtils.m in Sources */,
+				110137C31D74CF7D005E10C4 /* GGDriver.m in Sources */,
+				110137941D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */,
+				110137CD1D74CF7D005E10C4 /* GGRating.m in Sources */,
+				110137D51D74CF7D005E10C4 /* GGSharedLocation.m in Sources */,
+				110137BF1D74CF7D005E10C4 /* GGBringgUtils.m in Sources */,
+				110137C51D74CF7D005E10C4 /* GGFindMe.m in Sources */,
+				110137F61D74CF83005E10C4 /* Reachability.m in Sources */,
+				110137D71D74CF7D005E10C4 /* GGWaypoint.m in Sources */,
+				110137CB1D74CF7D005E10C4 /* GGOrderBuilder.m in Sources */,
+				110137FC1D74CF89005E10C4 /* NSObject+Observer.m in Sources */,
+				110137C91D74CF7D005E10C4 /* GGOrder.m in Sources */,
+				110137C11D74CF7D005E10C4 /* GGCustomer.m in Sources */,
+				110137991D74CF76005E10C4 /* GGTrackerManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1101375C1D74CE73005E10C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137661D74CE73005E10C4 /* BringgTracking_TVOSTests.m in Sources */,
+				1101380A1D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
+				1101380C1D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */,
+				110138061D74CF99005E10C4 /* BringgTrackingTests.m in Sources */,
+				110138071D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */,
+				110138081D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */,
+				1101380B1D74CF99005E10C4 /* GGTestUtils.m in Sources */,
+				110138091D74CF99005E10C4 /* GGNetworkUtilsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1101376E1D74CE7E005E10C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137B81D74CF7C005E10C4 /* GGRealTimeMontior.m in Sources */,
+				110137B41D74CF7C005E10C4 /* GGRealTimeAdapter.m in Sources */,
+				110137AC1D74CF7C005E10C4 /* GGItem.m in Sources */,
+				1101378E1D74CF75005E10C4 /* GGNetworkUtils.m in Sources */,
+				110137A81D74CF7C005E10C4 /* GGDriver.m in Sources */,
+				1101378C1D74CF75005E10C4 /* GGHTTPClientManager.m in Sources */,
+				110137B21D74CF7C005E10C4 /* GGRating.m in Sources */,
+				110137BA1D74CF7C005E10C4 /* GGSharedLocation.m in Sources */,
+				110137A41D74CF7C005E10C4 /* GGBringgUtils.m in Sources */,
+				110137AA1D74CF7C005E10C4 /* GGFindMe.m in Sources */,
+				110137F41D74CF83005E10C4 /* Reachability.m in Sources */,
+				110137BC1D74CF7C005E10C4 /* GGWaypoint.m in Sources */,
+				110137B01D74CF7C005E10C4 /* GGOrderBuilder.m in Sources */,
+				110137FA1D74CF88005E10C4 /* NSObject+Observer.m in Sources */,
+				110137AE1D74CF7C005E10C4 /* GGOrder.m in Sources */,
+				110137A61D74CF7C005E10C4 /* GGCustomer.m in Sources */,
+				110137911D74CF75005E10C4 /* GGTrackerManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		110137781D74CE7E005E10C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				110137821D74CE7E005E10C4 /* BringgTracking_OSXTests.m in Sources */,
+				110138031D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
+				110138051D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */,
+				110137FF1D74CF99005E10C4 /* BringgTrackingTests.m in Sources */,
+				110138001D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */,
+				110138011D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */,
+				110138041D74CF99005E10C4 /* GGTestUtils.m in Sources */,
+				110138021D74CF99005E10C4 /* GGNetworkUtilsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		110137471D74CE66005E10C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1101373A1D74CE66005E10C4 /* BringgTracking-iOS */;
+			targetProxy = 110137461D74CE66005E10C4 /* PBXContainerItemProxy */;
+		};
+		110137631D74CE73005E10C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 110137561D74CE72005E10C4 /* BringgTracking-TVOS */;
+			targetProxy = 110137621D74CE73005E10C4 /* PBXContainerItemProxy */;
+		};
+		1101377F1D74CE7E005E10C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 110137721D74CE7E005E10C4 /* BringgTracking-OSX */;
+			targetProxy = 1101377E1D74CE7E005E10C4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1101374D1D74CE66005E10C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C70E2493414B79BA05498A9B /* Pods-BringgTracking-iOS.debug.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1.9.7;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.9.7;
+				DYLIB_CURRENT_VERSION = 1.9.7;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "BringgTracking-iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bringg.BringgTracking;
+				PRODUCT_NAME = BringgTracking;
+				SKIP_INSTALL = NO;
+			};
+			name = Debug;
+		};
+		1101374E1D74CE66005E10C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A0921BDDFEB36E2C86CE31F1 /* Pods-BringgTracking-iOS.release.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1.9.7;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.9.7;
+				DYLIB_CURRENT_VERSION = 1.9.7;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "BringgTracking-iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bringg.BringgTracking;
+				PRODUCT_NAME = BringgTracking;
+				SKIP_INSTALL = NO;
+			};
+			name = Release;
+		};
+		110137501D74CE66005E10C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4D6D6B94CFACE9E7888AC818 /* Pods-BringgTracking-iOSTests.debug.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "BringgTracking-iOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		110137511D74CE66005E10C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4438BE5512019235F3F83E3A /* Pods-BringgTracking-iOSTests.release.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "BringgTracking-iOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		110137691D74CE73005E10C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 72B73A79B5B585F6086B83D8 /* Pods-BringgTracking-TVOS.debug.xcconfig */;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "BringgTracking-TVOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-TVOS";
+				PRODUCT_NAME = BringgTracking;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Debug;
+		};
+		1101376A1D74CE73005E10C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2FEB2E784DABF4A96F050A6 /* Pods-BringgTracking-TVOS.release.xcconfig */;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "BringgTracking-TVOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-TVOS";
+				PRODUCT_NAME = BringgTracking;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Release;
+		};
+		1101376C1D74CE73005E10C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F51F6D4B092D03AB5FA690D5 /* Pods-BringgTracking-TVOSTests.debug.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "BringgTracking-TVOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-TVOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Debug;
+		};
+		1101376D1D74CE73005E10C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6ADF013DBBB38F917D7A6485 /* Pods-BringgTracking-TVOSTests.release.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "BringgTracking-TVOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-TVOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Release;
+		};
+		110137851D74CE7E005E10C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9047C1488D8A996267031F98 /* Pods-BringgTracking-OSX.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "BringgTracking-OSX/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-OSX";
+				PRODUCT_NAME = BringgTracking;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+			};
+			name = Debug;
+		};
+		110137861D74CE7E005E10C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC6AECE3113541846F1574B1 /* Pods-BringgTracking-OSX.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "BringgTracking-OSX/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-OSX";
+				PRODUCT_NAME = BringgTracking;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+			};
+			name = Release;
+		};
+		110137881D74CE7E005E10C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 809DB351663E641899C8703A /* Pods-BringgTracking-OSXTests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "BringgTracking-OSXTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-OSXTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		110137891D74CE7E005E10C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 210C6BF2E8F959A6F8F15986 /* Pods-BringgTracking-OSXTests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "BringgTracking-OSXTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-OSXTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		115EDCF71D74BBDE00DB13F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		115EDCF81D74BBDE00DB13F4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1101374C1D74CE66005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1101374D1D74CE66005E10C4 /* Debug */,
+				1101374E1D74CE66005E10C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1101374F1D74CE66005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				110137501D74CE66005E10C4 /* Debug */,
+				110137511D74CE66005E10C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		110137681D74CE73005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-TVOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				110137691D74CE73005E10C4 /* Debug */,
+				1101376A1D74CE73005E10C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1101376B1D74CE73005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-TVOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1101376C1D74CE73005E10C4 /* Debug */,
+				1101376D1D74CE73005E10C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		110137841D74CE7E005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				110137851D74CE7E005E10C4 /* Debug */,
+				110137861D74CE7E005E10C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		110137871D74CE7E005E10C4 /* Build configuration list for PBXNativeTarget "BringgTracking-OSXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				110137881D74CE7E005E10C4 /* Debug */,
+				110137891D74CE7E005E10C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		115EDCDF1D74BBDE00DB13F4 /* Build configuration list for PBXProject "BringgTracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				115EDCF71D74BBDE00DB13F4 /* Debug */,
+				115EDCF81D74BBDE00DB13F4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 115EDCDC1D74BBDE00DB13F4 /* Project object */;
+}

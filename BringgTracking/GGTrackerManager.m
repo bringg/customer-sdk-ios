@@ -735,7 +735,6 @@
 
 
 -(void)getWatchedOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                       sharedUUID:(NSString * _Nullable)sharedUUID
             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     if (!self.httpManager) {
@@ -744,7 +743,7 @@
             completionHandler(NO, nil, nil, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
     }else{
-        [self.httpManager watchOrderByUUID:orderUUID withShareUUID:sharedUUID extras:nil withCompletionHandler:completionHandler];
+        [self.httpManager getOrderByOrderUUID:orderUUID extras:nil withCompletionHandler:completionHandler];
         
     }
     
@@ -899,6 +898,7 @@
             __weak __typeof(&*self)weakSelf = self;
              __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
             
+            //create a poll handler that uses full order data to periodicaly poll for changes (this is a backup incase socket io fails to work)
             GGOrderResponseHandler pollHandler =  ^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error){
                 
                 if (success) {
@@ -924,9 +924,7 @@
                     
                     // start polling if possible
                     // first get the full order data
-                    
                     [self getWatchedOrderByOrderUUID:uuid
-                                          sharedUUID:shareduuid
                                withCompletionHandler:pollHandler];
                     
                 }else{
@@ -969,7 +967,6 @@
                         }else if ([self canPollForOrders]){
                             
                             [self getWatchedOrderByOrderUUID:uuid
-                                                  sharedUUID:shareUUID
                                        withCompletionHandler:pollHandler];
                         }
                         

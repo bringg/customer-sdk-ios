@@ -45,7 +45,6 @@
  *  @param completionHandler handle response callback
  */
 -(void)getWatchedOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                       sharedUUID:(NSString * _Nullable)sharedUUID
             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 

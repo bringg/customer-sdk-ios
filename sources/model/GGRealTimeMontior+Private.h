@@ -11,7 +11,6 @@
 #import "GGTrackerManager.h"
 #import "Reachability.h"
 
-//@import SocketIO;
 #import "SocketIO-Swift.h"
 
 #define MAX_WITHOUT_REALTIME_SEC 240

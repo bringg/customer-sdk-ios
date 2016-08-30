@@ -15,3 +15,5 @@ cp -RL $BUILD/Release-iphoneos $BUILD/Release-universal
 lipo -create $BUILD/Release-iphoneos/$FRAMEWORK_PATH/$FRAMEWORK $BUILD/Release-iphonesimulator/$FRAMEWORK_PATH/$FRAMEWORK -output $BUILD/Release-universal/$FRAMEWORK_PATH/$FRAMEWORK
 
 tar -czv -C $BUILD/Release-universal -f $TARGET.framework.tar.gz $FRAMEWORK_PATH
+
+

@@ -34,6 +34,10 @@
     return jsonObject && jsonObject != [NSNull null] ? [jsonObject boolValue] : defaultValue;
 }
 
++(NSObject *_Nullable)objectFromJSON:(nullable id)jsonObject defaultTo:(NSObject * _Nullable)defaultValue{
+    return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
+}
+
 +(NSString *_Nullable)stringFromJSON:(nullable id)jsonObject defaultTo:(NSString * _Nullable)defaultValue{
     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
 }
@@ -42,6 +46,9 @@
     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
 }
 
++(NSArray *_Nullable)arrayFromJSON:(nullable id)jsonObject defaultTo:(NSArray *)defaultValue{
+     return jsonObject && jsonObject != [NSNull null] ? jsonObject : defaultValue;
+}
 
 
 +(BOOL)isValidLatitude:(double)latitude andLongitude:(double)longitude{

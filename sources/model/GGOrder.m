@@ -55,11 +55,11 @@ static NSDateFormatter *dateFormat;
         
         
         // get shared location model
-        sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
+        sharedLocation = [GGBringgUtils objectFromJSON:[data objectForKey:PARAM_SHARED_LOCATION] defaultTo:nil] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
         
         // check alternative shared location param
         if (!sharedLocation) {
-            sharedLocation = [data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE]] : nil;
+            sharedLocation = [GGBringgUtils objectFromJSON:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE] defaultTo:nil]  ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE]] : nil;
         }
         
         
@@ -68,8 +68,8 @@ static NSDateFormatter *dateFormat;
         self.waypoints = [NSMutableArray array];
         
         // get waypoints
-        NSArray *waypointsData = [data objectForKey:PARAM_WAYPOINTS];
-        if (waypointsData) {
+        NSArray *waypointsData = [GGBringgUtils arrayFromJSON:[data objectForKey:PARAM_WAYPOINTS] defaultTo:@[]];
+        if (waypointsData && [waypointsData isKindOfClass:[NSArray class]]) {
             
             __block NSMutableArray *wps = [NSMutableArray arrayWithCapacity:waypointsData.count];
             
@@ -82,8 +82,9 @@ static NSDateFormatter *dateFormat;
         }
         
         // get items
-        NSArray *itemsData = [data objectForKey:PARAM_TASK_INVENTORIES];
-        if (itemsData) {
+        NSArray *itemsData = [GGBringgUtils arrayFromJSON:[data objectForKey:PARAM_TASK_INVENTORIES] defaultTo:@[]];
+        
+        if (itemsData && [itemsData isKindOfClass:[NSArray class]]) {
             
             __block NSMutableArray *itms = [NSMutableArray arrayWithCapacity:itemsData.count];
             
@@ -190,7 +191,7 @@ static NSDateFormatter *dateFormat;
     [aCoder encodeBool:self.late forKey:GGOrderStoreKeyLate];
     
     // encode array of waypoints
-    [aCoder encodeInteger:waypoints.count forKey:GGOrderStoreKeyWaypoints];
+    [aCoder encodeInteger:waypoints ? [waypoints count] : 0 forKey:GGOrderStoreKeyWaypoints];
     
     [waypoints enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //
@@ -198,7 +199,7 @@ static NSDateFormatter *dateFormat;
     }];
     
     // encode array of items
-    [aCoder encodeInteger:items.count forKey:GGOrderStoreKeyItems];
+    [aCoder encodeInteger:items ? [items count] : 0 forKey:GGOrderStoreKeyItems];
     
     [items enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //

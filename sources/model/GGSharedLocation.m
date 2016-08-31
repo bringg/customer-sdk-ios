@@ -33,7 +33,12 @@
         // create driver only if we have a valid driver uuid
         NSString *driverUUID = [GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:nil];
         
+        
+        
         if (driverUUID) {
+            
+            NSString *imageURL = [GGBringgUtils objectFromJSON:[data objectForKey:PARAM_DRIVER_IMAGE_URL] defaultTo:nil] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] :  [GGBringgUtils objectFromJSON:[data objectForKey:PARAM_DRIVER_IMAGE_URL2] defaultTo:nil];
+            
             driver = [[GGDriver alloc] initWithID:[GGBringgUtils integerFromJSON:data[@"user_id"] defaultTo:0]
                                              uuid:driverUUID
                                              name:[GGBringgUtils stringFromJSON:data[PARAM_DRIVER_NAME] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_NAME] defaultTo:nil]]
@@ -44,7 +49,7 @@
                                     averageRating:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING_IN_SHARED_LOCATION] defaultTo:[GGBringgUtils doubleFromJSON:data[PARAM_DRIVER_AVG_RATING] defaultTo:-1]]
                                       ratingToken:[GGBringgUtils stringFromJSON:data[PARAM_RATING_TOKEN] defaultTo:nil]
                                         ratingURL:[GGBringgUtils stringFromJSON:data[PARAM_RATING_URL] defaultTo:nil]
-                                         imageURL:[data objectForKey:PARAM_DRIVER_IMAGE_URL] ? [data objectForKey:PARAM_DRIVER_IMAGE_URL] : [data objectForKey:PARAM_DRIVER_IMAGE_URL2]
+                                         imageURL:imageURL
                       ];
 
         }
@@ -53,7 +58,8 @@
         if ([data objectForKey:PARAM_FIND_ME_TOKEN] && [data objectForKey:PARAM_FIND_ME_URL]) {
             
             NSDictionary *findMeConfig = @{PARAM_FIND_ME_TOKEN:[data objectForKey:PARAM_FIND_ME_TOKEN],
-                                           PARAM_FIND_ME_URL:[data objectForKey:PARAM_FIND_ME_URL], PARAM_FIND_ME_ENABLED : @([GGBringgUtils boolFromJSON:[data objectForKey:PARAM_FIND_ME_ENABLED] defaultTo:NO])};
+                                           PARAM_FIND_ME_URL:[data objectForKey:PARAM_FIND_ME_URL],
+                                           PARAM_FIND_ME_ENABLED : @([GGBringgUtils boolFromJSON:[data objectForKey:PARAM_FIND_ME_ENABLED] defaultTo:NO])};
             
             self.findMe = [[GGFindMe alloc] initWithData:findMeConfig];
             

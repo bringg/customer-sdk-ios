@@ -44,6 +44,17 @@
  */
 +(BOOL)boolFromJSON:(nullable id)jsonObject defaultTo:(BOOL)defaultValue;
 
+
+/**
+ *  takes a json object and tries to parse it as  general purpose 'NSObject'. if it fails it should
+ *  return the default value set
+ *  @param jsonObject   the Json object to parse
+ *  @param defaultValue default value to return if parsing failes
+ *
+ *  @return the final result of the parsing
+ */
++(NSObject *_Nullable)objectFromJSON:(nullable id)jsonObject defaultTo:(NSObject * _Nullable)defaultValue;
+
 /**
  *  takes a json object and tries to parse it as 'NSString'. if it fails it should
  *  return the default value set
@@ -64,6 +75,18 @@
 *  @return the final result of the parsing
 */
 +(NSNumber *_Nullable)numberFromJSON:(nullable id)jsonObject defaultTo:(NSNumber *_Nullable)defaultValue;
+
+
+/**
+ *  takes a json object and tries to parse it as 'NSArray'. if it fails it should
+ *  return the default value set
+ *
+ *  @param jsonObject   the Json object to parse
+ *  @param defaultValue default value to return if parsing failes
+ *
+ *  @return the final result of the parsing
+ */
++ (NSArray *_Nullable)arrayFromJSON:(nullable id)jsonObject defaultTo:(NSArray *_Nullable)defaultValue;
 
 /**
  *  validates lat/lng coordinates. Latitude must be max/min +90 to -90

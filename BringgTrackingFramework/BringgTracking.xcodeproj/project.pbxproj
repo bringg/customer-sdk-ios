@@ -654,6 +654,7 @@
 				110137381D74CE66005E10C4 /* Headers */,
 				110137391D74CE66005E10C4 /* Resources */,
 				9F4E295D98B1548C45E9C3B8 /* [CP] Copy Pods Resources */,
+				793F39081D7C4AB10031C064 /* Create Universal Framework Script */,
 			);
 			buildRules = (
 			);
@@ -989,6 +990,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BringgTracking-OSX/Pods-BringgTracking-OSX-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		793F39081D7C4AB10031C064 /* Create Universal Framework Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Create Universal Framework Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/build-framework-script.sh\"";
 		};
 		9F4E295D98B1548C45E9C3B8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1482,7 +1497,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

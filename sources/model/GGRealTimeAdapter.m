@@ -8,8 +8,7 @@
 
 #import "GGRealTimeAdapter.h"
 
-
-#import "SocketIO-Swift.h"
+@import SocketIO;
 
 @implementation GGRealTimeAdapter
 

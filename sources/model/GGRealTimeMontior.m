@@ -20,7 +20,7 @@
 #import "NSObject+Observer.h"
 #import "GGRealTimeInternals.h"
 
-#import "SocketIO-Swift.h"
+@import SocketIO;
 
 //#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
 

@@ -16,18 +16,17 @@ FOUNDATION_EXPORT const unsigned char BringgTrackingFrameworkVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <BringgTracking/PublicHeader.h>
 
-
-#import <BringgTrackingFramework/BringgGlobals.h>
-#import <BringgTrackingFramework/GGBringgUtils.h>
-#import <BringgTrackingFramework/GGCustomer.h>
-#import <BringgTrackingFramework/GGDriver.h>
-#import <BringgTrackingFramework/GGFindMe.h>
-#import <BringgTrackingFramework/GGHTTPClientManager.h>
-#import <BringgTrackingFramework/GGItem.h>
-#import <BringgTrackingFramework/GGOrder.h>
-#import <BringgTrackingFramework/GGRating.h>
-#import <BringgTrackingFramework/GGRealTimeMontior.h>
-#import <BringgTrackingFramework/GGSharedLocation.h>
-#import <BringgTrackingFramework/GGTrackerManager.h>
-#import <BringgTrackingFramework/GGWaypoint.h>
+#import <BringgTracking/BringgGlobals.h>
+#import <BringgTracking/GGBringgUtils.h>
+#import <BringgTracking/GGCustomer.h>
+#import <BringgTracking/GGDriver.h>
+#import <BringgTracking/GGFindMe.h>
+#import <BringgTracking/GGHTTPClientManager.h>
+#import <BringgTracking/GGItem.h>
+#import <BringgTracking/GGOrder.h>
+#import <BringgTracking/GGRating.h>
+#import <BringgTracking/GGRealTimeMontior.h>
+#import <BringgTracking/GGSharedLocation.h>
+#import <BringgTracking/GGTrackerManager.h>
+#import <BringgTracking/GGWaypoint.h>
  

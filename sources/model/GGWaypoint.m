@@ -41,6 +41,8 @@ static NSDateFormatter *dateFormat;
             
             ETA = [GGBringgUtils stringFromJSON:data[PARAM_ETA] defaultTo:nil];
             
+            position = [GGBringgUtils integerFromJSON:data[PARAM_POSITION] defaultTo:0];
+            
             // get start/checkin/checkout dates
             NSString *startString   = [GGBringgUtils stringFromJSON:data[@"start_time"] defaultTo:nil];
             NSString *checkinString = [GGBringgUtils stringFromJSON:data[@"checkin_time"] defaultTo:nil];

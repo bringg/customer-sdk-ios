@@ -78,7 +78,19 @@ static NSDateFormatter *dateFormat;
                 [wps addObject:wp];
             }];
             
-            self.waypoints = wps;
+            NSArray *sortedWayPoints = [wps sortedArrayUsingComparator:^NSComparisonResult(GGWaypoint *wp1, GGWaypoint *wp2) {
+                if (wp1.position > wp2.position) {
+                    return NSOrderedDescending;
+                }
+                else if (wp1.position < wp2.position) {
+                    return NSOrderedAscending;
+                }
+                else {
+                    return NSOrderedSame;
+                }
+            }];
+            
+            self.waypoints = [NSMutableArray arrayWithArray:sortedWayPoints];
         }
         
         // get items

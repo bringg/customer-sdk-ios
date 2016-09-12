@@ -55,6 +55,7 @@
 #define PARAM_RATING_URL @"rating_url"
 #define PARAM_ACCESS_TOKEN @"access_token"
 #define PARAM_ETA @"eta"
+#define PARAM_POSITION @"position"
 #define PARAM_RATING @"rating"
 #define PARAM_RATING_TOKEN @"rating_token"
 #define PARAM_DRIVER_NAME @"employee_name"

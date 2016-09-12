@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0ED6CEFC7682E8BAF13728D6 /* Pods_BringgTracking_TVOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB045B949099575EBFE9417E /* Pods_BringgTracking_TVOS.framework */; };
 		1101373E1D74CE66005E10C4 /* BringgTracking.h in Headers */ = {isa = PBXBuildFile; fileRef = 1101373D1D74CE66005E10C4 /* BringgTracking.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		110137451D74CE66005E10C4 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1101373B1D74CE66005E10C4 /* BringgTracking.framework */; };
 		1101374A1D74CE66005E10C4 /* BringgTracking_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 110137491D74CE66005E10C4 /* BringgTracking_iOSTests.m */; };
 		1101375A1D74CE72005E10C4 /* BringgTracking-TVOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 110137591D74CE72005E10C4 /* BringgTracking-TVOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		110137611D74CE73005E10C4 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110137571D74CE72005E10C4 /* BringgTracking.framework */; };
@@ -34,7 +33,6 @@
 		110137981D74CF76005E10C4 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */; };
 		110137991D74CF76005E10C4 /* GGTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */; };
 		1101379A1D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */; };
-		1101379B1D74CF76005E10C4 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1101379C1D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */; };
 		1101379D1D74CF76005E10C4 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */; };
 		1101379E1D74CF76005E10C4 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */; };
@@ -163,6 +161,11 @@
 		110138191D74CFA1005E10C4 /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */; };
 		61DE788337BC26A523C02270 /* Pods_BringgTracking_OSXTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */; };
 		6391E2210B56DEC97DA9E352 /* Pods_BringgTracking_TVOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B1D9299A840C6762AFA50F /* Pods_BringgTracking_TVOSTests.framework */; };
+		791EBE701D86D04100A097A0 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1101373B1D74CE66005E10C4 /* BringgTracking.framework */; };
+		791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; };
+		796845FE1D86D68B0063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
+		796845FF1D86D6940063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
+		796846001D86D6950063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
 		BC2A8A735F34D514DF13E0B3 /* Pods_BringgTracking_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8665E6EF39161F825BE58B /* Pods_BringgTracking_iOSTests.framework */; };
 		E8E6411EAFD7F5A178118409 /* Pods_BringgTracking_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DEE02458BF7AE24D183A18 /* Pods_BringgTracking_OSX.framework */; };
 		F40454C9CDF918C11FE25B06 /* Pods_BringgTracking_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B5F2AAA658440FB96EC5B3D /* Pods_BringgTracking_iOS.framework */; };
@@ -266,6 +269,7 @@
 		4D6D6B94CFACE9E7888AC818 /* Pods-BringgTracking-iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-iOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-iOSTests/Pods-BringgTracking-iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6ADF013DBBB38F917D7A6485 /* Pods-BringgTracking-TVOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-TVOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-TVOSTests/Pods-BringgTracking-TVOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		72B73A79B5B585F6086B83D8 /* Pods-BringgTracking-TVOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-TVOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-TVOS/Pods-BringgTracking-TVOS.debug.xcconfig"; sourceTree = "<group>"; };
+		796845FC1D86D68B0063A295 /* GGOrderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGOrderTests.m; sourceTree = "<group>"; };
 		7B5F2AAA658440FB96EC5B3D /* Pods_BringgTracking_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		809DB351663E641899C8703A /* Pods-BringgTracking-OSXTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-OSXTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-OSXTests/Pods-BringgTracking-OSXTests.debug.xcconfig"; sourceTree = "<group>"; };
 		80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_OSXTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -293,7 +297,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				110137451D74CE66005E10C4 /* BringgTracking.framework in Frameworks */,
+				791EBE701D86D04100A097A0 /* BringgTracking.framework in Frameworks */,
 				BC2A8A735F34D514DF13E0B3 /* Pods_BringgTracking_iOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -509,6 +513,7 @@
 				115EDE0D1D74C1E800DB13F4 /* GGTestUtils.h */,
 				115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */,
 				115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */,
+				796845FC1D86D68B0063A295 /* GGOrderTests.m */,
 				115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */,
 				115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */,
 			);
@@ -559,7 +564,6 @@
 				110137DB1D74CF7D005E10C4 /* GGCustomer.h in Headers */,
 				110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */,
 				110137DD1D74CF7D005E10C4 /* GGDriver.h in Headers */,
-				1101379B1D74CF76005E10C4 /* GGHTTPClientManager.h in Headers */,
 				110137F11D74CF7D005E10C4 /* GGWaypoint.h in Headers */,
 				110137DF1D74CF7D005E10C4 /* GGFindMe.h in Headers */,
 				110137D91D74CF7D005E10C4 /* GGBringgUtils.h in Headers */,
@@ -573,6 +577,7 @@
 				110137E51D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */,
 				1101379A1D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */,
 				110137EB1D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */,
+				791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */,
 				1101379D1D74CF76005E10C4 /* GGNetworkUtils.h in Headers */,
 				110137E91D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */,
 				110137FD1D74CF89005E10C4 /* NSObject+Observer.h in Headers */,
@@ -1127,6 +1132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1101374A1D74CE66005E10C4 /* BringgTracking_iOSTests.m in Sources */,
+				796845FE1D86D68B0063A295 /* GGOrderTests.m in Sources */,
 				110138111D74CF9A005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
 				110138131D74CF9A005E10C4 /* GGTrackerManagerTests.m in Sources */,
 				1101380D1D74CF9A005E10C4 /* BringgTrackingTests.m in Sources */,
@@ -1166,6 +1172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				110137661D74CE73005E10C4 /* BringgTracking_TVOSTests.m in Sources */,
+				796845FF1D86D6940063A295 /* GGOrderTests.m in Sources */,
 				1101380A1D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
 				1101380C1D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */,
 				110138061D74CF99005E10C4 /* BringgTrackingTests.m in Sources */,
@@ -1205,6 +1212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				110137821D74CE7E005E10C4 /* BringgTracking_OSXTests.m in Sources */,
+				796846001D86D6950063A295 /* GGOrderTests.m in Sources */,
 				110138031D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
 				110138051D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */,
 				110137FF1D74CF99005E10C4 /* BringgTrackingTests.m in Sources */,

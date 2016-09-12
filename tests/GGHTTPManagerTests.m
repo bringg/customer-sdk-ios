@@ -15,9 +15,7 @@
 
 #import "GGTestUtils.h"
 
-
 #import "GGHTTPClientManager_Private.h"
-#import "GGHTTPClientManager.h"
 
 #import "GGOrder.h"
 #import "GGDriver.h"
@@ -26,12 +24,12 @@
 #import "GGCustomer.h"
 #import "GGTrackerManager.h"
 
-@class GGHTTPClientManageDelegate;
+@class GGHTTPClientManagerTestClient;
 
 @interface GGHTTPManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGHTTPClientManager *httpManager;
-@property (nonatomic, strong) GGHTTPClientManageDelegate *httpManagerDelegate;
+@property (nonatomic, strong) GGHTTPClientManagerTestClient *httpManagerDelegate;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
 
@@ -40,11 +38,11 @@
 @end
 
 
-@interface GGHTTPClientManageDelegate : NSObject <RealTimeDelegate>
+@interface GGHTTPClientManagerTestClient : NSObject <GGHTTPClientConnectionDelegate>
     
 @end
     
-@implementation GGHTTPClientManageDelegate
+@implementation GGHTTPClientManagerTestClient
 
     
 - (NSString *)hostDomainForClientManager:(GGHTTPClientManager *)clientManager{
@@ -64,8 +62,8 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-    self.httpManager = [GGHTTPClientManagerTestClient managerWithDeveloperToken:nil];
-    self.httpManagerDelegate = [[GGHTTPClientManageDelegate alloc] init];
+    self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:nil];
+    self.httpManagerDelegate = [[GGHTTPClientManagerTestClient alloc] init];
     
     [self.httpManager setDelegate:self.httpManagerDelegate];
     [self.httpManager useSecuredConnection:NO];

@@ -161,7 +161,7 @@
     
     NSArray *emitItems = params ? @[params] : @[];
     
-    [socketIO emitWithAck:eventName withItems:emitItems](timeoutCap, ^(NSArray * __nullable data) {
+    [socketIO emitWithAck:eventName with:emitItems](timeoutCap, ^(NSArray * __nullable data) {
         
         // data validation
         id response = [data firstObject];

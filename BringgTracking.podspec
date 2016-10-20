@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name         = "BringgTracking"
-  s.version      = "1.9.9"
+  s.version      = "1.9.9.1"
   s.summary      = "BringgTracking SDK"
   s.homepage     = "http://www.bringg.com"
   s.author       = "Bringg Ltd."
-  s.ios.deployment_target = "8.0"
+  s.ios.deployment_target = "10.0"
   # s.osx.deployment_target = "10.7"
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"

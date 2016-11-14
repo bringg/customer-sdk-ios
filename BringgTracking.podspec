@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "BringgTracking"
-  s.version      = "1.9.93"
+  s.version      = "1.9.94"
   s.summary      = "BringgTracking SDK"
   s.homepage     = "http://www.bringg.com"
   s.author       = "Bringg Ltd."
@@ -11,6 +11,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/bringg/customer-sdk-ios.git", :tag => "#{s.version}" }
   s.source_files  = "sources", "sources/**/*.{h,m}"
   s.requires_arc = true
-  s.dependency "Socket.IO-Client-Swift", '~> 8.0.2'
+  s.dependency "Socket.IO-Client-Swift", '~> 8.1.2'
   s.xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
 end

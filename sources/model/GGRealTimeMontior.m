@@ -229,6 +229,38 @@
     
 }
 
+-(id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId{
+   
+    if (!waypointId) {
+        return nil;
+    }
+    
+    __block id<WaypointDelegate> retVal;
+ 
+    [self.waypointDelegates.allKeys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+
+        NSString *waypointCompoundKey = (NSString *)obj;
+        NSString *orderUUID;
+        NSString *waypointIdStr;
+        
+        [GGBringgUtils parseWaypointCompoundKey:waypointCompoundKey toOrderUUID:&orderUUID andWaypointId:&waypointIdStr];
+        
+        if (waypointIdStr != nil) {
+            NSNumber *wpid = [NSNumber numberWithInteger:waypointIdStr.integerValue];
+            
+            //check there is still a delegate listening
+            if ([wpid isEqualToNumber:waypointId]){
+                retVal = [self.waypointDelegates objectForKey:waypointCompoundKey];
+                *stop = YES;
+            }
+            
+        }
+        
+        
+    }];
+    
+    return retVal;
+}
 
 #pragma mark - SocketIO actions
 
@@ -638,7 +670,7 @@
         NSString *eta = [etaUpdate objectForKey:@"eta"];
         NSDate *etaToDate = [self dateFromString:eta];
         
-        id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        id existingDelegate = [self delegateForWaypointID:wpid];
         
         #ifdef DEBUG
         NSLog(@"delegate: %@ should udpate waypoint %@ ETA to: %@", existingDelegate, wpid, eta );
@@ -650,7 +682,7 @@
     } else if ([eventName isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
         NSDictionary *waypointArrived = [eventDataItems firstObject];
         NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
-        id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        id existingDelegate = [self delegateForWaypointID:wpid];
         
         #ifdef DEBUG
         NSLog(@"delegate: %@ should udpate waypoint %@ arrived", existingDelegate, wpid );
@@ -663,7 +695,7 @@
     } else if ([eventName isEqualToString:EVENT_WAY_POINT_DONE]) {
         NSDictionary *waypointDone = [eventDataItems firstObject];
         NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
-        id existingDelegate = [self.waypointDelegates objectForKey:wpid];
+        id existingDelegate = [self delegateForWaypointID:wpid];
         #ifdef DEBUG
          NSLog(@"delegate: %@ should udpate waypoint %@ done", existingDelegate, wpid );
 #endif

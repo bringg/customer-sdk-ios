@@ -778,7 +778,7 @@
 		115EDCDC1D74BBDE00DB13F4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Bringg;
 				TargetAttributes = {
 					1101373A1D74CE66005E10C4 = {
@@ -1249,10 +1249,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C70E2493414B79BA05498A9B /* Pods-BringgTracking-iOS.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 1.9.93;
+				CURRENT_PROJECT_VERSION = 1.9.94;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.9.93;
 				DYLIB_CURRENT_VERSION = 1.9.93;
@@ -1274,10 +1275,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A0921BDDFEB36E2C86CE31F1 /* Pods-BringgTracking-iOS.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 1.9.93;
+				CURRENT_PROJECT_VERSION = 1.9.94;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.9.93;
 				DYLIB_CURRENT_VERSION = 1.9.93;
@@ -1299,6 +1301,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4D6D6B94CFACE9E7888AC818 /* Pods-BringgTracking-iOSTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = "BringgTracking-iOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-iOSTests";
@@ -1311,6 +1314,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4438BE5512019235F3F83E3A /* Pods-BringgTracking-iOSTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = "BringgTracking-iOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-iOSTests";
@@ -1365,6 +1369,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F51F6D4B092D03AB5FA690D5 /* Pods-BringgTracking-TVOSTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = "BringgTracking-TVOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-TVOSTests";
@@ -1378,6 +1383,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6ADF013DBBB38F917D7A6485 /* Pods-BringgTracking-TVOSTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = "BringgTracking-TVOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bringg.BringgTracking-TVOSTests";
@@ -1435,6 +1441,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 809DB351663E641899C8703A /* Pods-BringgTracking-OSXTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "BringgTracking-OSXTests/Info.plist";
@@ -1450,6 +1457,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 210C6BF2E8F959A6F8F15986 /* Pods-BringgTracking-OSXTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "BringgTracking-OSXTests/Info.plist";

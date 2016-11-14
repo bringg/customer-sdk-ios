@@ -11,7 +11,7 @@ def pods()
 end
 
 def testpods()
-    pod 'OCMockito', '~>1.4'
+    pod 'OCMockito', '~> 4.0'
     pod 'OCMock', '~> 3.1'
     pod 'DCKeyValueObjectMapping'
     pod 'Socket.IO-Client-Swift'

@@ -140,4 +140,16 @@
 
 }
 
+- (void)testWatchingWaypoint{
+    // test on accept data
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.acceptJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertTrue(updatedOrder.waypoints.count > 0)
+}
+
 @end

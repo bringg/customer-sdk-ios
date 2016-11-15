@@ -24,6 +24,35 @@
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
 
+@interface WaypointDelegateTestClass : NSObject<WaypointDelegate>
+@property (nonatomic, strong) NSNumber *lastUpdatedWaypointId;
+@property (nonatomic, strong) NSDate *lastUpdatedEta;
+
+
+
+@end
+
+@implementation WaypointDelegateTestClass
+
+-(void)watchWaypointFailedForWaypointId:(NSNumber *)waypointId error:(NSError *)error{
+    
+}
+
+-(void)waypointDidArrivedWaypointId:(NSNumber *)waypointId{
+     self.lastUpdatedWaypointId = waypointId;
+}
+
+-(void)waypointDidFinishedWaypointId:(NSNumber *)waypointId{
+     self.lastUpdatedWaypointId = waypointId;
+}
+
+-(void)waypointDidUpdatedWaypointId:(NSNumber *)waypointId eta:(NSDate *)eta{
+    self.lastUpdatedEta = eta;
+    self.lastUpdatedWaypointId = waypointId;
+}
+
+@end
+
 
 @interface GGRealTimeMonitorTests : XCTestCase
 
@@ -140,7 +169,7 @@
 
 }
 
-- (void)testWatchingWaypoint{
+- (void)testRetrievingWatchedWaypoint{
     // test on accept data
     NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.acceptJson];
     
@@ -150,6 +179,61 @@
     [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
     
     XCTAssertTrue(updatedOrder.waypoints.count > 0);
+    
+    GGWaypoint *anyWP = [updatedOrder.waypoints objectAtIndex:0];
+    
+    // create the compound key
+    __block NSString *compoundKey = [[updatedOrder.uuid stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:@(anyWP.waypointId).stringValue];
+    
+    id delegate = [[WaypointDelegateTestClass alloc] init];
+    
+    [self.liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
+    
+    id retVal = [self.liveMonitor delegateForWaypointID:@(anyWP.waypointId)];
+    
+    // test retval exists and is the same as the initial delegate we set
+    XCTAssertNotNil(retVal);
+    XCTAssertTrue([retVal isEqual:delegate]);
+
+}
+
+- (void)testHandlingETAEvent{
+    // test on start data
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.startJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertTrue(updatedOrder.waypoints.count > 0);
+    
+    GGWaypoint *anyWP = [updatedOrder.waypoints objectAtIndex:0];
+    
+    // create the compound key
+    __block NSString *compoundKey = [[updatedOrder.uuid stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:@(anyWP.waypointId).stringValue];
+    
+    WaypointDelegateTestClass *delegate = [[WaypointDelegateTestClass alloc] init];
+    
+    XCTAssertNil(delegate.lastUpdatedWaypointId);
+    XCTAssertNil(delegate.lastUpdatedEta);
+    
+    [self.liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
+    
+    NSDate *now = [NSDate date];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+    NSString *eta = [dateFormat stringFromDate:now];
+    
+    NSDictionary *waypointETAUpdateData = @{@"way_point_id":@(anyWP.waypointId), @"eta":eta};
+    
+    [self.liveMonitor handleSocketIODidReceiveEvent:EVENT_WAY_POINT_ETA_UPDATE withData:waypointETAUpdateData];
+    
+    XCTAssertNotNil(delegate.lastUpdatedWaypointId);
+    XCTAssertTrue(delegate.lastUpdatedWaypointId.integerValue == anyWP.waypointId);
+    XCTAssertNotNil(delegate.lastUpdatedEta);
+    XCTAssertTrue([[GGBringgUtils dateFromString:eta] isEqualToDate:delegate.lastUpdatedEta]);
 }
 
 @end

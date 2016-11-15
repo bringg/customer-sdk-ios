@@ -25,15 +25,7 @@
 //#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
 
 
-#define EVENT_ORDER_UPDATE @"order update"
-#define EVENT_ORDER_DONE @"order done"
 
-#define EVENT_DRIVER_LOCATION_CHANGED @"location update"
-#define EVENT_DRIVER_ACTIVITY_CHANGED @"activity change"
-
-#define EVENT_WAY_POINT_ARRIVED @"way point arrived"
-#define EVENT_WAY_POINT_DONE @"way point done"
-#define EVENT_WAY_POINT_ETA_UPDATE @"way point eta updated"
 
 
 
@@ -209,25 +201,6 @@
 
 #pragma mark - Helper
 
-- (NSDate *)dateFromString:(NSString *)string {
-    NSDate *date;
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
-    date = [dateFormat dateFromString:string];
-    if (!date) {
-        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
-        date = [dateFormat dateFromString:string];
-        
-    }
-    if (!date) {
-        [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-        date = [dateFormat dateFromString:string];
-        
-    }
-    return date;
-    
-}
 
 -(id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId{
    
@@ -395,6 +368,229 @@
     
 }
 
+- (BOOL)handleSocketIODidReceiveEvent:(NSString *)eventName withData:(NSDictionary *)eventData{
+    
+    if (!eventName || !eventData) {
+        return NO;
+    }
+    
+    // update last date
+    self.lastEventDate = [NSDate date];
+    
+    if ([eventName isEqualToString:EVENT_ORDER_UPDATE]) {
+        
+        NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
+        NSNumber *orderStatus = [eventData objectForKey:PARAM_STATUS];
+        
+        //GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
+        
+        GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
+        GGDriver *updatedDriver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
+        
+        
+        
+        
+        
+        // updated existing model and retrieve the updated file
+        GGOrder *order = [self addAndUpdateOrder:updatedOrder];
+        GGDriver *driver = [self addAndUpdateDriver:updatedDriver];
+        
+        
+        id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
+#ifdef DEBUG
+        NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus );
+#endif
+        if (existingDelegate) {
+            switch ([orderStatus integerValue]) {
+                case OrderStatusAssigned:
+                    [existingDelegate orderDidAssignWithOrder:order withDriver:driver];
+                    break;
+                case OrderStatusAccepted:
+                    [existingDelegate orderDidAcceptWithOrder:order withDriver:driver];
+                    break;
+                case OrderStatusOnTheWay:
+                    [existingDelegate orderDidStartWithOrder:order withDriver:driver];
+                    break;
+                case OrderStatusCheckedIn:
+                    [existingDelegate orderDidArrive:order withDriver:driver];
+                    break;
+                case OrderStatusDone:
+                    [existingDelegate orderDidFinish:order withDriver:driver];
+                    break;
+                case OrderStatusCancelled:
+                case OrderStatusRejected:
+                    [existingDelegate orderDidCancel:order withDriver:driver];
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+        
+        return YES;
+        
+    } else if ([eventName isEqualToString:EVENT_ORDER_DONE]) {
+        
+        NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
+        
+        GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
+        
+        if (!updatedOrder){
+            updatedOrder = [self.activeOrders objectForKey:orderUUID];
+        }
+        
+        [updatedOrder updateOrderStatus:OrderStatusDone];
+        
+        GGDriver *updatedDriver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
+        
+        
+        // updated existing model
+        [self addAndUpdateOrder:updatedOrder];
+        [self addAndUpdateDriver:updatedDriver];
+        
+        
+        // get most updated model
+        GGOrder *order = [self.activeOrders objectForKey:orderUUID];
+        GGDriver *driver = [self.activeDrivers objectForKey:updatedDriver.uuid];
+        
+        
+        id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
+#ifdef DEBUG
+        NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid );
+#endif
+        if (existingDelegate) {
+            [existingDelegate orderDidFinish:order  withDriver:driver];
+            
+        }
+        
+         return YES;
+        
+    } else if ([eventName isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
+        NSDictionary *locationUpdate = eventData;
+        NSString *driverUUID = [locationUpdate objectForKey:PARAM_DRIVER_UUID];
+        NSString *shareUUID = [locationUpdate objectForKey:PARAM_SHARE_UUID];
+        NSNumber *lat = [locationUpdate objectForKey:@"lat"];
+        NSNumber *lng = [locationUpdate objectForKey:@"lng"];
+        
+        // get driver from data
+        GGDriver *driver = [self.activeDrivers objectForKey:driverUUID];
+        
+        // if no data get it from the current active drivers
+        if (!driver) {
+            // try to get driver from shared uuid
+            // to do this we go over all orders - check which has the specified shared uuid & shared location object and then get the driver related
+            NSArray *sharedLocations = [self.activeOrders valueForKeyPath:@"sharedLocation"];
+            if (sharedLocations.count > 0) {
+                GGSharedLocation *sl = [[sharedLocations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locationUUID == %@", shareUUID]] firstObject];
+                if (sl && sl.driver) {
+                    driver = sl.driver;
+                }else{
+                    driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
+                }
+            }else{
+                driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
+            }
+            
+            
+        }
+        
+        if (driver) {
+            [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
+            
+            driver = [self addAndUpdateDriver:driver];
+            
+            // search for the delegates appropriate and notify
+            NSArray *monitoredDrivers = self.driverDelegates.allKeys;
+            
+            [monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *driverCompoundKey = (NSString *)obj;
+                
+                
+                NSString *driverUUID;
+                NSString *sharedUUID;
+                
+                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+                
+                //check there is still a delegate listening
+                id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:driverCompoundKey];
+                
+                
+                
+                if ([driverUUID isEqualToString:driver.uuid]) {
+                    
+#ifdef DEBUG
+                    NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, driver.uuid );
+#endif
+                    if (driverDelegate) {
+                        [driverDelegate driverLocationDidChangeWithDriver:driver];
+                    }
+                    
+                }
+            }];
+            
+        }
+        
+         return YES;
+        
+    } else if ([eventName isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
+        //activity change
+#ifdef DEBUG
+        NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:@[eventData]]);
+#endif
+        
+        return YES;
+        
+    } else if ([eventName isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
+        NSDictionary *etaUpdate = eventData;
+        NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
+        NSString *eta = [etaUpdate objectForKey:@"eta"];
+        NSDate *etaToDate = [GGBringgUtils dateFromString:eta];
+        
+        id existingDelegate = [self delegateForWaypointID:wpid];
+        
+#ifdef DEBUG
+        NSLog(@"delegate: %@ should udpate waypoint %@ ETA to: %@", existingDelegate, wpid, eta );
+#endif
+        if (existingDelegate) {
+            [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
+            
+        }
+        
+         return YES;
+        
+    } else if ([eventName isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
+        NSDictionary *waypointArrived = eventData;
+        NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
+        id existingDelegate = [self delegateForWaypointID:wpid];
+        
+#ifdef DEBUG
+        NSLog(@"delegate: %@ should udpate waypoint %@ arrived", existingDelegate, wpid );
+#endif
+        if (existingDelegate) {
+            [existingDelegate waypointDidArrivedWaypointId:wpid];
+            
+        }
+        
+         return YES;
+        
+    } else if ([eventName isEqualToString:EVENT_WAY_POINT_DONE]) {
+        NSDictionary *waypointDone = eventData;
+        NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
+        id existingDelegate = [self delegateForWaypointID:wpid];
+#ifdef DEBUG
+        NSLog(@"delegate: %@ should udpate waypoint %@ done", existingDelegate, wpid );
+#endif
+        if (existingDelegate) {
+            [existingDelegate waypointDidArrivedWaypointId:wpid];
+            
+        }
+        
+         return YES;
+    }
+    
+    return NO;
+}
+
 #pragma mark - Watch Actions
 
 - (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(SocketResponseBlock)completionHandler {
@@ -504,206 +700,9 @@
     NSLog(@"Received EVENT packet [%@]", eventName);
 #endif
     
+    [self handleSocketIODidReceiveEvent:eventName withData:eventDataItems.firstObject];
     
-    // update last date
-    self.lastEventDate = [NSDate date];
-    
-    if ([eventName isEqualToString:EVENT_ORDER_UPDATE]) {
-        
-        NSDictionary *eventData = [eventDataItems firstObject];
-        
-        NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
-        NSNumber *orderStatus = [eventData objectForKey:PARAM_STATUS];
-        
-        //GGOrder *order = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:(OrderStatus)orderStatus.integerValue];
-        
-        GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
-        GGDriver *updatedDriver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
-        
-        
-        
-        
-    
-        // updated existing model and retrieve the updated file
-        GGOrder *order = [self addAndUpdateOrder:updatedOrder];
-        GGDriver *driver = [self addAndUpdateDriver:updatedDriver];
-        
- 
-        id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
-#ifdef DEBUG
-        NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus );
-#endif
-        if (existingDelegate) {
-            switch ([orderStatus integerValue]) {
-                case OrderStatusAssigned:
-                    [existingDelegate orderDidAssignWithOrder:order withDriver:driver];
-                    break;
-                case OrderStatusAccepted:
-                    [existingDelegate orderDidAcceptWithOrder:order withDriver:driver];
-                    break;
-                case OrderStatusOnTheWay:
-                    [existingDelegate orderDidStartWithOrder:order withDriver:driver];
-                    break;
-                case OrderStatusCheckedIn:
-                    [existingDelegate orderDidArrive:order withDriver:driver];
-                    break;
-                case OrderStatusDone:
-                    [existingDelegate orderDidFinish:order withDriver:driver];
-                    break;
-                case OrderStatusCancelled:
-                case OrderStatusRejected:
-                    [existingDelegate orderDidCancel:order withDriver:driver];
-                    break;
-                default:
-                    break;
-            }
-            
-        }
-    } else if ([eventName isEqualToString:EVENT_ORDER_DONE]) {
-        NSDictionary *eventData = [eventDataItems firstObject];
-
-        NSString *orderUUID = [eventData objectForKey:PARAM_UUID];
-        
-        GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
-        
-        if (!updatedOrder){
-            updatedOrder = [self.activeOrders objectForKey:orderUUID];
-        }
-        
-        [updatedOrder updateOrderStatus:OrderStatusDone];
-        
-        GGDriver *updatedDriver = [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]];
-        
-
-        // updated existing model
-        [self addAndUpdateOrder:updatedOrder];
-        [self addAndUpdateDriver:updatedDriver];
-        
-        
-        // get most updated model
-        GGOrder *order = [self.activeOrders objectForKey:orderUUID];
-        GGDriver *driver = [self.activeDrivers objectForKey:updatedDriver.uuid];
-
-        
-        id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
-#ifdef DEBUG
-        NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid );
-#endif
-        if (existingDelegate) {
-            [existingDelegate orderDidFinish:order  withDriver:driver];
-            
-        }
-    } else if ([eventName isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
-        NSDictionary *locationUpdate = [eventDataItems firstObject];
-        NSString *driverUUID = [locationUpdate objectForKey:PARAM_DRIVER_UUID];
-        NSString *shareUUID = [locationUpdate objectForKey:PARAM_SHARE_UUID];
-        NSNumber *lat = [locationUpdate objectForKey:@"lat"];
-        NSNumber *lng = [locationUpdate objectForKey:@"lng"];
-        
-        // get driver from data
-        GGDriver *driver = [self.activeDrivers objectForKey:driverUUID];
-        
-        // if no data get it from the current active drivers
-        if (!driver) {
-            // try to get driver from shared uuid
-            // to do this we go over all orders - check which has the specified shared uuid & shared location object and then get the driver related
-            NSArray *sharedLocations = [self.activeOrders valueForKeyPath:@"sharedLocation"];
-            if (sharedLocations.count > 0) {
-                GGSharedLocation *sl = [[sharedLocations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locationUUID == %@", shareUUID]] firstObject];
-                if (sl && sl.driver) {
-                    driver = sl.driver;
-                }else{
-                    driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
-                }
-            }else{
-                driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
-            }
-            
-            
-        }
-        
-        if (driver) {
-            [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
-            
-            driver = [self addAndUpdateDriver:driver];
-            
-            // search for the delegates appropriate and notify
-            NSArray *monitoredDrivers = self.driverDelegates.allKeys;
-            
-            [monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSString *driverCompoundKey = (NSString *)obj;
-                
-                
-                NSString *driverUUID;
-                NSString *sharedUUID;
-                
-                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
-                
-                //check there is still a delegate listening
-                id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:driverCompoundKey];
-                
-                
-                
-                if ([driverUUID isEqualToString:driver.uuid]) {
-                    
-#ifdef DEBUG
-                    NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, driver.uuid );
-#endif
-                    if (driverDelegate) {
-                        [driverDelegate driverLocationDidChangeWithDriver:driver];
-                    }
-                    
-                }
-            }];
- 
-        }
-        
-        
-    } else if ([eventName isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
-        //activity change
-#ifdef DEBUG
-        NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:eventDataItems]);
-#endif
-    } else if ([eventName isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
-        NSDictionary *etaUpdate = [eventDataItems firstObject];
-        NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
-        NSString *eta = [etaUpdate objectForKey:@"eta"];
-        NSDate *etaToDate = [self dateFromString:eta];
-        
-        id existingDelegate = [self delegateForWaypointID:wpid];
-        
-        #ifdef DEBUG
-        NSLog(@"delegate: %@ should udpate waypoint %@ ETA to: %@", existingDelegate, wpid, eta );
-#endif
-        if (existingDelegate) {
-            [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
-            
-        }
-    } else if ([eventName isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
-        NSDictionary *waypointArrived = [eventDataItems firstObject];
-        NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
-        id existingDelegate = [self delegateForWaypointID:wpid];
-        
-        #ifdef DEBUG
-        NSLog(@"delegate: %@ should udpate waypoint %@ arrived", existingDelegate, wpid );
-#endif
-        if (existingDelegate) {
-            [existingDelegate waypointDidArrivedWaypointId:wpid];
-            
-        }
-        
-    } else if ([eventName isEqualToString:EVENT_WAY_POINT_DONE]) {
-        NSDictionary *waypointDone = [eventDataItems firstObject];
-        NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
-        id existingDelegate = [self delegateForWaypointID:wpid];
-        #ifdef DEBUG
-         NSLog(@"delegate: %@ should udpate waypoint %@ done", existingDelegate, wpid );
-#endif
-        if (existingDelegate) {
-            [existingDelegate waypointDidArrivedWaypointId:wpid];
-            
-        }
-    }
+   
 }
 
 - (void)socketIO:(SocketIOClient *)socketIO onError:(NSError *)error {

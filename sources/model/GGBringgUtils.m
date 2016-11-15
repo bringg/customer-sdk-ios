@@ -264,5 +264,24 @@
     
 }
 
++ (NSDate *)dateFromString:(NSString *)string {
+    NSDate *date;
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+    date = [dateFormat dateFromString:string];
+    if (!date) {
+        [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
+        date = [dateFormat dateFromString:string];
+        
+    }
+    if (!date) {
+        [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+        date = [dateFormat dateFromString:string];
+        
+    }
+    return date;
+    
+}
 
 @end

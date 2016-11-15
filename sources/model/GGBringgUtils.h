@@ -196,4 +196,13 @@
 + (void)removeSchemeFromURLString:(NSString *__autoreleasing _Nonnull*_Nonnull)urlString;
 
 
+/**
+ *  takes a date string and converts it back to a date object
+ *
+ *  @param string   the date string to covert
+ *
+ *  @return Date if valid
+ */
++ (nullable NSDate *)dateFromString:(nonnull NSString *)string;
+
 @end

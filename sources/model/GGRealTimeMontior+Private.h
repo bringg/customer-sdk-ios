@@ -15,6 +15,16 @@
 
 #define MAX_WITHOUT_REALTIME_SEC 240
 
+#define EVENT_ORDER_UPDATE @"order update"
+#define EVENT_ORDER_DONE @"order done"
+
+#define EVENT_DRIVER_LOCATION_CHANGED @"location update"
+#define EVENT_DRIVER_ACTIVITY_CHANGED @"activity change"
+
+#define EVENT_WAY_POINT_ARRIVED @"way point arrived"
+#define EVENT_WAY_POINT_DONE @"way point done"
+#define EVENT_WAY_POINT_ETA_UPDATE @"way point eta updated"
+
 @interface GGRealTimeMontior ()
 
 
@@ -53,8 +63,7 @@
 - (void)connect;
 - (void)disconnect;
 
-
--(void)sendConnectionError:(NSError *)error;
+- (void)sendConnectionError:(NSError *)error;
 
 
 - (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(SocketResponseBlock)completionHandler ;
@@ -64,6 +73,10 @@
 - (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler;
 
 - (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler ;
+
+- (BOOL)handleSocketIODidReceiveEvent:(NSString *)eventName withData:(NSDictionary *)eventData;
+
+- (id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId;
 
 /**
  *  check if it has been too long since a socket event

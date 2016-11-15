@@ -7,14 +7,14 @@ use_frameworks!
 inhibit_all_warnings!
 
 def pods()
-    pod 'Socket.IO-Client-Swift', '~> 8.1.2'
+    pod 'Socket.IO-Client-Swift', '~> 7.0.3’
 end
 
 def testpods()
     pod 'OCMockito', '~> 4.0'
     pod 'OCMock', '~> 3.1'
     pod 'DCKeyValueObjectMapping'
-    pod 'Socket.IO-Client-Swift', '~> 8.1.2'
+    pod 'Socket.IO-Client-Swift', '~> 7.0.3’
 
 end
 
@@ -48,7 +48,6 @@ post_install do |installer|
         target.build_configurations.each do |config|
             config.build_settings['ENABLE_BITCODE'] = 'YES'
             config.build_settings['BITCODE_GENERATION_MODE'] = 'bitcode'
-            config.build_settings['SWIFT_VERSION'] = '3.0'
         end
     end
 end

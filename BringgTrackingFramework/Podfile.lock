@@ -4,21 +4,21 @@ PODS:
   - OCMock (3.3.1)
   - OCMockito (4.0.1):
     - OCHamcrest (~> 6.0)
-  - Socket.IO-Client-Swift (8.1.2)
+  - Socket.IO-Client-Swift (7.0.3)
 
 DEPENDENCIES:
   - DCKeyValueObjectMapping
   - OCMock (~> 3.1)
   - OCMockito (~> 4.0)
-  - Socket.IO-Client-Swift (~> 8.1.2)
+  - Socket.IO-Client-Swift (~> 7.0.3)
 
 SPEC CHECKSUMS:
   DCKeyValueObjectMapping: c2eb5a6529da100b2e49ef6a599663578051f077
   OCHamcrest: fc8ab38149b97df8db8029a3f2157c951bf9081d
   OCMock: f3f61e6eaa16038c30caa5798c5e49d3307b6f22
   OCMockito: 62ddc6afff6a883f2864d51224b1dfdc0e9a7df7
-  Socket.IO-Client-Swift: 542d82e6708f9901b3f6c1d134fb60fa0d09d4d1
+  Socket.IO-Client-Swift: cca640f81f8856278c8bcd56ea42d1d070a011b6
 
-PODFILE CHECKSUM: 4342b22c683ffef325aece7265793e0ceae47b16
+PODFILE CHECKSUM: c501a989aad86abb1e8f6290da3e54452892c731
 
 COCOAPODS: 1.1.1

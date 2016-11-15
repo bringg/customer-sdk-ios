@@ -10,7 +10,7 @@ DEPENDENCIES:
   - DCKeyValueObjectMapping
   - OCMock (~> 3.1)
   - OCMockito (~> 4.0)
-  - Socket.IO-Client-Swift
+  - Socket.IO-Client-Swift (~> 8.1.2)
 
 SPEC CHECKSUMS:
   DCKeyValueObjectMapping: c2eb5a6529da100b2e49ef6a599663578051f077
@@ -19,6 +19,6 @@ SPEC CHECKSUMS:
   OCMockito: 62ddc6afff6a883f2864d51224b1dfdc0e9a7df7
   Socket.IO-Client-Swift: 542d82e6708f9901b3f6c1d134fb60fa0d09d4d1
 
-PODFILE CHECKSUM: 42183a2b61cb99daa912eac33fdff87c7e243e39
+PODFILE CHECKSUM: 4342b22c683ffef325aece7265793e0ceae47b16
 
 COCOAPODS: 1.1.1

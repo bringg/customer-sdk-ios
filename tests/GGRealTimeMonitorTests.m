@@ -149,7 +149,7 @@
     
     [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
     
-    XCTAssertTrue(updatedOrder.waypoints.count > 0)
+    XCTAssertTrue(updatedOrder.waypoints.count > 0);
 }
 
 @end

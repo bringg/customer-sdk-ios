@@ -542,7 +542,7 @@
         
     }else if ([eventName isEqualToString:EVENT_WAY_POINT_LOCATION]){
         NSDictionary *locationUpdate = eventData;
-        NSNumber *wpid = [locationUpdate objectForKey:@"way_point_id"];
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
         
         id existingDelegate = [self delegateForWaypointID:wpid];
         NSNumber *lat = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:@"lat"] defaultTo:nil];
@@ -555,9 +555,9 @@
         }
         
     }else if ([eventName isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
-        NSDictionary *etaUpdate = eventData;
-        NSNumber *wpid = [etaUpdate objectForKey:@"way_point_id"];
-        NSString *eta = [etaUpdate objectForKey:@"eta"];
+
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
+        NSString *eta = [eventData objectForKey:@"eta"];
         NSDate *etaToDate = [GGBringgUtils dateFromString:eta];
         
         id existingDelegate = [self delegateForWaypointID:wpid];
@@ -572,8 +572,8 @@
          return YES;
         
     } else if ([eventName isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
-        NSDictionary *waypointArrived = eventData;
-        NSNumber *wpid = [waypointArrived objectForKey:@"way_point_id"];
+
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
         id existingDelegate = [self delegateForWaypointID:wpid];
         
 
@@ -587,8 +587,8 @@
          return YES;
         
     } else if ([eventName isEqualToString:EVENT_WAY_POINT_DONE]) {
-        NSDictionary *waypointDone = eventData;
-        NSNumber *wpid = [waypointDone objectForKey:@"way_point_id"];
+
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
         id existingDelegate = [self delegateForWaypointID:wpid];
 
         NSLog(@"delegate: %@ should udpate waypoint %@ done withData:%@", existingDelegate, wpid, eventData );

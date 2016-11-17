@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.10.0"
+#define SDK_VERSION @"1.10.1"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -275,6 +275,16 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param waypointId id of waypoint
  */
 - (void)waypointDidFinishedWaypointId:(nonnull NSNumber *)waypointId;
+
+
+/**
+ *  notifies waypoint changed location
+ *
+ *  @param lat lat
+ *  @param lng lng
+ */
+- (void)waypoint:(nonnull NSNumber *)waypointId didUpdatedCoordinatesToLat:(nonnull NSNumber *)lat lng:(nonnull NSNumber *)lng;
+
 
 /**
  *  notifies that the tracker is about to revive all previously monitored waypoints

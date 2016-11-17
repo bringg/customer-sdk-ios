@@ -1,3 +1,4 @@
+#!/bin/bash
 FRAMEWORK=BringgTracking
 TARGET=BringgTracking-iOS
 

@@ -24,6 +24,7 @@
 #define EVENT_WAY_POINT_ARRIVED @"way point arrived"
 #define EVENT_WAY_POINT_DONE @"way point done"
 #define EVENT_WAY_POINT_ETA_UPDATE @"way point eta updated"
+#define EVENT_WAY_POINT_LOCATION @"way point location updated"
 
 @interface GGRealTimeMontior ()
 

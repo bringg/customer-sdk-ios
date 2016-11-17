@@ -263,6 +263,14 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
 
 
 /**
+ *  notifies waypoint changed location
+ *
+ *  @param lat lat
+ *  @param lng lng
+ */
+- (void)waypoint:(nonnull NSNumber *)waypointId didUpdatedCoordinatesToLat:(nonnull NSNumber *)lat lng:(nonnull NSNumber *)lng;
+
+/**
  *  notifies a driver has arrvied a waypoint
  *
  *  @param waypointId id of waypoint

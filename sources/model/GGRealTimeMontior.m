@@ -22,14 +22,9 @@
 
 @import SocketIO;
 
-//#define BRINGG_REALTIME_SERVER @"realtime.bringg.com"
+@interface GGRealTimeMontior() <SocketIOClientDelegate>
 
-
-
-
-
-
-@interface GGRealTimeMontior()<SocketIOClientDelegate>
+@property (nonatomic, strong) Reachability *reachability;
 
 @end
 
@@ -43,6 +38,10 @@
         return [[self alloc] init];
         
     });
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 }
 
 - (id)init {
@@ -62,7 +61,7 @@
         // start reachability monitor
         [self configureReachability];
         
-
+        
     }
     
     return self;
@@ -78,39 +77,43 @@
 }
 
 - (void)configureReachability {
-    Reachability* reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
+    Reachability *reachability = [Reachability reachabilityWithHostName:@"www.google.com"];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
+    
+    
     self.reachability = reachability;
-    reachability.reachableBlock = ^(Reachability*reach) {
-
-#ifdef DEBUG
-        NSLog(@"Reachable!");
-#endif
-        // reconnect only if isnt already connecting and was at least once connected manually
-        if (![self isSocketIOConnected] &&
-            ![self isSocketIOConnecting] &&
-            self.developerToken &&
-            self.wasManuallyConnected) {
-            
-            [self connect];
-
-        }
-    };
-    reachability.unreachableBlock = ^(Reachability*reach) {
-        
-#ifdef DEBUG
-        NSLog(@"Unreachable!");
-#endif
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self disconnect];
-        });
-        
-
-    };
-    
-    [reachability startNotifier];
-    
+    [self.reachability startNotifier];
 }
 
+- (void)reachabilityChanged:(NSNotification *)notification {
+    id notificationObject = [notification object];
+    if ([notificationObject isKindOfClass:[Reachability class]]) {
+        Reachability *curReachability = (Reachability *)notificationObject;
+        
+        if (curReachability == self.reachability) {
+            NetworkStatus netStatus = [curReachability currentReachabilityStatus];
+            
+            if (netStatus != NotReachable) {
+                // reconnect only if isnt already connecting and was at least once connected manually
+                if (![self isSocketIOConnected] &&
+                    ![self isSocketIOConnecting] &&
+                    self.developerToken &&
+                    self.wasManuallyConnected) {
+                    
+                    [self connect];
+                }
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self disconnect];
+                });
+            }
+        }
+    };
+}
 
 
 - (void) setRealTimeConnectionDelegate:(id<RealTimeDelegate>) connectionDelegate{
@@ -147,7 +150,7 @@
     }else{
         return nil;
     }
-
+    
 }
 - (nullable GGDriver *)addAndUpdateDriver:(GGDriver *)driver{
     // add this driver to the drivers active list if needed
@@ -168,7 +171,7 @@
 #pragma mark - Getters
 
 -(BOOL)hasNetwork{
-    return [self.reachability isReachable];
+    return self.reachability.currentReachabilityStatus != NotReachable;
 }
 
 -(GGOrder * _Nullable)getOrderWithUUID:(NSString * _Nonnull)uuid{
@@ -203,15 +206,15 @@
 
 
 -(id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId{
-   
+    
     if (!waypointId) {
         return nil;
     }
     
     __block id<WaypointDelegate> retVal;
- 
+    
     [self.waypointDelegates.allKeys enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-
+        
         NSString *waypointCompoundKey = (NSString *)obj;
         NSString *orderUUID;
         NSString *waypointIdStr;
@@ -264,7 +267,7 @@
     if (!self.useSSL) {
         
         server = [server stringByReplacingOccurrencesOfString:@"3000" withString:@"3030"];
-
+        
     }
     
     NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
@@ -277,7 +280,7 @@
     
     
     if ([self isSocketIOConnected] || [self isSocketIOConnecting]) {
-       
+        
         if (completionHandler) {
             NSError *error = [NSError errorWithDomain:kSDKDomainRealTime code:0
                                              userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Already connected.", @"eng/heb")}];
@@ -293,7 +296,7 @@
                 completionHandler(NO, error);
                 
             }
-
+            
             
             return;
         }
@@ -302,7 +305,7 @@
         
         self.socketIOConnectedBlock = completionHandler;
         
-        if (self.reachability.isReachable) {
+        if ([self hasNetwork]) {
             
             NSLog(@"websocket connecting %@", server);
             
@@ -310,12 +313,12 @@
                 [self.socketIO connect];
                 
             } @catch (NSException *exception) {
-
+                
                 NSLog(@"error connected: %@", exception);
             }
             
             
-
+            
         }
         
         
@@ -463,7 +466,7 @@
             
         }
         
-         return YES;
+        return YES;
         
     } else if ([eventName isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
         NSDictionary *locationUpdate = eventData;
@@ -530,7 +533,7 @@
             
         }
         
-         return YES;
+        return YES;
         
     } else if ([eventName isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
         //activity change
@@ -672,7 +675,7 @@
     
     if (self.socketIOConnectedBlock) {
         
-         NSLog(@"\t\thandling connect success");
+        NSLog(@"\t\thandling connect success");
         
         self.socketIOConnectedBlock(YES, nil);
         self.socketIOConnectedBlock = nil;
@@ -701,11 +704,11 @@
     } else {
         // report connection error
         [self sendConnectionError:error];
-    
+        
     }
     
     
-  
+    
 }
 
 
@@ -716,13 +719,13 @@
     
     [self handleSocketIODidReceiveEvent:eventName withData:eventDataItems.firstObject];
     
-   
+    
 }
 
 - (void)socketIO:(SocketIOClient *)socketIO onError:(NSError *)error {
     
     self.connected = [self isSocketIOConnected];
-    #ifdef DEBUG
+#ifdef DEBUG
     NSLog(@"Send error %@", error);
 #endif
 }

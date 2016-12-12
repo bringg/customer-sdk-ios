@@ -385,7 +385,7 @@
 - (void)eventPolling:(NSTimer *)timer {
  
     // check if we have an internet connection
-    if ([self.liveMonitor.reachability isReachable]) {
+    if ([self.liveMonitor hasNetwork]) {
         // if realtime isnt connected try to reconnect
         if (!self.isConnected) {
             
@@ -1462,7 +1462,7 @@
     
     
     // on error check if there is network available - if yes > try to reconnect
-    if (error && [self.liveMonitor.reachability isReachable]) {
+    if (error && [self.liveMonitor hasNetwork]) {
         
         // check if we maxxed out our connection attempts
         if (self.numConnectionAttempts >= MAX_CONNECTION_RETRIES) {

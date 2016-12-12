@@ -50,8 +50,6 @@
 @property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
 @property (nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
 
-@property (nonatomic, strong) Reachability* reachability;
-
 
 
 + (id)sharedInstance;

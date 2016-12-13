@@ -1383,6 +1383,8 @@
         }
     }];
 }
+
+
 - (void)reviveWatchedWaypoints{
     
     [self.monitoredWaypoints enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1402,7 +1404,7 @@
         id<WaypointDelegate> wpDelegate = [_liveMonitor.waypointDelegates objectForKey:waypointCompoundKey];
         
         // remove the old entry in the dictionary
-        [_liveMonitor.waypointDelegates removeObjectForKey:waypointId];
+        [_liveMonitor.waypointDelegates removeObjectForKey:waypointCompoundKey];
         
         // if delegate isnt null than start watching again
         if (wpDelegate && ![wpDelegate isEqual: [NSNull null]]) {

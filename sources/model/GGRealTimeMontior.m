@@ -16,7 +16,7 @@
 #import "GGCustomer.h"
 #import "GGOrder.h"
 #import "GGSharedLocation.h"
-
+#import "GGWaypoint.h"
 #import "NSObject+Observer.h"
 #import "GGRealTimeInternals.h"
 
@@ -160,12 +160,35 @@
             [self.activeDrivers setObject:driver forKey:driver.uuid];
         }else{
             [[self.activeDrivers objectForKey:driver.uuid] update:driver];
+ 
         }
         
         return [self getDriverWithUUID:driver.uuid];
     }else{
         return nil;
     }
+}
+
+- (nullable GGOrder *)addAndUpdateWaypoint:(GGWaypoint *_Nonnull)waypoint{
+    
+    if (waypoint != nil && waypoint.orderid > 0){
+        
+        NSNumber *taskId = @(waypoint.orderid);
+        GGOrder *order = [self getOrderWithID:taskId];
+        if (order) {
+            // find the relevent waypoint
+            GGWaypoint *wp = [[order.waypoints filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"waypointId == %@", waypoint.waypointId]] firstObject];
+            if (wp) {
+                [wp update:waypoint];
+            }
+        }
+        
+        return order;
+        
+    }else{
+        return nil;
+    }
+    
 }
 
 #pragma mark - Getters
@@ -176,6 +199,19 @@
 
 -(GGOrder * _Nullable)getOrderWithUUID:(NSString * _Nonnull)uuid{
     return [self.activeOrders objectForKey:uuid];
+}
+
+-(GGOrder * _Nullable)getOrderWithID:(NSNumber * _Nonnull)orderid{
+    __block GGOrder *retVal;
+    [self.activeOrders enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, GGOrder * _Nonnull obj, BOOL * _Nonnull stop) {
+        //
+        if (obj.orderid == orderid.integerValue){
+            retVal = obj;
+            *stop = YES;
+        }
+    }];
+    
+    return retVal;
 }
 
 -(GGDriver * _Nullable)getDriverWithUUID:(NSString * _Nonnull)uuid{

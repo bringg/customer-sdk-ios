@@ -17,7 +17,7 @@
 #import "GGDriver.h"
 #import "GGOrder.h"
 #import "GGRating.h"
-
+#import "GGWaypoint.h"
 #import "BringgGlobals.h"
 
 #import "NSObject+Observer.h"
@@ -1132,7 +1132,8 @@
                 if (!success) {
                     
                     id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:compoundKey];
-
+                    
+                    
                     if ([self canPollForLocations]) {
                         
                         
@@ -1191,10 +1192,11 @@
                 
             }
             [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
+               
+                id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+                
                 if (!success) {
  
-                    id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
-                    
                     @synchronized(_liveMonitor) {
                         
                         NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
@@ -1211,6 +1213,24 @@
                     }
                 }else{
                     NSLog(@"SUCCESS WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
+                    
+                    GGWaypoint *wp;
+                    
+                    NSDictionary *extras = [socketResponse objectForKey:@"extras"];
+                    if (extras) {
+                        NSDictionary *waypointData = [extras objectForKey:@"way_point"];
+                        if (waypointData) {
+                            GGWaypoint *wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
+                            // if valid wp we need to update the order waypoint
+                            if (wp){
+                                // update local model with wp
+                               [_liveMonitor addAndUpdateWaypoint:wp];
+                            }
+                        }
+                    }
+                    
+                    [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
+                    
                 }
             }];
         }

@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.10.3"
+#define SDK_VERSION @"1.10.4"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -94,6 +94,7 @@ return _sharedObject;
 @class GGSharedLocation;
 @class GGFindMe;
 @class GGTrackerManager;
+@class GGWaypoint;
 
 typedef void (^CompletionBlock)(BOOL success, NSError * __nullable error);
 typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, NSError * __nullable error);
@@ -244,6 +245,8 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
 @end
 
 @protocol WaypointDelegate <NSObject>
+
+
 /**
  *  notifies if watching a waypoint failed
  *
@@ -252,6 +255,17 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  */
 - (void)watchWaypointFailedForWaypointId:(nonnull NSNumber *)waypointId error:(nonnull NSError *)error;
 @optional
+
+
+
+/**
+ notifies if watching waypoint succeeded
+
+ @param waypointId id of waypoint
+ @param waypoint the model of the waypoint
+ */
+- (void)watchWaypointSucceededForWaypointId:(nonnull NSNumber *)waypointId waypoint:(nonnull GGWaypoint *)waypoint;
+
 
 /**
  *  notifies ETA updates to a waypoint
@@ -284,6 +298,9 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param lng lng
  */
 - (void)waypoint:(nonnull NSNumber *)waypointId didUpdatedCoordinatesToLat:(nonnull NSNumber *)lat lng:(nonnull NSNumber *)lng;
+
+
+
 
 
 /**

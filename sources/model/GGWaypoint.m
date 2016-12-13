@@ -15,6 +15,26 @@
 
 static NSDateFormatter *dateFormat;
 
+/*
+ extras =     {
+ "way_point" =         {
+ address = "Weizman St 12, Herzliya, Israel";
+ "customer_id" = 1;
+ done = 0;
+ eta = "<null>";
+ etl = "2016-12-13T17:51:25+02:00";
+ id = 18;
+ lat = "32.1638542";
+ lng = "34.8350625";
+ note = "<null>";
+ phone = "<null>";
+ position = 1;
+ "scheduled_at" = "2016-12-13T17:46:25+02:00";
+ "task_id" = 18;
+ };
+ };
+ */
+
 -(id)initWaypointWithData:(NSDictionary*)data{
     
     if (self = [super init]) {
@@ -113,6 +133,60 @@ static NSDateFormatter *dateFormat;
     [aCoder encodeObject:checkinTime forKey:GGWaypointStoreKeyArriveTime];
     [aCoder encodeObject:doneTime forKey:GGWaypointStoreKeyDoneTime];
     
+}
+
+- (void)update:(GGWaypoint *__nullable)newWaypoint{
+    if (newWaypoint && newWaypoint.waypointId == self.waypointId && newWaypoint.orderid == self.orderid) {
+        
+        if (newWaypoint.customerId) {
+            self.customerId = newWaypoint.customerId;
+        }
+        
+        if (newWaypoint.position){
+            self.position = newWaypoint.position;
+        }
+        
+        if (newWaypoint.done) {
+            self.done = newWaypoint.done;
+        }
+        
+        if (newWaypoint.ASAP) {
+            self.ASAP = newWaypoint.ASAP;
+        }
+        
+        if (newWaypoint.allowFindMe) {
+            self.allowFindMe = newWaypoint.allowFindMe;
+        }
+        
+        if (newWaypoint.address) {
+            self.address = newWaypoint.address;
+        }
+        
+        if (newWaypoint.latitude != 0.0) {
+            self.latitude = newWaypoint.latitude;
+        }
+        
+        if (newWaypoint.longitude != 0.0) {
+            self.longitude = newWaypoint.longitude;
+        }
+        
+        if (newWaypoint.ETA) {
+            self.ETA = newWaypoint.ETA;
+        }
+        
+        
+        if (newWaypoint.startTime) {
+            self.startTime = newWaypoint.startTime;
+        }
+        
+        if (newWaypoint.checkinTime) {
+            self.checkinTime = newWaypoint.checkinTime;
+        }
+        
+        if (newWaypoint.doneTime) {
+            self.doneTime = newWaypoint.doneTime;
+        }
+    }
 }
 
 @end

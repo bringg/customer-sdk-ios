@@ -297,6 +297,10 @@ static NSDateFormatter *dateFormat;
         if (newOrder.items) {
             self.items = newOrder.items;
         }
+        
+        if (newOrder.late) {
+            self.late = newOrder.late
+        }
     }
 }
 

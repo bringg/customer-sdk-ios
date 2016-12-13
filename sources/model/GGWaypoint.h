@@ -56,6 +56,8 @@
 
 -(id)initWaypointWithData:(NSDictionary*)data;
 
+- (void)update:(GGWaypoint *)newWaypoint;
+
 /*
  * example response for waypoint
 {

@@ -26,17 +26,20 @@
 #define EVENT_WAY_POINT_ETA_UPDATE @"way point eta updated"
 #define EVENT_WAY_POINT_LOCATION @"way point location updated"
 
+@class GGOrder, GGDriver, GGWaypoint;
+
+
 @interface GGRealTimeMontior ()
 
 
 
 @property (nonatomic, strong) NSString *developerToken;
 
-@property (nonatomic, strong) NSMutableDictionary *orderDelegates;
-@property (nonatomic, strong) NSMutableDictionary *driverDelegates;
-@property (nonatomic, strong) NSMutableDictionary *waypointDelegates;
-@property (nonatomic, strong) NSMutableDictionary *activeDrivers;
-@property (nonatomic, strong) NSMutableDictionary *activeOrders;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id<OrderDelegate>>  *orderDelegates;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id<DriverDelegate>>  *driverDelegates;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id<WaypointDelegate>> *waypointDelegates;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, GGDriver*>  *activeDrivers; // uuid for driver
+@property (nonatomic, strong) NSMutableDictionary<NSString *, GGOrder*> *activeOrders; // uuid for order
 
 @property (nonatomic, assign) BOOL doMonitoringOrders;
 @property (nonatomic, assign) BOOL doMonitoringDrivers;
@@ -49,8 +52,6 @@
 @property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
 @property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
 @property (nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
-
-@property (nonatomic, strong) Reachability* reachability;
 
 
 

@@ -1220,7 +1220,7 @@
                     if (extras) {
                         NSDictionary *waypointData = [extras objectForKey:@"way_point"];
                         if (waypointData) {
-                            GGWaypoint *wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
+                            wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
                             // if valid wp we need to update the order waypoint
                             if (wp){
                                 // update local model with wp

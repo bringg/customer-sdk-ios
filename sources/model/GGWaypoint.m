@@ -135,6 +135,10 @@ static NSDateFormatter *dateFormat;
     
 }
 
+- (NSString *)description{
+    return [NSString stringWithFormat:@"waypoint (%d) of order (%d) - to address %@", self.waypointId,self.orderid, self.address];
+}
+
 - (void)update:(GGWaypoint *__nullable)newWaypoint{
     if (newWaypoint && newWaypoint.waypointId == self.waypointId && newWaypoint.orderid == self.orderid) {
         

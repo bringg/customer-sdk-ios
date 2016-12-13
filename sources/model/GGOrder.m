@@ -131,6 +131,7 @@ static NSDateFormatter *dateFormat;
     return self;
 }
 
+
 -(void)updateOrderStatus:(OrderStatus)newStatus{
     self.status = newStatus;
 }
@@ -299,7 +300,7 @@ static NSDateFormatter *dateFormat;
         }
         
         if (newOrder.late) {
-            self.late = newOrder.late
+            self.late = newOrder.late;
         }
     }
 }

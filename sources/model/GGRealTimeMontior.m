@@ -177,7 +177,7 @@
         GGOrder *order = [self getOrderWithID:taskId];
         if (order) {
             // find the relevent waypoint
-            GGWaypoint *wp = [[order.waypoints filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"waypointId == %@", waypoint.waypointId]] firstObject];
+            GGWaypoint *wp = [[order.waypoints filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"waypointId == %@", @(waypoint.waypointId)]] firstObject];
             if (wp) {
                 [wp update:waypoint];
             }

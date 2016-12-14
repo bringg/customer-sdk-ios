@@ -1215,17 +1215,14 @@
                     NSLog(@"SUCCESS WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
                     
                     GGWaypoint *wp;
-                    
-                    NSDictionary *extras = [socketResponse objectForKey:@"extras"];
-                    if (extras) {
-                        NSDictionary *waypointData = [extras objectForKey:@"way_point"];
-                        if (waypointData) {
-                            wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
-                            // if valid wp we need to update the order waypoint
-                            if (wp){
-                                // update local model with wp
-                               [_liveMonitor addAndUpdateWaypoint:wp];
-                            }
+                    // search for waypoint model in callback
+                    NSDictionary *waypointData = [socketResponse objectForKey:@"way_point"];
+                    if (waypointData) {
+                        wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
+                        // if valid wp we need to update the order waypoint
+                        if (wp){
+                            // update local model with wp
+                            [_liveMonitor addAndUpdateWaypoint:wp];
                         }
                     }
                     

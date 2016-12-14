@@ -1205,8 +1205,10 @@
                         
                     }
                     
-                    [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
-                    
+                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
+                        [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
+                    }
+ 
                     if (![_liveMonitor.waypointDelegates count]) {
                         _liveMonitor.doMonitoringWaypoints = NO;
                         
@@ -1226,7 +1228,11 @@
                         }
                     }
                     
-                    [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
+                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointSucceededForWaypointId:waypoint:)]) {
+                        [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
+                    }
+                    
+                    
                     
                 }
             }];

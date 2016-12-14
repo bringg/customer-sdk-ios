@@ -1205,7 +1205,9 @@
                         
                     }
                     
-                    [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
+                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
+                        [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
+                    }
                     
                     if (![_liveMonitor.waypointDelegates count]) {
                         _liveMonitor.doMonitoringWaypoints = NO;
@@ -1216,21 +1218,20 @@
                     
                     GGWaypoint *wp;
                     
-                    NSDictionary *extras = [socketResponse objectForKey:@"extras"];
-                    if (extras) {
-                        NSDictionary *waypointData = [extras objectForKey:@"way_point"];
-                        if (waypointData) {
-                            wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
-                            // if valid wp we need to update the order waypoint
-                            if (wp){
-                                // update local model with wp
-                                [_liveMonitor addAndUpdateWaypoint:wp];
-                            }
+                    // search for waypoint model in callback
+                    NSDictionary *waypointData = [socketResponse objectForKey:@"way_point"];
+                    if (waypointData) {
+                        wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
+                        // if valid wp we need to update the order waypoint
+                        if (wp){
+                            // update local model with wp
+                            [_liveMonitor addAndUpdateWaypoint:wp];
                         }
                     }
                     
-                    [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
-                    
+                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointSucceededForWaypointId:waypoint:)]) {
+                        [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
+                    }
                 }
             }];
         }

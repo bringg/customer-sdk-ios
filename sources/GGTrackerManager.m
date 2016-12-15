@@ -883,7 +883,7 @@
                         sharedUUID:(NSString *_Nullable)shareduuid
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
-    NSLog(@"Trying to stat watching on order uuid: %@, with delegate %@", uuid, delegate);
+    NSLog(@"Trying to start watching on order uuid: %@, with delegate %@", uuid, delegate);
     
     // uuid is invalid if empty
     if (!uuid || uuid.length == 0) {

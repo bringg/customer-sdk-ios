@@ -139,6 +139,13 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
 @protocol OrderDelegate <NSObject>
 
 /**
+ *  notifies watch action for an order has succeed
+ *
+ *  @param order the order requesting watch
+ */
+- (void)watchOrderSucceedForOrder:(nonnull GGOrder *)order;
+
+/**
  *  notifies watch action for an order has failed
  *
  *  @param order the order requesting watch
@@ -217,6 +224,13 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
 @end
 
 @protocol DriverDelegate <NSObject>
+
+/**
+ *  notifies if watching a driver succeed
+ *
+ *  @param waypointId id of driver
+ */
+- (void)watchDriverSucceedForDriver:(nullable GGDriver *)driver;
 
 /**
  *  notifies if watching a driver failed

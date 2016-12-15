@@ -996,11 +996,13 @@
                     activeOrder.sharedLocation = sharedLocation;
                     [_liveMonitor addAndUpdateOrder:activeOrder];
                     
-                    if (self.httpManager && activeOrder.uuid) {
+                    if (self.httpManager && shareUUID) {
                         // try to get the full order object once
-                        
-                        [self getWatchedOrderByOrderUUID:activeOrder.uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                        [self startRESTWatchingOrderByOrderUUID:uuid sharedUUID:shareUUID withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                           
                             if (success && order) {
+                                order.sharedLocation = sharedLocation;
+                                
                                 [_liveMonitor addAndUpdateOrder:order];
                                 
                                 if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {

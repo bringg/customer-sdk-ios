@@ -77,7 +77,7 @@
 }
 
 - (void)configureReachability {
-    Reachability *reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
+    Reachability *reachability = [Reachability reachabilityWithHostName:@"www.google.com"];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reachabilityChanged:)
                                                  name:kReachabilityChangedNotification
@@ -160,7 +160,6 @@
             [self.activeDrivers setObject:driver forKey:driver.uuid];
         }else{
             [[self.activeDrivers objectForKey:driver.uuid] update:driver];
-            
         }
         
         return [self getDriverWithUUID:driver.uuid];

@@ -289,13 +289,6 @@
     }
     
     
-    
-    NSNumber *showLogs = @NO;
-    
-#ifdef DEBUG
-    showLogs = @YES;
-#endif
-    
     // add correct scheme to server address
     [GGBringgUtils fixURLString:&server forSSL:self.useSSL];
     
@@ -308,8 +301,7 @@
     
     NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
     
-    
-    NSDictionary *connectionOptions = @{@"log":showLogs, @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"connectParams":connectionParams};
+    NSDictionary *connectionOptions = @{@"log": @(self.logsEnabled), @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"connectParams":connectionParams};
     
     self.socketIO = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:server] config:connectionOptions];
     
@@ -436,9 +428,11 @@
         
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
-#ifdef DEBUG
-        NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus );
-#endif
+        
+        if (self.logsEnabled) {
+            NSLog(@"delegate: %@ should update order with status:%@", existingDelegate, orderStatus);
+        }
+        
         if (existingDelegate) {
             switch ([orderStatus integerValue]) {
                 case OrderStatusAssigned:
@@ -494,9 +488,11 @@
         
         
         id existingDelegate = [self.orderDelegates objectForKey:orderUUID];
-#ifdef DEBUG
-        NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid );
-#endif
+
+        if (self.logsEnabled) {
+            NSLog(@"delegate: %@ should finish order %ld(%@)", existingDelegate, (long)order.orderid, order.uuid);
+        }
+        
         if (existingDelegate) {
             [existingDelegate orderDidFinish:order  withDriver:driver];
             
@@ -556,10 +552,10 @@
                 
                 
                 if ([driverUUID isEqualToString:driver.uuid]) {
-                    
-#ifdef DEBUG
-                    NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, driver.uuid );
-#endif
+                    if (self.logsEnabled) {
+                        NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, driver.uuid);
+                    }
+
                     if (driverDelegate) {
                         [driverDelegate driverLocationDidChangeWithDriver:driver];
                     }
@@ -572,11 +568,12 @@
         return YES;
         
     } else if ([eventName isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
-        //activity change
-#ifdef DEBUG
-        NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:@[eventData]]);
-#endif
         
+        if (self.logsEnabled) {
+            NSLog(@"driver activity changed: %@", [GGBringgUtils userPrintSafeDataFromData:@[eventData]]);
+        }
+        
+        //activity change
         return YES;
         
     }else if ([eventName isEqualToString:EVENT_WAY_POINT_LOCATION]){
@@ -749,21 +746,20 @@
 
 
 - (void) socketIO:(SocketIOClient *)socketIO didReceiveEvent:(NSString *)eventName withData:(NSArray *)eventDataItems {
-#ifdef DEBUG
-    NSLog(@"Received EVENT packet [%@]", eventName);
-#endif
+    if (self.logsEnabled) {
+        NSLog(@"Received EVENT packet [%@]", eventName);
+    }
     
     [self handleSocketIODidReceiveEvent:eventName withData:eventDataItems.firstObject];
-    
-    
 }
 
 - (void)socketIO:(SocketIOClient *)socketIO onError:(NSError *)error {
     
     self.connected = [self isSocketIOConnected];
-#ifdef DEBUG
-    NSLog(@"Send error %@", error);
-#endif
+    
+    if (self.logsEnabled) {
+        NSLog(@"Send error %@", error);
+    }
 }
 
 

@@ -27,13 +27,16 @@
 @property (nonatomic, readonly) GGRealTimeMontior * _Nullable liveMonitor;
 @property (nonatomic, getter=customer) GGCustomer * _Nullable appCustomer;
 
+/**
+ *  Enables sdk level logs
+ */
+@property (nonatomic) BOOL logsEnabled;
 
 /**
  *  creates if needed and returns an initialized tracker singelton
  *  @return the tracker singelton
  */
 + (nonnull id)tracker;
-
 
 /**
  *  creates if needed an singelton Bringg Tracker object

@@ -153,15 +153,9 @@
         
     }
     
-    NSTimeInterval timeoutCap = 10;
-    
-#if DEBUG
-    timeoutCap = 60;
-#endif
-    
     NSArray *emitItems = params ? @[params] : @[];
     
-    [[socketIO emitWithAck:eventName with:emitItems] timingOutAfter:timeoutCap callback:^(NSArray* data) {
+    [[socketIO emitWithAck:eventName with:emitItems] timingOutAfter:10 callback:^(NSArray* data) {
         
         // data validation
         id response = [data firstObject];

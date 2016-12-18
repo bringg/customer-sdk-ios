@@ -24,6 +24,7 @@
 @interface GGRealTimeMontior : NSObject
 
 @property (nullable, nonatomic, strong) NSDate *lastEventDate;
+@property (nonatomic) BOOL logsEnabled;
 
 -(void)useSecureConnection:(BOOL)shouldUse;
 

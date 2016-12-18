@@ -65,11 +65,13 @@
 /**
  *  handles cases where data task was successfull
  *
+ *  @param response          success response
  *  @param data              response data object
  *  @param completionHandler callback handler
  */
-+ (void)handleDataSuccessResponseWithData:(nullable NSData*)data
-                        completionHandler:(nullable GGNetworkResponseHandler)completionHandler;
++ (void)handleDataSuccessResponse:(nullable NSURLResponse *)response
+                         withData:(nullable NSData*)data
+                completionHandler:(nullable GGNetworkResponseHandler)completionHandler;
 
 /**
  *  creates a json url request with for update actions (POST, PUT, PATCH, DELETE)

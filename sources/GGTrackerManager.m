@@ -1009,7 +1009,7 @@
                                     [delegateOfOrder watchOrderSucceedForOrder:order];
                                 }
                                 
-                                NSLog(@"Received full order object %@", uuid, delegate);
+                                NSLog(@"Received full order object %@", order);
                             }
                             else {
                                 if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {

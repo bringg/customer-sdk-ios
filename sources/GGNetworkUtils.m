@@ -279,42 +279,38 @@
 }
 
 
-+ (void)handleDataSuccessResponseWithData:(nullable NSData*)data
++ (void)handleDataSuccessResponse:(nullable NSURLResponse *)response
+                         withData:(nullable NSData *)data
                         completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
     
     if (data) {
         NSError *jsonError = nil;
         
-        
-        __block NSError *responseError = nil;
-        __block BOOL responseSuccess = NO;
-        
-        __block id responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
-        
+        NSError *responseError = nil;
+        BOOL responseSuccess = NO;
+        id responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
+        NSDictionary *responseDict = nil;
         
         if (jsonError) {
             responseError = jsonError;
-        }else{
+        }
+        else {
             // check that response is json is of calid structure
-            if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                responseDict = (NSDictionary *)responseObject;
+                NSLog(@"Got response for %@. with data: %@", response.URL.absoluteString, responseDict);
                 
                 // parse json response
-                [self parseStatusOfJSONResponse:responseObject toSuccess:&responseSuccess andError:&responseError];
-                
-                
+                [self parseStatusOfJSONResponse:responseDict toSuccess:&responseSuccess andError:&responseError];
             }
-            
         }
 
         // execute completion handler
         if (completionHandler){
             dispatch_async(dispatch_get_main_queue(), ^{
-                
-                completionHandler(responseSuccess, [responseObject isKindOfClass:[NSDictionary class]] ? responseObject : nil, responseError);
+                completionHandler(responseSuccess, responseDict, responseError);
             });
         }
-        
-        
     }
 }
 
@@ -328,9 +324,7 @@
         path = response.URL.absoluteString;
     }
     
-#if DEBUG
     NSLog(@"GOT HTTP ERROR (%@) For Path %@:", error, path);
-#endif
     
     if (completionHandler) {
         
@@ -415,15 +409,10 @@
         if (error) {
             // handle error
             [self handleDataFailureResponse:response error:error completionHandler:completionHandler];
-        }else{
-            
-            
-#ifdef DEBUG
-            NSLog(@"Got response for %@ %@\n%@", method, path, [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil]);
-#endif
-            
+        }
+        else {
             // handle success response
-            [self handleDataSuccessResponseWithData:data completionHandler:completionHandler];
+            [self handleDataSuccessResponse:response withData:data completionHandler:completionHandler];
         }
         
     }];

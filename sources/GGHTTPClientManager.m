@@ -207,15 +207,7 @@
                                   path:(NSString *_Nonnull)path
                                 params:(NSDictionary * _Nullable)params
                      completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
-    
-    
-#ifdef DEBUG
-     NSLog(@"%@,  path: %@",  method, path);
-#endif
-    
-   
-   
-    
+        
     // get the server of the request
     NSString *server = [self getServerURL];
     NSString *parsedPath = path;

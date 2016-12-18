@@ -88,7 +88,7 @@
 
 -(id)initTacker{
     if (self = [super init]) {
-        // do nothing
+        self.logsEnabled = NO;
     }
     
     return self;
@@ -162,12 +162,10 @@
     [_liveMonitor disconnect];
 }
 
-- (void)dealloc {
-    
+- (void)setLogsEnabled:(BOOL)logsEnabled {
+    _logsEnabled = logsEnabled;
+    self.liveMonitor.logsEnabled = logsEnabled;
 }
-
-
-
 
 #pragma mark - Setters
 
@@ -951,7 +949,7 @@
                                 if (updatedOrder.sharedLocationUUID != nil) {
                                     
                                     // try to start watching via REST
-                                    [weakSelf startRESTWatchingOrderByOrderUUID:updatedOrder.uuid sharedUUID:updatedOrder.sharedLocationUUID withCompletionHandler:pollHandler];
+                                     [weakSelf startRESTWatchingOrderByOrderUUID:updatedOrder.uuid sharedUUID:updatedOrder.sharedLocationUUID withCompletionHandler:pollHandler];
                                 }
                                 else {
                                     if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
@@ -1042,9 +1040,10 @@
         return;
     }
     
-#if DEBUG
-    NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, activeOrder.uuid);
-#endif
+    if (self.logsEnabled) {
+        NSLog(@"GOT WATCHED ORDER %@ for UUID %@", order.uuid, activeOrder.uuid);
+    }
+
     // update the local model in the live monitor and retrieve
     GGOrder *updatedOrder = [self.liveMonitor addAndUpdateOrder:order];
     
@@ -1181,11 +1180,10 @@
                 
             }
             [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
-                
+               
                 id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
                 
                 if (!success) {
-                    
                     @synchronized(_liveMonitor) {
                         
                         NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
@@ -1197,7 +1195,7 @@
                     if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
                         [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
                     }
-                    
+
                     if (![_liveMonitor.waypointDelegates count]) {
                         _liveMonitor.doMonitoringWaypoints = NO;
                         

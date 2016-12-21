@@ -131,15 +131,12 @@
 
 
 - (void)connectUsingSecureConnection:(BOOL)useSecure{
-    
     // if no dev token we should raise an exception
     
-    if  (!_developerToken) {
-        
-        [NSException raise:@"Invalid tracker Tokens" format:@"Developer Token can not be nil"];
-        
-    }else{
-        
+    if  (!self.developerToken.length) {
+        [NSException raise:@"Invalid tracker Tokens" format:@"Developer Token can not be empty"];
+    }
+    else {
         // increment number of connection attempts
          _numConnectionAttempts++;
         
@@ -149,8 +146,6 @@
         [self.liveMonitor setDeveloperToken:_developerToken];
         [self.liveMonitor useSecureConnection:useSecure];
         [self.liveMonitor connect];
-        
-        
     }
 }
 
@@ -178,6 +173,11 @@
     
 }
 
+- (void)setDeveloperToken:(NSString *)developerToken {
+    _developerToken = developerToken;
+    NSLog(@"Tracker Set with Dev Token %@", _developerToken);
+}
+
 - (void)setHTTPManager:(GGHTTPClientManager * _Nullable)httpManager{
     
     // remove observer prior to nullifing the manager
@@ -195,13 +195,6 @@
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
     _customerToken = customer ? customer.customerToken : nil;
-}
-
-- (void)setDeveloperToken:(NSString *)devToken{
-    
-    
-    _developerToken = devToken;
-    NSLog(@"Tracker Set with Dev Token %@", _developerToken);
 }
 
 #pragma mark - Getters

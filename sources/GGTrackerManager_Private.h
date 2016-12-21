@@ -21,14 +21,12 @@
 @property (nonatomic, assign) BOOL shouldReconnect;
 
 @property (nonatomic, strong) NSString * _Nullable customerToken;
-@property (nonatomic, strong) NSString * _Nullable developerToken;
 
 @property (nonatomic, strong) NSMutableSet * _Nonnull polledOrders;
 @property (nonatomic, strong) NSMutableSet * _Nonnull polledLocations;
 @property (nonatomic, strong) NSTimer * _Nullable orderPollingTimer;
 @property (nonatomic, strong) NSTimer * _Nullable locationPollingTimer;
 @property (nonatomic, strong) NSTimer * _Nullable eventPollingTimer;
-
 
 
 @property (nullable, nonatomic, weak) id<RealTimeDelegate> trackerRealtimeDelegate;

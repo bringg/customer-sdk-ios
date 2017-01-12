@@ -188,8 +188,15 @@
  */
 - (BOOL)canPollForLocations;
 
+- (id)initTacker;
+
+- (void)setupWithHTTPManager:(nullable GGHTTPClientManager *)httpManager;
 
 - (void)setLiveMonitor:(nonnull GGRealTimeMontior *)newLiveMonitor;
+
+- (void)handleRealTimeWatchOrderWithUUID:(nonnull NSString *)uuid shareUUID:(nullable NSString *)shareduuid withRespponseSuccess:(BOOL)success object:(nullable id)socketResponse error:(nullable NSError *)error;
+- (void)handleRealTimeWatchSuccessForOrder:(nonnull GGOrder *)activeOrder shareUUID:(nullable NSString *)shareduuid withRespponse:(nullable id)socketResponse;
+- (void)handleRealTimeWatchFailedForOrder:(nonnull GGOrder *)activeOrder shareUUID:(nullable NSString *)shareduuid  withError:(nullable NSError *)error;
 
 
 @end

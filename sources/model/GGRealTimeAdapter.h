@@ -14,6 +14,7 @@
 
 @interface GGRealTimeAdapter : NSObject
 
++ (BOOL)errorAck:(id)argsData error:(NSError **)error;
 
 + (nonnull NSUUID *)addConnectionHandlerToClient:(nonnull SocketIOClient *)socketIO andDelegate:(nullable id<SocketIOClientDelegate>)delegate;
 

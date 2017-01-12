@@ -189,7 +189,7 @@
 - (BOOL)canPollForLocations;
 
 
-
+- (void)setLiveMonitor:(nonnull GGRealTimeMontior *)newLiveMonitor;
 
 
 @end

@@ -25,7 +25,7 @@
 #import "GGDriver.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
-
+#import "GGRealTimeMontior.h"
 
 @interface GGTestRealTimeDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate>
 
@@ -84,9 +84,36 @@
 
 }
 
+
+
+@end
+
+@interface GGRealTimeMontiorTestClass : GGRealTimeMontior
+
+@property (nonatomic) BOOL mockSuccees;
+
+@property (nonatomic, strong) id mockResponse;
+
+@property (nonatomic, strong) NSError *mockError;
+
+@end
+
+@implementation GGRealTimeMontiorTestClass
+
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler{
+ 
+    if (completionHandler) {
+        completionHandler(_mockSuccees, _mockResponse, _mockError);
+    }
+    
+    
+}
+
 @end
 
 @interface GGHTTPClientManagerTestClass :  GGHTTPClientManager
+
+@property (nonatomic) BOOL didTryToWatchOrder;
 
 @end
 
@@ -118,12 +145,24 @@
     
 }
 
+- (void)watchOrderByUUID:(NSString *)orderUUID withShareUUID:(NSString *)shareUUID extras:(NSDictionary *)extras withCompletionHandler:(GGOrderResponseHandler)completionHandler{
+    
+    self.didTryToWatchOrder  = YES;
+    
+    if (completionHandler) {
+        completionHandler(YES, nil,nil, nil);
+    }
+}
+
 @end
 
 @interface GGTrackerManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGTrackerManagerTestClass *trackerManager;
+@property (nonatomic, strong) GGTrackerManager *realTrackerManager;
 @property (nonatomic, strong) GGTestRealTimeDelegate  *realtimeDelegate;
+@property (nonatomic, strong) GGHTTPClientManagerTestClass *mockHttp;
+@property (nonatomic, strong) id mockLiveMonitor;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
 
@@ -137,24 +176,33 @@
     
      self.realtimeDelegate = [[GGTestRealTimeDelegate alloc] init];
     self.trackerManager = [GGTrackerManagerTestClass trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:self.realtimeDelegate andHTTPManager:nil];
+    
+   
    
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];
     
-    GGHTTPClientManagerTestClass *mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
-    [self.trackerManager setHTTPManager:mockHttp];
+    self.mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
+    [self.trackerManager setHTTPManager:self.mockHttp];
+    
+    self.realTrackerManager = [GGTrackerManager trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:self.realtimeDelegate andHTTPManager:self.mockHttp];
+    
+    self.mockLiveMonitor = mock([GGRealTimeMontior class]);
+    
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
+    self.mockHttp.didTryToWatchOrder = NO;
     
     self.trackerManager = nil;
     self.realtimeDelegate = nil;
     
     self.acceptJson = nil;
     self.startJson = nil;
+    
+    [super tearDown];
 
 }
 
@@ -452,6 +500,16 @@
         XCTAssertTrue(success);
     }];
 
+    
+}
+
+- (void)testWatchingOrderWithExpiredResponseMessage{
+    
+    self.trackerManager.liveMonitor = [GGRealTimeMontiorTestClass sharedInstance];
+    
+    [self.trackerManager startWatchingDriverWithUUID:@"stub" shareUUID:@"stub" delegate:nil];
+    
+    // to be continued
     
 }
 

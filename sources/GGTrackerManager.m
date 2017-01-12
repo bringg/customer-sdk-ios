@@ -95,6 +95,11 @@
 }
 
 
+- (void)setLiveMonitor:(nonnull GGRealTimeMontior *)newLiveMonitor{
+    self.liveMonitor = newLiveMonitor;
+    self.liveMonitor.realtimeDelegate = self;
+}
+
 
 -(id)init{
     

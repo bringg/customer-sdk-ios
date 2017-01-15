@@ -139,7 +139,7 @@
     [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
 
     //
-    [self.httpManager getOrderByOrderUUID:updatedOrder.uuid extras:nil withCompletionHandler:nil];
+    [self.httpManager getOrderByShareUUID:updatedOrder.sharedLocationUUID orderUUID:updatedOrder.uuid extras:nil withCompletionHandler:nil];
 }
 
 - (void)testFalseNegativeGetOrderById {

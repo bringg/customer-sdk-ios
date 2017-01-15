@@ -162,7 +162,7 @@
 		61DE788337BC26A523C02270 /* Pods_BringgTracking_OSXTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */; };
 		6391E2210B56DEC97DA9E352 /* Pods_BringgTracking_TVOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B1D9299A840C6762AFA50F /* Pods_BringgTracking_TVOSTests.framework */; };
 		791EBE701D86D04100A097A0 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1101373B1D74CE66005E10C4 /* BringgTracking.framework */; };
-		791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; };
+		791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		796845FE1D86D68B0063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
 		796845FF1D86D6940063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
 		796846001D86D6950063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
@@ -572,12 +572,12 @@
 				110137E31D74CF7D005E10C4 /* GGOrder.h in Headers */,
 				110137E71D74CF7D005E10C4 /* GGRating.h in Headers */,
 				110137EF1D74CF7D005E10C4 /* GGSharedLocation.h in Headers */,
+				791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */,
 				110137E11D74CF7D005E10C4 /* GGItem.h in Headers */,
 				1101379F1D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */,
 				110137E51D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */,
 				1101379A1D74CF76005E10C4 /* GGHTTPClientManager_Private.h in Headers */,
 				110137EB1D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */,
-				791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */,
 				1101379D1D74CF76005E10C4 /* GGNetworkUtils.h in Headers */,
 				110137E91D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */,
 				110137FD1D74CF89005E10C4 /* NSObject+Observer.h in Headers */,

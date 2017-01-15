@@ -25,7 +25,8 @@
 #import "GGDriver.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
-
+#import "GGRealTimeMontior.h"
+#import "GGRealTimeAdapter.h"
 
 @interface GGTestRealTimeDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate>
 
@@ -59,6 +60,14 @@
     
 }
 
+-(void)watchOrderSucceedForOrder:(GGOrder *)order{
+    
+}
+
+-(void)watchDriverSucceedForDriver:(GGDriver *)driver{
+    
+}
+
 
 
 @end
@@ -84,9 +93,120 @@
 
 }
 
+
+
+@end
+
+
+@interface GGTrackerManagerTestBetaClass : GGTrackerManagerTestClass
+
+@property (nonatomic) BOOL didStartRESTWatching;
+@property (nonatomic) BOOL didGetWatchedOrderByOrderUUID;
+
+@end
+
+@implementation GGTrackerManagerTestBetaClass
+@synthesize didStartRESTWatching, didGetWatchedOrderByOrderUUID;
+
+
+-(id)init{
+    if (self = [super initTacker]) {
+        [self setupWithHTTPManager:nil];
+    }
+    
+    return self;
+}
+
+
+
+- (BOOL)canPollForOrders{
+    return YES;
+}
+
+
+- (void)startRESTWatchingOrderByOrderUUID:(NSString *)orderUUID sharedUUID:(NSString *)sharedUUID withCompletionHandler:(GGOrderResponseHandler)completionHandler{
+    self.didStartRESTWatching = YES;
+    
+    if (completionHandler) {
+        completionHandler(YES, nil , nil, nil);
+    }
+}
+
+- (void)getWatchedOrderByOrderUUID:(NSString *)orderUUID withCompletionHandler:(GGOrderResponseHandler)completionHandler{
+    self.didGetWatchedOrderByOrderUUID = YES;
+    
+    [self startRESTWatchingOrderByOrderUUID:orderUUID sharedUUID:@"stub" withCompletionHandler:completionHandler];
+}
+
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+                        sharedUUID:(NSString *_Nullable)shareduuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate{
+    
+    NSLog(@"Trying to start watching on order uuid: %@, with delegate %@", uuid, delegate);
+    
+    // uuid is invalid if empty
+    if (!uuid || uuid.length == 0) {
+        [NSException raise:@"Invalid UUID" format:@"order UUID can not be nil or empty"];
+        
+        return;
+    }
+    
+    
+    self.liveMonitor.doMonitoringOrders = YES;
+    id existingDelegate = [self.liveMonitor.orderDelegates objectForKey:uuid];
+    
+    __block GGOrder *activeOrder = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
+    
+    if (shareduuid) {
+        activeOrder.sharedLocationUUID = shareduuid;
+    }
+    
+    [self.liveMonitor addAndUpdateOrder:activeOrder];
+    
+    if (!existingDelegate) {
+        @synchronized(self) {
+            [self.liveMonitor.orderDelegates setObject:delegate forKey:uuid];
+        }
+        
+        [self.liveMonitor sendWatchOrderWithOrderUUID:uuid shareUUID:shareduuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
+            
+            [self handleRealTimeWatchOrderWithUUID:uuid shareUUID:shareduuid withRespponseSuccess:success object:socketResponse error:error];
+            
+        }];
+    }
+    
+}
+
+
+
+@end
+
+@interface GGRealTimeMontiorTestClass : GGRealTimeMontior
+
+@property (nonatomic) BOOL mockSuccees;
+
+@property (nonatomic, strong) id mockResponse;
+
+@property (nonatomic, strong) NSError *mockError;
+
+@end
+
+@implementation GGRealTimeMontiorTestClass
+
+- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler{
+ 
+    if (completionHandler) {
+        completionHandler(_mockSuccees, _mockResponse, _mockError);
+    }
+    
+    
+}
+
 @end
 
 @interface GGHTTPClientManagerTestClass :  GGHTTPClientManager
+
+@property (nonatomic) BOOL didTryToWatchOrder;
 
 @end
 
@@ -118,12 +238,23 @@
     
 }
 
+- (void)watchOrderByUUID:(NSString *)orderUUID withShareUUID:(NSString *)shareUUID extras:(NSDictionary *)extras withCompletionHandler:(GGOrderResponseHandler)completionHandler{
+    
+    self.didTryToWatchOrder  = YES;
+    
+    if (completionHandler) {
+        completionHandler(YES, nil,nil, nil);
+    }
+}
+
 @end
 
 @interface GGTrackerManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGTrackerManagerTestClass *trackerManager;
-@property (nonatomic, strong) GGTestRealTimeDelegate  *realtimeDelegate;
+ @property (nonatomic, strong) GGTestRealTimeDelegate  *realtimeDelegate;
+@property (nonatomic, strong) GGHTTPClientManagerTestClass *mockHttp;
+@property (nonatomic, strong) id mockLiveMonitor;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
 
@@ -135,26 +266,36 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-     self.realtimeDelegate = [[GGTestRealTimeDelegate alloc] init];
+    self.realtimeDelegate = [[GGTestRealTimeDelegate alloc] init];
     self.trackerManager = [GGTrackerManagerTestClass trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:self.realtimeDelegate andHTTPManager:nil];
+    
+   
    
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];
     
-    GGHTTPClientManagerTestClass *mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
-    [self.trackerManager setHTTPManager:mockHttp];
+    self.mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
+    [self.trackerManager setHTTPManager:self.mockHttp];
+    
+    
+    self.mockLiveMonitor = mock([GGRealTimeMontior class]);
+    
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
+    self.mockHttp.didTryToWatchOrder = NO;
     
     self.trackerManager = nil;
     self.realtimeDelegate = nil;
     
     self.acceptJson = nil;
     self.startJson = nil;
+    
+    self.mockLiveMonitor = nil;
+    
+    [super tearDown];
 
 }
 
@@ -452,6 +593,105 @@
         XCTAssertTrue(success);
     }];
 
+    
+}
+
+- (void)testWatchingOrderWithExpiredResponseMessageWithSuccessFalse{
+    GGTrackerManagerTestBetaClass *trackerB =  [[GGTrackerManagerTestBetaClass alloc] init];
+    GGRealTimeMontiorTestClass *liveM = [[GGRealTimeMontiorTestClass alloc] init];
+    [trackerB setHTTPManager:self.mockHttp];
+    [trackerB setLiveMonitor:liveM];
+    
+    // validate test flags
+    trackerB.didStartRESTWatching = NO;
+    trackerB.didGetWatchedOrderByOrderUUID = NO;
+    
+    NSDictionary *responseData = @{ @"expired" : @1,
+                                    @"message" : @"Task 0e27a510-7184-4906-966a-e7dd92b514ab share expired",
+                                    @"success" : @0};
+    
+    NSError *error;
+    
+    [GGRealTimeAdapter errorAck:responseData error:&error];
+    
+    XCTAssertNotNil(error);
+
+    
+    
+    [liveM setMockError:error];
+    [liveM setMockResponse:responseData];
+    [liveM setMockSuccees:NO];
+    [trackerB startWatchingOrderWithUUID:@"stub" sharedUUID:@"stub" delegate:self.realtimeDelegate];
+    
+    XCTAssertFalse(trackerB.didGetWatchedOrderByOrderUUID);
+    XCTAssertTrue(trackerB.didStartRESTWatching);
+ 
+    
+}
+
+- (void)testWatchingOrderWithExpiredResponseMessageWithSuccessTrue{
+    GGTrackerManagerTestBetaClass *trackerB =  [[GGTrackerManagerTestBetaClass alloc] init];
+    GGRealTimeMontiorTestClass *liveM = [[GGRealTimeMontiorTestClass alloc] init];
+    [trackerB setHTTPManager:self.mockHttp];
+    [trackerB setLiveMonitor:liveM];
+    
+    // validate test flags
+    trackerB.didStartRESTWatching = NO;
+    trackerB.didGetWatchedOrderByOrderUUID = NO;
+    
+    NSDictionary *responseData = @{ @"expired" : @1,
+                                    @"message" : @"Task 0e27a510-7184-4906-966a-e7dd92b514ab share expired",
+                                    @"success" : @1};
+    
+    NSError *error;
+    
+    [GGRealTimeAdapter errorAck:responseData error:&error];
+    
+    XCTAssertNil(error);
+    
+    
+    
+    [liveM setMockError:error];
+    [liveM setMockResponse:responseData];
+    [liveM setMockSuccees:YES];
+    [trackerB startWatchingOrderWithUUID:@"stub" sharedUUID:@"stub" delegate:self.realtimeDelegate];
+    
+    XCTAssertTrue(trackerB.didGetWatchedOrderByOrderUUID);
+    XCTAssertTrue(trackerB.didStartRESTWatching);
+    
+    
+}
+
+- (void)testWatchingOrderWithExpiredResponseMessageWithSuccessTrueNoHTTP{
+    GGTrackerManagerTestBetaClass *trackerB =  [[GGTrackerManagerTestBetaClass alloc] init];
+    GGRealTimeMontiorTestClass *liveM = [[GGRealTimeMontiorTestClass alloc] init];
+    [trackerB setHTTPManager:nil];
+    [trackerB setLiveMonitor:liveM];
+    
+    // validate test flags
+    trackerB.didStartRESTWatching = NO;
+    trackerB.didGetWatchedOrderByOrderUUID = NO;
+    
+    NSDictionary *responseData = @{ @"expired" : @1,
+                                    @"message" : @"Task 0e27a510-7184-4906-966a-e7dd92b514ab share expired",
+                                    @"success" : @1};
+    
+    NSError *error;
+    
+    [GGRealTimeAdapter errorAck:responseData error:&error];
+    
+    XCTAssertNil(error);
+    
+    
+    
+    [liveM setMockError:error];
+    [liveM setMockResponse:responseData];
+    [liveM setMockSuccees:YES];
+    [trackerB startWatchingOrderWithUUID:@"stub" sharedUUID:@"stub" delegate:self.realtimeDelegate];
+    
+    XCTAssertFalse(trackerB.didGetWatchedOrderByOrderUUID);
+    XCTAssertFalse(trackerB.didStartRESTWatching);
+    
     
 }
 

@@ -208,4 +208,32 @@
     
 }
 
+- (void)testParsingExpiredResponse{
+    NSDictionary *json = @{ @"expired" : @1,
+                                    @"message" : @"Task 0e27a510-7184-4906-966a-e7dd92b514ab share expired",
+                                    @"success" : @1};
+    BOOL success = YES;
+    NSError *err;
+    
+    [GGNetworkUtils parseStatusOfJSONResponse:json toSuccess:&success andError:&err];
+    
+    XCTAssertTrue(success);
+    XCTAssertNil(err); // should be nil since success true
+    
+}
+
+- (void)testHandlingResponse{
+    
+    NSDictionary *json = @{ @"expired" : @1,
+                            @"message" : @"Task 0e27a510-7184-4906-966a-e7dd92b514ab share expired",
+                            @"success" : @1};
+    
+    [GGNetworkUtils handleDataSuccessResponse:nil withData:[NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil] completionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+        //
+        XCTAssertTrue(success);
+        XCTAssertTrue([json isEqual:JSON]);
+        
+    }];
+}
+
 @end

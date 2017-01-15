@@ -509,11 +509,12 @@
             
             
         }];
-    }else if (activeOrder.uuid){
+    }else if (activeOrder.sharedLocationUUID && activeOrder.uuid){
         
         // try to poll for the watched order to get its shared uuid
-        [self.httpManager getOrderByOrderUUID:activeOrder.uuid
-                                         extras:activeOrder.sharedLocationUUID ?  @{PARAM_SHARE_UUID:activeOrder.sharedLocationUUID} : nil
+        [self.httpManager getOrderByShareUUID:activeOrder.sharedLocationUUID
+                                    orderUUID:activeOrder.uuid
+                                         extras:nil
                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
             if (success && order) {
@@ -583,11 +584,12 @@
     }
     // to poll for an order we must have it's shared location uuid. if we dont have it we should retrieve it first
     
-    __weak __typeof(&*self)weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     if (activeOrder.sharedLocationUUID) {
         
-        [self.httpManager getOrderByOrderUUID:activeOrder.uuid
-                                       extras:activeOrder.sharedLocationUUID ?  @{PARAM_SHARE_UUID:activeOrder.sharedLocationUUID} : nil
+        [self.httpManager getOrderByShareUUID:activeOrder.sharedLocationUUID
+                                    orderUUID:activeOrder.uuid
+                                       extras:nil
                         withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
             
@@ -609,8 +611,9 @@
         
         // try to poll for the watched order to get its shared uuid
         
-        [self.httpManager getOrderByOrderUUID:activeOrder.uuid
-                                         extras:activeOrder.sharedLocationUUID ?  @{PARAM_SHARE_UUID:activeOrder.sharedLocationUUID} : nil
+        [self.httpManager getOrderByShareUUID:activeOrder.sharedLocationUUID
+                                    orderUUID:activeOrder.uuid
+                                         extras:nil
                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
             if (success && order) {
@@ -727,7 +730,6 @@
 
 
 - (void)startRESTWatchingOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                               sharedUUID:(NSString * _Nonnull)sharedUUID
                     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     if (!self.httpManager) {
@@ -735,13 +737,14 @@
             
             completionHandler(NO, nil, nil, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
-    }else{
-        
-        [self.httpManager watchOrderByUUID:orderUUID withShareUUID:sharedUUID extras:nil withCompletionHandler:completionHandler];
+    }
+    else {
+        [self.httpManager watchOrderByOrderUUID:orderUUID extras:nil withCompletionHandler:completionHandler];
     }
 }
 
--(void)getWatchedOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+-(void)getWatchedOrderByShareUUID:(NSString * _Nonnull)shareUUID
+                        orderUUID:(NSString * _Nonnull)orderUUID
             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     if (!self.httpManager) {
@@ -749,11 +752,10 @@
             
             completionHandler(NO, nil, nil, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
         }
-    }else{
-        [self.httpManager getOrderByOrderUUID:orderUUID extras:nil withCompletionHandler:completionHandler];
-        
     }
-    
+    else {
+        [self.httpManager getOrderByShareUUID:shareUUID orderUUID:orderUUID extras:nil withCompletionHandler:completionHandler];
+    }
 }
 
 
@@ -927,13 +929,9 @@
                     
                     // call the start watch from the http manager
                     // we are depending here that we have a shared uuid
-                    if (shareduuid != nil) {
+                    if (uuid != nil) {
                         // try to start watching via REST
-                        [self startRESTWatchingOrderByOrderUUID:uuid sharedUUID:shareduuid withCompletionHandler:pollHandler];
-                    }
-                    else {
-                        
-                        GGOrderResponseHandler handler =  ^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error){
+                        [self startRESTWatchingOrderByOrderUUID:uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                             
                             if (success) {
                                 GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
@@ -941,8 +939,8 @@
                                 // check if we have a shared location object
                                 if (updatedOrder.sharedLocationUUID != nil) {
                                     
-                                    // try to start watching via REST
-                                     [weakSelf startRESTWatchingOrderByOrderUUID:updatedOrder.uuid sharedUUID:updatedOrder.sharedLocationUUID withCompletionHandler:pollHandler];
+                                    // get the full order via REST
+                                    [weakSelf getWatchedOrderByShareUUID:updatedOrder.sharedLocationUUID orderUUID:updatedOrder.uuid withCompletionHandler:pollHandler];
                                 }
                                 else {
                                     if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
@@ -956,10 +954,14 @@
                                     [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
                                 }
                             }
-                        };
-                        
-                        // get the full order data via REST
-                        [self getWatchedOrderByOrderUUID:uuid withCompletionHandler:handler];
+                        }];
+                    }
+                    else {
+                        // notify watch fail
+                        NSError *error = [NSError errorWithDomain:kSDKDomainData code:-1 userInfo:@{NSLocalizedDescriptionKey:@"missing order uuid"}];
+                        if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                            [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
+                        }
                     }
                 }
                 else {
@@ -972,46 +974,61 @@
             else{
                 
                 // check for share_uuid
-                if (socketResponse && [socketResponse isKindOfClass:[NSDictionary class]]) {
+                if ([socketResponse isKindOfClass:[NSDictionary class]]) {
                     
-                    NSString *shareUUID = shareduuid;
-                    
-                    if (!shareUUID) {
-                        shareUUID = [socketResponse objectForKey:@"share_uuid"];
+                    BOOL isShareUUIDExpired = NO;
+                    id expiredObj = [socketResponse objectForKey:@"expired"];
+                    if ([expiredObj isKindOfClass:[NSNumber class]]) {
+                        isShareUUIDExpired = ((NSNumber *)expiredObj).boolValue;
                     }
-
-                    GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
                     
-                    // updated the order model
-                    activeOrder.sharedLocationUUID = shareUUID;
-                    activeOrder.sharedLocation = sharedLocation;
-                    [_liveMonitor addAndUpdateOrder:activeOrder];
-                    
-                    if (self.httpManager && shareUUID) {
-                        // try to get the full order object once
-                        [self startRESTWatchingOrderByOrderUUID:uuid sharedUUID:shareUUID withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
-                           
-                            if (success && order) {
-                                order.sharedLocation = sharedLocation;
-                                
-                                [_liveMonitor addAndUpdateOrder:order];
-                                
-                                if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                                    [delegateOfOrder watchOrderSucceedForOrder:order];
-                                }
-                                
-                                NSLog(@"Received full order object %@", order);
-                            }
-                            else {
-                                if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                                    [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
-                                }
-                            }
-                        }];
-                    }
-                    else {
+                    if (isShareUUIDExpired) {
+                        [activeOrder setStatus:OrderStatusDone];
+                        
                         if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
                             [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
+                        }
+                    }
+                    else {
+                        NSString *shareUUID = shareduuid;
+                        
+                        if (!shareUUID) {
+                            shareUUID = [socketResponse objectForKey:@"share_uuid"];
+                        }
+                        
+                        GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
+                        
+                        // updated the order model
+                        activeOrder.sharedLocationUUID = shareUUID;
+                        activeOrder.sharedLocation = sharedLocation;
+                        [_liveMonitor addAndUpdateOrder:activeOrder];
+                        
+                        if (self.httpManager && shareUUID) {
+                            // try to get the full order object once
+                            [self getWatchedOrderByShareUUID:shareUUID orderUUID:uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                                
+                                if (success && order) {
+                                    order.sharedLocation = sharedLocation;
+                                    
+                                    [_liveMonitor addAndUpdateOrder:order];
+                                    
+                                    if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                                        [delegateOfOrder watchOrderSucceedForOrder:order];
+                                    }
+                                    
+                                    NSLog(@"Received full order object %@", order);
+                                }
+                                else {
+                                    if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                                        [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
+                                    }
+                                }
+                            }];
+                        }
+                        else {
+                            if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                                [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
+                            }
                         }
                     }
                 }

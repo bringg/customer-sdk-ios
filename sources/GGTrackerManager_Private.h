@@ -39,21 +39,20 @@
  *  uses REST api to start watching an order
  *
  *  @param orderUUID         uuid of order
- *  @param sharedUUID        shared uuid of order
  *  @param completionHandler handle response callback
  */
 - (void)startRESTWatchingOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                               sharedUUID:(NSString * _Nonnull)sharedUUID
                     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**
  *  gets an initial data of watched order
  *
  *  @usage                  use to get order when no shared uuid exists
- *  @param orderUUID         order uuid
+ *  @param shareUUID         share uuid
  *  @param completionHandler handle response callback
  */
--(void)getWatchedOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+-(void)getWatchedOrderByShareUUID:(NSString * _Nonnull)shareUUID
+                        orderUUID:(NSString * _Nonnull)orderUUID
             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 

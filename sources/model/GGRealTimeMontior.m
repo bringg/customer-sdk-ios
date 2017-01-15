@@ -418,10 +418,6 @@
         GGOrder *updatedOrder = [[GGOrder alloc] initOrderWithData:eventData];
         GGDriver *updatedDriver = [eventData objectForKey:PARAM_DRIVER] ? [[GGDriver alloc] initDriverWithData:[eventData objectForKey:PARAM_DRIVER]] : nil;
         
-        
-        
-        
-        
         // updated existing model and retrieve the updated file
         GGOrder *order = [self addAndUpdateOrder:updatedOrder];
         GGDriver *driver = [self addAndUpdateDriver:updatedDriver];

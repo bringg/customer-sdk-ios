@@ -426,23 +426,19 @@
  
 }
 
-- (void)watchOrderByUUID:(NSString * _Nonnull)orderUUID
-           withShareUUID:(NSString * _Nonnull)shareUUID
-                  extras:(NSDictionary * _Nullable)extras
-   withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
+- (void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                       extras:(NSDictionary * _Nullable)extras
+        withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
-    
-    [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];
     }
     
-    
     [self httpRequestWithMethod:BCRESTMethodGet
-                           path:[NSString stringWithFormat:API_PATH_WATCH_ORDER, shareUUID]
+                           path:[NSString stringWithFormat:API_PATH_ORDER_UUID, orderUUID]
                          params:params
               completionHandler:^(BOOL success, id JSON, NSError *error) {
                   
@@ -459,17 +455,19 @@
                           completionHandler(NO , JSON, order, responseError);
                       }
                   }else{
-                      if (success && orderUpdateData) order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
+                      if (success && orderUpdateData) {
+                          
+                          order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
+                          
+                      }
                       
                       if (completionHandler) {
                           completionHandler(success, JSON, order, error);
                       }
                   }
                   
-                  
                   //
               }];
-    
 }
 
 
@@ -622,19 +620,24 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
 }
 
 
--(void)getOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                    extras:(NSDictionary * _Nullable)extras
-     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
+- (void)getOrderByShareUUID:(NSString * _Nonnull)shareUUID
+                  orderUUID:(NSString * _Nonnull)orderUUID
+                     extras:(NSDictionary * _Nullable)extras
+      withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
+    
+    if (orderUUID) {
+        [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
+    }
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];
     }
     
     [self httpRequestWithMethod:BCRESTMethodGet
-                           path:[NSString stringWithFormat:API_PATH_ORDER_UUID, orderUUID]
+                           path:[NSString stringWithFormat:API_PATH_WATCH_ORDER, shareUUID]
                          params:params
               completionHandler:^(BOOL success, id JSON, NSError *error) {
                   
@@ -651,16 +654,13 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
                           completionHandler(NO , JSON, order, responseError);
                       }
                   }else{
-                      if (success && orderUpdateData) {
-                          
-                          order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
-                          
-                      }
+                      if (success && orderUpdateData) order = [[GGOrder alloc] initOrderWithData:orderUpdateData];
                       
                       if (completionHandler) {
                           completionHandler(success, JSON, order, error);
                       }
                   }
+                  
                   
                   //
               }];

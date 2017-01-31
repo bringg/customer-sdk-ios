@@ -730,7 +730,8 @@
 
 
 - (void)startRESTWatchingOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                    withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
+                                shareUUID:(NSString * _Nullable)shareUUID
+                    withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     if (!self.httpManager) {
         if (completionHandler) {
@@ -739,7 +740,7 @@
         }
     }
     else {
-        [self.httpManager watchOrderByOrderUUID:orderUUID extras:nil withCompletionHandler:completionHandler];
+        [self.httpManager watchOrderByOrderUUID:orderUUID shareUUID:shareUUID extras:nil withCompletionHandler:completionHandler];
     }
 }
 
@@ -931,7 +932,7 @@
                     // we are depending here that we have a shared uuid
                     if (uuid != nil) {
                         // try to start watching via REST
-                        [self startRESTWatchingOrderByOrderUUID:uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                        [self startRESTWatchingOrderByOrderUUID:uuid shareUUID:shareduuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                             
                             if (success) {
                                 GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];

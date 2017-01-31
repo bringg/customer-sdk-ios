@@ -152,6 +152,7 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
  *  @param completionHandler block to handle async service response
  */
 - (void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                    shareUUID:(NSString * _Nullable)shareUUID
                        extras:(NSDictionary * _Nullable)extras
         withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 

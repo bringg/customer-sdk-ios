@@ -42,7 +42,7 @@
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
-#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid
+#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid !!!!! creates new shared_location object !!!!
 #define API_PATH_WATCH_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid,  params - order_uuid
 
 //PRIVATE
@@ -427,11 +427,16 @@
 }
 
 - (void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
+                    shareUUID:(NSString * _Nullable)shareUUID
                        extras:(NSDictionary * _Nullable)extras
         withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
+    
+    if (shareUUID.length) {
+        [params setObject:shareUUID forKey:PARAM_SHARE_UUID];
+    }
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];

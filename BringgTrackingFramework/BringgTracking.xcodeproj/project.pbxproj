@@ -37,7 +37,7 @@
 		1101379D1D74CF76005E10C4 /* GGNetworkUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */; };
 		1101379E1D74CF76005E10C4 /* GGNetworkUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDAD1D74BF9000DB13F4 /* GGNetworkUtils.m */; };
 		1101379F1D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAE1D74BF9000DB13F4 /* GGTrackerManager_Private.h */; };
-		110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAF1D74BF9000DB13F4 /* GGTrackerManager.h */; };
 		110137A11D74CF76005E10C4 /* GGTrackerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDDB01D74BF9000DB13F4 /* GGTrackerManager.m */; };
 		110137A21D74CF7C005E10C4 /* BringgGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD651D74BF2400DB13F4 /* BringgGlobals.h */; };
 		110137A31D74CF7C005E10C4 /* GGBringgUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD661D74BF2400DB13F4 /* GGBringgUtils.h */; };
@@ -114,7 +114,7 @@
 		110137EA1D74CF7D005E10C4 /* GGRealTimeAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD771D74BF2400DB13F4 /* GGRealTimeAdapter.m */; };
 		110137EB1D74CF7D005E10C4 /* GGRealTimeInternals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD781D74BF2400DB13F4 /* GGRealTimeInternals.h */; };
 		110137EC1D74CF7D005E10C4 /* GGRealTimeMontior+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD791D74BF2400DB13F4 /* GGRealTimeMontior+Private.h */; };
-		110137ED1D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		110137ED1D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7A1D74BF2400DB13F4 /* GGRealTimeMontior.h */; };
 		110137EE1D74CF7D005E10C4 /* GGRealTimeMontior.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7B1D74BF2400DB13F4 /* GGRealTimeMontior.m */; };
 		110137EF1D74CF7D005E10C4 /* GGSharedLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7C1D74BF2400DB13F4 /* GGSharedLocation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		110137F01D74CF7D005E10C4 /* GGSharedLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */; };
@@ -159,10 +159,14 @@
 		110138171D74CFA0005E10C4 /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */; };
 		110138181D74CFA1005E10C4 /* orderUpdate_onaccept.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */; };
 		110138191D74CFA1005E10C4 /* orderUpdate_onstart.json in Resources */ = {isa = PBXBuildFile; fileRef = 115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */; };
+		1317CD0A1E51F20F0007C9DF /* BringgTrackingClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1317CD081E51F20F0007C9DF /* BringgTrackingClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1317CD0B1E51F20F0007C9DF /* BringgTrackingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1317CD091E51F20F0007C9DF /* BringgTrackingClient.m */; };
+		1317CD0C1E51F2380007C9DF /* BringgTrackingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1317CD091E51F20F0007C9DF /* BringgTrackingClient.m */; };
+		1317CD0D1E51F2390007C9DF /* BringgTrackingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1317CD091E51F20F0007C9DF /* BringgTrackingClient.m */; };
 		61DE788337BC26A523C02270 /* Pods_BringgTracking_OSXTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A78997F662959BE790F29A /* Pods_BringgTracking_OSXTests.framework */; };
 		6391E2210B56DEC97DA9E352 /* Pods_BringgTracking_TVOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2B1D9299A840C6762AFA50F /* Pods_BringgTracking_TVOSTests.framework */; };
 		791EBE701D86D04100A097A0 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1101373B1D74CE66005E10C4 /* BringgTracking.framework */; };
-		791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */; };
 		796845FE1D86D68B0063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
 		796845FF1D86D6940063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
 		796846001D86D6950063A295 /* GGOrderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 796845FC1D86D68B0063A295 /* GGOrderTests.m */; };
@@ -263,6 +267,8 @@
 		115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGTrackerManagerTests.m; sourceTree = "<group>"; };
 		115EDE111D74C1E800DB13F4 /* orderUpdate_onaccept.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onaccept.json; sourceTree = "<group>"; };
 		115EDE121D74C1E800DB13F4 /* orderUpdate_onstart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orderUpdate_onstart.json; sourceTree = "<group>"; };
+		1317CD081E51F20F0007C9DF /* BringgTrackingClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BringgTrackingClient.h; sourceTree = "<group>"; };
+		1317CD091E51F20F0007C9DF /* BringgTrackingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BringgTrackingClient.m; sourceTree = "<group>"; };
 		210C6BF2E8F959A6F8F15986 /* Pods-BringgTracking-OSXTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-OSXTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-OSXTests/Pods-BringgTracking-OSXTests.release.xcconfig"; sourceTree = "<group>"; };
 		4438BE5512019235F3F83E3A /* Pods-BringgTracking-iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BringgTracking-iOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BringgTracking-iOSTests/Pods-BringgTracking-iOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		4C8665E6EF39161F825BE58B /* Pods_BringgTracking_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BringgTracking_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -427,6 +433,8 @@
 			isa = PBXGroup;
 			children = (
 				115EDDA91D74BF9000DB13F4 /* GGHTTPClientManager_Private.h */,
+				1317CD081E51F20F0007C9DF /* BringgTrackingClient.h */,
+				1317CD091E51F20F0007C9DF /* BringgTrackingClient.m */,
 				115EDDAA1D74BF9000DB13F4 /* GGHTTPClientManager.h */,
 				115EDDAB1D74BF9000DB13F4 /* GGHTTPClientManager.m */,
 				115EDDAC1D74BF9000DB13F4 /* GGNetworkUtils.h */,
@@ -562,17 +570,18 @@
 			files = (
 				1101373E1D74CE66005E10C4 /* BringgTracking.h in Headers */,
 				110137DB1D74CF7D005E10C4 /* GGCustomer.h in Headers */,
-				110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */,
 				110137DD1D74CF7D005E10C4 /* GGDriver.h in Headers */,
 				110137F11D74CF7D005E10C4 /* GGWaypoint.h in Headers */,
 				110137DF1D74CF7D005E10C4 /* GGFindMe.h in Headers */,
 				110137D91D74CF7D005E10C4 /* GGBringgUtils.h in Headers */,
-				110137D81D74CF7D005E10C4 /* BringgGlobals.h in Headers */,
-				110137ED1D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */,
 				110137E31D74CF7D005E10C4 /* GGOrder.h in Headers */,
 				110137E71D74CF7D005E10C4 /* GGRating.h in Headers */,
 				110137EF1D74CF7D005E10C4 /* GGSharedLocation.h in Headers */,
+				1317CD0A1E51F20F0007C9DF /* BringgTrackingClient.h in Headers */,
+				110137D81D74CF7D005E10C4 /* BringgGlobals.h in Headers */,
 				791EBE711D86D3BF00A097A0 /* GGHTTPClientManager.h in Headers */,
+				110137ED1D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */,
+				110137A01D74CF76005E10C4 /* GGTrackerManager.h in Headers */,
 				110137E11D74CF7D005E10C4 /* GGItem.h in Headers */,
 				1101379F1D74CF76005E10C4 /* GGTrackerManager_Private.h in Headers */,
 				110137E51D74CF7D005E10C4 /* GGOrderBuilder.h in Headers */,
@@ -1116,6 +1125,7 @@
 				110137DE1D74CF7D005E10C4 /* GGDriver.m in Sources */,
 				1101379C1D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */,
 				110137E81D74CF7D005E10C4 /* GGRating.m in Sources */,
+				1317CD0B1E51F20F0007C9DF /* BringgTrackingClient.m in Sources */,
 				110137F01D74CF7D005E10C4 /* GGSharedLocation.m in Sources */,
 				110137DA1D74CF7D005E10C4 /* GGBringgUtils.m in Sources */,
 				110137E01D74CF7D005E10C4 /* GGFindMe.m in Sources */,
@@ -1156,6 +1166,7 @@
 				110137C31D74CF7D005E10C4 /* GGDriver.m in Sources */,
 				110137941D74CF76005E10C4 /* GGHTTPClientManager.m in Sources */,
 				110137CD1D74CF7D005E10C4 /* GGRating.m in Sources */,
+				1317CD0D1E51F2390007C9DF /* BringgTrackingClient.m in Sources */,
 				110137D51D74CF7D005E10C4 /* GGSharedLocation.m in Sources */,
 				110137BF1D74CF7D005E10C4 /* GGBringgUtils.m in Sources */,
 				110137C51D74CF7D005E10C4 /* GGFindMe.m in Sources */,
@@ -1196,6 +1207,7 @@
 				110137A81D74CF7C005E10C4 /* GGDriver.m in Sources */,
 				1101378C1D74CF75005E10C4 /* GGHTTPClientManager.m in Sources */,
 				110137B21D74CF7C005E10C4 /* GGRating.m in Sources */,
+				1317CD0C1E51F2380007C9DF /* BringgTrackingClient.m in Sources */,
 				110137BA1D74CF7C005E10C4 /* GGSharedLocation.m in Sources */,
 				110137A41D74CF7C005E10C4 /* GGBringgUtils.m in Sources */,
 				110137AA1D74CF7C005E10C4 /* GGFindMe.m in Sources */,
@@ -1254,10 +1266,10 @@
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 1.10.9;
+				CURRENT_PROJECT_VERSION = 1.12.0;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1.10.9;
-				DYLIB_CURRENT_VERSION = 1.10.9;
+				DYLIB_COMPATIBILITY_VERSION = 1.12.0;
+				DYLIB_CURRENT_VERSION = 1.12.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "BringgTracking-iOS/Info.plist";
@@ -1280,10 +1292,10 @@
 				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CURRENT_PROJECT_VERSION = 1.10.9;
+				CURRENT_PROJECT_VERSION = 1.12.0;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1.10.9;
-				DYLIB_CURRENT_VERSION = 1.10.9;
+				DYLIB_COMPATIBILITY_VERSION = 1.12.0;
+				DYLIB_CURRENT_VERSION = 1.12.0;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "BringgTracking-iOS/Info.plist";

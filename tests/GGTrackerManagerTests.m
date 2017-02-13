@@ -347,7 +347,7 @@
     compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
     [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
         //
-        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
+        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
     }];
     
     
@@ -359,7 +359,7 @@
     compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
     [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
         //
-        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
+        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
     }];
     
     

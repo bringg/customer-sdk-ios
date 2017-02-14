@@ -67,7 +67,7 @@
     
     [self.httpManager setDelegate:self.httpManagerDelegate];
     [self.httpManager useSecuredConnection:NO];
-    
+    [self.httpManager setDeveloperToken:nil];
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];
 }
@@ -115,7 +115,7 @@
     [self.httpManager addAuthinticationToParams:&params];
     
     
-    XCTAssertTrue(params.count == 3);
+    XCTAssertTrue(params.allKeys.count == 3);
 }
 
 
@@ -141,7 +141,8 @@
     //
     [self.httpManager getOrderByShareUUID:updatedOrder.sharedLocationUUID orderUUID:updatedOrder.uuid extras:nil withCompletionHandler:nil];
 }
-
+/*
+ this test is only for live testing
 - (void)testFalseNegativeGetOrderById {
     // test to prove bug reported https://app.asana.com/0/32014397880520/160164813262190
     const NSString *devToken = @"zwp-i8j9R3xSk4xCScKx";// @"5KBxNkjHoTyPQ-NtcshW";
@@ -212,8 +213,10 @@
     
     XCTAssertTrue(resultOrder.orderid == orderId.integerValue);
 }
+*/
 
-
+/*
+ this test is only for live testing
 - (void)testFineMeLiveUsingHttpManagerOnly{
     // to exectute this test you must have an active order and customer (that must be allowed to login)
     
@@ -374,7 +377,6 @@
     XCTAssertTrue(didRespond);
     XCTAssertTrue(didSucceed);
 }
-
-
+*/
 
 @end

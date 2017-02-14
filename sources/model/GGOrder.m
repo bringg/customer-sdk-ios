@@ -33,6 +33,8 @@ static NSDateFormatter *dateFormat;
         orderid = [GGBringgUtils integerFromJSON:data[PARAM_ID] defaultTo:[GGBringgUtils integerFromJSON:data[PARAM_ORDER_ID] defaultTo:0]];
         uuid = [GGBringgUtils stringFromJSON:data[PARAM_UUID] defaultTo:[GGBringgUtils stringFromJSON:data[PARAM_ORDER_UUID] defaultTo:@""]];
         
+        driverUUID = [GGBringgUtils stringFromJSON:data[PARAM_DRIVER_UUID] defaultTo:nil];
+        
         status = (OrderStatus)[GGBringgUtils integerFromJSON:data[PARAM_STATUS] defaultTo:0];
  
         totalPrice = [GGBringgUtils doubleFromJSON:data[@"total_price"] defaultTo:0];

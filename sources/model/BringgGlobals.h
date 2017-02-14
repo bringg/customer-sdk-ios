@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.10.9"
+#define SDK_VERSION @"1.12.0"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -112,18 +112,6 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param error an error describing connection error (might be nill if forced)
  */
 - (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
-
-@optional
-
-/**
- *  asks the delegate for a custom domain host for the tracker manager.
- *  if no domain is provided the tracker manager will resolve to its default
- *
- *  @param trackerManager the tracker manager request
- *
- *  @return the domain to connect the tracker manager
- */
--(NSString * _Nullable)hostDomainForTrackerManager:(GGTrackerManager *_Nonnull)trackerManager;
 
 
 

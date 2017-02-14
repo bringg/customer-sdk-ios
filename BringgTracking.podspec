@@ -1,10 +1,27 @@
 Pod::Spec.new do |s|
   s.name         = "BringgTracking"
-  s.version      = "1.10.9"
+  s.version      = "1.12.0"
   s.summary      = "BringgTracking SDK"
   s.homepage     = "http://www.bringg.com"
   s.author       = "Bringg Ltd."
   s.ios.deployment_target = "8.0"
+  # This description is used to generate tags and improve search results.
+  #   * Think: What does it do? Why did you write it? What is the focus?
+  #   * Try to keep it short, snappy and to the point.
+  #   * Write the description between the DESC delimiters below.
+  #   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.description  = <<-DESC
+                  allows building customer experience apps based on the popular on demand delivery platform 'Bringg'
+                   DESC
+
+  # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
+  #
+  #  Licensing your code is important. See http://choosealicense.com for more info.
+  #  CocoaPods will detect a license file if there is a named LICENSE*
+  #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
+  #
+
+  s.license      = "MIT"
   # s.osx.deployment_target = "10.7"
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"

@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 Matan Poreh. All rights reserved.
 //
 
-#import <BringgTracking/GGHTTPClientManager.h>
+ 
+#import "GGHTTPClientManager.h"
+#import "BringgPrivates.h"  
 
 #define POLLING_SEC 30
 #define MAX_WITHOUT_POLLING_SEC 240
@@ -22,6 +24,7 @@
 @property (nonatomic, strong) NSDictionary * _Nullable customHeaders;
 @property (nonatomic, assign) BOOL useSSL;
 
+@property (nullable, nonatomic, weak) id<PrivateClientConnectionDelegate> connectionDelegate;
 
 /**
  *  adds authentication params to the regular params of a call

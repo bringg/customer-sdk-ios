@@ -126,8 +126,8 @@
 - (nonnull NSString *)getServerURL{
     NSString *server;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(hostDomainForClientManager:)]) {
-        server = [self.delegate hostDomainForClientManager:self];
+    if (self.connectionDelegate && [self.connectionDelegate respondsToSelector:@selector(hostDomainForClientManager:)]) {
+        server = [self.connectionDelegate hostDomainForClientManager:self];
     }
     
     if (!server || [server length] == 0) {

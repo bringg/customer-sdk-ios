@@ -28,7 +28,7 @@
 //MARK: -- Connection
 
 /**
- connects the tracking client
+ connects the tracking client to Bringg platform
  */
 - (void)connect;
 
@@ -36,6 +36,14 @@
  disconnects tracking.
  */
 - (void)disconnect;
+
+
+/**
+ check if client is connected to Bringg platform
+
+ @return BOOL
+ */
+- (BOOL)isConnected;
 
 /**
  *  perform a sign in request with a specific customers credentials
@@ -128,21 +136,17 @@
                                 longitude:(double)lng
                     withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
+
 /**
- *  send customer rating for a specific driver
- *
- *  @param rating            the rating of the driver must be between (1-5)
- 
- *  @param ratingToken       token to validate rating request - obtained from a valid shared location object related to a specific driver
- 
- *  @param ratingURL         rating url is provided with the shared location object responsible for the order
- *  @param completionHandler block to handle async service response
+ send customer rating for a specific order
+
+ @param order order to rate
+ @param rating rating for order's driver - must be between (1-5)
+ @param completionHandler block to handle async service response
  */
-- (void)rate:(int)rating
-   withToken:(NSString * _Nonnull)ratingToken
-   ratingURL:(NSString *_Nonnull)ratingURL
-      extras:(NSDictionary * _Nullable)extras
-withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler;
+- (void)rateOrder:(nonnull GGOrder *)order
+       withRating:(int)rating
+completionHandler:(nullable GGRatingResponseHandler)completionHandler;
 
 /**
  *  stops tracking a specific order

@@ -8,13 +8,20 @@
 
 #import "BringgTrackingClient.h"
 #import "GGHTTPClientManager.h"
-#import "GGTrackerManager.h"    
+#import "GGHTTPClientManager_Private.h"
+#import "GGTrackerManager.h"   
+#import "GGTrackerManager_Private.h"
 #import "GGOrder.h"
 #import "GGCustomer.h"
+#import "GGSharedLocation.h"
+#import "GGRating.h"
+#import "BringgPrivates.h"
 
 
+#define LOCAL_URL @"http://10.0.1.125"
+#define USE_LOCAL NO
 
-@interface BringgTrackingClient ()
+@interface BringgTrackingClient () <PrivateClientConnectionDelegate>
 
 
 @property (nullable, nonatomic, strong) NSString *developerToken;
@@ -55,14 +62,24 @@
         
         self.useSecuredConnection = YES;
         
+        if (USE_LOCAL == YES) {
+            self.useSecuredConnection = NO;
+        }
+        
         // init the http manager and tracking manager
         self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:devToken];
         [self.httpManager useSecuredConnection:self.useSecuredConnection];
+
         
         self.trackerManager = [GGTrackerManager tracker];
         [self.trackerManager setDeveloperToken:devToken];
         [self.trackerManager setHTTPManager:self.httpManager];
         [self.trackerManager setRealTimeDelegate:delegate];
+        
+        // add connection delegate
+        [self.httpManager setConnectionDelegate:self];
+        [self.trackerManager setConnectionDelegate:self];
+        
         self.trackerManager.logsEnabled = NO;
     }
     
@@ -83,6 +100,10 @@
     if ([self.trackerManager isConnected]) {
         [self.trackerManager disconnect];
     }
+}
+
+- (BOOL)isConnected{
+    return [self.trackerManager isConnected];
 }
 
 - (void)signInWithName:(NSString * _Nullable)name
@@ -123,6 +144,7 @@
     return [self.httpManager signedInCustomer];
 }
 
+
 //MARK: -- Tracking
 
 
@@ -159,13 +181,53 @@
     [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
-- (void)rate:(int)rating
-   withToken:(NSString * _Nonnull)ratingToken
-   ratingURL:(NSString *_Nonnull)ratingURL
-      extras:(NSDictionary * _Nullable)extras
-withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
+
+- (void)rateOrder:(nonnull GGOrder *)order
+       withRating:(int)rating
+completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     
-    [self.httpManager rate:rating withToken:ratingToken ratingURL:ratingURL extras:extras withCompletionHandler:completionHandler];
+    // before rating we must  correct shared location object (if we dont - we need to get one
+    if (order.sharedLocation && order.sharedLocation.ratingURL &&  order.sharedLocation.rating.token) {
+        
+
+         [self.httpManager rate:rating
+                      withToken:order.sharedLocation.rating.token
+                      ratingURL:order.sharedLocation.ratingURL
+                         extras:nil
+          withCompletionHandler:completionHandler];
+        
+    }else if (order.sharedLocationUUID){
+        
+
+        // get an updated shared location object for order
+        [self.httpManager getSharedLocationByUUID:order.sharedLocationUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error) {
+            //
+            if (success && sharedLocation) {
+                
+                [self.httpManager rate:rating
+                             withToken:sharedLocation.rating.token
+                             ratingURL:sharedLocation.ratingURL
+                                extras:nil
+                 withCompletionHandler:completionHandler];
+            }else{
+                if (completionHandler) {
+                    completionHandler(NO, response, nil, error);
+                }
+            }
+            
+        }];
+        
+        
+    }else{
+        // we dont have enough data to do rating
+        if (completionHandler) {
+            completionHandler(NO, nil, nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeActionNotAllowed userInfo:@{NSLocalizedDescriptionKey:@"can not rate order without valid shared location data"}]);
+        }
+        
+        
+    }
+    
+   
 }
 
 - (void)stopWatchingOrderWithUUID:(NSString *_Nonnull)uuid{
@@ -216,6 +278,28 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
 
 - (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid{
     return [self.trackerManager orderWithUUID:uuid];
+}
+
+//MARK: -- Private
+
+//MARK: -- PrivateClientConnectionDelegate
+
+- (NSString *)hostDomainForClientManager:(GGHTTPClientManager *)clientManager {
+    if (USE_LOCAL == YES) {
+        //
+        return [NSString stringWithFormat:@"%@:3000", LOCAL_URL];
+    }
+    
+    return nil;
+}
+
+- (NSString *)hostDomainForTrackerManager:(GGTrackerManager *)trackerManager {
+    if (USE_LOCAL == YES) {
+        //
+        return [NSString stringWithFormat:@"%@:3030", LOCAL_URL];
+    }
+    
+    return nil;
 }
 
 @end

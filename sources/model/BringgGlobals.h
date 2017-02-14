@@ -113,18 +113,6 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  */
 - (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
 
-@optional
-
-/**
- *  asks the delegate for a custom domain host for the tracker manager.
- *  if no domain is provided the tracker manager will resolve to its default
- *
- *  @param trackerManager the tracker manager request
- *
- *  @return the domain to connect the tracker manager
- */
--(NSString * _Nullable)hostDomainForTrackerManager:(GGTrackerManager *_Nonnull)trackerManager;
-
 
 
 /**

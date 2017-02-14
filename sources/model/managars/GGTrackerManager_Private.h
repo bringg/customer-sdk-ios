@@ -10,7 +10,7 @@
 #import "BringgGlobals.h"
 #import "GGRealTimeMontior+Private.h"
 #import "GGHTTPClientManager_Private.h"
-
+#import "BringgPrivates.h"
 
 
 #define MAX_CONNECTION_RETRIES 5
@@ -30,6 +30,8 @@
 
 
 @property (nullable, nonatomic, weak) id<RealTimeDelegate> trackerRealtimeDelegate;
+@property (nullable, nonatomic, weak) id<PrivateClientConnectionDelegate> connectionDelegate;
+
 @property (nullable, nonatomic, weak) GGHTTPClientManager *httpManager;
 
 @property (nonatomic, assign) NSUInteger numConnectionAttempts;

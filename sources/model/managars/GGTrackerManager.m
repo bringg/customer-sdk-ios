@@ -1010,7 +1010,7 @@
                                 
                                 if (success && order) {
                                     order.sharedLocation = sharedLocation;
-                                    
+
                                     [_liveMonitor addAndUpdateOrder:order];
                                     
                                     if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
@@ -1508,10 +1508,9 @@
     
     NSString *retval;
     
-    if (self.trackerRealtimeDelegate && [self.trackerRealtimeDelegate respondsToSelector:@selector(hostDomainForTrackerManager:)]) {
+    if (self.connectionDelegate && [self.connectionDelegate respondsToSelector:@selector(hostDomainForTrackerManager:)]) {
         
-        retval = [self.trackerRealtimeDelegate hostDomainForTrackerManager:self];
-        
+        retval = [self.connectionDelegate hostDomainForTrackerManager:self];
     }
     
     if (!retval) {

@@ -114,7 +114,7 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
 - (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
 
 
-
+@optional
 /**
  *  delegate method to track the last date the tracker manager recieved data
  *
@@ -256,7 +256,7 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param error      error
  */
 - (void)watchWaypointFailedForWaypointId:(nonnull NSNumber *)waypointId error:(nonnull NSError *)error;
-@optional
+
 
 
 
@@ -277,6 +277,16 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  */
 - (void)waypointDidUpdatedWaypointId:(nonnull NSNumber *)waypointId eta:(nullable NSDate *)eta;
 
+@optional
+
+/**
+ *  notifies waypoint changed location
+ *
+ *  @param lat lat
+ *  @param lng lng
+ */
+- (void)waypoint:(nonnull NSNumber *)waypointId didUpdatedCoordinatesToLat:(nonnull NSNumber *)lat lng:(nonnull NSNumber *)lng;
+
 
 /**
  *  notifies a driver has arrvied a waypoint
@@ -291,18 +301,6 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param waypointId id of waypoint
  */
 - (void)waypointDidFinishedWaypointId:(nonnull NSNumber *)waypointId;
-
-
-/**
- *  notifies waypoint changed location
- *
- *  @param lat lat
- *  @param lng lng
- */
-- (void)waypoint:(nonnull NSNumber *)waypointId didUpdatedCoordinatesToLat:(nonnull NSNumber *)lat lng:(nonnull NSNumber *)lng;
-
-
-
 
 
 /**

@@ -24,7 +24,7 @@
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>
 
 
-@property (nullable, nonatomic, strong) NSString *developerToken;
+@property (nonnull, nonatomic, strong) NSString *developerToken;
 @property (nonnull, nonatomic, strong) GGTrackerManager *trackerManager;
 @property (nonnull, nonatomic, strong) GGHTTPClientManager *httpManager;
 
@@ -35,14 +35,14 @@
 @property (nonatomic) BOOL shouldAutoWatchOrder;
 
 
-- (id)initWithDevToken:(nullable NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
+- (id)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
 @end
 
 @implementation BringgTrackingClient
 
 
-+ (nonnull instancetype)clientWithDeveloperToken:(NSString *_Nullable)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
++ (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
     
     static BringgTrackingClient *sharedObject = nil;
     static dispatch_once_t onceToken;
@@ -56,7 +56,7 @@
     return sharedObject;
 }
 
-- (id)initWithDevToken:(nullable NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
+- (id)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
         

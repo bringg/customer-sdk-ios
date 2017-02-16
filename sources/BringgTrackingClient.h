@@ -21,7 +21,7 @@
  @param delegate connection delegate to track connection status of tracking client
  @return singelton
  */
-+ (nonnull instancetype)clientWithDeveloperToken:(NSString *_Nullable)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
++ (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
 
 

@@ -14,6 +14,7 @@
 #import "GGOrder.h"
 #import "GGCustomer.h"
 #import "GGSharedLocation.h"
+#import "GGWaypoint.h"
 #import "GGRating.h"
 #import "BringgPrivates.h"
 
@@ -229,6 +230,26 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     
    
 }
+
+- (void)getPhoneNumberForDriver:(nonnull GGDriver *)driver
+                    forWaypoint:(nonnull GGWaypoint *)waypoint
+                        inOrder:(nonnull GGOrder *)order
+          byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+          withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler{
+    
+    if (!driver || !waypoint || !order || !customerPhoneNumber) {
+        
+        if (completionHandler) {
+            completionHandler(NO, nil,  [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"not all required paramaters were provided"}]);
+        }
+        
+        return;
+    }
+    
+ 
+    [self.trackerManager sendPhoneNumberRequestForDriver:driver inWaypointId:@(waypoint.waypointId) ofOrderUUID:order.uuid byCustomerPhoneNumber:customerPhoneNumber withCompletionHandler:completionHandler];
+}
+
 
 - (void)stopWatchingOrderWithUUID:(NSString *_Nonnull)uuid{
     [self.trackerManager stopWatchingOrderWithUUID:uuid];

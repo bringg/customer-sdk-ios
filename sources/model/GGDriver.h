@@ -108,6 +108,14 @@
 - (void)updateLocationToLatitude:(double)newlatitude longtitude:(double)newlongitude;
 
 
+
+/**
+ updates the driver phone number model
+
+ @param newNumber new phone number to use
+ */
+- (void)updatePhoneNumberTo:(nonnull NSString *)newNumber;
+
 /**
  *  tries to update current object with data from new object
  *

@@ -76,6 +76,12 @@
 
 - (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler ;
 
+- (void)sendPhoneNumberRequestForDriverUUID:(NSString *)driverUUID
+                               inWaypointId:(NSNumber *)waypointId
+                                ofOrderUUID:(NSString *)orderUUID
+                      byCustomerPhoneNumber:(NSString *)customerPhoneNumber
+                      completionHandler:(SocketResponseBlock)completionHandler;
+
 - (BOOL)handleSocketIODidReceiveEvent:(NSString *)eventName withData:(NSDictionary *)eventData;
 
 - (id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId;

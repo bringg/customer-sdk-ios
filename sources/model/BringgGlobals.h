@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.12.0"
+#define SDK_VERSION @"1.13.0"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -323,6 +323,8 @@ typedef void (^GGOrderResponseHandler)(BOOL success, NSDictionary * _Nullable re
 typedef void (^GGSharedLocationResponseHandler)(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error);
 
 typedef void (^GGRatingResponseHandler)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error);
+
+typedef void (^GGDriverPhoneResponseHandler)(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error);
 
 typedef NS_ENUM(NSInteger, OrderStatus) {
     OrderStatusInvalid = -1,

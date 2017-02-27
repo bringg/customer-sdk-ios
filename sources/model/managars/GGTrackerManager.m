@@ -21,7 +21,7 @@
 #import "BringgGlobals.h"
 
 #import "NSObject+Observer.h"
-
+#import "NSString+Extensions.h"
 
 #define BTPhoneKey @"phone"
 #define BTConfirmationCodeKey @"confirmation_code"
@@ -871,6 +871,57 @@
     }
     
     [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
+}
+
+- (void)sendPhoneNumberRequestForDriver:(nonnull GGDriver *)driver
+                           inWaypointId:(nonnull NSNumber *)waypointId
+                            ofOrderUUID:(nonnull NSString *)orderUUID
+                  byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+                  withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler{
+    
+    if (![NSString isStringEmpty:driver.phone]) {
+        
+        if (completionHandler) {
+            completionHandler(YES, driver.phone, nil);
+        }
+        
+        return;
+    }else{
+        
+        [_liveMonitor sendPhoneNumberRequestForDriverUUID:driver.uuid inWaypointId:waypointId ofOrderUUID:orderUUID byCustomerPhoneNumber:customerPhoneNumber completionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
+            //
+            if (!success) {
+                if (completionHandler){
+                    completionHandler(success, nil, error);
+                }
+            }else{
+                
+                NSString *phoneNumber;
+                
+                if ([socketResponse isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *json = (NSDictionary *)socketResponse;
+                    phoneNumber = [GGBringgUtils stringFromJSON:[json valueForKey:@"phone_number"] defaultTo:nil];
+                }
+                
+                if (phoneNumber) {
+                    
+                    // update driver model
+                    [driver updatePhoneNumberTo:phoneNumber];
+                    [_liveMonitor addAndUpdateDriver:driver];
+                    
+                    if (completionHandler) {
+                        completionHandler(YES, phoneNumber, nil);
+                    }
+                }else{
+                    if (completionHandler) {
+                        completionHandler(NO, nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"invalid driver phone number"}]);
+                    }
+                }
+                
+            }
+        }];
+    }
+    
 }
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid

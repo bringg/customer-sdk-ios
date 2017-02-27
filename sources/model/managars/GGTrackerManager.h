@@ -236,6 +236,23 @@
                         longitude:(double)lng
             withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
+
+
+/**
+ sends a request for driver phone number
+
+ @param driver driver
+ @param waypointId id of waypoint
+ @param orderUUID uuid of order
+ @param customerPhoneNumber phone number of customer making the request
+ @param completionHandler callback handler
+ */
+- (void)sendPhoneNumberRequestForDriver:(nonnull GGDriver *)driver
+                           inWaypointId:(nonnull NSNumber *)waypointId
+                            ofOrderUUID:(nonnull NSString *)orderUUID
+                  byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+                  withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler;
+
 /**
  *  asks the real time service to start tracking a specific order
  *

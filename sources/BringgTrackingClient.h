@@ -148,6 +148,23 @@
        withRating:(int)rating
 completionHandler:(nullable GGRatingResponseHandler)completionHandler;
 
+
+
+/**
+ tries to get the phone number for the driver
+@usage if masked phone numbers are enabled in bringg platform, this method will  get the driver masked phone number , else it will return the phone number already asscosiated with the driver model. to get the driver masked phone number. the customer phone number is required
+ @param driver driver to call
+ @param waypoint waypoint where the customer is waiting for driver
+ @param order the order of the driver
+ @param customerPhoneNumber phone number of customer that will make the call
+ @param completionHandler handler when done
+ */
+- (void)getPhoneNumberForDriver:(nonnull GGDriver *)driver
+                    forWaypoint:(nonnull GGWaypoint *)waypoint
+                        inOrder:(nonnull GGOrder *)order
+          byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+          withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler;
+
 /**
  *  stops tracking a specific order
  *

@@ -128,6 +128,11 @@
     self.longitude = newlongitude;
 }
 
+- (void)updatePhoneNumberTo:(nonnull NSString *)newNumber{
+    if (newNumber) {
+        self.phone = newNumber;
+    }
+}
 
 
 - (NSString *)imageURL{

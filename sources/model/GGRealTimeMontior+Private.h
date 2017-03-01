@@ -7,7 +7,7 @@
 //
 
 #import "GGRealTimeMontior.h"
-#import "BringgGlobals.h"
+//#import "BringgGlobals.h"
 #import "GGTrackerManager.h"
 #import "Reachability.h"
 
@@ -75,12 +75,6 @@
 - (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler;
 
 - (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler ;
-
-- (void)sendPhoneNumberRequestForDriverUUID:(NSString *)driverUUID
-                               inWaypointId:(NSNumber *)waypointId
-                                ofOrderUUID:(NSString *)orderUUID
-                      byCustomerPhoneNumber:(NSString *)customerPhoneNumber
-                      completionHandler:(SocketResponseBlock)completionHandler;
 
 - (BOOL)handleSocketIODidReceiveEvent:(NSString *)eventName withData:(NSDictionary *)eventData;
 

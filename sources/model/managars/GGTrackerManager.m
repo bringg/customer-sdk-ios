@@ -875,11 +875,20 @@
 
 - (void)sendPhoneNumberRequestForDriver:(nonnull GGDriver *)driver
                            inWaypointId:(nonnull NSNumber *)waypointId
-                            ofOrderUUID:(nonnull NSString *)orderUUID
+                              ofOrderID:(nonnull NSNumber *)orderID
                   byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
                   withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler{
     
-    if (![NSString isStringEmpty:driver.phone]) {
+    
+    
+    if (!driver) {
+        
+        if (completionHandler) {
+            completionHandler(NO, nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing driver data"}]);
+        }
+        
+        return;
+    }else if (![NSString isStringEmpty:driver.phone]) {
         
         if (completionHandler) {
             completionHandler(YES, driver.phone, nil);
@@ -888,7 +897,7 @@
         return;
     }else{
         
-        [_liveMonitor sendPhoneNumberRequestForDriverUUID:driver.uuid inWaypointId:waypointId ofOrderUUID:orderUUID byCustomerPhoneNumber:customerPhoneNumber completionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
+        [self.httpManager sendPhoneNumberRequestForWaypointId:waypointId ofOrderId:orderID byCustomerPhoneNumber:customerPhoneNumber withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
             //
             if (!success) {
                 if (completionHandler){
@@ -896,21 +905,15 @@
                 }
             }else{
                 
-                NSString *phoneNumber;
                 
-                if ([socketResponse isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *json = (NSDictionary *)socketResponse;
-                    phoneNumber = [GGBringgUtils stringFromJSON:[json valueForKey:@"phone_number"] defaultTo:nil];
-                }
-                
-                if (phoneNumber) {
+                if (driverPhone) {
                     
                     // update driver model
-                    [driver updatePhoneNumberTo:phoneNumber];
+                    [driver updatePhoneNumberTo:driverPhone];
                     [_liveMonitor addAndUpdateDriver:driver];
                     
                     if (completionHandler) {
-                        completionHandler(YES, phoneNumber, nil);
+                        completionHandler(YES, driverPhone, nil);
                     }
                 }else{
                     if (completionHandler) {
@@ -920,6 +923,7 @@
                 
             }
         }];
+        
     }
     
 }

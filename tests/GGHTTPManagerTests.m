@@ -38,7 +38,7 @@
 @end
 
 
-@interface GGHTTPClientManagerTestClient : NSObject <GGHTTPClientConnectionDelegate>
+@interface GGHTTPClientManagerTestClient : NSObject <PrivateClientConnectionDelegate>
     
 @end
     
@@ -65,7 +65,7 @@
     self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:nil];
     self.httpManagerDelegate = [[GGHTTPClientManagerTestClient alloc] init];
     
-    [self.httpManager setDelegate:self.httpManagerDelegate];
+    [self.httpManager setConnectionDelegate:self.httpManagerDelegate];
     [self.httpManager useSecuredConnection:NO];
     [self.httpManager setDeveloperToken:nil];
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];

@@ -130,6 +130,21 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 - (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
 
+
+
+/**
+ sends a driver phone request for a customer in specific waypoint
+
+ @param waypointId waypoint id
+ @param orderId order id
+ @param customerPhoneNumber customer phone number requesting the driver phone number
+ @param completionHandler remote handler
+ */
+- (void)sendPhoneNumberRequestForWaypointId:(nonnull NSNumber *)waypointId
+                                  ofOrderId:(nonnull NSNumber *)orderId
+                      byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+                      withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler;
+
 /**
  *  this methods start a watch action on an order and in returns the data of a watched order by its uuid and shared uuid
  *

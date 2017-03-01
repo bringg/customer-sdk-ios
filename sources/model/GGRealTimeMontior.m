@@ -694,23 +694,6 @@
     
 }
 
-- (void)sendPhoneNumberRequestForDriverUUID:(NSString *)driverUUID
-                               inWaypointId:(NSNumber *)waypointId
-                                ofOrderUUID:(NSString *)orderUUID
-                      byCustomerPhoneNumber:(NSString *)customerPhoneNumber
-                          completionHandler:(SocketResponseBlock)completionHandler{
-    
-    
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   waypointId, @"way_point_id",
-                                   orderUUID, @"order_uuid",
-                                   customerPhoneNumber, @"customer_phone",
-                                   driverUUID, @"driver_uuid",
-                                   nil];
-    
-    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"mask phone" params:params completionHandler:completionHandler];
-}
-
 
 #pragma mark - SocketIOClient callbacks
 

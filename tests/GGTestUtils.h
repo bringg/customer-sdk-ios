@@ -16,4 +16,5 @@
 +(void)parseUpdateData:(NSDictionary * _Nonnull)eventData intoOrder:(GGOrder *_Nonnull *_Nonnull)order andDriver:(GGDriver *_Nonnull  *_Nonnull)driver;
 +(nonnull NSString *)exampleOrderJsonData;
 +(nonnull NSString *)exampleLocationJsonData;
++(nonnull NSString *)randomStringWithLength:(NSUInteger)length;
 @end

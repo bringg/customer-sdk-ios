@@ -19,12 +19,13 @@
 
 #import "GGTrackerManager_Private.h"
 #import "GGTrackerManager.h"
-
+#import "GGHTTPClientManager_Private.h"
 
 #import "GGOrder.h"
 #import "GGDriver.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
+#import "BringgGlobals.h"
 
 
 @interface GGTestRealTimeDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate>
@@ -88,10 +89,16 @@
 
 @interface GGHTTPClientManagerTestClass :  GGHTTPClientManager
 
+@property (nullable, nonatomic, strong) NSString *lastRequestPath;
+@property (nullable, nonatomic, strong) NSDictionary *lastRequestParams;
+@property (nullable, nonatomic, strong) NSString *driverPhoneResponse;
 @end
 
 @implementation GGHTTPClientManagerTestClass
 
+@synthesize lastRequestPath     = _lastRequestPath;
+@synthesize lastRequestParams   = _lastRequestParams;
+@synthesize driverPhoneResponse = _driverPhoneResponse;
 - (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
     
     // validate data
@@ -114,6 +121,29 @@
     
     if (completionHandler) {
         completionHandler(YES, nil);
+    }
+    
+}
+
+- (NSURLSessionDataTask * _Nullable)httpRequestWithMethod:(NSString * _Nonnull)method
+                                                     path:(NSString *_Nonnull)path
+                                                   params:(NSDictionary * _Nullable)params
+                                        completionHandler:(nullable GGNetworkResponseHandler)completionHandler{
+    _lastRequestPath   = path;
+    _lastRequestParams = params;
+    
+    return nil;
+}
+
+
+- (void)sendPhoneNumberRequestForWaypointId:(nonnull NSNumber *)waypointId
+                                  ofOrderId:(nonnull NSNumber *)orderId
+                      byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+                      withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler{
+    
+    
+    if (completionHandler) {
+        completionHandler(YES, _driverPhoneResponse, nil);
     }
     
 }
@@ -452,6 +482,105 @@
         XCTAssertTrue(success);
     }];
 
+    
+}
+
+- (void)testRequestingDriverPhoneNumberWhenNoPhoneExistsAndParamsAreMissing{
+    
+    // create mock orders and and driver
+    id mockOrder = mock([GGOrder class]);
+    [given([mockOrder orderid]) willReturnInteger:123456];
+    
+    NSString *randomCustomerPhoneNumber = [GGTestUtils randomStringWithLength:7];
+    
+    id mockDriver = mock([GGDriver class]);
+    [given([mockDriver phone]) willReturn:nil];
+    
+    // check when missing customer phone number
+    [self.trackerManager sendPhoneNumberRequestForDriver:mockDriver inWaypointId:@123456 ofOrderID:@([mockOrder orderid]) byCustomerPhoneNumber:nil withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
+        //
+        XCTAssertFalse(success);
+        XCTAssertNotNil(error);
+        XCTAssertTrue(error.code == GGErrorTypeMissing);
+        
+    }];
+    
+    // check when missing order id
+    [self.trackerManager sendPhoneNumberRequestForDriver:mockDriver inWaypointId:@123456 ofOrderID:nil byCustomerPhoneNumber:randomCustomerPhoneNumber withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
+        //
+        XCTAssertFalse(success);
+        XCTAssertNotNil(error);
+        XCTAssertTrue(error.code == GGErrorTypeMissing);
+        
+    }];
+    
+    
+    // check when missing waypoint id
+    [self.trackerManager sendPhoneNumberRequestForDriver:mockDriver inWaypointId:nil ofOrderID:@([mockOrder orderid]) byCustomerPhoneNumber:randomCustomerPhoneNumber withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
+        //
+        XCTAssertFalse(success);
+        XCTAssertNotNil(error);
+        XCTAssertTrue(error.code == GGErrorTypeMissing);
+        
+    }];
+    
+    
+    // check when missing driver
+    [self.trackerManager sendPhoneNumberRequestForDriver:nil inWaypointId:@123456 ofOrderID:@([mockOrder orderid]) byCustomerPhoneNumber:randomCustomerPhoneNumber withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
+        //
+        XCTAssertFalse(success);
+        XCTAssertNotNil(error);
+        XCTAssertTrue(error.code == GGErrorTypeMissing);
+        
+    }];
+    
+}
+
+
+- (void)testRequestingDriverPhoneNumberWhenPhoneExists{
+    
+    // create mock orders and and driver
+    id mockOrder = mock([GGOrder class]);
+    [given([mockOrder orderid]) willReturnInteger:123456];
+    
+    NSString *randomDriverPhoneNumber = [GGTestUtils randomStringWithLength:7];
+    NSString *randomCustomerPhoneNumber = [GGTestUtils randomStringWithLength:7];
+    
+    id mockDriver = mock([GGDriver class]);
+    [given([mockDriver phone]) willReturn:randomDriverPhoneNumber];
+    
+    [self.trackerManager sendPhoneNumberRequestForDriver:mockDriver inWaypointId:@123456 ofOrderID:@([mockOrder orderid]) byCustomerPhoneNumber:randomCustomerPhoneNumber withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
+        //
+        
+        XCTAssertTrue(success);
+        XCTAssertTrue([driverPhone isEqualToString:randomDriverPhoneNumber]);
+        
+    }];
+    
+}
+
+- (void)testRequestingDriverPhoneNumberWhenPhoneDoesntExists{
+    
+    // create mock orders and and driver
+    id mockOrder = mock([GGOrder class]);
+    [given([mockOrder orderid]) willReturnInteger:123456];
+    
+    NSString *randomDriverPhoneNumber = [GGTestUtils randomStringWithLength:7];
+    NSString *randomCustomerPhoneNumber = [GGTestUtils randomStringWithLength:7];
+    
+    id mockDriver = mock([GGDriver class]);
+    [given([mockDriver phone]) willReturn:nil];
+    
+    GGHTTPClientManagerTestClass *mockHttp = (GGHTTPClientManagerTestClass *)self.trackerManager.httpManager;
+    mockHttp.driverPhoneResponse =  [GGTestUtils randomStringWithLength:7];
+    
+    [self.trackerManager sendPhoneNumberRequestForDriver:mockDriver inWaypointId:@123456 ofOrderID:@([mockOrder orderid]) byCustomerPhoneNumber:randomCustomerPhoneNumber withCompletionHandler:^(BOOL success, NSString * _Nullable driverPhone, NSError * _Nullable error) {
+        //
+
+        XCTAssertTrue(success);
+        XCTAssertTrue([driverPhone isEqualToString:mockHttp.driverPhoneResponse]);
+        
+    }];
     
 }
 

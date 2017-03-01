@@ -247,7 +247,11 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     }
     
  
-    [self.trackerManager sendPhoneNumberRequestForDriver:driver inWaypointId:@(waypoint.waypointId) ofOrderUUID:order.uuid byCustomerPhoneNumber:customerPhoneNumber withCompletionHandler:completionHandler];
+    [self.trackerManager sendPhoneNumberRequestForDriver:driver
+                                            inWaypointId:@(waypoint.waypointId)
+                                               ofOrderID:@(order.orderid)
+                                   byCustomerPhoneNumber:customerPhoneNumber
+                                   withCompletionHandler:completionHandler];
 }
 
 

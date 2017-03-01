@@ -21,36 +21,7 @@
 #import "GGBringgUtils.h"
 
 
-#define BCRealtimeServer @"realtime2-api.bringg.com"
 
-
-#define BCNameKey @"name"
-#define BCConfirmationCodeKey @"confirmation_code"
-#define BCDeveloperTokenKey @"developer_access_token"
-
-#define BCRatingTokenKey @"token"
-#define BCRatingKey @"rating"
-
-
-#define BCRESTMethodPost @"POST"
-#define BCRESTMethodGet @"GET"
-#define BCRESTMethodPut @"PUT"
-#define BCRESTMethodDelete @"DELETE"
-
-#define API_PATH_SIGN_IN @"/api/customer/sign_in"//method: POST; phone, name, confirmation_code, merchant_id, dev_access_token
-#define API_PATH_SHARED_LOCATION @"/shared/%@/location/"
-#define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
-#define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
-#define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
-#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid !!!!! creates new shared_location object !!!!
-#define API_PATH_WATCH_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid,  params - order_uuid
-
-//PRIVATE
-#define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone
-
-
-#define HTTP_FORMAT @"http://%@"
-#define HTTPS_FORMAT @"https://%@"
 
 @interface GGHTTPClientManager ()<NSURLSessionDelegate>
 
@@ -560,6 +531,45 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                    }
                    //
                }];
+}
+
+
+- (void)sendPhoneNumberRequestForWaypointId:(nonnull NSNumber *)waypointId
+                                  ofOrderId:(nonnull NSNumber *)orderId
+                      byCustomerPhoneNumber:(nonnull NSString *)customerPhoneNumber
+                      withCompletionHandler:(nullable GGDriverPhoneResponseHandler)completionHandler{
+    
+    // validate data
+    if (!waypointId || !orderId || !customerPhoneNumber) {
+        
+        if (completionHandler) {
+            completionHandler(NO, nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing required parameters"}]);
+        }
+        
+        return;
+        
+    }
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{PARAM_PHONE:customerPhoneNumber}];
+    
+    [self addAuthinticationToParams:&params];
+    
+    [self httpRequestWithMethod:BCRESTMethodGet
+                           path:[NSString stringWithFormat:API_PATH_DRIVER_PHONE, orderId, waypointId]
+                         params:params
+              completionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+        //
+        
+        // update last date
+        self.lastEventDate = [NSDate date];
+        
+        NSString *maskedPhone = [GGBringgUtils stringFromJSON:[JSON valueForKey:@"phone_number"] defaultTo:nil];
+                  
+        if (completionHandler) {
+            completionHandler(success, maskedPhone, error);
+        }
+
+    }];
 }
 
 #warning TODO - add Order method to header once server is ready

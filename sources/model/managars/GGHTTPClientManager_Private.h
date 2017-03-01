@@ -13,6 +13,38 @@
 #define POLLING_SEC 30
 #define MAX_WITHOUT_POLLING_SEC 240
 
+#define BCRealtimeServer @"realtime2-api.bringg.com"
+
+
+#define BCNameKey @"name"
+#define BCConfirmationCodeKey @"confirmation_code"
+#define BCDeveloperTokenKey @"developer_access_token"
+
+#define BCRatingTokenKey @"token"
+#define BCRatingKey @"rating"
+
+
+#define BCRESTMethodPost @"POST"
+#define BCRESTMethodGet @"GET"
+#define BCRESTMethodPut @"PUT"
+#define BCRESTMethodDelete @"DELETE"
+
+#define API_PATH_SIGN_IN @"/api/customer/sign_in"//method: POST; phone, name, confirmation_code, merchant_id, dev_access_token
+#define API_PATH_SHARED_LOCATION @"/shared/%@/location/"
+#define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
+#define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
+#define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
+#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid !!!!! creates new shared_location object !!!!
+#define API_PATH_WATCH_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid,  params - order_uuid
+#define API_PATH_DRIVER_PHONE @"api/customer/task/%@/way_point/%@/phone" // method: GET ; task id, waypoint id
+
+//PRIVATE
+#define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone
+
+
+#define HTTP_FORMAT @"http://%@"
+#define HTTPS_FORMAT @"https://%@"
+
 @interface GGHTTPClientManager ()
 @property (nullable, nonatomic, strong) NSString *developerToken;
 @property (nullable, nonatomic, strong) GGCustomer *customer;

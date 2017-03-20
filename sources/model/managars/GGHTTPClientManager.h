@@ -143,7 +143,8 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
         withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**
- *  get an updated shared location object from the service
+ *  get an updated shared location object from the service.
+ *  @usage - if shared uuid is expired no object will return
  *
  *  @param sharedLocationUUID id of shared location object obtained from a specific order
  *  @param completionHandler  block to handle async service response
@@ -151,7 +152,19 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 - (void)getSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
                          extras:(NSDictionary * _Nullable)extras
           withCompletionHandler:(nullable GGSharedLocationResponseHandler)completionHandler;
- 
+
+
+/**
+ *  get an updated shared location object from the service.
+ *  @usage - will always return even with expired objects
+ *
+ *  @param sharedLocationUUID id of shared location object obtained from a specific order
+ *  @param completionHandler  block to handle async service response
+ */
+- (void)getOrderSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
+                              extras:(NSDictionary * _Nullable)extras
+               withCompletionHandler:(nullable GGSharedLocationResponseHandler)completionHandler;
+
 /**
  *  send customer rating for a specific driver
  *

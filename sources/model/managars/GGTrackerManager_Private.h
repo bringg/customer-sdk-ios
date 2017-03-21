@@ -36,6 +36,10 @@
 
 @property (nonatomic, assign) NSUInteger numConnectionAttempts;
 
+@property (nonatomic, readwrite) GGRealTimeMontior * _Nullable liveMonitor;
+
+
+-(id)initTacker;
 
 /**
  *  uses REST api to start watching an order

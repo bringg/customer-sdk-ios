@@ -39,6 +39,7 @@
 
 #define API_PATH_SIGN_IN @"/api/customer/sign_in"//method: POST; phone, name, confirmation_code, merchant_id, dev_access_token
 #define API_PATH_SHARED_LOCATION @"/shared/%@/location/"
+#define API_PATH_SHARED @"/shared/%@/"
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
@@ -686,6 +687,36 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
     
     [self httpRequestWithMethod:BCRESTMethodGet
                            path:[NSString stringWithFormat:API_PATH_SHARED_LOCATION, sharedLocationUUID]
+                         params:params
+              completionHandler:^(BOOL success, id JSON, NSError *error) {
+                  
+                  // update last date
+                  self.lastEventDate = [NSDate date];
+                  
+                  GGSharedLocation *sharedLocation = nil;
+                  
+                  if (success) sharedLocation = [[GGSharedLocation alloc] initWithData:JSON];
+                  
+                  if (completionHandler) {
+                      completionHandler(success, JSON, sharedLocation, error);
+                  }
+                  //
+              }];
+}
+
+- (void)getOrderSharedLocationByUUID:(NSString * _Nonnull)sharedLocationUUID
+                              extras:(NSDictionary * _Nullable)extras
+               withCompletionHandler:(nullable GGSharedLocationResponseHandler)completionHandler{
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [self addAuthinticationToParams:&params];
+    
+    if (extras) {
+        [self injectCustomExtras:extras toParams:&params];
+    }
+    
+    [self httpRequestWithMethod:BCRESTMethodGet
+                           path:[NSString stringWithFormat:API_PATH_SHARED, sharedLocationUUID]
                          params:params
               completionHandler:^(BOOL success, id JSON, NSError *error) {
                   

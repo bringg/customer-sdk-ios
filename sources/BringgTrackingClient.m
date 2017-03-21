@@ -200,7 +200,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
         
 
         // get an updated shared location object for order
-        [self.httpManager getSharedLocationByUUID:order.sharedLocationUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error) {
+        [self.httpManager getOrderSharedLocationByUUID:order.sharedLocationUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error) {
             //
             if (success && sharedLocation) {
                 

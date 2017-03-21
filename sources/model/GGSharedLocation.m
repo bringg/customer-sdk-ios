@@ -17,6 +17,11 @@
 
 -(nullable instancetype)initWithData:(NSDictionary * _Nullable)data{
     
+    // dont init without any json data
+    if (!data) {
+        return nil;
+    }
+    
     if (self = [super init]) {
         //
         locationUUID = [GGBringgUtils stringFromJSON:[data objectForKey:PARAM_UUID] defaultTo:nil];

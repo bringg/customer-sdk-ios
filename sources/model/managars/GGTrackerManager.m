@@ -977,11 +977,31 @@
                 // check for share_uuid
                 if ([socketResponse isKindOfClass:[NSDictionary class]]) {
                     
+                    NSString *shareUUID = shareduuid;
+                    
+                    if (!shareUUID) {
+                        shareUUID = [socketResponse objectForKey:@"share_uuid"];
+                    }
+                    
+                    // try building the shared location object from callback
+                    GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
+                    
+                    // update order model with shared location object
+                    if (sharedLocation) {
+                        // updated the order model
+                        activeOrder.sharedLocationUUID = shareUUID;
+                        activeOrder.sharedLocation = sharedLocation;
+                        [_liveMonitor addAndUpdateOrder:activeOrder];
+                    }
+                    
+                    
                     BOOL isShareUUIDExpired = NO;
                     id expiredObj = [socketResponse objectForKey:@"expired"];
                     if ([expiredObj isKindOfClass:[NSNumber class]]) {
                         isShareUUIDExpired = ((NSNumber *)expiredObj).boolValue;
                     }
+                    
+                    
                     
                     if (isShareUUIDExpired) {
                         [activeOrder setStatus:OrderStatusDone];
@@ -991,19 +1011,8 @@
                         }
                     }
                     else {
-                        NSString *shareUUID = shareduuid;
-                        
-                        if (!shareUUID) {
-                            shareUUID = [socketResponse objectForKey:@"share_uuid"];
-                        }
-                        
-                        GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
-                        
-                        // updated the order model
-                        activeOrder.sharedLocationUUID = shareUUID;
-                        activeOrder.sharedLocation = sharedLocation;
-                        [_liveMonitor addAndUpdateOrder:activeOrder];
-                        
+
+                       
                         if (self.httpManager && shareUUID) {
                             // try to get the full order object once
                             [self getWatchedOrderByShareUUID:shareUUID orderUUID:uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {

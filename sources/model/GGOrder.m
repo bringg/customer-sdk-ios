@@ -57,11 +57,11 @@ static NSDateFormatter *dateFormat;
         
         
         // get shared location model
-        sharedLocation = [GGBringgUtils objectFromJSON:[data objectForKey:PARAM_SHARED_LOCATION] defaultTo:nil] ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]] : nil;
+        sharedLocation =  [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION]];
         
         // check alternative shared location param
         if (!sharedLocation) {
-            sharedLocation = [GGBringgUtils objectFromJSON:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE] defaultTo:nil]  ? [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE]] : nil;
+            sharedLocation = [[GGSharedLocation alloc] initWithData:[data objectForKey:PARAM_SHARED_LOCATION_ALTERNATE]];
         }
         
         
@@ -309,6 +309,7 @@ static NSDateFormatter *dateFormat;
 
 //MARK: Getters
 - (BOOL)isWithSharedUUID:(nonnull NSString *)sharedUUID{
+    
     return (self.sharedLocationUUID && [self.sharedLocationUUID isEqualToString:sharedUUID]) || (self.sharedLocation && self.sharedLocation.locationUUID && [self.sharedLocation.locationUUID isEqualToString:sharedUUID]);
 }
 

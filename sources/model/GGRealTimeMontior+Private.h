@@ -7,7 +7,7 @@
 //
 
 #import "GGRealTimeMontior.h"
-#import "BringgGlobals.h"
+#import <BringgTracking/BringgGlobals.h>
 #import "GGTrackerManager.h"
 #import "Reachability.h"
 

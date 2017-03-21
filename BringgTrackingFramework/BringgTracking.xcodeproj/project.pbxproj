@@ -16,7 +16,6 @@
 		110137761D74CE7E005E10C4 /* BringgTracking-OSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 110137751D74CE7E005E10C4 /* BringgTracking-OSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1101377D1D74CE7E005E10C4 /* BringgTracking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 110137731D74CE7E005E10C4 /* BringgTracking.framework */; };
 		110137821D74CE7E005E10C4 /* BringgTracking_OSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 110137811D74CE7E005E10C4 /* BringgTracking_OSXTests.m */; };
-		110137A21D74CF7C005E10C4 /* BringgGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD651D74BF2400DB13F4 /* BringgGlobals.h */; };
 		110137A51D74CF7C005E10C4 /* GGCustomer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD681D74BF2400DB13F4 /* GGCustomer.h */; };
 		110137A61D74CF7C005E10C4 /* GGCustomer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD691D74BF2400DB13F4 /* GGCustomer.m */; };
 		110137A71D74CF7C005E10C4 /* GGDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6A1D74BF2400DB13F4 /* GGDriver.h */; };
@@ -41,7 +40,6 @@
 		110137BA1D74CF7C005E10C4 /* GGSharedLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7D1D74BF2400DB13F4 /* GGSharedLocation.m */; };
 		110137BB1D74CF7C005E10C4 /* GGWaypoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD7E1D74BF2400DB13F4 /* GGWaypoint.h */; };
 		110137BC1D74CF7C005E10C4 /* GGWaypoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD7F1D74BF2400DB13F4 /* GGWaypoint.m */; };
-		110137BD1D74CF7D005E10C4 /* BringgGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD651D74BF2400DB13F4 /* BringgGlobals.h */; };
 		110137C01D74CF7D005E10C4 /* GGCustomer.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD681D74BF2400DB13F4 /* GGCustomer.h */; };
 		110137C11D74CF7D005E10C4 /* GGCustomer.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDD691D74BF2400DB13F4 /* GGCustomer.m */; };
 		110137C21D74CF7D005E10C4 /* GGDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 115EDD6A1D74BF2400DB13F4 /* GGDriver.h */; };
@@ -109,14 +107,12 @@
 		110138021D74CF99005E10C4 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */; };
 		110138031D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */; };
 		110138041D74CF99005E10C4 /* GGTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */; };
-		110138051D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */; };
 		110138061D74CF99005E10C4 /* BringgTrackingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */; };
 		110138071D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */; };
 		110138081D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */; };
 		110138091D74CF99005E10C4 /* GGNetworkUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0B1D74C1E800DB13F4 /* GGNetworkUtilsTests.m */; };
 		1101380A1D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0C1D74C1E800DB13F4 /* GGRealTimeMonitorTests.m */; };
 		1101380B1D74CF99005E10C4 /* GGTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0E1D74C1E800DB13F4 /* GGTestUtils.m */; };
-		1101380C1D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0F1D74C1E800DB13F4 /* GGTrackerManagerTests.m */; };
 		1101380D1D74CF9A005E10C4 /* BringgTrackingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE081D74C1E800DB13F4 /* BringgTrackingTests.m */; };
 		1101380E1D74CF9A005E10C4 /* GGBringgUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE091D74C1E800DB13F4 /* GGBringgUtilsTests.m */; };
 		1101380F1D74CF9A005E10C4 /* GGHTTPManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 115EDE0A1D74C1E800DB13F4 /* GGHTTPManagerTests.m */; };
@@ -610,7 +606,6 @@
 				110137D61D74CF7D005E10C4 /* GGWaypoint.h in Headers */,
 				110137C41D74CF7D005E10C4 /* GGFindMe.h in Headers */,
 				110137CE1D74CF7D005E10C4 /* GGRealTimeAdapter.h in Headers */,
-				110137BD1D74CF7D005E10C4 /* BringgGlobals.h in Headers */,
 				110137FB1D74CF89005E10C4 /* NSObject+Observer.h in Headers */,
 				110137D21D74CF7D005E10C4 /* GGRealTimeMontior.h in Headers */,
 				110137D11D74CF7D005E10C4 /* GGRealTimeMontior+Private.h in Headers */,
@@ -635,7 +630,6 @@
 				110137BB1D74CF7C005E10C4 /* GGWaypoint.h in Headers */,
 				110137A91D74CF7C005E10C4 /* GGFindMe.h in Headers */,
 				110137B31D74CF7C005E10C4 /* GGRealTimeAdapter.h in Headers */,
-				110137A21D74CF7C005E10C4 /* BringgGlobals.h in Headers */,
 				110137F91D74CF88005E10C4 /* NSObject+Observer.h in Headers */,
 				110137B71D74CF7C005E10C4 /* GGRealTimeMontior.h in Headers */,
 				110137B61D74CF7C005E10C4 /* GGRealTimeMontior+Private.h in Headers */,
@@ -1175,7 +1169,6 @@
 				110137661D74CE73005E10C4 /* BringgTracking_TVOSTests.m in Sources */,
 				796845FF1D86D6940063A295 /* GGOrderTests.m in Sources */,
 				1101380A1D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
-				1101380C1D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */,
 				110138061D74CF99005E10C4 /* BringgTrackingTests.m in Sources */,
 				110138071D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */,
 				110138081D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */,
@@ -1212,7 +1205,6 @@
 				110137821D74CE7E005E10C4 /* BringgTracking_OSXTests.m in Sources */,
 				796846001D86D6950063A295 /* GGOrderTests.m in Sources */,
 				110138031D74CF99005E10C4 /* GGRealTimeMonitorTests.m in Sources */,
-				110138051D74CF99005E10C4 /* GGTrackerManagerTests.m in Sources */,
 				110137FF1D74CF99005E10C4 /* BringgTrackingTests.m in Sources */,
 				110138001D74CF99005E10C4 /* GGBringgUtilsTests.m in Sources */,
 				110138011D74CF99005E10C4 /* GGHTTPManagerTests.m in Sources */,

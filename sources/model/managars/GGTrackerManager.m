@@ -211,34 +211,23 @@
     return _liveMonitor.waypointDelegates.allKeys;
 }
 
+- (nullable NSString *)sharedUUIDforDriverUUID:(nonnull NSString *)uuid{
+    
+    return [_liveMonitor getSharedUUIDforDriverUUID:uuid];
+    
+}
+
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid{
+    
+    return [_liveMonitor getDriverWithUUID:uuid];
+}
+
 - (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid{
     
     return [_liveMonitor getOrderWithUUID:uuid];
 }
 
-- (nullable GGOrder *)orderWithCompoundUUID:(nonnull NSString *)compoundUUID{
-    
-    
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    if (error) {
-        return nil;
-    }
-    
-    GGOrder *order = [_liveMonitor getOrderWithUUID:uuid];
-    
-    if (order && [order isWithSharedUUID:sharedUUID]) {
-        
-        return order;
-    }
-    
-    return nil;
-}
+
 
 
 #pragma mark - Observers
@@ -492,7 +481,7 @@
                     // notify all interested parties that there has been a status change in the order
                     [weakSelf notifyRESTUpdateForOrderWithUUID:activeOrder.uuid];
                     
-                    // notify all interested parties that there has been a status change in the order
+                    // notify all interested parties that there has been a status change for the driver
                     [weakSelf notifyRESTUpdateForDriverWithUUID:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
                     
                     
@@ -656,7 +645,7 @@
     GGDriver *driver;
     
     if (driverUUID) {
-        driver = [self.liveMonitor getDriverWithUUID:driverUUID];
+        driver = [self driverWithUUID:driverUUID];
     }else{
         driver = [self.liveMonitor getDriverWithID:@(order.driverId)];
     }
@@ -715,12 +704,10 @@
 }
 
 - (void)notifyRESTUpdateForDriverWithUUID:(NSString *)driverUUID andSharedUUID:(NSString *)shareUUID{
-     GGDriver *driver = [self.liveMonitor getDriverWithUUID:driverUUID];
-    
-     NSString *compoundKey = [[driverUUID stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
+     GGDriver *driver = [self driverWithUUID:driverUUID];
     
     // update the order delegate
-    id<DriverDelegate> delegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+    id<DriverDelegate> delegate = [_liveMonitor.driverDelegates objectForKey:driverUUID];
     
     if (delegate) {
         [delegate driverLocationDidChangeWithDriver:driver];
@@ -776,7 +763,7 @@
     [self disconnect];
 }
 
-- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid  latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
     
     if (!self.httpManager) {
         if (completionHandler) {
@@ -812,55 +799,7 @@
     }
 }
 
-- (void)sendFindMeRequestForOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
-    
-    if (!compoundUUID){
-        NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
-        
-        if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"no compound uuid supplied"}]);
-        }
-        
-        return;
-    }
 
-    
-    // parse the uuid, then check for valid order and valid findme config
-    // first parse the compound - if it isnt valid raise an exception
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    if (error) {
-        
-        NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
-        
-        if (completionHandler) {
-            completionHandler(NO, error);
-        }
- 
-        return;
-        
-    }else{
-        // get the matching order
-        GGOrder *order = [self orderWithCompoundUUID:compoundUUID];
-        
-        if (!order) {
-            if (completionHandler) {
-                completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with compound %@", compoundUUID]}]);
-            }
-            
-            return;
-            
-        }else{
-            [self sendFindMeRequestForOrder:order latitude:lat longitude:lng withCompletionHandler:completionHandler];
-        }
-        
-    }
-}
 
 - (void)sendFindMeRequestForOrder:(nonnull GGOrder *)order latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
     
@@ -877,7 +816,7 @@
 
 
 
-- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+- (void)startWatchingOrderWithUUID:(nonnull NSString *)uuid
              accessControlParamKey:(nonnull NSString *)accessControlParamKey
            accessControlParamValue:(nonnull NSString *)accessControlParamValue
                           delegate:(id <OrderDelegate> _Nullable)delegate{
@@ -1119,7 +1058,7 @@
 
 
  
-- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
+- (void)startWatchingDriverWithUUID:(nonnull NSString *)uuid
               accessControlParamKey:(nonnull NSString *)accessControlParamKey
             accessControlParamValue:(nonnull NSString *)accessControlParamValue
                            delegate:(id <DriverDelegate> _Nullable)delegate {
@@ -1134,18 +1073,17 @@
     
     GGDriver *driver = [[GGDriver alloc] initWithUUID:uuid];
     
-    // here the key is a match
-    __block NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareduuid];
-    
-    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+
+    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     
     if (!existingDelegate) {
         @synchronized(self) {
-            [_liveMonitor.driverDelegates setObject:delegate forKey:compoundKey];
+            [_liveMonitor.driverDelegates setObject:delegate forKey:uuid];
         }
         
         [_liveMonitor sendWatchDriverWithDriverUUID:uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:^(BOOL success,id socketResponse, NSError *error) {
-            id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+            
+            id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:uuid];
             
             if (!success) {
                 void(^callDelegateBlock)(void) = ^(void) {
@@ -1262,24 +1200,6 @@
     }
 }
 
-- (void)stopWatchingOrderWithCompoundUUID:(NSString *)compoundUUID{
-    // parse the compound
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    // if there is an error in parsing return no
-    if (error) {
-        [NSException raise:@"invalid compound UUID" format:@"compound UUID must be of valid structure"];
-        return ;
-    }
-    
-    [self stopWatchingOrderWithUUID:uuid];
-
-}
 
 - (void)stopWatchingAllOrders{
     @synchronized(_liveMonitor) {
@@ -1288,18 +1208,17 @@
     }
 }
 
-- (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
+- (void)stopWatchingDriverWithUUID:(NSString *)uuid {
     
     
-     NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
     
-    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(_liveMonitor) {
             
-            NSLog(@"SHOULD START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, existingDelegate);
+            NSLog(@"SHOULD START WATCHING DRIVER %@ with delegate %@", uuid, existingDelegate);
             
-            [_liveMonitor.driverDelegates removeObjectForKey:compoundKey];
+            [_liveMonitor.driverDelegates removeObjectForKey:uuid];
             
         }
     }
@@ -1373,26 +1292,21 @@
     
     [self.monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //
-        
-        NSString *driverCompoundKey = (NSString *)obj;
-        
-        
-        NSString *driverUUID;
-        NSString *sharedUUID;
-        
-        [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+        NSString *driverUUID = (NSString *)obj;
         
         //check there is still a delegate listening
-        id<DriverDelegate> driverDelegate = [_liveMonitor.driverDelegates objectForKey:driverCompoundKey];
+        id<DriverDelegate> driverDelegate = [_liveMonitor.driverDelegates objectForKey:driverUUID];
         
         // remove the old entry in the dictionary
-        [_liveMonitor.driverDelegates removeObjectForKey:driverCompoundKey];
+        [_liveMonitor.driverDelegates removeObjectForKey:driverUUID];
         
-        // if delegate isnt null than start watching again
-        if (driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
+        NSString *sharedUUID = [self sharedUUIDforDriverUUID:driverUUID];
+        
+        // if delegate isnt null than and we have a valid shared uuid start watching again
+        if (![NSString isStringEmpty:sharedUUID] && driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
             
-            if ([driverDelegate respondsToSelector:@selector(trackerWillReviveWatchedDriver:withSharedUUID:)]) {
-                [driverDelegate trackerWillReviveWatchedDriver:driverUUID withSharedUUID:sharedUUID];
+            if ([driverDelegate respondsToSelector:@selector(trackerWillReviveWatchedDriver:)]) {
+                [driverDelegate trackerWillReviveWatchedDriver:driverUUID];
             }
 
             [self startWatchingDriverWithUUID:driverUUID accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:sharedUUID delegate:driverDelegate];
@@ -1557,39 +1471,15 @@
     
 }
 
-- (BOOL)isWatchingOrderWithCompoundUUID:(NSString *)compoundUUID{
-    if (!compoundUUID) {
-        return NO;
-    }
-    
-    // parse the compound
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    // if there is an error in parsing return no
-    if (error) {
-        return NO;
-    }
-    
-    // return if watching the order uuid
-    return [self isWatchingOrderWithUUID:uuid];
-}
 
 - (BOOL)isWatchingDrivers {
     return _liveMonitor.doMonitoringDrivers;
     
 }
 
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID {
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid {
     
-    NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
-    
-    
-    return ([_liveMonitor.driverDelegates objectForKey:compoundKey]) ? YES : NO;
+    return ([_liveMonitor.driverDelegates objectForKey:uuid]) ? YES : NO;
     
 }
 

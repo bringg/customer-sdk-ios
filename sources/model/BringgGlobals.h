@@ -240,9 +240,8 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  notifies that the tracker is about to revive all previously monitored drivers
  *
  *  @param driverUUID uuid of driver
- *  @param sharedUUID uuid of shared
  */
-- (void)trackerWillReviveWatchedDriver:(nonnull NSString *)driverUUID withSharedUUID:(nonnull NSString *)sharedUUID;
+- (void)trackerWillReviveWatchedDriver:(nonnull NSString *)driverUUID;
 
 @end
 

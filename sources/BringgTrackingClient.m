@@ -292,10 +292,9 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 }
 
 
-- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                         shareUUID:(NSString *_Nullable)shareUUID{
+- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid{
     
-    [self.trackerManager stopWatchingDriverWithUUID:uuid shareUUID:shareUUID];
+    [self.trackerManager stopWatchingDriverWithUUID:uuid];
 }
 
 - (void)stopWatchingAllDrivers{
@@ -318,9 +317,9 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     return [self.trackerManager isWatchingOrderWithUUID:uuid];
 }
 
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID{
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid{
     
-    return [self.trackerManager isWatchingDriverWithUUID:uuid andShareUUID:shareUUID];
+    return [self.trackerManager isWatchingDriverWithUUID:uuid];
 }
 
 - (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID{

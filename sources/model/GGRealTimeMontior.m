@@ -215,6 +215,29 @@
     return retVal;
 }
 
+- (nullable NSString *)getSharedUUIDforDriverUUID:(nonnull NSString *)uuid{
+    
+    __block NSString *retVal = nil;
+    // find an active order that uses this driver and returns its shared uuid
+    [self.activeOrders.allValues enumerateObjectsUsingBlock:^(GGOrder * _Nonnull order, NSUInteger idx, BOOL * _Nonnull stop) {
+        // check for shared uuid only in active orders
+        if (![NSString isStringEmpty:order.sharedLocationUUID] && [order isActive]) {
+         
+            if ([order.driverUUID isEqualToString:uuid]) {
+                retVal = order.sharedLocationUUID;
+                *stop = YES;
+                
+            }else if ([order.sharedLocation.driver.uuid isEqualToString:uuid]) {
+                retVal = order.sharedLocationUUID;
+                *stop = YES;
+            }
+        }
+        
+    }];
+    
+    return retVal;
+}
+
 -(GGDriver * _Nullable)getDriverWithUUID:(NSString * _Nonnull)uuid{
     return [self.activeDrivers objectForKey:uuid];
 }

@@ -313,4 +313,8 @@ static NSDateFormatter *dateFormat;
     return (self.sharedLocationUUID && [self.sharedLocationUUID isEqualToString:sharedUUID]) || (self.sharedLocation && self.sharedLocation.locationUUID && [self.sharedLocation.locationUUID isEqualToString:sharedUUID]);
 }
 
+- (BOOL)isActive{
+    return self.status == OrderStatusCreated || status == OrderStatusAccepted || status == OrderStatusAssigned || status == OrderStatusOnTheWay || status == OrderStatusCheckedIn;
+}
+
 @end

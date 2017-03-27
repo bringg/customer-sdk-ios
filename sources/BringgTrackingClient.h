@@ -191,10 +191,9 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
  *  stops tracking a specific driver
  *
  *  @param uuid      uuid of driver
- *  @param shareUUID uuid of shared location object associated with a specific order
  */
-- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                         shareUUID:(NSString *_Nullable)shareUUID;
+- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
+
 /**
  *  stops watching all drivers
  */
@@ -240,7 +239,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
  *
  *  @return BOOL
  */
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID;
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
 
 
 /**

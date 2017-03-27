@@ -50,8 +50,8 @@
 
 @property (nonnull, nonatomic,strong) SocketIOClient *socketIO;
 @property (nullable, nonatomic, copy) CompletionBlock socketIOConnectedBlock;
-@property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
-@property (nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
+@property (nullable, nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
+@property (nullable, nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
 
 
 

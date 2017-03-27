@@ -104,4 +104,11 @@
  */
 - (BOOL)isWithSharedUUID:(nonnull NSString *)sharedUUID;
 
+/**
+ *  check if order is in one of the active states
+ *
+ *  @return BOOL
+ */
+- (BOOL)isActive;
+
 @end

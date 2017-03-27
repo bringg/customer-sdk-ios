@@ -844,10 +844,13 @@
     [_liveMonitor addAndUpdateOrder:activeOrder];
     
     if (!existingDelegate) {
-        @synchronized(self) {
-            [_liveMonitor.orderDelegates setObject:delegate forKey:uuid];
-        }
         
+        if (delegate) {
+            @synchronized(self) {
+                [_liveMonitor.orderDelegates setObject:delegate forKey:uuid];
+            }
+        }
+
         [_liveMonitor sendWatchOrderWithOrderUUID:uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
             
             
@@ -1097,10 +1100,13 @@
     id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     
     if (!existingDelegate) {
-        @synchronized(self) {
-            [_liveMonitor.driverDelegates setObject:delegate forKey:uuid];
-        }
         
+        if (delegate) {
+            @synchronized(self) {
+                [_liveMonitor.driverDelegates setObject:delegate forKey:uuid];
+            }
+        }
+ 
         [_liveMonitor sendWatchDriverWithDriverUUID:uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:^(BOOL success,id socketResponse, NSError *error) {
             
             id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:uuid];
@@ -1151,10 +1157,14 @@
         id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
         
         if (!existingDelegate) {
-            @synchronized(self) {
-                [_liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
-                
+            
+            if (delegate) {
+                @synchronized(self) {
+                    [_liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
+                    
+                }
             }
+            
             [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
                
                 id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];

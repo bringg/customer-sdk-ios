@@ -125,16 +125,14 @@
 
 
 /**
- *  asks the real time service to start tracking a specific driver
+ *  asks the real time service to start tracking a specific driver using driver uuid and customer access token
  *
  *  @param uuid      uuid of driver
- *  @param customerAccessToken  customer access token
  *  @param delegate  object to recieve driver callbacks
  *  @see DriverDelegate
  */
-- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                customerAccessToken:(NSString *_Nonnull)customerAccessToken
-                           delegate:(id <DriverDelegate> _Nullable)delegate;
+- (void)startWatchingCustomerDriverWithUUID:(NSString *_Nonnull)uuid
+                                   delegate:(id <DriverDelegate> _Nullable)delegate;
 
 /**
  *  asks the real time service to start tracking a specific waypoint

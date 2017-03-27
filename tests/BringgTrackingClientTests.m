@@ -26,6 +26,7 @@
 #import "GGDriver.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
+#import "GGCustomer.h"
 
 #define TEST_DEV_TOKEN @"SOME_DEV_TOKEN"
 
@@ -36,9 +37,18 @@
 @property (nullable, nonatomic, strong) NSError * lastOrderError;
 @property (nullable, nonatomic, strong) NSError * lastDriverError;
 
+- (void)resetDelegate;
+
 @end
 
 @implementation GGTestRealTimeMockDelegate
+
+- (void)resetDelegate{
+    self.lastUpdatedOrder = nil;
+    self.lastUpdatedDriver = nil;
+    self.lastOrderError = nil;
+    self.lastDriverError = nil;
+}
 
 - (void)trackerDidConnect{
     
@@ -59,7 +69,7 @@
 
 -(void)watchDriverFailedForDriver:(GGDriver *)driver error:(NSError *)error{
     self.lastUpdatedDriver = driver;
-    self.lastOrderError = error;
+    self.lastDriverError = error;
 }
 
 -(void)watchOrderFailForOrder:(GGOrder *)order error:(NSError *)error{
@@ -184,6 +194,8 @@
 
 @interface BringgTrackingClientTestClass : BringgTrackingClient<PrivateClientConnectionDelegate>
 
+@property (nullable, nonatomic, strong) GGCustomer *mockCustomer;
+
 @end
 
 @implementation BringgTrackingClientTestClass
@@ -210,6 +222,10 @@
     self.trackerManager.logsEnabled = NO;
 }
 
+- (nullable GGCustomer *)signedInCustomer{
+    return self.mockCustomer;
+    
+}
 
 @end
 
@@ -256,24 +272,24 @@
     
     NSString *shareduuid = nil;
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
     
     shareduuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
     
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
     
     shareduuid = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:self.realtimeDelegate]);
+    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
     
 }
 
@@ -282,25 +298,87 @@
     
     NSString *customerToken = nil;
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:self.realtimeDelegate]);
+    
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
     
     customerToken = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
     
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:self.realtimeDelegate]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
     
     customerToken = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:self.realtimeDelegate]);
+    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
     
+}
+
+- (void)testWatchingDriverUsingUUIDAndSharedUUID{
+    NSString *uuid = nil;
+    
+    NSString *shareduuid = nil;
+    
+    
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    
+    uuid = @"";
+    
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    
+    shareduuid = @"";
+    
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    
+    uuid = @"asd_asd_asdads";
+    
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    
+    shareduuid = @"fefe-asd-fasd";
+    
+    XCTAssertNoThrow([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    
+}
+
+- (void)testWatchingCustomerDriver{
+     NSString *uuid = nil;
+    
+    XCTAssertThrows([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:nil]);
+    
+    uuid = @"";
+    
+    XCTAssertThrows([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:nil]);
+    
+    uuid = @"asd_asd_asdads";
+    
+    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
+    
+    XCTAssertNoThrow([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate]);
+    XCTAssertNotNil(delegate.lastDriverError);
+    XCTAssertTrue([[delegate.lastDriverError.userInfo valueForKey:NSLocalizedDescriptionKey] isEqualToString:@"cant watch driver without valid customer"]);
+    
+    // define a mock customer
+    NSString *token = @"12345654321";
+    GGCustomer *mockCustomer = [[GGCustomer alloc] init];
+    mockCustomer.customerToken = token;
+    
+    self.trackingClient.mockCustomer = mockCustomer;
+
+    [delegate resetDelegate];
+    
+    // now calling the watch customer driver should work, no exception , no error, since we have a customer object
+    XCTAssertNoThrow([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate]);
+    XCTAssertNil(delegate.lastDriverError);
+    
+    
+    // cleanup
+    self.trackingClient.mockCustomer = nil;
 }
 
 - (void)testRequestingFindMeUsingOrderUUID{

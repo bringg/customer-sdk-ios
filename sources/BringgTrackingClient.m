@@ -198,23 +198,38 @@
 }
 
 
-- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                customerAccessToken:(NSString *_Nonnull)customerAccessToken
-                           delegate:(id <DriverDelegate> _Nullable)delegate{
+- (void)startWatchingCustomerDriverWithUUID:(NSString *_Nonnull)uuid
+                                   delegate:(id <DriverDelegate> _Nullable)delegate{
     
     
     NSLog(@"Trying to start watching using customer token on driver uuid: %@, with delegate %@", uuid, delegate);
     
     
-    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:customerAccessToken]) {
-        [NSException raise:@"Invalid params" format:@"driver and customer token can not be empty"];
+    if ([NSString isStringEmpty:uuid]) {
+        [NSException raise:@"Invalid params" format:@"driver uuid can not be empty"];
         
         return;
     }
     
-    [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+    NSString *customerAccessToken = [[self signedInCustomer] customerToken];
     
-    
+    if (![NSString isStringEmpty:customerAccessToken]) {
+         [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+    }else{
+        // if we can find a shared uuid for this driver use it to start watching. if not call the watch failed on the delegate
+        NSString *sharedUUID = [self sharedUUIDForDriverUUID:uuid];
+        
+        if (![NSString isStringEmpty:sharedUUID]) {
+            
+             [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:sharedUUID delegate:delegate];
+        }else if ([delegate respondsToSelector:@selector(watchDriverFailedForDriver:error:)]){
+            
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:0 userInfo:@{NSLocalizedDescriptionKey: @"cant watch driver without valid customer"}];
+            
+            [delegate watchDriverFailedForDriver:nil error:error];
+        }
+    }
+
 }
 
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId

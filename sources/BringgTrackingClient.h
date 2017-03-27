@@ -86,15 +86,28 @@
 
 
 /**
- *  starts watching an order using both order uuid and shared uuid (optional)
+ *  starts watching an order using both order uuid and shared uuid
  *
  *  @param uuid       order uuid
  *  @param shareduuid shared uuid
  *  @param delegate   delegate
- *  @throws if invalid or missing order UUID
+ *  @throws if invalid or missing either order UUID or shared UUID
  */
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                        sharedUUID:(NSString *_Nonnull)shareduuid
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
+
+
+/**
+ *  starts watching an order using both order uuid and shared uuid
+ *
+ *  @param uuid       order uuid
+ *  @param customerAccessToken customer access token
+ *  @param delegate   delegate
+ *  @throws if invalid or missing either order UUID or shared UUID
+ */
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+               customerAccessToken:(NSString *_Nonnull)customerAccessToken
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
@@ -107,7 +120,20 @@
  *  @see DriverDelegate
  */
 - (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                          shareUUID:(NSString *_Nonnull)shareUUID
+                          shareUUID:(NSString *_Nonnull)shareduuid
+                           delegate:(id <DriverDelegate> _Nullable)delegate;
+
+
+/**
+ *  asks the real time service to start tracking a specific driver
+ *
+ *  @param uuid      uuid of driver
+ *  @param customerAccessToken  customer access token
+ *  @param delegate  object to recieve driver callbacks
+ *  @see DriverDelegate
+ */
+- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
+                customerAccessToken:(NSString *_Nonnull)customerAccessToken
                            delegate:(id <DriverDelegate> _Nullable)delegate;
 
 /**

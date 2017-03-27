@@ -16,7 +16,7 @@
 #import "GGSharedLocation.h"
 #import "GGRating.h"
 #import "BringgPrivates.h"
-
+#import "NSString+Extensions.h"
 
 #define LOCAL_URL @"http://10.0.1.125"
 #define USE_LOCAL NO
@@ -149,21 +149,73 @@
 
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                        sharedUUID:(NSString *_Nonnull)shareduuid
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
-    [self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:delegate];
+    NSLog(@"Trying to start watching on order uuid: %@, shared %@, with delegate %@", uuid, shareduuid, delegate);
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareduuid]) {
+        [NSException raise:@"Invalid params" format:@"Order and Share UUIDs can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareduuid delegate:delegate];
+}
+
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+               customerAccessToken:(NSString *_Nonnull)customerAccessToken
+                          delegate:(id <OrderDelegate> _Nullable)delegate{
+ 
+    NSLog(@"Trying to start watching using customer token on order uuid: %@, with delegate %@", uuid, delegate);
+    
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:customerAccessToken]) {
+        [NSException raise:@"Invalid params" format:@"Order and customer token can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
 }
 
 
 
 - (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                          shareUUID:(NSString *_Nonnull)shareUUID
+                          shareUUID:(NSString *_Nonnull)shareduuid
                            delegate:(id <DriverDelegate> _Nullable)delegate{
     
-    [self.trackerManager startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    NSLog(@"Trying to start watching on driver uuid: %@, with delegate %@", uuid, delegate);
+    
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareduuid]) {
+        [NSException raise:@"Invalid params" format:@"driver and shared uuid can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareduuid delegate:delegate];
 }
 
+
+- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
+                customerAccessToken:(NSString *_Nonnull)customerAccessToken
+                           delegate:(id <DriverDelegate> _Nullable)delegate{
+    
+    
+    NSLog(@"Trying to start watching using customer token on driver uuid: %@, with delegate %@", uuid, delegate);
+    
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:customerAccessToken]) {
+        [NSException raise:@"Invalid params" format:@"driver and customer token can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+    
+    
+}
 
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId
                                andOrderUUID:(NSString * _Nonnull)orderUUID

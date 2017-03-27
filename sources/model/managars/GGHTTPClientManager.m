@@ -19,6 +19,7 @@
 #import "BringgGlobals.h"
 #import "GGNetworkUtils.h"
 #import "GGBringgUtils.h"
+#import "NSString+Extensions.h"
 
 
 #define BCRealtimeServer @"realtime2-api.bringg.com"
@@ -427,17 +428,27 @@
  
 }
 
-- (void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                    shareUUID:(NSString * _Nullable)shareUUID
-                       extras:(NSDictionary * _Nullable)extras
+- (void)watchOrderByOrderUUID:(nonnull NSString *)orderUUID
+        accessControlParamKey:(nonnull NSString *)accessControlParamKey
+      accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                       extras:(nullable NSDictionary *)extras
         withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
+    
+    if ([NSString isStringEmpty:orderUUID] || [NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue]) {
+        
+        if (completionHandler) {
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing mandatory params"}];
+            completionHandler(NO, nil, nil, error);
+        }
+        
+        return;
+    }
+    
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
     
-    if (shareUUID.length) {
-        [params setObject:shareUUID forKey:PARAM_SHARE_UUID];
-    }
+    [params setObject:accessControlParamValue forKey:accessControlParamKey];
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];

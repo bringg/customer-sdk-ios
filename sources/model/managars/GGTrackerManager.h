@@ -236,53 +236,39 @@
                         longitude:(double)lng
             withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
-/**
- *  asks the real time service to start tracking a specific order
- *
- *  @param uuid     uuid of order
- *  @param delegate object to recieve order callbacks
- *  @see OrderDelegate
- */
-- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                          delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
 
 /**
  *  starts watching an order using both order uuid and shared uuid (optional)
  *
- *  @param uuid       order uuid
- *  @param shareduuid shared uuid
+ *  @param uuid                     order uuid
+ *  @param accessControlParamKey    access control param key
+ *  @param accessControlParamValue    access control param value
  *  @param delegate   delegate
- *  @throws if invalid or missing order UUID
+ *  @throws if invalid or missing order UUID or shared uuid
  */
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+             accessControlParamKey:(nonnull NSString *)accessControlParamKey
+           accessControlParamValue:(nonnull NSString *)accessControlParamValue
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
-/**
- *  asks the real time service to start tracking a specific order
- *  this method throws if not valid compound uuid
- *
- *  @param compoundUUID order compound uuid
- *  @param delegate object to recieve order callbacks
- *  @see OrderDelegate
- *  @throws exception if invalid compound uuid
- */
-- (void)startWatchingOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID
-                          delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
  *  asks the real time service to start tracking a specific driver
  *
  *  @param uuid      uuid of driver
- *  @param shareUUID uuid of shared location object associated with a specific order
+ *  @param accessControlParamKey    access control param key
+ *  @param accessControlParamValue    access control param value
  *  @param delegate  object to recieve driver callbacks
  *  @see DriverDelegate
  */
 - (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                          shareUUID:(NSString *_Nonnull)shareUUID
+              accessControlParamKey:(nonnull NSString *)accessControlParamKey
+            accessControlParamValue:(nonnull NSString *)accessControlParamValue
                            delegate:(id <DriverDelegate> _Nullable)delegate;
+
+
 
 /**
  *  asks the real time service to start tracking a specific waypoint
@@ -293,7 +279,7 @@
  *  @see WaypointDelegate
  */
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId
-                               andOrderUUID:(NSString * _Nonnull)orderUUID
+                               andOrderUUID:(NSString *_Nonnull)orderUUID
                                    delegate:(id <WaypointDelegate> _Nullable)delegate;
 
 

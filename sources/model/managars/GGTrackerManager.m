@@ -859,18 +859,33 @@
                 if ([self canPollForOrders]) {
                     
                     __weak typeof(self) weakSelf = self;
+                    // try watching via REST api
                     [self handleRealTimeWatchOrderFailForOrder:activeOrder accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue orderDelegate:delegateOfOrder pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                         //
                         if (success) {
                             [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
+                            
+                            // notify watch success
+                            if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    // notify socket fail
+                                    [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
+                                    
+                                });
+                            }
                         }
                         else{
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                // notify socket fail
-                                if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                             // notify watch fail
+                            if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                   
                                     [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
-                                }
-                            });
+                                
+                                });
+                            }
+                            
                         }
                     }];
                     
@@ -878,7 +893,12 @@
                 else {
                      // notify watch fail
                     if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                        [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
+                            
+                        });
                     }
                 }
             }

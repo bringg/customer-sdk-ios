@@ -178,7 +178,9 @@
  */
 - (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid;
 
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid;
 
+- (nullable NSString *)sharedUUIDforDriverUUID:(nonnull NSString *)uuid;
 
 //MARK: track actions
 

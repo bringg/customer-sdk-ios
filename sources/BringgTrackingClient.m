@@ -7,6 +7,7 @@
 //
 
 #import "BringgTrackingClient.h"
+#import "BringgTrackingClient_Private.h"
 #import "GGHTTPClientManager.h"
 #import "GGHTTPClientManager_Private.h"
 #import "GGTrackerManager.h"   
@@ -24,18 +25,7 @@
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>
 
 
-@property (nonnull, nonatomic, strong) NSString *developerToken;
-@property (nonnull, nonatomic, strong) GGTrackerManager *trackerManager;
-@property (nonnull, nonatomic, strong) GGHTTPClientManager *httpManager;
 
-@property (nonatomic, weak) id<RealTimeDelegate> realTimeDelegate;
-
-@property (nonatomic) BOOL useSecuredConnection;
-@property (nonatomic) BOOL shouldAutoWatchDriver;
-@property (nonatomic) BOOL shouldAutoWatchOrder;
-
-
-- (id)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
 @end
 
@@ -56,7 +46,7 @@
     return sharedObject;
 }
 
-- (id)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
+- (instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
         
@@ -67,23 +57,33 @@
         }
         
         // init the http manager and tracking manager
-        self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:devToken];
-        [self.httpManager useSecuredConnection:self.useSecuredConnection];
+        [self setupHTTPManagerWithDevToken:devToken securedConnection:self.useSecuredConnection];
 
+        [self setupTrackerManagerWithDevToken:devToken httpManager:self.httpManager realtimeDelegate:delegate];
         
-        self.trackerManager = [GGTrackerManager tracker];
-        [self.trackerManager setDeveloperToken:devToken];
-        [self.trackerManager setHTTPManager:self.httpManager];
-        [self.trackerManager setRealTimeDelegate:delegate];
-        
-        // add connection delegate
-        [self.httpManager setConnectionDelegate:self];
-        [self.trackerManager setConnectionDelegate:self];
-        
-        self.trackerManager.logsEnabled = NO;
     }
     
     return self;
+}
+
+- (void)setupHTTPManagerWithDevToken:(nonnull NSString *)devToken securedConnection:(BOOL)useSecuredConnection{
+    self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:devToken];
+    [self.httpManager useSecuredConnection:useSecuredConnection];
+    
+    [self.httpManager setConnectionDelegate:self];
+}
+
+
+- (void)setupTrackerManagerWithDevToken:(nonnull NSString *)devToken httpManager:(nonnull GGHTTPClientManager *)httpManager realtimeDelegate:(nonnull id<RealTimeDelegate>)delegate {
+    
+    self.trackerManager = [GGTrackerManager tracker];
+    [self.trackerManager setDeveloperToken:devToken];
+    [self.trackerManager setHTTPManager:self.httpManager];
+    [self.trackerManager setRealTimeDelegate:delegate];
+    
+    [self.trackerManager setConnectionDelegate:self];
+    
+    self.trackerManager.logsEnabled = NO;
 }
 
 //MARK: -- Connection
@@ -329,6 +329,14 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 
 - (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid{
     return [self.trackerManager orderWithUUID:uuid];
+}
+
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid{
+    return [self.trackerManager driverWithUUID:uuid];
+}
+
+- (nullable NSString*)sharedUUIDForDriverUUID:(NSString *)driveruuid{
+    return [self.trackerManager sharedUUIDforDriverUUID:driveruuid];
 }
 
 //MARK: -- Private

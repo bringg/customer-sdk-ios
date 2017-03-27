@@ -232,6 +232,16 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
 - (BOOL)isWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
 
 
+
+/**
+ *  return a driver matching a uuid
+ *
+ *  @param uuid driver uuid to search
+ *
+ *  @return GGDriver
+ */
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid;
+
 /**
  *  tell if a specific driver is being watched
  *
@@ -241,6 +251,15 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
  */
 - (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
 
+
+/**
+ *  return a shared uuid object matching a driver uuid
+ *
+ *  @param uuid driver uuid to search by
+ *
+ *  @return NSString
+ */
+- (nullable NSString *)sharedUUIDForDriverUUID:(nonnull NSString*)driveruuid;
 
 /**
  *  tell if a specific waypoint is being watched

@@ -211,7 +211,7 @@
     return _liveMonitor.waypointDelegates.allKeys;
 }
 
-- (nullable NSString *)sharedUUIDforDriverUUID:(nonnull NSString *)uuid{
+- (nullable NSString *)shareUUIDforDriverUUID:(nonnull NSString *)uuid{
     
     return [_liveMonitor getSharedUUIDforDriverUUID:uuid];
     
@@ -1330,7 +1330,7 @@
         // remove the old entry in the dictionary
         [_liveMonitor.driverDelegates removeObjectForKey:driverUUID];
         
-        NSString *shareUUID = [self sharedUUIDforDriverUUID:driverUUID];
+        NSString *shareUUID = [self shareUUIDforDriverUUID:driverUUID];
         
         // if delegate isnt null than and we have a valid shared uuid start watching again
         if (![NSString isStringEmpty:shareUUID] && driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {

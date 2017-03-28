@@ -180,7 +180,7 @@
 
 - (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid;
 
-- (nullable NSString *)sharedUUIDforDriverUUID:(nonnull NSString *)uuid;
+- (nullable NSString *)shareUUIDforDriverUUID:(nonnull NSString *)uuid;
 
 //MARK: track actions
 

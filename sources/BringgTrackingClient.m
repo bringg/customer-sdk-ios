@@ -351,7 +351,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 }
 
 - (nullable NSString *)shareUUIDForDriverWithUUID:(nonnull NSString*)driverUUID{
-    return [self.trackerManager sharedUUIDforDriverUUID:driverUUID];
+    return [self.trackerManager shareUUIDforDriverUUID:driverUUID];
 }
 
 //MARK: -- Private

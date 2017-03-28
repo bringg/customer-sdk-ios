@@ -114,19 +114,19 @@
  *
  *  @param compoundUUID         an order compound UUID
  *  @param orderUUID            order uuid pointer
- *  @param sharedUUID           shared uuid pointer
+ *  @param shareUUID           shared uuid pointer
  *  @param errorPointer         pointer to an error object incase of exception
  */
-+ (void)parseOrderCompoundUUID:(NSString * _Nonnull)compoundUUID toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID error:(NSError * _Nullable *_Nullable)errorPointer;
++ (void)parseOrderCompoundUUID:(NSString * _Nonnull)compoundUUID toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)shareUUID error:(NSError * _Nullable *_Nullable)errorPointer;
 
 /**
  *  parses driver compound key into a pointer to driver uuid and shared uuid
  *
  *  @param key        the compund key
  *  @param driverUUID  driver uuid pointer
- *  @param sharedUUID shared uuid pointer
+ *  @param shareUUID shared uuid pointer
  */
-+ (void)parseDriverCompoundKey:(NSString * _Nonnull)key toDriverUUID:(NSString *_Nonnull*_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID;
++ (void)parseDriverCompoundKey:(NSString * _Nonnull)key toDriverUUID:(NSString *_Nonnull*_Nonnull)driverUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)shareUUID;
 
 
 /**

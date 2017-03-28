@@ -149,18 +149,18 @@
 
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nonnull)shareduuid
+                         shareUUID:(NSString *_Nonnull)shareUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
-    NSLog(@"Trying to start watching on order uuid: %@, shared %@, with delegate %@", uuid, shareduuid, delegate);
+    NSLog(@"Trying to start watching on order uuid: %@, shared %@, with delegate %@", uuid, shareUUID, delegate);
     
-    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareduuid]) {
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareUUID]) {
         [NSException raise:@"Invalid params" format:@"Order and Share UUIDs can not be empty"];
         
         return;
     }
     
-    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareduuid delegate:delegate];
+    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
 }
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
@@ -182,19 +182,19 @@
 
 
 - (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                          shareUUID:(NSString *_Nonnull)shareduuid
+                          shareUUID:(NSString *_Nonnull)shareUUID
                            delegate:(id <DriverDelegate> _Nullable)delegate{
     
     NSLog(@"Trying to start watching on driver uuid: %@, with delegate %@", uuid, delegate);
     
     
-    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareduuid]) {
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareUUID]) {
         [NSException raise:@"Invalid params" format:@"driver and shared uuid can not be empty"];
         
         return;
     }
     
-    [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareduuid delegate:delegate];
+    [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
 }
 
 
@@ -217,11 +217,11 @@
          [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
     }else{
         // if we can find a shared uuid for this driver use it to start watching. if not call the watch failed on the delegate
-        NSString *sharedUUID = [self sharedUUIDForDriverUUID:uuid];
+        NSString *shareUUID = [self shareUUIDForDriverWithUUID:uuid];
         
-        if (![NSString isStringEmpty:sharedUUID]) {
+        if (![NSString isStringEmpty:shareUUID]) {
             
-             [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:sharedUUID delegate:delegate];
+             [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
         }else if ([delegate respondsToSelector:@selector(watchDriverFailedForDriver:error:)]){
             
             NSError *error = [NSError errorWithDomain:kSDKDomainData code:0 userInfo:@{NSLocalizedDescriptionKey: @"cant watch driver without valid customer"}];
@@ -350,8 +350,8 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     return [self.trackerManager driverWithUUID:uuid];
 }
 
-- (nullable NSString*)sharedUUIDForDriverUUID:(NSString *)driveruuid{
-    return [self.trackerManager sharedUUIDforDriverUUID:driveruuid];
+- (nullable NSString *)shareUUIDForDriverWithUUID:(nonnull NSString*)driverUUID{
+    return [self.trackerManager sharedUUIDforDriverUUID:driverUUID];
 }
 
 //MARK: -- Private

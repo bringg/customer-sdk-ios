@@ -70,7 +70,7 @@
 @implementation GGTrackerManagerTestClass
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                        shareUUID:(NSString *_Nullable)shareUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
     NSLog(@"SHOULD START WATCHING ORDER %@ with delegate %@", uuid, delegate);
@@ -206,11 +206,11 @@
     
     
     NSString *driverUUID;
-    NSString *sharedUUID;
+    NSString *shareUUID;
     
-    [GGBringgUtils parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+    [GGBringgUtils parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&shareUUID];
     
-    XCTAssertTrue([driverUUID isEqualToString:sharedUUID]);
+    XCTAssertTrue([driverUUID isEqualToString:shareUUID]);
     
 }
 

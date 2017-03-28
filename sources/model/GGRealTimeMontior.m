@@ -562,9 +562,9 @@
                 
                 
                 NSString *driverUUID;
-                NSString *sharedUUID;
+                NSString *shareUUID;
                 
-                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&shareUUID];
                 
                 //check there is still a delegate listening
                 id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:driverCompoundKey];

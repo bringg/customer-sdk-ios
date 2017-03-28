@@ -131,13 +131,13 @@
     
 }
 
-+ (void)parseDriverCompoundKey:(NSString *)key toDriverUUID:(NSString *__autoreleasing  _Nonnull *)driverUUID andSharedUUID:(NSString *__autoreleasing  _Nonnull *)sharedUUID{
++ (void)parseDriverCompoundKey:(NSString *)key toDriverUUID:(NSString *__autoreleasing  _Nonnull *)driverUUID andSharedUUID:(NSString *__autoreleasing  _Nonnull *)shareUUID{
     
     NSArray *pair = [key componentsSeparatedByString:DRIVER_COMPOUND_SEPERATOR];
     
     @try {
         *driverUUID = [pair objectAtIndex:0];
-        *sharedUUID = [pair objectAtIndex:1];
+        *shareUUID = [pair objectAtIndex:1];
     }
     @catch (NSException *exception) {
         //
@@ -146,7 +146,7 @@
     
 }
 
-+ (void)parseOrderCompoundUUID:(NSString * _Nonnull)compoundUUID toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)sharedUUID error:(NSError * _Nullable *_Nullable)errorPointer{
++ (void)parseOrderCompoundUUID:(NSString * _Nonnull)compoundUUID toOrderUUID:(NSString *_Nonnull*_Nonnull)orderUUID andSharedUUID:(NSString *_Nonnull*_Nonnull)shareUUID error:(NSError * _Nullable *_Nullable)errorPointer{
     
     if (!compoundUUID) {
         if (errorPointer) {
@@ -167,12 +167,12 @@
     }
     
     *orderUUID = [pair objectAtIndex:0];
-    *sharedUUID = [pair objectAtIndex:1];
+    *shareUUID = [pair objectAtIndex:1];
     
-    if ([*orderUUID length] == 0 || [*sharedUUID length] == 0) {
+    if ([*orderUUID length] == 0 || [*shareUUID length] == 0) {
         // parsing is invalid if one of the uuid's are empty
         *orderUUID = nil;
-        *sharedUUID = nil;
+        *shareUUID = nil;
         
         if (errorPointer) {
             *errorPointer = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"invalid compound uuid"}];

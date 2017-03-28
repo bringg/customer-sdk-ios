@@ -907,7 +907,7 @@
             }
             else{
                 
-                [self handleRealTimeWatchOrderSuccessForOrder:activeOrder sharedUUID:shareUUID response:socketResponse orderDelegate:delegateOfOrder];
+                [self handleRealTimeWatchOrderSuccessForOrder:activeOrder shareUUID:shareUUID response:socketResponse orderDelegate:delegateOfOrder];
                 
                 
             }
@@ -917,14 +917,14 @@
 }
 
 - (void)handleRealTimeWatchOrderSuccessForOrder:(nonnull GGOrder *)activeOrder
-                                     sharedUUID:(nullable NSString *)shareuuid
+                                     shareUUID:(nullable NSString *)shareUUID
                                        response:(nullable NSDictionary *)response
                                   orderDelegate:(id <OrderDelegate> _Nullable)orderDelegate{
     
     // check for share_uuid
     if (response && [response isKindOfClass:[NSDictionary class]]) {
         
-        NSString *shareUUID = shareuuid;
+        NSString *shareUUID = shareUUID;
         
         if (!shareUUID) {
             shareUUID = [response objectForKey:PARAM_SHARE_UUID];
@@ -1330,16 +1330,16 @@
         // remove the old entry in the dictionary
         [_liveMonitor.driverDelegates removeObjectForKey:driverUUID];
         
-        NSString *sharedUUID = [self sharedUUIDforDriverUUID:driverUUID];
+        NSString *shareUUID = [self sharedUUIDforDriverUUID:driverUUID];
         
         // if delegate isnt null than and we have a valid shared uuid start watching again
-        if (![NSString isStringEmpty:sharedUUID] && driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
+        if (![NSString isStringEmpty:shareUUID] && driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
             
             if ([driverDelegate respondsToSelector:@selector(trackerWillReviveWatchedDriver:)]) {
                 [driverDelegate trackerWillReviveWatchedDriver:driverUUID];
             }
 
-            [self startWatchingDriverWithUUID:driverUUID accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:sharedUUID delegate:driverDelegate];
+            [self startWatchingDriverWithUUID:driverUUID accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:driverDelegate];
             
             
         }

@@ -89,12 +89,12 @@
  *  starts watching an order using both order uuid and shared uuid
  *
  *  @param uuid       order uuid
- *  @param shareduuid shared uuid
+ *  @param shareUUID share uuid
  *  @param delegate   delegate
  *  @throws if invalid or missing either order UUID or shared UUID
  */
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nonnull)shareduuid
+                         shareUUID:(NSString *_Nonnull)shareUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
@@ -119,8 +119,8 @@
  *  @param delegate  object to recieve driver callbacks
  *  @see DriverDelegate
  */
-- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                          shareUUID:(NSString *_Nonnull)shareduuid
+- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)driveruuid
+                          shareUUID:(NSString *_Nonnull)shareUUID
                            delegate:(id <DriverDelegate> _Nullable)delegate;
 
 
@@ -257,7 +257,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
  *
  *  @return NSString
  */
-- (nullable NSString *)sharedUUIDForDriverUUID:(nonnull NSString*)driveruuid;
+- (nullable NSString *)shareUUIDForDriverWithUUID:(nonnull NSString*)driverUUID;
 
 /**
  *  tell if a specific waypoint is being watched

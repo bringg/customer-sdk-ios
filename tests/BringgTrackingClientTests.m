@@ -143,7 +143,7 @@
 @implementation GGTrackerManagerMockClass
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                        shareUUID:(NSString *_Nullable)shareUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
     NSLog(@"SHOULD START WATCHING ORDER %@ with delegate %@", uuid, delegate);
@@ -259,9 +259,9 @@
 //MARK: Helpers
 
 
-- (NSDictionary *)generateSharedLocationJSONSharedUUID:(nonnull NSString *)sharedUUID orderUUID:(nonnull NSString *)orderUUID {
+- (NSDictionary *)generateSharedLocationJSONSharedUUID:(nonnull NSString *)shareUUID orderUUID:(nonnull NSString *)orderUUID {
     
-    NSDictionary *json = @{PARAM_UUID:sharedUUID, PARAM_ORDER_UUID: orderUUID};
+    NSDictionary *json = @{PARAM_UUID:shareUUID, PARAM_ORDER_UUID: orderUUID};
     
     return json;
 }
@@ -270,26 +270,26 @@
 - (void)testWatchingOrderUsingUUIDAndSharedUUID{
     NSString *uuid = nil;
     
-    NSString *shareduuid = nil;
+    NSString *shareUUID = nil;
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
-    shareduuid = @"";
+    shareUUID = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
-    shareduuid = @"fefe-asd-fasd";
+    shareUUID = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:nil]);
+    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
 }
 
@@ -323,26 +323,26 @@
 - (void)testWatchingDriverUsingUUIDAndSharedUUID{
     NSString *uuid = nil;
     
-    NSString *shareduuid = nil;
+    NSString *shareUUID = nil;
     
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
-    shareduuid = @"";
+    shareUUID = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
-    shareduuid = @"fefe-asd-fasd";
+    shareUUID = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareduuid delegate:nil]);
+    XCTAssertNoThrow([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
     
 }
 
@@ -461,7 +461,7 @@
     
     GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
     
-    [realTrackingClient startWatchingOrderWithUUID:orderUUID sharedUUID:shareUUID delegate:delegate];
+    [realTrackingClient startWatchingOrderWithUUID:orderUUID shareUUID:shareUUID delegate:delegate];
     
     activeOrder = [realTrackingClient orderWithUUID:orderUUID];
     
@@ -497,7 +497,7 @@
     
      GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
     
-     [realTrackingClient startWatchingOrderWithUUID:orderUUID sharedUUID:shareUUID delegate:delegate];
+     [realTrackingClient startWatchingOrderWithUUID:orderUUID shareUUID:shareUUID delegate:delegate];
     
     activeOrder = [realTrackingClient orderWithUUID:orderUUID];
     
@@ -535,7 +535,7 @@
     GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
     
 
-    [realTrackingClient startWatchingOrderWithUUID:orderUUID sharedUUID:shareUUID delegate:delegate];
+    [realTrackingClient startWatchingOrderWithUUID:orderUUID shareUUID:shareUUID delegate:delegate];
     
     activeOrder = [realTrackingClient orderWithUUID:orderUUID];
     

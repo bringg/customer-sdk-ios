@@ -98,11 +98,11 @@
 /**
  *  check if order is using a specific shared location uuid
  *
- *  @param sharedUUID shared uuid to check
+ *  @param shareUUID shared uuid to check
  *
  *  @return BOOL
  */
-- (BOOL)isWithSharedUUID:(nonnull NSString *)sharedUUID;
+- (BOOL)isWithSharedUUID:(nonnull NSString *)shareUUID;
 
 /**
  *  check if order is in one of the active states

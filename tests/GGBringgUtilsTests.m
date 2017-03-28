@@ -32,12 +32,12 @@
     NSString *compoundUUID;
     
     NSString *orderUUID;
-    NSString *sharedUUID;
+    NSString *shareUUID;
     
     NSError *error;
     
     
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&sharedUUID error:&error];
+    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&shareUUID error:&error];
     
     // since compound uuid is empty we should have an error
     XCTAssertNotNil(error);
@@ -47,7 +47,7 @@
     compoundUUID = @"asldfhasl fhaksldjhf asldkfj asdlfjkasdf";
     error = nil;
     
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&sharedUUID error:&error];
+    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&shareUUID error:&error];
     
     // since compound uuid is of unfamiliar structure we should have an error
     XCTAssertNotNil(error);
@@ -55,13 +55,13 @@
     
     compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARED_UUID";
     error = nil;
-     [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&sharedUUID error:&error];
+     [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&orderUUID andSharedUUID:&shareUUID error:&error];
     
     XCTAssertNil(error);
     XCTAssertNotNil(orderUUID);
-    XCTAssertNotNil(sharedUUID);
+    XCTAssertNotNil(shareUUID);
     XCTAssertTrue([orderUUID isEqualToString: @"SOME_ORDER_UUID"]);
-    XCTAssertTrue([sharedUUID isEqualToString: @"SOME_SHARED_UUID"]);
+    XCTAssertTrue([shareUUID isEqualToString: @"SOME_SHARED_UUID"]);
 
     
 }

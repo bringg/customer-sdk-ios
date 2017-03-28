@@ -19,6 +19,7 @@
 #import "GGWaypoint.h"
 #import "NSObject+Observer.h"
 #import "GGRealTimeInternals.h"
+#import "NSString+Extensions.h"
 
 @import SocketIO;
 
@@ -214,6 +215,29 @@
     return retVal;
 }
 
+- (nullable NSString *)getSharedUUIDforDriverUUID:(nonnull NSString *)uuid{
+    
+    __block NSString *retVal = nil;
+    // find an active order that uses this driver and returns its shared uuid
+    [self.activeOrders.allValues enumerateObjectsUsingBlock:^(GGOrder * _Nonnull order, NSUInteger idx, BOOL * _Nonnull stop) {
+        // check for shared uuid only in active orders
+        if (![NSString isStringEmpty:order.sharedLocationUUID] && [order isActive]) {
+         
+            if ([order.driverUUID isEqualToString:uuid]) {
+                retVal = order.sharedLocationUUID;
+                *stop = YES;
+                
+            }else if ([order.sharedLocation.driver.uuid isEqualToString:uuid]) {
+                retVal = order.sharedLocationUUID;
+                *stop = YES;
+            }
+        }
+        
+    }];
+    
+    return retVal;
+}
+
 -(GGDriver * _Nullable)getDriverWithUUID:(NSString * _Nonnull)uuid{
     return [self.activeDrivers objectForKey:uuid];
 }
@@ -241,7 +265,7 @@
 #pragma mark - Helper
 
 
--(id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId{
+- (nullable id<WaypointDelegate>)delegateForWaypointID:(nonnull NSNumber *)waypointId{
     
     if (!waypointId) {
         return nil;
@@ -399,7 +423,7 @@
     
 }
 
-- (BOOL)handleSocketIODidReceiveEvent:(NSString *)eventName withData:(NSDictionary *)eventData{
+- (BOOL)handleSocketIODidReceiveEvent:(nonnull NSString *)eventName withData:(nonnull NSDictionary *)eventData{
     
     if (!eventName || !eventData) {
         return NO;
@@ -500,8 +524,8 @@
         NSDictionary *locationUpdate = eventData;
         NSString *driverUUID = [locationUpdate objectForKey:PARAM_DRIVER_UUID];
         NSString *shareUUID = [locationUpdate objectForKey:PARAM_SHARE_UUID];
-        NSNumber *lat = [locationUpdate objectForKey:@"lat"];
-        NSNumber *lng = [locationUpdate objectForKey:@"lng"];
+        NSNumber *lat = [locationUpdate objectForKey:PARAM_LAT];
+        NSNumber *lng = [locationUpdate objectForKey:PARAM_LNG];
         
         // get driver from data
         GGDriver *driver = [self.activeDrivers objectForKey:driverUUID];
@@ -538,9 +562,9 @@
                 
                 
                 NSString *driverUUID;
-                NSString *sharedUUID;
+                NSString *shareUUID;
                 
-                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&shareUUID];
                 
                 //check there is still a delegate listening
                 id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:driverCompoundKey];
@@ -574,11 +598,11 @@
         
     }else if ([eventName isEqualToString:EVENT_WAY_POINT_LOCATION]){
         NSDictionary *locationUpdate = eventData;
-        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_WAY_POINT_ID] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_ID] defaultTo:nil]];
         
         id existingDelegate = [self delegateForWaypointID:wpid];
-        NSNumber *lat = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:@"lat"] defaultTo:nil];
-        NSNumber *lng = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:@"lat"] defaultTo:nil];
+        NSNumber *lat = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:PARAM_LAT] defaultTo:nil];
+        NSNumber *lng = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:PARAM_LNG] defaultTo:nil];
         
         NSLog(@"delegate: %@ should udpate waypoint %@ location to: %@/%@ withData:%@", existingDelegate, wpid, lat, lng , eventData);
         
@@ -588,8 +612,8 @@
         
     }else if ([eventName isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
         
-        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
-        NSString *eta = [eventData objectForKey:@"eta"];
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_WAY_POINT_ID] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_ID] defaultTo:nil]];
+        NSString *eta = [eventData objectForKey:PARAM_ETA];
         NSDate *etaToDate = [GGBringgUtils dateFromString:eta];
         
         id existingDelegate = [self delegateForWaypointID:wpid];
@@ -605,7 +629,7 @@
         
     } else if ([eventName isEqualToString:EVENT_WAY_POINT_ARRIVED]) {
         
-        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_WAY_POINT_ID] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_ID] defaultTo:nil]];
         id existingDelegate = [self delegateForWaypointID:wpid];
         
         
@@ -620,7 +644,7 @@
         
     } else if ([eventName isEqualToString:EVENT_WAY_POINT_DONE]) {
         
-        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:@"way_point_id"] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:@"id"] defaultTo:nil]];
+        NSNumber *wpid = [GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_WAY_POINT_ID] defaultTo:[GGBringgUtils numberFromJSON:[eventData objectForKey:PARAM_ID] defaultTo:nil]];
         id existingDelegate = [self delegateForWaypointID:wpid];
         
         NSLog(@"delegate: %@ should udpate waypoint %@ done withData:%@", existingDelegate, wpid, eventData );
@@ -639,55 +663,78 @@
 
 #pragma mark - Watch Actions
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(SocketResponseBlock)completionHandler {
+
+- (void)sendWatchOrderWithOrderUUID:(nonnull NSString *)uuid
+              accessControlParamKey:(nonnull NSString *)accessControlParamKey
+            accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                  completionHandler:(nullable SocketResponseBlock)completionHandler{
     
-    [self sendWatchOrderWithOrderUUID:uuid shareUUID:nil completionHandler:completionHandler];
+    
+     [self sendWatchEvent:@"watch order" forUUID:uuid uuidParamKey:PARAM_ORDER_UUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:completionHandler];
+    
+    
 }
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler{
+- (void)sendWatchDriverWithDriverUUID:(nonnull NSString *)uuid
+                accessControlParamKey:(nonnull NSString *)accessControlParamKey
+              accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                    completionHandler:(nullable SocketResponseBlock)completionHandler {
     
-    NSLog(@"watch order %@", uuid);
+    [self sendWatchEvent:@"watch driver" forUUID:uuid uuidParamKey:PARAM_DRIVER_UUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:completionHandler];
     
-    if (!uuid) {
+    
+}
+
+- (void)sendWatchEvent:(nonnull NSString *)eventName
+               forUUID:(nonnull NSString *)uuid
+          uuidParamKey:(nonnull NSString *)uuidParamKey
+ accessControlParamKey:(nonnull NSString *)accessControlParamKey
+accessControlParamValue:(nonnull NSString *)accessControlParamValue
+     completionHandler:(nullable SocketResponseBlock)completionHandler{
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:uuidParamKey] || [NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue]) {
+        
         if (completionHandler) {
-            NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeUUIDNotFound userInfo:@{NSLocalizedDescriptionKey:@"missing UUID"}];
             
-            completionHandler(NO, nil, error);
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing uuid or access contorl param data"}];
+            
+            completionHandler(NO, nil,  error);
+            
+        }
+        return;
+    }
+    
+    NSLog(@"%@ %@ -> %@: %@",eventName, uuid, accessControlParamKey,  accessControlParamValue);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   uuid, uuidParamKey,
+                                   accessControlParamValue, accessControlParamKey,
+                                   nil];
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:eventName params:params completionHandler:completionHandler];
+
+}
+
+- (void)sendWatchWaypointWithWaypointId:(nonnull NSNumber *)waypointId
+                           andOrderUUID:(nonnull NSString *)orderUUID
+                      completionHandler:(nullable SocketResponseBlock)completionHandler {
+    
+    if (!waypointId || [NSString isStringEmpty:orderUUID]) {
+        
+        if (completionHandler) {
+            
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing waypoint or order data"}];
+            
+            completionHandler(NO, nil,  error);
+            
+             
         }
         
         return;
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   uuid, @"order_uuid",
-                                   nil];
-    
-    // if we have shared uuid - supply it as well
-    if (shareUUID) {
-        [params setObject:shareUUID forKey:@"share_uuid"];
-    }
-    
-    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"watch order" params:params completionHandler:completionHandler];
-    
-}
-
-- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler {
-    
-    NSLog(@"watch driver %@ / %@", uuid, shareUUID);
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   uuid, @"driver_uuid",
-                                   shareUUID, @"share_uuid",
-                                   nil];
-    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"watch driver" params:params completionHandler:completionHandler];
-    
-}
-
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler {
-    
     NSLog(@"watch waypoint %@ for order %@", waypointId, orderUUID);
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   waypointId, @"way_point_id",
-                                   orderUUID, @"order_uuid",
+                                   waypointId, PARAM_WAY_POINT_ID,
+                                   orderUUID, PARAM_ORDER_UUID,
                                    nil];
     
     [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"watch way point" params:params completionHandler:completionHandler];

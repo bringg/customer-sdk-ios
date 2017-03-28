@@ -133,13 +133,16 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 /**
  *  this methods start a watch action on an order and in returns the data of a watched order by its uuid and shared uuid
  *
- *  @param orderUUID         order uuid
- *  @param extras            additional arguments to add to the call
+ *  @param orderUUID                        order uuid
+ *  @param accessControlParamKey            access control key
+ *  @param accessControlParamKey            access control param
+ *  @param extras                           additional arguments to add to the call
  *  @param completionHandler block to handle async service response
  */
-- (void)watchOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                    shareUUID:(NSString * _Nullable)shareUUID
-                       extras:(NSDictionary * _Nullable)extras
+- (void)watchOrderByOrderUUID:(nonnull NSString *)orderUUID
+        accessControlParamKey:(nonnull NSString *)accessControlParamKey
+      accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                       extras:(nullable NSDictionary *)extras
         withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**

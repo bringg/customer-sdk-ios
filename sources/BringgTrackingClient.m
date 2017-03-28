@@ -7,6 +7,7 @@
 //
 
 #import "BringgTrackingClient.h"
+#import "BringgTrackingClient_Private.h"
 #import "GGHTTPClientManager.h"
 #import "GGHTTPClientManager_Private.h"
 #import "GGTrackerManager.h"   
@@ -16,7 +17,7 @@
 #import "GGSharedLocation.h"
 #import "GGRating.h"
 #import "BringgPrivates.h"
-
+#import "NSString+Extensions.h"
 
 #define LOCAL_URL @"http://10.0.1.125"
 #define USE_LOCAL NO
@@ -24,18 +25,7 @@
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>
 
 
-@property (nonnull, nonatomic, strong) NSString *developerToken;
-@property (nonnull, nonatomic, strong) GGTrackerManager *trackerManager;
-@property (nonnull, nonatomic, strong) GGHTTPClientManager *httpManager;
 
-@property (nonatomic, weak) id<RealTimeDelegate> realTimeDelegate;
-
-@property (nonatomic) BOOL useSecuredConnection;
-@property (nonatomic) BOOL shouldAutoWatchDriver;
-@property (nonatomic) BOOL shouldAutoWatchOrder;
-
-
-- (id)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
 @end
 
@@ -56,7 +46,7 @@
     return sharedObject;
 }
 
-- (id)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
+- (instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
         
@@ -67,23 +57,33 @@
         }
         
         // init the http manager and tracking manager
-        self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:devToken];
-        [self.httpManager useSecuredConnection:self.useSecuredConnection];
+        [self setupHTTPManagerWithDevToken:devToken securedConnection:self.useSecuredConnection];
 
+        [self setupTrackerManagerWithDevToken:devToken httpManager:self.httpManager realtimeDelegate:delegate];
         
-        self.trackerManager = [GGTrackerManager tracker];
-        [self.trackerManager setDeveloperToken:devToken];
-        [self.trackerManager setHTTPManager:self.httpManager];
-        [self.trackerManager setRealTimeDelegate:delegate];
-        
-        // add connection delegate
-        [self.httpManager setConnectionDelegate:self];
-        [self.trackerManager setConnectionDelegate:self];
-        
-        self.trackerManager.logsEnabled = NO;
     }
     
     return self;
+}
+
+- (void)setupHTTPManagerWithDevToken:(nonnull NSString *)devToken securedConnection:(BOOL)useSecuredConnection{
+    self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:devToken];
+    [self.httpManager useSecuredConnection:useSecuredConnection];
+    
+    [self.httpManager setConnectionDelegate:self];
+}
+
+
+- (void)setupTrackerManagerWithDevToken:(nonnull NSString *)devToken httpManager:(nonnull GGHTTPClientManager *)httpManager realtimeDelegate:(nonnull id<RealTimeDelegate>)delegate {
+    
+    self.trackerManager = [GGTrackerManager tracker];
+    [self.trackerManager setDeveloperToken:devToken];
+    [self.trackerManager setHTTPManager:self.httpManager];
+    [self.trackerManager setRealTimeDelegate:delegate];
+    
+    [self.trackerManager setConnectionDelegate:self];
+    
+    self.trackerManager.logsEnabled = NO;
 }
 
 //MARK: -- Connection
@@ -149,10 +149,34 @@
 
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                         shareUUID:(NSString *_Nonnull)shareUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
-    [self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:shareduuid delegate:delegate];
+    NSLog(@"Trying to start watching on order uuid: %@, shared %@, with delegate %@", uuid, shareUUID, delegate);
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareUUID]) {
+        [NSException raise:@"Invalid params" format:@"Order and Share UUIDs can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
+}
+
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+               customerAccessToken:(NSString *_Nonnull)customerAccessToken
+                          delegate:(id <OrderDelegate> _Nullable)delegate{
+ 
+    NSLog(@"Trying to start watching using customer token on order uuid: %@, with delegate %@", uuid, delegate);
+    
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:customerAccessToken]) {
+        [NSException raise:@"Invalid params" format:@"Order and customer token can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
 }
 
 
@@ -161,9 +185,52 @@
                           shareUUID:(NSString *_Nonnull)shareUUID
                            delegate:(id <DriverDelegate> _Nullable)delegate{
     
-    [self.trackerManager startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    NSLog(@"Trying to start watching on driver uuid: %@, with delegate %@", uuid, delegate);
+    
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareUUID]) {
+        [NSException raise:@"Invalid params" format:@"driver and shared uuid can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
 }
 
+
+- (void)startWatchingCustomerDriverWithUUID:(NSString *_Nonnull)uuid
+                                   delegate:(id <DriverDelegate> _Nullable)delegate{
+    
+    
+    NSLog(@"Trying to start watching using customer token on driver uuid: %@, with delegate %@", uuid, delegate);
+    
+    
+    if ([NSString isStringEmpty:uuid]) {
+        [NSException raise:@"Invalid params" format:@"driver uuid can not be empty"];
+        
+        return;
+    }
+    
+    NSString *customerAccessToken = [[self signedInCustomer] customerToken];
+    
+    if (![NSString isStringEmpty:customerAccessToken]) {
+         [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+    }else{
+        // if we can find a shared uuid for this driver use it to start watching. if not call the watch failed on the delegate
+        NSString *shareUUID = [self shareUUIDForDriverWithUUID:uuid];
+        
+        if (![NSString isStringEmpty:shareUUID]) {
+            
+             [self.trackerManager startWatchingDriverWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
+        }else if ([delegate respondsToSelector:@selector(watchDriverFailedForDriver:error:)]){
+            
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:0 userInfo:@{NSLocalizedDescriptionKey: @"cant watch driver without valid customer"}];
+            
+            [delegate watchDriverFailedForDriver:nil error:error];
+        }
+    }
+
+}
 
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId
                                andOrderUUID:(NSString * _Nonnull)orderUUID
@@ -240,10 +307,9 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 }
 
 
-- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                         shareUUID:(NSString *_Nullable)shareUUID{
+- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid{
     
-    [self.trackerManager stopWatchingDriverWithUUID:uuid shareUUID:shareUUID];
+    [self.trackerManager stopWatchingDriverWithUUID:uuid];
 }
 
 - (void)stopWatchingAllDrivers{
@@ -266,9 +332,9 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     return [self.trackerManager isWatchingOrderWithUUID:uuid];
 }
 
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID{
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid{
     
-    return [self.trackerManager isWatchingDriverWithUUID:uuid andShareUUID:shareUUID];
+    return [self.trackerManager isWatchingDriverWithUUID:uuid];
 }
 
 - (BOOL)isWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId andOrderUUID:(NSString * _Nonnull)orderUUID{
@@ -278,6 +344,14 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 
 - (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid{
     return [self.trackerManager orderWithUUID:uuid];
+}
+
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid{
+    return [self.trackerManager driverWithUUID:uuid];
+}
+
+- (nullable NSString *)shareUUIDForDriverWithUUID:(nonnull NSString*)driverUUID{
+    return [self.trackerManager shareUUIDforDriverUUID:driverUUID];
 }
 
 //MARK: -- Private

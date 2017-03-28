@@ -33,13 +33,13 @@
 
 
 
-@property (nonatomic, strong) NSString *developerToken;
+@property (nonnull, nonatomic, strong) NSString *developerToken;
 
-@property (nonatomic, strong) NSMutableDictionary<NSString *, id<OrderDelegate>>  *orderDelegates;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, id<DriverDelegate>>  *driverDelegates;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, id<WaypointDelegate>> *waypointDelegates;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, GGDriver*>  *activeDrivers; // uuid for driver
-@property (nonatomic, strong) NSMutableDictionary<NSString *, GGOrder*> *activeOrders; // uuid for order
+@property (nonnull, nonatomic, strong) NSMutableDictionary<NSString *, id<OrderDelegate>>  *orderDelegates;
+@property (nonnull, nonatomic, strong) NSMutableDictionary<NSString *, id<DriverDelegate>>  *driverDelegates;
+@property (nonnull, nonatomic, strong) NSMutableDictionary<NSString *, id<WaypointDelegate>> *waypointDelegates;
+@property (nonnull, nonatomic, strong) NSMutableDictionary<NSString *, GGDriver*>  *activeDrivers; // uuid for driver
+@property (nonnull, nonatomic, strong) NSMutableDictionary<NSString *, GGOrder*> *activeOrders; // uuid for order
 
 @property (nonatomic, assign) BOOL doMonitoringOrders;
 @property (nonatomic, assign) BOOL doMonitoringDrivers;
@@ -48,37 +48,45 @@
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL wasManuallyConnected;
 
-@property (nonatomic,strong) SocketIOClient *socketIO;
-@property (nonatomic, copy) CompletionBlock socketIOConnectedBlock;
-@property (nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
-@property (nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
+@property (nonnull, nonatomic,strong) SocketIOClient *socketIO;
+@property (nullable, nonatomic, copy) CompletionBlock socketIOConnectedBlock;
+@property (nullable, nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
+@property (nullable, nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
 
 
 
-+ (id)sharedInstance;
++ (nonnull id)sharedInstance;
 
-- (void)setRealTimeConnectionDelegate:(id<RealTimeDelegate>) connectionDelegate;
+- (void)setRealTimeConnectionDelegate:(nullable id<RealTimeDelegate>) connectionDelegate;
 
 
-- (void)setDeveloperToken:(NSString *)developerToken;
+- (void)setDeveloperToken:(nonnull NSString *)developerToken;
 
 - (void)connect;
 - (void)disconnect;
 
-- (void)sendConnectionError:(NSError *)error;
+- (void)sendConnectionError:(nonnull NSError *)error;
 
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid completionHandler:(SocketResponseBlock)completionHandler ;
 
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler;
+- (void)sendWatchOrderWithOrderUUID:(nonnull NSString *)uuid
+              accessControlParamKey:(nonnull NSString *)accessControlParamKey
+            accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                  completionHandler:(nullable SocketResponseBlock)completionHandler;
 
-- (void)sendWatchDriverWithDriverUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler;
+- (void)sendWatchDriverWithDriverUUID:(nonnull NSString *)uuid
+                accessControlParamKey:(nonnull NSString *)accessControlParamKey
+              accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                    completionHandler:(nullable SocketResponseBlock)completionHandler;
 
-- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler ;
+- (void)sendWatchWaypointWithWaypointId:(nonnull NSNumber *)waypointId
+                           andOrderUUID:(nonnull NSString *)orderUUID
+                      completionHandler:(nullable SocketResponseBlock)completionHandler;
 
-- (BOOL)handleSocketIODidReceiveEvent:(NSString *)eventName withData:(NSDictionary *)eventData;
+- (BOOL)handleSocketIODidReceiveEvent:(nonnull NSString *)eventName
+                             withData:(nonnull NSDictionary *)eventData;
 
-- (id<WaypointDelegate>)delegateForWaypointID:(NSNumber *)waypointId;
+- (nullable id<WaypointDelegate>)delegateForWaypointID:(nonnull NSNumber *)waypointId;
 
 /**
  *  check if it has been too long since a socket event

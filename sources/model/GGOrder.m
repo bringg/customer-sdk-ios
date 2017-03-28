@@ -308,9 +308,13 @@ static NSDateFormatter *dateFormat;
 }
 
 //MARK: Getters
-- (BOOL)isWithSharedUUID:(nonnull NSString *)sharedUUID{
+- (BOOL)isWithSharedUUID:(nonnull NSString *)shareUUID{
     
-    return (self.sharedLocationUUID && [self.sharedLocationUUID isEqualToString:sharedUUID]) || (self.sharedLocation && self.sharedLocation.locationUUID && [self.sharedLocation.locationUUID isEqualToString:sharedUUID]);
+    return (self.sharedLocationUUID && [self.sharedLocationUUID isEqualToString:shareUUID]) || (self.sharedLocation && self.sharedLocation.locationUUID && [self.sharedLocation.locationUUID isEqualToString:shareUUID]);
+}
+
+- (BOOL)isActive{
+    return self.status == OrderStatusCreated || status == OrderStatusAccepted || status == OrderStatusAssigned || status == OrderStatusOnTheWay || status == OrderStatusCheckedIn;
 }
 
 @end

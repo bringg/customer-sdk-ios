@@ -39,7 +39,7 @@
 @property (nonatomic, readwrite) GGRealTimeMontior * _Nullable liveMonitor;
 
 
--(id)initTacker;
+-(nonnull instancetype)initTacker;
 
 /**
  *  uses REST api to start watching an order
@@ -48,7 +48,8 @@
  *  @param completionHandler handle response callback
  */
 - (void)startRESTWatchingOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                                shareUUID:(NSString * _Nullable)shareUUID
+                    accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                  accessControlParamValue:(nonnull NSString *)accessControlParamValue
                     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 /**

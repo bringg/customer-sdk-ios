@@ -63,24 +63,6 @@
 
 @end
 
-@interface GGRealTimeMontiorMockClass : GGRealTimeMontior
-
-@property (nonatomic, strong) NSDictionary *watchOrderResponseJSON;
-
-@end
-
-@implementation GGRealTimeMontiorMockClass
-
-- (void)sendWatchOrderWithOrderUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID completionHandler:(SocketResponseBlock)completionHandler{
-    
-    if (completionHandler) {
-        completionHandler(YES, self.watchOrderResponseJSON, nil);
-    }
-    
-}
-
-@end
-
 @interface GGTrackerManagerTestClass : GGTrackerManager
 
 @end
@@ -88,7 +70,7 @@
 @implementation GGTrackerManagerTestClass
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                        shareUUID:(NSString *_Nullable)shareUUID
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
     NSLog(@"SHOULD START WATCHING ORDER %@ with delegate %@", uuid, delegate);
@@ -175,26 +157,10 @@
 
 }
 
-//MARK: Helpers
-- (GGTrackerManager *)setupRealTrackerManager {
-    
-    GGTrackerManager *trackerManager = [[GGTrackerManager alloc] initTacker];
-     
-    GGHTTPClientManagerTestClass *mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
-    [trackerManager setHTTPManager:mockHttp];
-    
-    return trackerManager;
-}
-
-- (GGSharedLocation *)generateSharedLocationWithJSONSharedUUID:(nonnull NSString *)sharedUUID orderUUID:(nonnull NSString *)orderUUID {
-    
-    NSDictionary *json = @{PARAM_UUID:sharedUUID, PARAM_ORDER_UUID: orderUUID};
-    
-    return json;
-}
-
 //MARK: Tests
 -(void)testMonitoredOrders{
+    
+    [self.trackerManager.liveMonitor.orderDelegates removeAllObjects];
     
     NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.acceptJson];
     
@@ -213,6 +179,8 @@
 
 
 -(void)testMonitoredDrivers{
+    
+    [self.trackerManager.liveMonitor.driverDelegates removeAllObjects];
     
     // test on accept data
     NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.acceptJson];
@@ -238,11 +206,11 @@
     
     
     NSString *driverUUID;
-    NSString *sharedUUID;
+    NSString *shareUUID;
     
-    [GGBringgUtils parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+    [GGBringgUtils parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&shareUUID];
     
-    XCTAssertTrue([driverUUID isEqualToString:sharedUUID]);
+    XCTAssertTrue([driverUUID isEqualToString:shareUUID]);
     
 }
 
@@ -308,247 +276,8 @@
 
 }
 
-- (void)testWatchingOrderUsingUUIDAndSharedUUID{
-    NSString *uuid = nil;
-    
-    XCTAssertThrows([self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:self.realtimeDelegate]);
-    
-    uuid = @"";
-    
-    XCTAssertThrows([self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:self.realtimeDelegate]);
-    
-    
-    uuid = @"asd_asd_asdads";
-    
-    XCTAssertNoThrow([self.trackerManager startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:self.realtimeDelegate]);
-    
-}
-- (void)testWatchingOrderUsingCompoundUUID{
-    
-    NSString *compoundUUID = nil;
-    
-    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
-    
-    
-    compoundUUID = @"";
-    
-    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
-    
-    compoundUUID = @"SOME_ORDER_UUID";
-    
-    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
-    
-    // when doing a compound with the seperator - it should work even without a shared uuid
-    compoundUUID = @"SOME_ORDER_UUID$$";
-    
-    XCTAssertThrows([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
-    
-    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
-    
-    XCTAssertNoThrow([self.trackerManager startWatchingOrderWithCompoundUUID:compoundUUID delegate:self.realtimeDelegate]);
-}
 
-- (void)testRequestingFindMeUsingCompoundUUID{
-    
 
-    NSString *compoundUUID = nil;
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
-    }];
-    
-    compoundUUID = @"";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
-    }];
-    
-    compoundUUID = @"SOME_ORDER_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
-    }];
-    
-    compoundUUID = @"SOME_ORDER_UUID$$";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
-    }];
-    
-    // create an order with some other uuid
-    GGOrder *order = [[GGOrder alloc] initOrderWithUUID:@"SOME_OTHER_ORDER_UUID" atStatus:OrderStatusCreated];
-    
-    [self.trackerManager.liveMonitor addAndUpdateOrder:order];
-    
-    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
-    }];
-    
-    
-    // create an order with some other uuid
-    GGOrder *aorder = [[GGOrder alloc] initOrderWithUUID:@"SOME_ORDER_UUID" atStatus:OrderStatusCreated];
-    
-    [self.trackerManager.liveMonitor addAndUpdateOrder:aorder];
-    
-    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
-    }];
-    
-    
-    GGSharedLocation *sharedL = [[GGSharedLocation alloc] init];
-    sharedL.locationUUID = @"SOME_SHARE_UUID";
-    
-    aorder.sharedLocationUUID = @"SOME_SHARE_UUID";
-    aorder.sharedLocation = sharedL;
-    [self.trackerManager.liveMonitor addAndUpdateOrder:aorder];
-    
-    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        //
-        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
-    }];
-    
-    GGFindMe *findmeconfig = [[GGFindMe alloc] init];
-    findmeconfig.url = @"http://bringg.com/findme";
-    findmeconfig.token = @"SOME_TOKEN";
-    findmeconfig.enabled = YES;
-    
-    sharedL.findMe = findmeconfig;
-    [self.trackerManager.liveMonitor addAndUpdateOrder:aorder];
-    
-    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        // should fail since cooridantes are invalid
-        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
-    }];
-    
-    
-    compoundUUID = @"SOME_ORDER_UUID$$SOME_SHARE_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithCompoundUUID:compoundUUID latitude:23.1223 longitude:52.6546 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        
-        XCTAssertTrue(success);
-    }];
-}
 
-- (void)testRequestingFindMeUsingOrderUUID{
-    
-    NSString *uuid = nil;
-    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        
-         XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
-    }];
-    
-    uuid = @"";
-    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
-    }];
-    
-     GGOrder *order = [[GGOrder alloc] initOrderWithUUID:@"SOME_ORDER_UUID" atStatus:OrderStatusCreated];
-    [self.trackerManager.liveMonitor addAndUpdateOrder:order];
-    
-    uuid = @"SOME_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        XCTAssertEqual(error.code, GGErrorTypeOrderNotFound);
-    }];
-    
-    
-    uuid = @"SOME_ORDER_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
-    }];
-    
-    
-    GGFindMe *findmeconfig = [[GGFindMe alloc] init];
-    findmeconfig.url = @"http://bringg.com/findme";
-    findmeconfig.token = @"SOME_TOKEN";
-    findmeconfig.enabled = YES;
-    
-    
-    GGSharedLocation *sharedL = [[GGSharedLocation alloc] init];
-    sharedL.locationUUID = @"SOME_SHARE_UUID";
-    sharedL.findMe = findmeconfig;
-    
-    order.sharedLocationUUID = @"SOME_SHARE_UUID";
-    order.sharedLocation = sharedL;
-
-    [self.trackerManager.liveMonitor addAndUpdateOrder:order];
-    
-    uuid = @"SOME_ORDER_UUID";
-    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:0 longitude:0 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        // should fail since cooridantes are invalid
-        XCTAssertEqual(error.code, GGErrorTypeActionNotAllowed);
-    }];
-    
-    [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:12.1231 longitude:87.55 withCompletionHandler:^(BOOL success, NSError * _Nullable error) {
-        
-        XCTAssertTrue(success);
-    }];
-
-    
-}
-
-- (void)testWatchingOrderWithExpiredResponseMissingSharedLocation{
-    
-    GGTrackerManager *trackerManager = [self setupRealTrackerManager];
-    
-    GGRealTimeMontiorMockClass *mockLiveMonitor = [[GGRealTimeMontiorMockClass alloc] init];
-    
-    __block NSString *orderUUID = @"abvsd-asd-asdasd";
-    __block NSString *shareUUID = @"asdf00asb7";
-    
-    
-    mockLiveMonitor.watchOrderResponseJSON = @{@"expired": @YES,
-                                               @"message": [NSString stringWithFormat:@"Order %@ share %@ expired",orderUUID , shareUUID],
-                                               @"success": @YES};
-    
-    trackerManager.liveMonitor = mockLiveMonitor;
-    
-    GGOrder * activeOrder = [trackerManager orderWithUUID:orderUUID];
-    
-    // prove order doesnt exist yet
-    XCTAssertNil(activeOrder);
-    
-    [trackerManager startWatchingOrderWithUUID:orderUUID sharedUUID:shareUUID delegate:self.realtimeDelegate];
-    
-    activeOrder = [trackerManager orderWithUUID:orderUUID];
-    
-    XCTAssertNotNil(activeOrder);
-    XCTAssertNil(activeOrder.sharedLocation); // we expect new order object to not contain any shared location
-}
-
-- (void)testWatchingOrderWithExpiredResponse{
-    
-    GGTrackerManager *trackerManager = [self setupRealTrackerManager];
-    
-    GGRealTimeMontiorMockClass *mockLiveMonitor = [[GGRealTimeMontiorMockClass alloc] init];
-    
-    __block NSString *orderUUID = @"abvsd-asd-asdasd";
-    __block NSString *shareUUID = @"asdf00asb7";
-    
-    
-    mockLiveMonitor.watchOrderResponseJSON = @{@"expired": @YES,
-                                               @"message": [NSString stringWithFormat:@"Order %@ share %@ expired",orderUUID , shareUUID],
-                                               @"shared_location": [self generateSharedLocationWithJSONSharedUUID:shareUUID orderUUID:orderUUID],
-                                               @"success": @YES};
-    
-    trackerManager.liveMonitor = mockLiveMonitor;
-    
-     GGOrder * activeOrder = [trackerManager orderWithUUID:orderUUID];
-    
-    // prove order doesnt exist yet
-    XCTAssertNil(activeOrder);
-    
-    [trackerManager startWatchingOrderWithUUID:orderUUID sharedUUID:shareUUID delegate:self.realtimeDelegate];
-    
-    activeOrder = [trackerManager orderWithUUID:orderUUID];
-    
-    XCTAssertNotNil(activeOrder);
-    XCTAssertNotNil(activeOrder.sharedLocation); // we expect new order object to contain the shared location of the response
-    XCTAssertTrue([activeOrder.sharedLocation.locationUUID isEqualToString:shareUUID]);
-}
 
 @end

@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.13.0"
+#define SDK_VERSION @"1.14.0"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -59,7 +59,7 @@
 #define PARAM_RATING @"rating"
 #define PARAM_RATING_TOKEN @"rating_token"
 #define PARAM_DRIVER_NAME @"employee_name"
-
+#define PARAM_EXPIRED @"expired"
 
 
 #define PARAM_ITEM_INVENTORY_ID @"inventory_id"
@@ -240,9 +240,8 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  notifies that the tracker is about to revive all previously monitored drivers
  *
  *  @param driverUUID uuid of driver
- *  @param sharedUUID uuid of shared
  */
-- (void)trackerWillReviveWatchedDriver:(nonnull NSString *)driverUUID withSharedUUID:(nonnull NSString *)sharedUUID;
+- (void)trackerWillReviveWatchedDriver:(nonnull NSString *)driverUUID;
 
 @end
 

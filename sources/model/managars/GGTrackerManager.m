@@ -21,7 +21,7 @@
 #import "BringgGlobals.h"
 
 #import "NSObject+Observer.h"
-
+#import "NSString+Extensions.h"
 
 #define BTPhoneKey @"phone"
 #define BTConfirmationCodeKey @"confirmation_code"
@@ -86,7 +86,7 @@
 }
 
 
--(id)initTacker{
+-(nonnull instancetype)initTacker{
     if (self = [super init]) {
         self.logsEnabled = NO;
     }
@@ -211,34 +211,23 @@
     return _liveMonitor.waypointDelegates.allKeys;
 }
 
+- (nullable NSString *)shareUUIDforDriverUUID:(nonnull NSString *)uuid{
+    
+    return [_liveMonitor getSharedUUIDforDriverUUID:uuid];
+    
+}
+
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid{
+    
+    return [_liveMonitor getDriverWithUUID:uuid];
+}
+
 - (nullable GGOrder *)orderWithUUID:(nonnull NSString *)uuid{
     
     return [_liveMonitor getOrderWithUUID:uuid];
 }
 
-- (nullable GGOrder *)orderWithCompoundUUID:(nonnull NSString *)compoundUUID{
-    
-    
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    if (error) {
-        return nil;
-    }
-    
-    GGOrder *order = [_liveMonitor getOrderWithUUID:uuid];
-    
-    if (order && [order isWithSharedUUID:sharedUUID]) {
-        
-        return order;
-    }
-    
-    return nil;
-}
+
 
 
 #pragma mark - Observers
@@ -492,7 +481,7 @@
                     // notify all interested parties that there has been a status change in the order
                     [weakSelf notifyRESTUpdateForOrderWithUUID:activeOrder.uuid];
                     
-                    // notify all interested parties that there has been a status change in the order
+                    // notify all interested parties that there has been a status change for the driver
                     [weakSelf notifyRESTUpdateForDriverWithUUID:sharedLocation.driver.uuid andSharedUUID:sharedLocation.locationUUID];
                     
                     
@@ -656,7 +645,7 @@
     GGDriver *driver;
     
     if (driverUUID) {
-        driver = [self.liveMonitor getDriverWithUUID:driverUUID];
+        driver = [self driverWithUUID:driverUUID];
     }else{
         driver = [self.liveMonitor getDriverWithID:@(order.driverId)];
     }
@@ -715,14 +704,12 @@
 }
 
 - (void)notifyRESTUpdateForDriverWithUUID:(NSString *)driverUUID andSharedUUID:(NSString *)shareUUID{
-     GGDriver *driver = [self.liveMonitor getDriverWithUUID:driverUUID];
-    
-     NSString *compoundKey = [[driverUUID stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
+     GGDriver *driver = [self driverWithUUID:driverUUID];
     
     // update the order delegate
-    id<DriverDelegate> delegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+    id<DriverDelegate> delegate = [_liveMonitor.driverDelegates objectForKey:driverUUID];
     
-    if (delegate) {
+    if ([delegate respondsToSelector:@selector(driverLocationDidChangeWithDriver:)]) {
         [delegate driverLocationDidChangeWithDriver:driver];
     }
 
@@ -730,7 +717,8 @@
 
 
 - (void)startRESTWatchingOrderByOrderUUID:(NSString * _Nonnull)orderUUID
-                                shareUUID:(NSString * _Nullable)shareUUID
+                    accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                  accessControlParamValue:(nonnull NSString *)accessControlParamValue
                     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     if (!self.httpManager) {
@@ -740,7 +728,8 @@
         }
     }
     else {
-        [self.httpManager watchOrderByOrderUUID:orderUUID shareUUID:shareUUID extras:nil withCompletionHandler:completionHandler];
+        [self.httpManager watchOrderByOrderUUID:orderUUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue extras:nil withCompletionHandler:completionHandler];
+        
     }
 }
 
@@ -774,7 +763,7 @@
     [self disconnect];
 }
 
-- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
+- (void)sendFindMeRequestForOrderWithUUID:(NSString *_Nonnull)uuid  latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
     
     if (!self.httpManager) {
         if (completionHandler) {
@@ -810,55 +799,7 @@
     }
 }
 
-- (void)sendFindMeRequestForOrderWithCompoundUUID:(NSString *_Nonnull)compoundUUID latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
-    
-    if (!compoundUUID){
-        NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
-        
-        if (completionHandler) {
-            completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"no compound uuid supplied"}]);
-        }
-        
-        return;
-    }
 
-    
-    // parse the uuid, then check for valid order and valid findme config
-    // first parse the compound - if it isnt valid raise an exception
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    if (error) {
-        
-        NSLog(@"ERROR SENDING FIND ME FOR ORDER WITH COMPOUND %@", compoundUUID);
-        
-        if (completionHandler) {
-            completionHandler(NO, error);
-        }
- 
-        return;
-        
-    }else{
-        // get the matching order
-        GGOrder *order = [self orderWithCompoundUUID:compoundUUID];
-        
-        if (!order) {
-            if (completionHandler) {
-                completionHandler(NO, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with compound %@", compoundUUID]}]);
-            }
-            
-            return;
-            
-        }else{
-            [self sendFindMeRequestForOrder:order latitude:lat longitude:lng withCompletionHandler:completionHandler];
-        }
-        
-    }
-}
 
 - (void)sendFindMeRequestForOrder:(nonnull GGOrder *)order latitude:(double)lat longitude:(double)lng withCompletionHandler:(nullable GGActionResponseHandler)completionHandler{
     
@@ -873,181 +814,221 @@
     [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
-- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+
+
+- (void)startWatchingOrderWithUUID:(nonnull NSString *)uuid
+             accessControlParamKey:(nonnull NSString *)accessControlParamKey
+           accessControlParamValue:(nonnull NSString *)accessControlParamValue
                           delegate:(id <OrderDelegate> _Nullable)delegate{
     
-    NSLog(@"Trying to start watching on order uuid: %@, with delegate %@", uuid, delegate);
     
-    // uuid is invalid if empty
-    if (!uuid || uuid.length == 0) {
-        [NSException raise:@"Invalid UUID" format:@"order UUID can not be nil or empty"];
+    
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue]) {
+        [NSException raise:@"Invalid params" format:@"Order and access controll params can not be empty"];
         
         return;
     }
-
     
     _liveMonitor.doMonitoringOrders = YES;
     id existingDelegate = [_liveMonitor.orderDelegates objectForKey:uuid];
     
     __block GGOrder *activeOrder = [[GGOrder alloc] initOrderWithUUID:uuid atStatus:OrderStatusCreated];
     
-    if (shareduuid) {
-        activeOrder.sharedLocationUUID = shareduuid;
+    __block NSString *shareUUID;
+    
+    if ([accessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
+        shareUUID = accessControlParamValue;
+        activeOrder.sharedLocationUUID = shareUUID;
     }
     
     [_liveMonitor addAndUpdateOrder:activeOrder];
     
     if (!existingDelegate) {
-        @synchronized(self) {
-            [_liveMonitor.orderDelegates setObject:delegate forKey:uuid];
-        }
         
-        [_liveMonitor sendWatchOrderWithOrderUUID:uuid shareUUID:shareduuid completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
+        if (delegate) {
+            @synchronized(self) {
+                [_liveMonitor.orderDelegates setObject:delegate forKey:uuid];
+            }
+        }
+
+        [_liveMonitor sendWatchOrderWithOrderUUID:uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:^(BOOL success, id socketResponse,  NSError *error) {
             
-            __weak typeof(self) weakSelf = self;
+            
             __block id delegateOfOrder = [_liveMonitor.orderDelegates objectForKey:uuid];
             
-            //create a poll handler that uses full order data to periodicaly poll for changes (this is a backup incase socket io fails to work)
-            GGOrderResponseHandler pollHandler =  ^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error){
-                
-                if (success) {
-                    [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
-                }
-                else{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        // notify socket fail
-                        if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                            [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
-                        }
-                    });
-                }
-            };
             
             if (!success) {
                 // check if we can poll for orders if not - send error
                 if ([self canPollForOrders]) {
                     
-                    // call the start watch from the http manager
-                    // we are depending here that we have a shared uuid
-                    if (uuid != nil) {
-                        // try to start watching via REST
-                        [self startRESTWatchingOrderByOrderUUID:uuid shareUUID:shareduuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                    __weak typeof(self) weakSelf = self;
+                    // try watching via REST api
+                    [self handleRealTimeWatchOrderFailForOrder:activeOrder accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue orderDelegate:delegateOfOrder pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                        //
+                        if (success) {
+                            [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
                             
-                            if (success) {
-                                GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+                            // notify watch success
+                            if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
                                 
-                                // check if we have a shared location object
-                                if (updatedOrder.sharedLocationUUID != nil) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    // notify socket fail
+                                    [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
                                     
-                                    // get the full order via REST
-                                    [weakSelf getWatchedOrderByShareUUID:updatedOrder.sharedLocationUUID orderUUID:updatedOrder.uuid withCompletionHandler:pollHandler];
-                                }
-                                else {
-                                    if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                                        [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
-                                    }
-                                }
+                                });
                             }
-                            else{
-                                // notify watch fail
-                                if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                                    [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
-                                }
-                            }
-                        }];
-                    }
-                    else {
-                        // notify watch fail
-                        NSError *error = [NSError errorWithDomain:kSDKDomainData code:-1 userInfo:@{NSLocalizedDescriptionKey:@"missing order uuid"}];
-                        if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                            [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
                         }
-                    }
+                        else{
+                             // notify watch fail
+                            if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                   
+                                    [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
+                                
+                                });
+                            }
+                            
+                        }
+                    }];
+                    
                 }
                 else {
-                    // notify watch fail
+                     // notify watch fail
                     if ([delegateOfOrder respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                        [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            [delegateOfOrder watchOrderFailForOrder:activeOrder error:error];
+                            
+                        });
                     }
                 }
             }
             else{
                 
-                // check for share_uuid
-                if ([socketResponse isKindOfClass:[NSDictionary class]]) {
-                    
-                    NSString *shareUUID = shareduuid;
-                    
-                    if (!shareUUID) {
-                        shareUUID = [socketResponse objectForKey:@"share_uuid"];
-                    }
-                    
-                    // try building the shared location object from callback
-                    GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[socketResponse objectForKey:@"shared_location"] ];
-                    
-                    // update order model with shared location object
-                    if (sharedLocation) {
-                        // updated the order model
-                        activeOrder.sharedLocationUUID = shareUUID;
-                        activeOrder.sharedLocation = sharedLocation;
-                        [_liveMonitor addAndUpdateOrder:activeOrder];
-                    }
-                    
-                    
-                    BOOL isShareUUIDExpired = NO;
-                    id expiredObj = [socketResponse objectForKey:@"expired"];
-                    if ([expiredObj isKindOfClass:[NSNumber class]]) {
-                        isShareUUIDExpired = ((NSNumber *)expiredObj).boolValue;
-                    }
-                    
-                    
-                    
-                    if (isShareUUIDExpired) {
-                        [activeOrder setStatus:OrderStatusDone];
-                        
-                        if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                            [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
-                        }
-                    }
-                    else {
-
-                       
-                        if (self.httpManager && shareUUID) {
-                            // try to get the full order object once
-                            [self getWatchedOrderByShareUUID:shareUUID orderUUID:uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
-                                
-                                if (success && order) {
-                                    order.sharedLocation = sharedLocation;
-
-                                    [_liveMonitor addAndUpdateOrder:order];
-                                    
-                                    if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                                        [delegateOfOrder watchOrderSucceedForOrder:order];
-                                    }
-                                    
-                                    NSLog(@"Received full order object %@", order);
-                                }
-                                else {
-                                    if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                                        [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
-                                    }
-                                }
-                            }];
-                        }
-                        else {
-                            if ([delegateOfOrder respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                                [delegateOfOrder watchOrderSucceedForOrder:activeOrder];
-                            }
-                        }
-                    }
-                }
+                [self handleRealTimeWatchOrderSuccessForOrder:activeOrder shareUUID:shareUUID response:socketResponse orderDelegate:delegateOfOrder];
                 
-                NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", uuid, delegate);
+                
             }
         }];
     }
+
+}
+
+- (void)handleRealTimeWatchOrderSuccessForOrder:(nonnull GGOrder *)activeOrder
+                                     shareUUID:(nullable NSString *)shareUUID
+                                       response:(nullable NSDictionary *)response
+                                  orderDelegate:(id <OrderDelegate> _Nullable)orderDelegate{
     
+    // check for share_uuid
+    if (response && [response isKindOfClass:[NSDictionary class]]) {
+        
+        NSString *_shareUUID = shareUUID;
+        
+        if (!_shareUUID) {
+            _shareUUID = [response objectForKey:PARAM_SHARE_UUID];
+        }
+        
+        // try building the shared location object from callback
+        GGSharedLocation *sharedLocation  = [[GGSharedLocation alloc] initWithData:[response objectForKey:PARAM_SHARED_LOCATION] ];
+        
+        // update order model with shared location object
+        if (sharedLocation) {
+            // updated the order model
+            activeOrder.sharedLocationUUID = _shareUUID;
+            activeOrder.sharedLocation = sharedLocation;
+            [_liveMonitor addAndUpdateOrder:activeOrder];
+        }
+        
+        
+        BOOL isShareUUIDExpired = NO;
+        id expiredObj = [response objectForKey:PARAM_EXPIRED];
+        if ([expiredObj isKindOfClass:[NSNumber class]]) {
+            isShareUUIDExpired = ((NSNumber *)expiredObj).boolValue;
+        }
+        
+        
+        
+        if (isShareUUIDExpired) {
+            [activeOrder setStatus:OrderStatusDone];
+            
+            if ([orderDelegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                [orderDelegate watchOrderSucceedForOrder:activeOrder];
+            }
+        }
+        else {
+            
+            
+            if (self.httpManager && _shareUUID) {
+                // try to get the full order object once
+                [self getWatchedOrderByShareUUID:_shareUUID orderUUID:activeOrder.uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                    
+                    if (success && order) {
+                        order.sharedLocation = sharedLocation;
+                        
+                        [_liveMonitor addAndUpdateOrder:order];
+                        
+                        if ([orderDelegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                            [orderDelegate watchOrderSucceedForOrder:order];
+                        }
+                        
+                        NSLog(@"Received full order object %@", order);
+                    }
+                    else {
+                        if ([orderDelegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                            [orderDelegate watchOrderSucceedForOrder:activeOrder];
+                        }
+                    }
+                }];
+            }
+            else {
+                if ([orderDelegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                    [orderDelegate watchOrderSucceedForOrder:activeOrder];
+                }
+            }
+        }
+    }
+    
+    NSLog(@"SUCCESS WATCHING ORDER %@ with delegate %@", activeOrder.uuid, orderDelegate);
+
+}
+
+
+- (void)handleRealTimeWatchOrderFailForOrder:(nonnull GGOrder *)activeOrder
+                       accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                     accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               orderDelegate:(id <OrderDelegate> _Nullable)orderDelegate
+                                 pollHandler:(nonnull GGOrderResponseHandler)pollHandler{
+    // call the start watch from the http manager
+    // we are depending here that we have a shared uuid or customer access token
+    // try to start watching via REST
+    __weak __typeof(self)weakSelf = self;
+    
+    [self startRESTWatchingOrderByOrderUUID:activeOrder.uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+        
+        if (success) {
+            GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+            
+            // check if we have a shared location object
+            if (updatedOrder.sharedLocationUUID != nil) {
+                
+                // get the full order via REST
+                [weakSelf getWatchedOrderByShareUUID:updatedOrder.sharedLocationUUID orderUUID:updatedOrder.uuid withCompletionHandler:pollHandler];
+            }
+            else {
+                if ([orderDelegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                    [orderDelegate watchOrderFailForOrder:activeOrder error:error];
+                }
+            }
+        }
+        else{
+            // notify watch fail
+            if ([orderDelegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                [orderDelegate watchOrderFailForOrder:activeOrder error:error];
+            }
+        }
+    }];
 }
 
 - (void)handleOrderUpdated:(GGOrder *)activeOrder withNewOrder:(GGOrder *)order andPoll:(BOOL)doPoll{
@@ -1098,85 +1079,66 @@
 
 }
 
-- (void)startWatchingOrderWithCompoundUUID:(NSString *)compoundUUID delegate:(id<OrderDelegate>)delegate{
+
+ 
+- (void)startWatchingDriverWithUUID:(nonnull NSString *)uuid
+              accessControlParamKey:(nonnull NSString *)accessControlParamKey
+            accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                           delegate:(id <DriverDelegate> _Nullable)delegate {
     
-    // first parse the compound - if it isnt valid raise an exception
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    if (error) {
+    if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue]) {
+        [NSException raise:@"Invalid params" format:@"driver and access controll params can not be empty"];
         
-        NSLog(@"ERROR START WATCHING ORDER WITH COMPOUND %@ with delegate %@", compoundUUID, delegate);
-        
-        [NSException raise:@"invalid compound UUID" format:@"compound UUID must be of valid structure"];
-        
-    }else{
-        [self startWatchingOrderWithUUID:uuid sharedUUID:sharedUUID delegate:delegate];
+        return;
     }
-}
 
-- (void)startWatchingOrderWithUUID:(NSString *)uuid delegate:(id <OrderDelegate>)delegate {
-    [self startWatchingOrderWithUUID:uuid sharedUUID:nil delegate:delegate];
-}
+    _liveMonitor.doMonitoringDrivers = YES;
+    
+    GGDriver *driver = [[GGDriver alloc] initWithUUID:uuid];
+    
 
-- (void)startWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID delegate:(id <DriverDelegate>)delegate {
+    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     
-    NSLog(@"SHOULD START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
-    
-    if (uuid && shareUUID) {
-        _liveMonitor.doMonitoringDrivers = YES;
+    if (!existingDelegate) {
         
-        GGDriver *driver = [[GGDriver alloc] initWithUUID:uuid];
-        
-        // here the key is a match
-        __block NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
-        
-        id existingDelegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
-        
-        if (!existingDelegate) {
+        if (delegate) {
             @synchronized(self) {
-                [_liveMonitor.driverDelegates setObject:delegate forKey:compoundKey];
+                [_liveMonitor.driverDelegates setObject:delegate forKey:uuid];
             }
+        }
+ 
+        [_liveMonitor sendWatchDriverWithDriverUUID:uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:^(BOOL success,id socketResponse, NSError *error) {
             
-            [_liveMonitor sendWatchDriverWithDriverUUID:uuid shareUUID:(NSString *)shareUUID completionHandler:^(BOOL success,id socketResponse, NSError *error) {
-                id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+            id delegateOfDriver = [_liveMonitor.driverDelegates objectForKey:uuid];
+            
+            if (!success) {
+                void(^callDelegateBlock)(void) = ^(void) {
+                    if ([delegateOfDriver respondsToSelector:@selector(watchDriverFailedForDriver:error:)]) {
+                        [delegateOfDriver watchDriverFailedForDriver:driver error:error];
+                    }
+                };
                 
-                if (!success) {
-                    void(^callDelegateBlock)(void) = ^(void) {
-                        if ([delegateOfDriver respondsToSelector:@selector(watchDriverFailedForDriver:error:)]) {
-                            [delegateOfDriver watchDriverFailedForDriver:driver error:error];
-                        }
-                    };
-                    
-                    NSString *errorMessage = error.userInfo[NSLocalizedDescriptionKey];
-                    if ([errorMessage isEqualToString:@"Uuid mismatch"]) {
-                           callDelegateBlock();
-                    }
-                    else {
-                        if ([self canPollForLocations]) {
-                            [self startLocationPolling];
-                        }
-                        else {
-                            callDelegateBlock();
-                        }
-                    }
+                NSString *errorMessage = error.userInfo[NSLocalizedDescriptionKey];
+                if ([errorMessage isEqualToString:@"Uuid mismatch"]) {
+                    callDelegateBlock();
                 }
                 else {
-                    if ([delegateOfDriver respondsToSelector:@selector(watchDriverSucceedForDriver:)]) {
-                        [delegateOfDriver watchDriverSucceedForDriver:driver];
+                    if ([self canPollForLocations]) {
+                        [self startLocationPolling];
                     }
-                    
-                    NSLog(@"SUCCESS START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, delegate);
+                    else {
+                        callDelegateBlock();
+                    }
                 }
-            }];
-        }
-    }
-    else {
-        [NSException raise:@"Invalid UUIDs" format:@"Driver and Share UUIDs can not be nil"];
+            }
+            else {
+                if ([delegateOfDriver respondsToSelector:@selector(watchDriverSucceedForDriver:)]) {
+                    [delegateOfDriver watchDriverSucceedForDriver:driver];
+                }
+                
+                NSLog(@"SUCCESS START WATCHING DRIVER %@ -> %@: %@ with delegate %@", uuid, accessControlParamKey, accessControlParamValue, delegate);
+            }
+        }];
     }
 }
 
@@ -1184,71 +1146,75 @@
                                andOrderUUID:(NSString * _Nonnull)orderUUID
                                    delegate:(id <WaypointDelegate>)delegate {
     
-     NSLog(@"SHOULD START WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
     
-    if (waypointId && orderUUID) {
-        _liveMonitor.doMonitoringWaypoints = YES;
+    if (!waypointId || [NSString isStringEmpty:orderUUID]) {
+        [NSException raise:@"Invalid params" format:@"waypoint id and order uuid params can not be empty"];
         
-        // here the key is a match
-        __block NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
+        return;
+    }
+
+    _liveMonitor.doMonitoringWaypoints = YES;
+    
+    // here the key is a match
+    __block NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
+    
+    id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+    
+    if (!existingDelegate) {
         
-        id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
-        
-        if (!existingDelegate) {
+        if (delegate) {
             @synchronized(self) {
                 [_liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
                 
             }
-            [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
-               
-                id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+        }
+        
+        [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
+            
+            id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+            
+            if (!success) {
                 
-                if (!success) {
- 
-                    @synchronized(_liveMonitor) {
-                        
-                        NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
-                        
-                        [_liveMonitor.waypointDelegates removeObjectForKey:compoundKey];
-                        
-                    }
+                @synchronized(_liveMonitor) {
                     
-                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
-                        [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
-                    }
- 
-                    if (![_liveMonitor.waypointDelegates count]) {
-                        _liveMonitor.doMonitoringWaypoints = NO;
-                        
-                    }
-                }else{
-                    NSLog(@"SUCCESS WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
+                    NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
                     
-                    GGWaypoint *wp;
-                    // search for waypoint model in callback
-                    NSDictionary *waypointData = [socketResponse objectForKey:@"way_point"];
-                    if (waypointData) {
-                        wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
-                        // if valid wp we need to update the order waypoint
-                        if (wp){
-                            // update local model with wp
-                            [_liveMonitor addAndUpdateWaypoint:wp];
-                        }
-                    }
-                    
-                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointSucceededForWaypointId:waypoint:)]) {
-                        [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
-                    }
-                    
-                    
+                    [_liveMonitor.waypointDelegates removeObjectForKey:compoundKey];
                     
                 }
-            }];
-        }
-    }else{
-        [NSException raise:@"Invalid waypoint ID" format:@"Waypoint ID can not be nil"];
+                
+                if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
+                    [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
+                }
+                
+                if (![_liveMonitor.waypointDelegates count]) {
+                    _liveMonitor.doMonitoringWaypoints = NO;
+                    
+                }
+            }else{
+                NSLog(@"SUCCESS WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
+                
+                GGWaypoint *wp;
+                // search for waypoint model in callback
+                NSDictionary *waypointData = [socketResponse objectForKey:@"way_point"];
+                if (waypointData) {
+                    wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
+                    // if valid wp we need to update the order waypoint
+                    if (wp){
+                        // update local model with wp
+                        [_liveMonitor addAndUpdateWaypoint:wp];
+                    }
+                }
+                
+                if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointSucceededForWaypointId:waypoint:)]) {
+                    [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
+                }
+                
+                
+                
+            }
+        }];
     }
-    
     
 }
 
@@ -1264,24 +1230,6 @@
     }
 }
 
-- (void)stopWatchingOrderWithCompoundUUID:(NSString *)compoundUUID{
-    // parse the compound
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    // if there is an error in parsing return no
-    if (error) {
-        [NSException raise:@"invalid compound UUID" format:@"compound UUID must be of valid structure"];
-        return ;
-    }
-    
-    [self stopWatchingOrderWithUUID:uuid];
-
-}
 
 - (void)stopWatchingAllOrders{
     @synchronized(_liveMonitor) {
@@ -1290,18 +1238,17 @@
     }
 }
 
-- (void)stopWatchingDriverWithUUID:(NSString *)uuid shareUUID:(NSString *)shareUUID {
+- (void)stopWatchingDriverWithUUID:(NSString *)uuid {
     
     
-     NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
     
-    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:compoundKey];
+    id existingDelegate = [_liveMonitor.driverDelegates objectForKey:uuid];
     if (existingDelegate) {
         @synchronized(_liveMonitor) {
             
-            NSLog(@"SHOULD START WATCHING DRIVER %@ SHARED %@ with delegate %@", uuid, shareUUID, existingDelegate);
+            NSLog(@"SHOULD START WATCHING DRIVER %@ with delegate %@", uuid, existingDelegate);
             
-            [_liveMonitor.driverDelegates removeObjectForKey:compoundKey];
+            [_liveMonitor.driverDelegates removeObjectForKey:uuid];
             
         }
     }
@@ -1352,12 +1299,20 @@
         // if delegate isnt null than start watching again
         if (orderDelegate && ![orderDelegate isEqual: [NSNull null]]) {
             
-            if ([orderDelegate respondsToSelector:@selector(trackerWillReviveWatchedOrder:)]) {
+            // for the revival to work we need the order shared uuid which we should have if the order was indeed previously being watched
+            GGOrder *order = [self orderWithUUID:orderUUID];
+            
+            if (order && ![NSString isStringEmpty:order.sharedLocationUUID]) {
+                if ([orderDelegate respondsToSelector:@selector(trackerWillReviveWatchedOrder:)]) {
+                    
+                    [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
+                }
                 
-                [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
+                [self startWatchingOrderWithUUID:orderUUID accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:order.sharedLocationUUID delegate:orderDelegate];
+                
             }
- 
-            [self startWatchingOrderWithUUID:orderUUID delegate:orderDelegate];
+            
+           
             
         }
     }];
@@ -1367,29 +1322,25 @@
     
     [self.monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //
-        
-        NSString *driverCompoundKey = (NSString *)obj;
-        
-        
-        NSString *driverUUID;
-        NSString *sharedUUID;
-        
-        [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&sharedUUID];
+        NSString *driverUUID = (NSString *)obj;
         
         //check there is still a delegate listening
-        id<DriverDelegate> driverDelegate = [_liveMonitor.driverDelegates objectForKey:driverCompoundKey];
+        id<DriverDelegate> driverDelegate = [_liveMonitor.driverDelegates objectForKey:driverUUID];
         
         // remove the old entry in the dictionary
-        [_liveMonitor.driverDelegates removeObjectForKey:driverCompoundKey];
+        [_liveMonitor.driverDelegates removeObjectForKey:driverUUID];
         
-        // if delegate isnt null than start watching again
-        if (driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
+        NSString *shareUUID = [self shareUUIDforDriverUUID:driverUUID];
+        
+        // if delegate isnt null than and we have a valid shared uuid start watching again
+        if (![NSString isStringEmpty:shareUUID] && driverDelegate && ![driverDelegate isEqual: [NSNull null]]) {
             
-            if ([driverDelegate respondsToSelector:@selector(trackerWillReviveWatchedDriver:withSharedUUID:)]) {
-                [driverDelegate trackerWillReviveWatchedDriver:driverUUID withSharedUUID:sharedUUID];
+            if ([driverDelegate respondsToSelector:@selector(trackerWillReviveWatchedDriver:)]) {
+                [driverDelegate trackerWillReviveWatchedDriver:driverUUID];
             }
 
-            [self startWatchingDriverWithUUID:driverUUID shareUUID:sharedUUID delegate:driverDelegate];
+            [self startWatchingDriverWithUUID:driverUUID accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:driverDelegate];
+            
             
         }
     }];
@@ -1550,39 +1501,15 @@
     
 }
 
-- (BOOL)isWatchingOrderWithCompoundUUID:(NSString *)compoundUUID{
-    if (!compoundUUID) {
-        return NO;
-    }
-    
-    // parse the compound
-    NSString *uuid;
-    NSString *sharedUUID;
-    NSError *error;
-    
-    error = nil;
-    [GGBringgUtils parseOrderCompoundUUID:compoundUUID toOrderUUID:&uuid andSharedUUID:&sharedUUID error:&error];
-    
-    // if there is an error in parsing return no
-    if (error) {
-        return NO;
-    }
-    
-    // return if watching the order uuid
-    return [self isWatchingOrderWithUUID:uuid];
-}
 
 - (BOOL)isWatchingDrivers {
     return _liveMonitor.doMonitoringDrivers;
     
 }
 
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID {
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid {
     
-    NSString *compoundKey = [[uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:shareUUID];
-    
-    
-    return ([_liveMonitor.driverDelegates objectForKey:compoundKey]) ? YES : NO;
+    return ([_liveMonitor.driverDelegates objectForKey:uuid]) ? YES : NO;
     
 }
 

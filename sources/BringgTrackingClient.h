@@ -86,15 +86,28 @@
 
 
 /**
- *  starts watching an order using both order uuid and shared uuid (optional)
+ *  starts watching an order using both order uuid and shared uuid
  *
  *  @param uuid       order uuid
- *  @param shareduuid shared uuid
+ *  @param shareUUID share uuid
  *  @param delegate   delegate
- *  @throws if invalid or missing order UUID
+ *  @throws if invalid or missing either order UUID or shared UUID
  */
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
-                        sharedUUID:(NSString *_Nullable)shareduuid
+                         shareUUID:(NSString *_Nonnull)shareUUID
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
+
+
+/**
+ *  starts watching an order using both order uuid and shared uuid
+ *
+ *  @param uuid       order uuid
+ *  @param customerAccessToken customer access token
+ *  @param delegate   delegate
+ *  @throws if invalid or missing either order UUID or shared UUID
+ */
+- (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
+               customerAccessToken:(NSString *_Nonnull)customerAccessToken
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
@@ -106,9 +119,20 @@
  *  @param delegate  object to recieve driver callbacks
  *  @see DriverDelegate
  */
-- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid
+- (void)startWatchingDriverWithUUID:(NSString *_Nonnull)driveruuid
                           shareUUID:(NSString *_Nonnull)shareUUID
                            delegate:(id <DriverDelegate> _Nullable)delegate;
+
+
+/**
+ *  asks the real time service to start tracking a specific driver using driver uuid and customer access token
+ *
+ *  @param uuid      uuid of driver
+ *  @param delegate  object to recieve driver callbacks
+ *  @see DriverDelegate
+ */
+- (void)startWatchingCustomerDriverWithUUID:(NSString *_Nonnull)uuid
+                                   delegate:(id <DriverDelegate> _Nullable)delegate;
 
 /**
  *  asks the real time service to start tracking a specific waypoint
@@ -165,10 +189,9 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
  *  stops tracking a specific driver
  *
  *  @param uuid      uuid of driver
- *  @param shareUUID uuid of shared location object associated with a specific order
  */
-- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid
-                         shareUUID:(NSString *_Nullable)shareUUID;
+- (void)stopWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
+
 /**
  *  stops watching all drivers
  */
@@ -207,6 +230,16 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
 - (BOOL)isWatchingOrderWithUUID:(NSString *_Nonnull)uuid;
 
 
+
+/**
+ *  return a driver matching a uuid
+ *
+ *  @param uuid driver uuid to search
+ *
+ *  @return GGDriver
+ */
+- (nullable GGDriver *)driverWithUUID:(nonnull NSString *)uuid;
+
 /**
  *  tell if a specific driver is being watched
  *
@@ -214,8 +247,17 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler;
  *
  *  @return BOOL
  */
-- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid andShareUUID:(NSString *_Nonnull)shareUUID;
+- (BOOL)isWatchingDriverWithUUID:(NSString *_Nonnull)uuid;
 
+
+/**
+ *  return a shared uuid object matching a driver uuid
+ *
+ *  @param uuid driver uuid to search by
+ *
+ *  @return NSString
+ */
+- (nullable NSString *)shareUUIDForDriverWithUUID:(nonnull NSString*)driverUUID;
 
 /**
  *  tell if a specific waypoint is being watched

@@ -709,7 +709,7 @@
     // update the order delegate
     id<DriverDelegate> delegate = [_liveMonitor.driverDelegates objectForKey:driverUUID];
     
-    if (delegate) {
+    if ([delegate respondsToSelector:@selector(driverLocationDidChangeWithDriver:)]) {
         [delegate driverLocationDidChangeWithDriver:driver];
     }
 
@@ -924,10 +924,10 @@
     // check for share_uuid
     if (response && [response isKindOfClass:[NSDictionary class]]) {
         
-        NSString *shareUUID = shareUUID;
+        NSString *_shareUUID = shareUUID;
         
-        if (!shareUUID) {
-            shareUUID = [response objectForKey:PARAM_SHARE_UUID];
+        if (!_shareUUID) {
+            _shareUUID = [response objectForKey:PARAM_SHARE_UUID];
         }
         
         // try building the shared location object from callback
@@ -936,7 +936,7 @@
         // update order model with shared location object
         if (sharedLocation) {
             // updated the order model
-            activeOrder.sharedLocationUUID = shareUUID;
+            activeOrder.sharedLocationUUID = _shareUUID;
             activeOrder.sharedLocation = sharedLocation;
             [_liveMonitor addAndUpdateOrder:activeOrder];
         }
@@ -960,9 +960,9 @@
         else {
             
             
-            if (self.httpManager && shareUUID) {
+            if (self.httpManager && _shareUUID) {
                 // try to get the full order object once
-                [self getWatchedOrderByShareUUID:shareUUID orderUUID:activeOrder.uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                [self getWatchedOrderByShareUUID:_shareUUID orderUUID:activeOrder.uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                     
                     if (success && order) {
                         order.sharedLocation = sharedLocation;
@@ -1146,75 +1146,75 @@
                                andOrderUUID:(NSString * _Nonnull)orderUUID
                                    delegate:(id <WaypointDelegate>)delegate {
     
-     NSLog(@"SHOULD START WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
     
-    if (waypointId && orderUUID) {
-        _liveMonitor.doMonitoringWaypoints = YES;
+    if (!waypointId || [NSString isStringEmpty:orderUUID]) {
+        [NSException raise:@"Invalid params" format:@"waypoint id and order uuid params can not be empty"];
         
-        // here the key is a match
-        __block NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
-        
-        id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
-        
-        if (!existingDelegate) {
-            
-            if (delegate) {
-                @synchronized(self) {
-                    [_liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
-                    
-                }
-            }
-            
-            [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
-               
-                id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
-                
-                if (!success) {
- 
-                    @synchronized(_liveMonitor) {
-                        
-                        NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
-                        
-                        [_liveMonitor.waypointDelegates removeObjectForKey:compoundKey];
-                        
-                    }
-                    
-                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
-                        [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
-                    }
- 
-                    if (![_liveMonitor.waypointDelegates count]) {
-                        _liveMonitor.doMonitoringWaypoints = NO;
-                        
-                    }
-                }else{
-                    NSLog(@"SUCCESS WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
-                    
-                    GGWaypoint *wp;
-                    // search for waypoint model in callback
-                    NSDictionary *waypointData = [socketResponse objectForKey:@"way_point"];
-                    if (waypointData) {
-                        wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
-                        // if valid wp we need to update the order waypoint
-                        if (wp){
-                            // update local model with wp
-                            [_liveMonitor addAndUpdateWaypoint:wp];
-                        }
-                    }
-                    
-                    if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointSucceededForWaypointId:waypoint:)]) {
-                        [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
-                    }
-                    
-                    
-                    
-                }
-            }];
-        }
-    }else{
-        [NSException raise:@"Invalid waypoint ID" format:@"Waypoint ID can not be nil"];
+        return;
     }
+
+    _liveMonitor.doMonitoringWaypoints = YES;
     
+    // here the key is a match
+    __block NSString *compoundKey = [[orderUUID stringByAppendingString:WAYPOINT_COMPOUND_SEPERATOR] stringByAppendingString:waypointId.stringValue];
+    
+    id existingDelegate = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+    
+    if (!existingDelegate) {
+        
+        if (delegate) {
+            @synchronized(self) {
+                [_liveMonitor.waypointDelegates setObject:delegate forKey:compoundKey];
+                
+            }
+        }
+        
+        [_liveMonitor sendWatchWaypointWithWaypointId:waypointId andOrderUUID:orderUUID completionHandler:^(BOOL success, id socketResponse, NSError *error) {
+            
+            id delegateOfWaypoint = [_liveMonitor.waypointDelegates objectForKey:compoundKey];
+            
+            if (!success) {
+                
+                @synchronized(_liveMonitor) {
+                    
+                    NSLog(@"SHOULD STOP WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
+                    
+                    [_liveMonitor.waypointDelegates removeObjectForKey:compoundKey];
+                    
+                }
+                
+                if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointFailedForWaypointId:error:)]) {
+                    [delegateOfWaypoint watchWaypointFailedForWaypointId:waypointId error:error];
+                }
+                
+                if (![_liveMonitor.waypointDelegates count]) {
+                    _liveMonitor.doMonitoringWaypoints = NO;
+                    
+                }
+            }else{
+                NSLog(@"SUCCESS WATCHING WAYPOINT %@ with delegate %@", waypointId, delegate);
+                
+                GGWaypoint *wp;
+                // search for waypoint model in callback
+                NSDictionary *waypointData = [socketResponse objectForKey:@"way_point"];
+                if (waypointData) {
+                    wp = [[GGWaypoint alloc] initWaypointWithData:waypointData];
+                    // if valid wp we need to update the order waypoint
+                    if (wp){
+                        // update local model with wp
+                        [_liveMonitor addAndUpdateWaypoint:wp];
+                    }
+                }
+                
+                if ([delegateOfWaypoint respondsToSelector:@selector(watchWaypointSucceededForWaypointId:waypoint:)]) {
+                    [delegateOfWaypoint watchWaypointSucceededForWaypointId:waypointId waypoint:wp];
+                }
+                
+                
+                
+            }
+        }];
+    }
     
 }
 

@@ -381,6 +381,28 @@
     self.trackingClient.mockCustomer = nil;
 }
 
+- (void)testWatchingWayointUsingWaypointIDAndOrderUUID{
+   
+    NSString *uuid = nil;
+    NSNumber *wpid = nil;
+    
+    
+    XCTAssertThrows([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    
+    uuid = @"";
+    
+    XCTAssertThrows([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    
+    wpid = @123456789;
+    
+    XCTAssertThrows([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    
+    uuid = @"asd_asd_asdads";
+    
+    XCTAssertNoThrow([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    
+}
+
 - (void)testRequestingFindMeUsingOrderUUID{
     
     NSString *uuid = nil;

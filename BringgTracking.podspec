@@ -28,6 +28,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/bringg/customer-sdk-ios.git", :tag => "#{s.version}" }
   s.source_files  = "sources", "sources/**/*.{h,m}"
   s.requires_arc = true
-  s.dependency "Socket.IO-Client-Swift", '~> 8.1.2'
+  s.dependency "Socket.IO-Client-Swift", '~> 8.3.0'
   s.xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
 end

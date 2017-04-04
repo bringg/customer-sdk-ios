@@ -20,6 +20,7 @@
 #import "NSObject+Observer.h"
 #import "GGRealTimeInternals.h"
 #import "NSString+Extensions.h"
+#import "BringgPrivates.h"  
 
 @import SocketIO;
 
@@ -33,13 +34,6 @@
 
 @synthesize realtimeDelegate;
 
-
-+ (id)sharedInstance {
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [[self alloc] init];
-        
-    });
-}
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
@@ -191,6 +185,17 @@
     }
     
 }
+
+- (void)setLastEventDate:(NSDate *)lastEventDate{
+    _lastEventDate = lastEventDate;
+    
+    // delegate methods
+    if (lastEventDate && [self.networkClientDelegate respondsToSelector:@selector(networkClient:didReciveUpdateEventAtDate:)]) {
+        
+        [self.networkClientDelegate networkClient:self didReciveUpdateEventAtDate:_lastEventDate];
+    }
+}
+
 
 #pragma mark - Getters
 

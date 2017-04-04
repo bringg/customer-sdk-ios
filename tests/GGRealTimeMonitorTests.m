@@ -71,7 +71,7 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
    
-    self.liveMonitor = [GGRealTimeMontior sharedInstance];
+    self.liveMonitor = [[GGRealTimeMontior alloc] init];
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];

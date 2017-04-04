@@ -41,4 +41,12 @@
 @end
 
 
+@protocol NetworkClientUpdateDelegate <NSObject>
+
+@optional
+
+- (void)networkClient:(nonnull id)networkClient didReciveUpdateEventAtDate:(nonnull NSDate *)eventDate;
+
+@end
+
 #endif /* BringgPrivates_h */

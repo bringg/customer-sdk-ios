@@ -37,25 +37,6 @@
  */
 @property (nonatomic) BOOL logsEnabled;
 
-/**
- *  creates if needed and returns an initialized tracker singelton
- *  @return the tracker singelton
- */
-+ (nonnull id)tracker;
-
-/**
- *  creates if needed an singelton Bringg Tracker object
- *  @warning call this method only when obtained valid customer access token and developer access token
- *  @param customerToken a valid customer access token
- *  @param devToken      a valid developer access token
- *  @param delegate      a delegate object to recive notification from the Bringg tracker object
- *  @param httpManager   an http manager that will do the polling for the tracker
- *
- *  @return the Bringg Tracker singelton
- */
-+ (nonnull id)trackerWithCustomerToken:(NSString * _Nullable)customerToken andDeveloperToken:(NSString *_Nullable)devToken andDelegate:(id <RealTimeDelegate> _Nullable)delegate andHTTPManager:(GGHTTPClientManager * _Nullable)httpManager;
-
-
 
 /**
  *  set the httpManager that will be used to poll data for the tracker

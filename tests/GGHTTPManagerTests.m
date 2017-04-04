@@ -63,7 +63,7 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-    self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:nil];
+    self.httpManager = [[GGHTTPClientManager alloc] init];
     self.httpManagerDelegate = [[GGHTTPClientManagerTestClient alloc] init];
     
     [self.httpManager setConnectionDelegate:self.httpManagerDelegate];
@@ -100,11 +100,6 @@
 }
 
 #pragma mark - Tests
-
--(void)testManagerStatic{
-    GGHTTPClientManager *manager = [GGHTTPClientManager manager];
-    XCTAssertTrue([manager isEqual:self.httpManager]);
-}
 
 -(void)testAuthenticatingCustomer{
    

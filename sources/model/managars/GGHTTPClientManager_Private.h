@@ -26,6 +26,17 @@
 
 @property (nullable, nonatomic, weak) id<PrivateClientConnectionDelegate> connectionDelegate;
 
+@property (nullable, nonatomic, weak) id<NetworkClientUpdateDelegate> networkClientDelegate;
+
+/**
+ *  get a singelton reference to the http client manager
+ *  @param developerToken   the developer token acquired when registering as a developer in Bringg website
+ *  @return the http manager singelton
+ */
+- (nonnull instancetype)initWithDeveloperToken:(NSString *_Nullable)developerToken;
+
+ 
+
 /**
  *  adds authentication params to the regular params of a call
  *

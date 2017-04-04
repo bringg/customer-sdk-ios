@@ -202,7 +202,7 @@
 
 - (void)setupHTTPManagerWithDevToken:(NSString *)devToken securedConnection:(BOOL)useSecuredConnection {
     
-    GGHTTPClientManagerMockClass *mockHttp = [GGHTTPClientManagerMockClass managerWithDeveloperToken:TEST_DEV_TOKEN];
+    GGHTTPClientManagerMockClass *mockHttp = [[GGHTTPClientManagerMockClass alloc] initWithDeveloperToken:TEST_DEV_TOKEN];
     
     self.httpManager = mockHttp;
     [self.httpManager useSecuredConnection:useSecuredConnection];
@@ -211,7 +211,7 @@
 
 - (void)setupTrackerManagerWithDevToken:(nonnull NSString *)devToken httpManager:(nonnull GGHTTPClientManager *)httpManager realtimeDelegate:(nonnull id<RealTimeDelegate>)delegate {
     
-    self.trackerManager = [GGTrackerManagerMockClass trackerWithCustomerToken:nil andDeveloperToken:TEST_DEV_TOKEN andDelegate:delegate andHTTPManager:nil];
+    self.trackerManager = [[GGTrackerManagerMockClass alloc] initWithDeveloperToken:TEST_DEV_TOKEN HTTPManager:nil realTimeDelegate:delegate];
     
     [self.trackerManager setDeveloperToken:devToken];
     [self.trackerManager setHTTPManager:self.httpManager];

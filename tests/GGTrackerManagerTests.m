@@ -135,26 +135,25 @@
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
     self.realtimeDelegate = [[GGTestRealTimeDelegate alloc] init];
-    self.trackerManager = [GGTrackerManagerTestClass trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:self.realtimeDelegate andHTTPManager:nil];
-   
+    self.trackerManager = [[GGTrackerManagerTestClass alloc] initWithDeveloperToken:@"SOME_DEV_TOKEN" HTTPManager:nil realTimeDelegate:self.realtimeDelegate];
     
     self.acceptJson = [GGTestUtils parseJsonFile:@"orderUpdate_onaccept"];
     self.startJson = [GGTestUtils parseJsonFile:@"orderUpdate_onstart"];
     
-    GGHTTPClientManagerTestClass *mockHttp = [GGHTTPClientManagerTestClass managerWithDeveloperToken:@"SOME_DEV_TOKEN"];
+    GGHTTPClientManagerTestClass *mockHttp = [[GGHTTPClientManagerTestClass alloc] initWithDeveloperToken:@"SOME_DEV_TOKEN"];
     [self.trackerManager setHTTPManager:mockHttp];
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-    
     self.trackerManager = nil;
     self.realtimeDelegate = nil;
     
     self.acceptJson = nil;
     self.startJson = nil;
-
+    
+    [super tearDown];
+   
 }
 
 //MARK: Tests

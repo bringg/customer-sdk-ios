@@ -60,43 +60,29 @@
 
 
 @implementation GGHTTPClientManager
+@synthesize lastEventDate = _lastEventDate;
 
 
-
-+ (id)manager{
-    
-    // get a manager object without the dev token
-    return [self managerWithDeveloperToken:nil];
-}
-
-+ (id)managerWithDeveloperToken:(NSString *)developerToken{
+- (nonnull instancetype)initWithDeveloperToken:(NSString *_Nullable)developerToken{
    
-    static GGHTTPClientManager *sharedObject = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        // init the tracker
-        sharedObject = [[self alloc] init];
-        
+    if (self = [super init]) {
+
         // set the developer token
-        sharedObject->_developerToken = developerToken;
+        _developerToken = developerToken;
         
         // by default set the manager to use ssl
-        sharedObject->_useSSL = YES;
+        _useSSL = YES;
         
-    });
+    };
     
-    return sharedObject;
+    return self;
 }
 
 
 
 -(id)init{
     
-    if (self = [super init]) {
-        
-    }
-    return self;
+    return [self initWithDeveloperToken:nil];
 }
 
 - (void)setDeveloperToken:(NSString *)devToken{
@@ -107,7 +93,6 @@
 - (void)dealloc {
     
 }
-
 
 
 #pragma mark - Helpers
@@ -279,6 +264,16 @@
 
 - (void)useCustomer:(GGCustomer * _Nullable)customer{
     self.customer = customer;
+}
+
+- (void)setLastEventDate:(NSDate *)lastEventDate{
+    _lastEventDate = lastEventDate;
+    
+    // delegate methods
+    if (lastEventDate && [self.networkClientDelegate respondsToSelector:@selector(networkClient:didReciveUpdateEventAtDate:)]) {
+        
+        [self.networkClientDelegate networkClient:self didReciveUpdateEventAtDate:_lastEventDate];
+    }
 }
 
 #pragma mark - Getters

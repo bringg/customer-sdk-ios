@@ -25,8 +25,6 @@
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>
 
 
-
-
 @end
 
 @implementation BringgTrackingClient
@@ -67,7 +65,7 @@
 }
 
 - (void)setupHTTPManagerWithDevToken:(nonnull NSString *)devToken securedConnection:(BOOL)useSecuredConnection{
-    self.httpManager = [GGHTTPClientManager managerWithDeveloperToken:devToken];
+    self.httpManager = [[GGHTTPClientManager alloc] initWithDeveloperToken:devToken];;
     [self.httpManager useSecuredConnection:useSecuredConnection];
     
     [self.httpManager setConnectionDelegate:self];
@@ -76,10 +74,7 @@
 
 - (void)setupTrackerManagerWithDevToken:(nonnull NSString *)devToken httpManager:(nonnull GGHTTPClientManager *)httpManager realtimeDelegate:(nonnull id<RealTimeDelegate>)delegate {
     
-    self.trackerManager = [GGTrackerManager tracker];
-    [self.trackerManager setDeveloperToken:devToken];
-    [self.trackerManager setHTTPManager:self.httpManager];
-    [self.trackerManager setRealTimeDelegate:delegate];
+    self.trackerManager = [[GGTrackerManager alloc] initWithDeveloperToken:devToken HTTPManager:httpManager realTimeDelegate:delegate];
     
     [self.trackerManager setConnectionDelegate:self];
     

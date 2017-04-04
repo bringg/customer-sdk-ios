@@ -28,19 +28,7 @@
 @property (nullable, nonatomic, strong) NSDate *lastEventDate;
 
 
-/**
- *  return an initialized http manager singelton
- *  @warning make sure the singleton is already intiialized before using this accessor
- *  @return the http manager singelton
- */
-+ (nonnull id)manager;
 
-/**
- *  get a singelton reference to the http client manager
- *  @param developerToken   the developer token acquired when registering as a developer in Bringg website
- *  @return the http manager singelton
- */
-+ (nonnull id)managerWithDeveloperToken:(NSString *_Nullable)developerToken;
 
 /**
  *  set the developer token for the singelton

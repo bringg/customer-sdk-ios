@@ -10,6 +10,7 @@
 #import <BringgTracking/BringgGlobals.h>
 #import "GGTrackerManager.h"
 #import "Reachability.h"
+#import "BringgPrivates.h"  
 
 @import SocketIO;
 
@@ -52,10 +53,7 @@
 @property (nullable, nonatomic, copy) CompletionBlock socketIOConnectedBlock;
 @property (nullable, nonatomic, weak) id<RealTimeDelegate> realtimeDelegate;
 @property (nullable, nonatomic, weak) id<GGRealTimeMonitorConnectionDelegate> realtimeConnectionDelegate;
-
-
-
-+ (nonnull id)sharedInstance;
+@property (nullable, nonatomic, weak) id<NetworkClientUpdateDelegate> networkClientDelegate;
 
 - (void)setRealTimeConnectionDelegate:(nullable id<RealTimeDelegate>) connectionDelegate;
 

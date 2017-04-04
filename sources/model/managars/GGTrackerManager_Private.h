@@ -39,7 +39,17 @@
 @property (nonatomic, readwrite) GGRealTimeMontior * _Nullable liveMonitor;
 
 
--(nonnull instancetype)initTacker;
+/**
+ *  creates if needed an Bringg Tracker object
+ *  @warning call this method only when obtained valid customer access token and developer access token
+ *  @param devToken      a valid developer access token
+ *  @param httpManager   an http manager that will do the polling for the tracker
+ *  @param realTimeDelegate      a delegate object to recive notification from the Bringg tracker object
+
+ *
+ *  @return the Bringg Tracker
+ */
+- (nonnull instancetype)initWithDeveloperToken:(NSString *_Nullable)devToken HTTPManager:(GGHTTPClientManager * _Nullable)httpManager realTimeDelegate:(id <RealTimeDelegate> _Nullable)realTimeDelegate;
 
 /**
  *  uses REST api to start watching an order

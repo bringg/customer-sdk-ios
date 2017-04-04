@@ -32,6 +32,10 @@
 #define BTTokenKey @"token"
 #define BTRatingKey @"rating"
 
+@interface GGTrackerManager()<NetworkClientUpdateDelegate>
+
+@end
+
 
 @implementation GGTrackerManager
 
@@ -39,78 +43,39 @@
 @synthesize appCustomer = _appCustomer;
 
 
-
-
-+ (id)tracker{
-    
-    return [self trackerWithCustomerToken:nil andDeveloperToken:nil andDelegate:nil andHTTPManager:nil];
-    
-}
-
-+ (id)trackerWithCustomerToken:(NSString *)customerToken andDeveloperToken:(NSString *)devToken andDelegate:(id <RealTimeDelegate>)delegate andHTTPManager:(GGHTTPClientManager * _Nullable)httpManager{
+- (nonnull instancetype)initWithDeveloperToken:(NSString *_Nullable)devToken HTTPManager:(GGHTTPClientManager * _Nullable)httpManager realTimeDelegate:(id <RealTimeDelegate> _Nullable)realTimeDelegate{
  
-    static GGTrackerManager *sharedObject = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        // init the tracker
-        sharedObject = [[self alloc] initTacker];
-        
+    
+     if (self = [super init]) {
+   
         // init the real time monitor
-        sharedObject->_liveMonitor = [GGRealTimeMontior sharedInstance];
-        sharedObject->_liveMonitor.realtimeConnectionDelegate = sharedObject;
+        self.liveMonitor = [[GGRealTimeMontior alloc] init];
+        self.liveMonitor.realtimeConnectionDelegate = self;
         
         // init polled
-        sharedObject->_polledOrders = [NSMutableSet set];
-        sharedObject->_polledLocations = [NSMutableSet set];
+        self.polledOrders = [NSMutableSet set];
+        self.polledLocations = [NSMutableSet set];
         
         // setup http manager
-        sharedObject->_httpManager = httpManager;
+        self.httpManager = httpManager;
         
-        sharedObject->_shouldReconnect = YES;
+        self.shouldReconnect = YES;
         
-        sharedObject->_numConnectionAttempts = 0;
+        self.numConnectionAttempts = 0;
         
-        // configure observers
-        [sharedObject configureObservers];
-    });
-    
-    // set the customer token and developer token
-    if (customerToken) [sharedObject setCustomerToken:customerToken];
-    if (devToken) [sharedObject setDeveloperToken:devToken];
-    
-    // set the connection delegate
-    if (delegate) [sharedObject setRealTimeDelegate:delegate];
-    
-    return sharedObject;
-}
-
-
--(nonnull instancetype)initTacker{
-    if (self = [super init]) {
-        self.logsEnabled = NO;
-    }
+        // set the customer token and developer token
+        if (devToken) [self setDeveloperToken:devToken];
+        
+        // set the connection delegate
+        if (realTimeDelegate) [self setRealTimeDelegate:realTimeDelegate];
+    };
     
     return self;
 }
 
-
-
--(id)init{
-    
-    // we want to prevent the developer from using normal intializers
-    // the tracker class should only be used as a singelton
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-init is not a valid initializer for the class GGTrackerManager. Please use class method initializer"
-                                 userInfo:nil];
-    
-    return self;
-}
 
 - (void)restartLiveMonitor{
-    
-    
-    
+
     // for the live monitor itself set the tracker as the delegated
     [self setRealTimeDelegate:self.trackerRealtimeDelegate];
     
@@ -180,14 +145,9 @@
 
 - (void)setHTTPManager:(GGHTTPClientManager * _Nullable)httpManager{
     
-    // remove observer prior to nullifing the manager
-    if (!httpManager) {
-        [self removeHTTPObserver];
-    }
-    
-    self.httpManager = httpManager;
+    _httpManager = httpManager;
     if (self.httpManager) {
-        [self configureHTTPObserver];
+        [self.httpManager setNetworkClientDelegate:self];
     }
     
 }
@@ -195,6 +155,16 @@
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
     _customerToken = customer ? customer.customerToken : nil;
+}
+
+- (void)setLiveMonitor:(GGRealTimeMontior *)liveMonitor{
+    
+   _liveMonitor = liveMonitor;
+    
+    if (self.liveMonitor) {
+        [self.liveMonitor setNetworkClientDelegate:self];
+    }
+
 }
 
 #pragma mark - Getters
@@ -230,48 +200,6 @@
 
 
 
-#pragma mark - Observers
-- (void)configureObservers{
-    [self configureSocketObserver];
-    
-    if (self.httpManager) {
-        [self configureHTTPObserver];
-    }
-    
-}
-
-- (void)configureSocketObserver{
-   if (self.liveMonitor)  [NSObject addObserver:self
-                 toObject:self.liveMonitor
-               forKeyPath:@"lastEventDate" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-- (void)configureHTTPObserver {
-    if (self.httpManager) [NSObject addObserver:self
-                 toObject:self.httpManager
-               forKeyPath:@"lastEventDate" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-- (void)removeHTTPObserver{
-    if (self.httpManager) [NSObject removeObserver:self fromObject:self.httpManager forKeyPath:@"lastEventDate"];
-}
-
-- (void)removeSocketObserver{
-    if (self.liveMonitor) [NSObject removeObserver:self fromObject:self.liveMonitor forKeyPath:@"lastEventDate"];
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
-    
-    if ([keyPath isEqualToString:@"lastEventDate"] ) {
-        //
-        // handle tracker event data update
-        if (self.liveMonitor.lastEventDate && self.trackerRealtimeDelegate && [self.trackerRealtimeDelegate respondsToSelector:@selector(trackerDidRecieveDataEventAtDate:)]) {
-            //
-            [self.trackerRealtimeDelegate trackerDidRecieveDataEventAtDate:self.liveMonitor.lastEventDate];
-        }
-    }
-    
-}
 
 #pragma mark - Polling
 - (void)configurePollingTimers{
@@ -1526,5 +1454,13 @@
     
 }
 
+#pragma mark - NetworkClientUpdateDelegate
 
+-(void)networkClient:(id)networkClient didReciveUpdateEventAtDate:(NSDate *)eventDate{
+    // handle tracker event data update
+    if (self.liveMonitor.lastEventDate && self.trackerRealtimeDelegate && [self.trackerRealtimeDelegate respondsToSelector:@selector(trackerDidRecieveDataEventAtDate:)]) {
+        //
+        [self.trackerRealtimeDelegate trackerDidRecieveDataEventAtDate:eventDate];
+    }
+}
 @end

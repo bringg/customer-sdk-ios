@@ -111,6 +111,19 @@
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
+
+/**
+ *  starts watching an order using both share uuid and customer access token
+ *
+ *  @param shareUUID       share uuid
+ *  @param customerAccessToken customer access token
+ *  @param delegate   delegate
+ *  @throws if invalid or missing either customer access token or shared UUID
+ */
+- (void)startWatchingOrderWithShareUUID:(NSString *_Nonnull)shareUUID
+               customerAccessToken:(NSString *_Nonnull)customerAccessToken
+                          delegate:(id <OrderDelegate> _Nullable)delegate;
+
 /**
  *  asks the real time service to start tracking a specific driver
  *

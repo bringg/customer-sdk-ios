@@ -155,7 +155,8 @@
         return;
     }
     
-    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
+    [self.trackerManager startWatchingOrderWithAccessControlParamKey:PARAM_ORDER_UUID accessControlParamValue:uuid secondAccessControlParamKey:PARAM_SHARE_UUID secondAccessControlParamValue:shareUUID delegate:delegate];
+
 }
 
 - (void)startWatchingOrderWithUUID:(NSString *_Nonnull)uuid
@@ -170,10 +171,25 @@
         
         return;
     }
-    
-    [self.trackerManager startWatchingOrderWithUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+
+    [self.trackerManager startWatchingOrderWithAccessControlParamKey:PARAM_ORDER_UUID accessControlParamValue:uuid secondAccessControlParamKey:PARAM_ACCESS_TOKEN secondAccessControlParamValue:customerAccessToken delegate:delegate];
 }
 
+
+- (void)startWatchingOrderWithShareUUID:(NSString *_Nonnull)shareUUID
+                    customerAccessToken:(NSString *_Nonnull)customerAccessToken
+                               delegate:(id <OrderDelegate> _Nullable)delegate{
+    
+     NSLog(@"Trying to start watching using customer token and share uuid: %@, with delegate %@", shareUUID, delegate);
+    
+    if ([NSString isStringEmpty:shareUUID] || [NSString isStringEmpty:customerAccessToken]) {
+        [NSException raise:@"Invalid params" format:@"Share UUID and customer token can not be empty"];
+        
+        return;
+    }
+    
+    [self.trackerManager startWatchingOrderWithAccessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID secondAccessControlParamKey:PARAM_ACCESS_TOKEN secondAccessControlParamValue:customerAccessToken delegate:delegate];
+}
 
 
 - (void)startWatchingDriverWithUUID:(NSString *_Nonnull)uuid

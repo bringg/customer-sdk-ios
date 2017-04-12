@@ -67,10 +67,11 @@
 
 
 
-- (void)sendWatchOrderWithOrderUUID:(nonnull NSString *)uuid
-              accessControlParamKey:(nonnull NSString *)accessControlParamKey
-            accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                  completionHandler:(nullable SocketResponseBlock)completionHandler;
+- (void)sendWatchOrderWithAccessControlParamKey:(nonnull NSString *)accessControlParamKey
+                        accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                    secondAccessControlParamKey:(nonnull NSString *)secondAccessControlParamKey
+                  secondAccessControlParamValue:(nonnull NSString *)secondAccessControlParamValue
+                              completionHandler:(nullable SocketResponseBlock)completionHandler;
 
 - (void)sendWatchDriverWithDriverUUID:(nonnull NSString *)uuid
                 accessControlParamKey:(nonnull NSString *)accessControlParamKey

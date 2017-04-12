@@ -104,10 +104,11 @@
 
 @implementation GGRealTimeMontiorMockingClass
 
-- (void)sendWatchOrderWithOrderUUID:(nonnull NSString *)uuid
-              accessControlParamKey:(nonnull NSString *)accessControlParamKey
-            accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                  completionHandler:(nullable SocketResponseBlock)completionHandler{
+- (void)sendWatchOrderWithAccessControlParamKey:(nonnull NSString *)accessControlParamKey
+                        accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                    secondAccessControlParamKey:(nonnull NSString *)secondAccessControlParamKey
+                  secondAccessControlParamValue:(nonnull NSString *)secondAccessControlParamValue
+                              completionHandler:(nullable SocketResponseBlock)completionHandler{
     
     if (completionHandler) {
         
@@ -119,15 +120,28 @@
             error = [NSError errorWithDomain:kSDKDomainResponse code:rc.integerValue userInfo:@{NSLocalizedDescriptionKey:  message}];
         }
         
-        id<OrderDelegate> existingDelegate = [self.orderDelegates objectForKey:uuid];
+        NSString *uuid;
         
-        if (existingDelegate) {
-            if (success) {
-                [existingDelegate watchOrderSucceedForOrder:[self getOrderWithUUID:uuid]];
-            }else{
-                [existingDelegate watchOrderFailForOrder:[self getOrderWithUUID:uuid] error:error];
-            }
+        // check if one of the params is for order uuid
+        if ([accessControlParamKey isEqualToString:PARAM_ORDER_UUID]) {
+            uuid = accessControlParamValue;
+        }else if ([secondAccessControlParamKey isEqualToString:PARAM_ORDER_UUID]) {
+            uuid = secondAccessControlParamValue;
         }
+
+        if (uuid) {
+            id<OrderDelegate> existingDelegate = [self.orderDelegates objectForKey:uuid];
+            
+            if (existingDelegate) {
+                if (success) {
+                    [existingDelegate watchOrderSucceedForOrder:[self getOrderWithUUID:uuid]];
+                }else{
+                    [existingDelegate watchOrderFailForOrder:[self getOrderWithUUID:uuid] error:error];
+                }
+            }
+
+        }
+        
         
         completionHandler(success, self.watchOrderResponseJSON, error);
     }
@@ -153,6 +167,12 @@
         [NSException raise:@"Invalid UUID" format:@"order UUID can not be nil or empty"];
         return;
     }
+    
+}
+
+- (void)startRESTWatchingOrderByOrderUUID:(NSString *)orderUUID accessControlParamKey:(NSString *)accessControlParamKey accessControlParamValue:(NSString *)accessControlParamValue withCompletionHandler:(GGOrderResponseHandler)completionHandler{
+    
+    // do nothing
     
 }
 
@@ -534,6 +554,10 @@
 
 - (void)testWatchingOrderWithFailedResponse {
     BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    
+    GGTrackerManagerMockClass *trackerMock = [[GGTrackerManagerMockClass alloc] initWithDeveloperToken:TEST_DEV_TOKEN HTTPManager:nil realTimeDelegate:self.realtimeDelegate];
+    
+    [realTrackingClient setTrackerManager:trackerMock];
     
     GGRealTimeMontiorMockingClass *mockLiveMonitor = [[GGRealTimeMontiorMockingClass alloc] init];
     

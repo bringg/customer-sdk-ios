@@ -755,7 +755,7 @@
     }
     
 
-    NSString *orderUUID;
+    __block NSString *orderUUID;
     __block GGOrder *activeOrder = [[GGOrder alloc] init];
     [activeOrder setStatus:OrderStatusCreated];
     
@@ -862,6 +862,9 @@
                     
                     // if order uuid is empty but watch was successfull we need to infer order uuid from resposne
                     //TODO: implement the above comment
+                    
+                    orderUUID = [socketResponse valueForKeyPath:PARAM_ORDER_UUID];
+                    
                     if (delegate && orderUUID) {
                         @synchronized(self) {
                             [_liveMonitor.orderDelegates setObject:delegate forKey:orderUUID];

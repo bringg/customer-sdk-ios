@@ -195,21 +195,30 @@
 
 
 /**
- starts watching an order providing two parameters that authenticate the request (two out of the following, order uuid, share uuid, customer access token)
-
- @param accessControlParamKey first access control key
- @param accessControlParamValue first access control value
- @param secondAccessControlParamKey second access control key
- @param secondAccessControlParamValue second access control value
- @param delegate order delegate
- @throws if invalid or missing params
+ starts to watch an order using order uuid and some access control param
+ 
+ @param orderUUID order uuid
+ @param accessControlParamKey access control key
+ @param accessControlParamValue access control value
+ @param delegate delegate to recieve later callbacks
  */
-- (void)startWatchingOrderWithAccessControlParamKey:(nonnull NSString *)accessControlParamKey
-                            accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                        secondAccessControlParamKey:(nonnull NSString *)secondAccessControlParamKey
-                      secondAccessControlParamValue:(nonnull NSString *)secondAccessControlParamValue
-                                           delegate:(id <OrderDelegate> _Nullable)delegate;
+- (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
+                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               delegate:(id <OrderDelegate> _Nullable)delegate;
 
+/**
+ starts to watch an order using share uuid and some access control param
+ 
+ @param shareUUID share uuid
+ @param accessControlParamKey access control key
+ @param accessControlParamValue access control value
+ @param delegate delegate to recieve later callbacks
+ */
+- (void)startWatchingOrderWithShareUUID:(nonnull NSString *)shareUUID
+                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
 /**

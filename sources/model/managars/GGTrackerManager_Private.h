@@ -54,31 +54,6 @@
 
 
 
-/**
-  starts to watch an order using order uuid and some access control param
-
- @param orderUUID order uuid
- @param accessControlParamKey access control key
- @param accessControlParamValue access control value
- @param delegate delegate to recieve later callbacks
- */
-- (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
-                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
-                accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                               delegate:(id <OrderDelegate> _Nullable)delegate;
-
-/**
- starts to watch an order using share uuid and some access control param
-
- @param shareUUID share uuid
- @param accessControlParamKey access control key
- @param accessControlParamValue access control value
- @param delegate delegate to recieve later callbacks
- */
-- (void)startWatchingOrderWithShareUUID:(nonnull NSString *)shareUUID
-                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
-                accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                               delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
  *  uses REST api to start watching an order

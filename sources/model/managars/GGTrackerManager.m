@@ -747,65 +747,6 @@
     [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
-- (void)startWatchingOrderWithAccessControlParamKey:(nonnull NSString *)accessControlParamKey
-                            accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                        secondAccessControlParamKey:(nonnull NSString *)secondAccessControlParamKey
-                      secondAccessControlParamValue:(nonnull NSString *)secondAccessControlParamValue
-                                           delegate:(id <OrderDelegate> _Nullable)delegate{
-    
-    if ([NSString isStringEmpty:secondAccessControlParamKey] || [NSString isStringEmpty:secondAccessControlParamKey] || [NSString isStringEmpty:accessControlParamValue] || [NSString isStringEmpty:secondAccessControlParamValue]) {
-        [NSException raise:@"Invalid params" format:@"two param keys and values must be provided"];
-        
-        return;
-    }
-    
-
-    NSString *orderUUID;
-    NSString *shareUUID;
-    
-    NSString *minorControlKey;
-    NSString *minorControlValue;
-    
-    // check if one of the params is for order uuid
-    if ([accessControlParamKey isEqualToString:PARAM_ORDER_UUID]) {
-        orderUUID = accessControlParamValue;
-        minorControlKey = secondAccessControlParamKey;
-        minorControlValue = secondAccessControlParamValue;
-    }else if ([secondAccessControlParamKey isEqualToString:PARAM_ORDER_UUID]) {
-        orderUUID = secondAccessControlParamValue;
-        minorControlKey = accessControlParamKey;
-        minorControlValue = accessControlParamValue;
-    }
-    
-    if (![NSString isStringEmpty:orderUUID]) {
-        
-        [self startWatchingOrderWithOrderUUID:orderUUID accessControlParamKey:minorControlKey accessControlParamValue:minorControlValue delegate:delegate];
-        
-    }else {
-        // check if one of the params is for shared uuid
-        if ([accessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
-            shareUUID = accessControlParamValue;
-            minorControlKey = secondAccessControlParamKey;
-            minorControlValue = secondAccessControlParamValue;
-        }else if ([secondAccessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
-            shareUUID = secondAccessControlParamValue;
-            minorControlKey = accessControlParamKey;
-            minorControlValue = accessControlParamValue;
-        }
-        
-        if (![NSString isStringEmpty:shareUUID]) {
-            
-            [self startWatchingOrderWithShareUUID:shareUUID accessControlParamKey:minorControlKey accessControlParamValue:minorControlValue delegate:delegate];
-            
-        }else {
-            // no valid order uuid or share uuid/ report watch fail
-            if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                [delegate watchOrderFailForOrder:[[GGOrder alloc] init] error:[NSError errorWithDomain:kSDKDomainData code:-1 userInfo:@{NSLocalizedDescriptionKey:@"to watch an order, you must provide either an order uuid or share uuid"}]];
-            }
-        }
-    }
-    
-}
 
 - (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
                   accessControlParamKey:(nonnull NSString *)accessControlParamKey
@@ -854,7 +795,9 @@
                                                        pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                             //
                             if (success) {
+                                // merge orders data
                                 [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
+                                activeOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
                                 
                                 // notify watch success
                                 if ([delegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
@@ -934,10 +877,20 @@
                 
                 __weak typeof(self) weakSelf = self;
                 
-                [self handleRealTimeWatchOrderFailForShareUUID:shareUUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue orderDelegate:delegate realTimeWatchError:error pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                [self handleRealTimeWatchOrderFailForShareUUID:shareUUID
+                                         accessControlParamKey:accessControlParamKey
+                                       accessControlParamValue:accessControlParamValue
+                                                 orderDelegate:delegate
+                                            realTimeWatchError:error
+                                                   pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                     //
                     if (success) {
+                        
+                        [activeOrder setUuid:order.uuid];
+                        
+                        // merge orders data
                         [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
+                        activeOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
                         
                         // notify watch success
                         if ([delegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
@@ -1102,18 +1055,7 @@
         if (success) {
             GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
             
-            // check if we have a shared location object
-            if (updatedOrder.sharedLocationUUID != nil) {
-                
-                // get the full order via REST
-                [weakSelf getWatchedOrderByShareUUID:updatedOrder.sharedLocationUUID
-                               accessControlParamKey:PARAM_ORDER_UUID
-                             accessControlParamValue:updatedOrder.uuid
-                               withCompletionHandler:pollHandler];
-            }
-            else {
-                 pollHandler(NO , response, activeOrder, error);
-            }
+            pollHandler(YES , response, updatedOrder, error);
         }
         else{
             pollHandler(NO , response, activeOrder, error);
@@ -1146,9 +1088,24 @@
     [self getWatchedOrderByShareUUID:shareUUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
         //
         if (success) {
-            GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+            __block GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+           
             
-             pollHandler(NO , response, updatedOrder, error);
+            // if we dont have a shared location object related to this order - fetch it
+            if (!updatedOrder.sharedLocationUUID) {
+                
+                [weakSelf.httpManager getOrderSharedLocationByUUID:shareUUID extras:nil withCompletionHandler:^(BOOL locationSuccess, NSDictionary * _Nullable locationResponse, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable locationError) {
+                    //
+                    updatedOrder.sharedLocationUUID = shareUUID;
+                    updatedOrder.sharedLocation = sharedLocation;
+                    
+                    pollHandler(YES , response, updatedOrder, nil);
+                }];
+            }else{
+                 pollHandler(YES , response, updatedOrder, nil);
+            }
+            
+           
         }
         else{
             pollHandler(NO , response, order, error);
@@ -1435,7 +1392,7 @@
                     [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
                 }
                 
-                [self startWatchingOrderWithAccessControlParamKey:PARAM_ORDER_UUID accessControlParamValue:orderUUID secondAccessControlParamKey:PARAM_SHARE_UUID secondAccessControlParamValue:order.sharedLocationUUID delegate:orderDelegate];
+                [self startWatchingOrderWithOrderUUID:orderUUID accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:order.sharedLocationUUID delegate:orderDelegate];
                 
             }
             

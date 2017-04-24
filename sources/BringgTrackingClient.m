@@ -155,7 +155,8 @@
         return;
     }
     
-    [self.trackerManager startWatchingOrderWithAccessControlParamKey:PARAM_ORDER_UUID accessControlParamValue:uuid secondAccessControlParamKey:PARAM_SHARE_UUID secondAccessControlParamValue:shareUUID delegate:delegate];
+    [self.trackerManager startWatchingOrderWithOrderUUID:uuid accessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID delegate:delegate];
+    
 
 }
 
@@ -172,7 +173,8 @@
         return;
     }
 
-    [self.trackerManager startWatchingOrderWithAccessControlParamKey:PARAM_ORDER_UUID accessControlParamValue:uuid secondAccessControlParamKey:PARAM_ACCESS_TOKEN secondAccessControlParamValue:customerAccessToken delegate:delegate];
+     [self.trackerManager startWatchingOrderWithOrderUUID:uuid accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+    
 }
 
 
@@ -188,7 +190,8 @@
         return;
     }
     
-    [self.trackerManager startWatchingOrderWithAccessControlParamKey:PARAM_SHARE_UUID accessControlParamValue:shareUUID secondAccessControlParamKey:PARAM_ACCESS_TOKEN secondAccessControlParamValue:customerAccessToken delegate:delegate];
+    [self.trackerManager startWatchingOrderWithShareUUID:shareUUID accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
+
 }
 
 

@@ -93,16 +93,18 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 
 /**
- *  gets  data of an order this can be without the shared location object of an order (if its done or cancled, or not started yet(
+ *  gets  data of an order this can be without the shared location object of an order (if its done or cancled, or not started yet)
  *
- *  @param shareUUID         share uuid
- *  @param orderUUID         order uuid
- *  @param extras            block to handle async service response
- *  @param completionHandler block to handle async service response
+ *  @param shareUUID                    share uuid
+ *  @param accessControlParamKey        access control param key
+ *  @param accessControlParamValue      access control param value
+ *  @param extras                       block to handle async service response
+ *  @param completionHandler            block to handle async service response
  */
-- (void)getOrderByShareUUID:(NSString * _Nonnull)shareUUID
-                  orderUUID:(NSString * _Nonnull)orderUUID
-                     extras:(NSDictionary * _Nullable)extras
+- (void)getOrderByShareUUID:(nonnull NSString *)shareUUID
+      accessControlParamKey:(nonnull NSString *)accessControlParamKey
+    accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                     extras:(nullable NSDictionary *)extras
       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 

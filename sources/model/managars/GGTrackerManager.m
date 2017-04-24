@@ -430,7 +430,8 @@
         
         // try to poll for the watched order to get its shared uuid
         [self.httpManager getOrderByShareUUID:activeOrder.sharedLocationUUID
-                                    orderUUID:activeOrder.uuid
+                        accessControlParamKey:PARAM_ORDER_UUID
+                      accessControlParamValue:activeOrder.uuid
                                          extras:nil
                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
@@ -505,7 +506,8 @@
     if (activeOrder.sharedLocationUUID) {
         
         [self.httpManager getOrderByShareUUID:activeOrder.sharedLocationUUID
-                                    orderUUID:activeOrder.uuid
+                        accessControlParamKey:PARAM_ORDER_UUID
+                      accessControlParamValue:activeOrder.uuid
                                        extras:nil
                         withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
@@ -529,7 +531,8 @@
         // try to poll for the watched order to get its shared uuid
         
         [self.httpManager getOrderByShareUUID:activeOrder.sharedLocationUUID
-                                    orderUUID:activeOrder.uuid
+                        accessControlParamKey:PARAM_ORDER_UUID
+                      accessControlParamValue:activeOrder.uuid
                                          extras:nil
                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
             //
@@ -661,9 +664,10 @@
     }
 }
 
--(void)getWatchedOrderByShareUUID:(NSString * _Nonnull)shareUUID
-                        orderUUID:(NSString * _Nonnull)orderUUID
-            withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
+- (void)getWatchedOrderByShareUUID:(NSString * _Nonnull)shareUUID
+             accessControlParamKey:(nonnull NSString *)accessControlParamKey
+           accessControlParamValue:(nonnull NSString *)accessControlParamValue
+             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     if (!self.httpManager) {
         if (completionHandler) {
@@ -672,7 +676,8 @@
         }
     }
     else {
-        [self.httpManager getOrderByShareUUID:shareUUID orderUUID:orderUUID extras:nil withCompletionHandler:completionHandler];
+        [self.httpManager getOrderByShareUUID:shareUUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue extras:nil withCompletionHandler:completionHandler];
+        
     }
 }
 
@@ -755,42 +760,70 @@
     }
     
 
-    __block NSString *orderUUID;
-    __block GGOrder *activeOrder = [[GGOrder alloc] init];
-    [activeOrder setStatus:OrderStatusCreated];
+    NSString *orderUUID;
+    NSString *shareUUID;
     
-    __block id existingDelegate;
-    __block NSString *shareUUID;
-    
+    NSString *minorControlKey;
+    NSString *minorControlValue;
     
     // check if one of the params is for order uuid
     if ([accessControlParamKey isEqualToString:PARAM_ORDER_UUID]) {
         orderUUID = accessControlParamValue;
+        minorControlKey = secondAccessControlParamKey;
+        minorControlValue = secondAccessControlParamValue;
     }else if ([secondAccessControlParamKey isEqualToString:PARAM_ORDER_UUID]) {
         orderUUID = secondAccessControlParamValue;
+        minorControlKey = accessControlParamKey;
+        minorControlValue = accessControlParamValue;
     }
     
-    if (orderUUID) {
+    if (![NSString isStringEmpty:orderUUID]) {
         
-        [activeOrder setUuid:orderUUID];
-        existingDelegate = [_liveMonitor.orderDelegates objectForKey:orderUUID];
+        [self startWatchingOrderWithOrderUUID:orderUUID accessControlParamKey:minorControlKey accessControlParamValue:minorControlValue delegate:delegate];
         
+    }else {
+        // check if one of the params is for shared uuid
+        if ([accessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
+            shareUUID = accessControlParamValue;
+            minorControlKey = secondAccessControlParamKey;
+            minorControlValue = secondAccessControlParamValue;
+        }else if ([secondAccessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
+            shareUUID = secondAccessControlParamValue;
+            minorControlKey = accessControlParamKey;
+            minorControlValue = accessControlParamValue;
+        }
         
-        [_liveMonitor addAndUpdateOrder:activeOrder];
+        if (![NSString isStringEmpty:shareUUID]) {
+            
+            [self startWatchingOrderWithShareUUID:shareUUID accessControlParamKey:minorControlKey accessControlParamValue:minorControlValue delegate:delegate];
+            
+        }else {
+            // no valid order uuid or share uuid/ report watch fail
+            if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                [delegate watchOrderFailForOrder:[[GGOrder alloc] init] error:[NSError errorWithDomain:kSDKDomainData code:-1 userInfo:@{NSLocalizedDescriptionKey:@"to watch an order, you must provide either an order uuid or share uuid"}]];
+            }
+        }
     }
     
-    // check if one of the params is for shared uuid
-    if ([accessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
-        shareUUID = accessControlParamValue;
-        activeOrder.sharedLocationUUID = shareUUID;
-    }else if ([secondAccessControlParamKey isEqualToString:PARAM_SHARE_UUID]) {
-        shareUUID = secondAccessControlParamValue;
-        activeOrder.sharedLocationUUID = shareUUID;
+}
+
+- (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
+                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               delegate:(id <OrderDelegate> _Nullable)delegate {
+    
+    
+    if ([NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue] || [NSString isStringEmpty:orderUUID]) {
+        [NSException raise:@"Invalid params" format:@"order uuid and param keys and values must be provided"];
+        
+        return;
     }
+    
+    __block GGOrder *activeOrder = [[GGOrder alloc] initOrderWithUUID:orderUUID atStatus:OrderStatusCreated];
+    __block id existingDelegate = [_liveMonitor.orderDelegates objectForKey:orderUUID];
+    [_liveMonitor addAndUpdateOrder:activeOrder];
     
     _liveMonitor.doMonitoringOrders = YES;
-    
-
     
     if (!existingDelegate) {
         
@@ -800,85 +833,167 @@
             }
         }
         
-        [_liveMonitor sendWatchOrderWithAccessControlParamKey:accessControlParamKey
-                                      accessControlParamValue:accessControlParamValue
-                                  secondAccessControlParamKey:secondAccessControlParamKey
-                                secondAccessControlParamValue:secondAccessControlParamValue
+        [_liveMonitor sendWatchOrderWithAccessControlParamKey:PARAM_ORDER_UUID
+                                      accessControlParamValue:orderUUID
+                                  secondAccessControlParamKey:accessControlParamKey
+                                secondAccessControlParamValue:accessControlParamValue
                                             completionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
-    
-            
-            if (!success) {
-                // check if we can poll for orders if not - send error
-                if ([self canPollForOrders]) {
-                    
-                    __weak typeof(self) weakSelf = self;
-                    // try watching via REST api
-                    [self handleRealTimeWatchOrderFailForOrder:activeOrder accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue orderDelegate:delegate realTimeWatchError:error pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
-                        //
-                        if (success) {
-                            [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
-                            
-                            // notify watch success
-                            if ([delegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
-                                
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    // notify socket fail
-                                    [delegate watchOrderSucceedForOrder:activeOrder];
-                                    
-                                });
-                            }
-                        }
-                        else{
-                             // notify watch fail
-                            if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
-                                
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                   
-                                    [delegate watchOrderFailForOrder:activeOrder error:error];
-                                
-                                });
-                            }
-                            
-                        }
-                    }];
-                    
-                }
-                else {
-                     // notify watch fail
-                    if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                                                
+                                                
+                if (!success) {
+                    // check if we can poll for orders if not - send error
+                    if ([self canPollForOrders]) {
                         
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            
-                            [delegate watchOrderFailForOrder:activeOrder error:error];
-                            
-                        });
+                        __weak typeof(self) weakSelf = self;
+                        
+                        [self handleRealTimeWatchOrderFailForOrder:activeOrder
+                                             accessControlParamKey:accessControlParamKey
+                                           accessControlParamValue:accessControlParamValue
+                                                     orderDelegate:delegate
+                                                realTimeWatchError:error
+                                                       pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                            //
+                            if (success) {
+                                [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
+                                
+                                // notify watch success
+                                if ([delegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                                    
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        // notify socket fail
+                                        [delegate watchOrderSucceedForOrder:activeOrder];
+                                        
+                                    });
+                                }
+                            }
+                            else{
+                                // notify watch fail
+                                if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                                    
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        
+                                        [delegate watchOrderFailForOrder:activeOrder error:error];
+                                        
+                                    });
+                                }
+                                
+                            }}];
+                        
                     }
-                }
-            }
-            else{
-                
-                
-                if ([NSString isStringEmpty:orderUUID]) {
-                    
-                    // if order uuid is empty but watch was successfull we need to infer order uuid from resposne
-                    //TODO: implement the above comment
-                    
-                    orderUUID = [socketResponse valueForKeyPath:PARAM_ORDER_UUID];
-                    
-                    if (delegate && orderUUID) {
-                        @synchronized(self) {
-                            [_liveMonitor.orderDelegates setObject:delegate forKey:orderUUID];
+                    else {
+                        // notify watch fail
+                        if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                
+                                [delegate watchOrderFailForOrder:activeOrder error:error];
+                                
+                            });
                         }
                     }
                 }
-                
-                [self handleRealTimeWatchOrderSuccessForOrder:activeOrder shareUUID:shareUUID response:socketResponse orderDelegate:delegate];
-                
-                
-            }
-        }];
+                else{
+                    
+                    [self handleRealTimeWatchOrderSuccessForOrder:activeOrder
+                                                        shareUUID:nil
+                                                         response:socketResponse
+                                                    orderDelegate:delegate];
+                    
+                }
+            }];
     }
 
+    
+}
+
+- (void)startWatchingOrderWithShareUUID:(nonnull NSString *)shareUUID
+                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               delegate:(id <OrderDelegate> _Nullable)delegate {
+    
+    if ([NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue] || [NSString isStringEmpty:shareUUID]) {
+        [NSException raise:@"Invalid params" format:@"order uuid and param keys and values must be provided"];
+        
+        return;
+    }
+
+    __block GGOrder *activeOrder = [[GGOrder alloc] init];
+    [activeOrder setStatus:OrderStatusCreated];
+
+    _liveMonitor.doMonitoringOrders = YES;
+    [_liveMonitor sendWatchOrderWithAccessControlParamKey:PARAM_SHARE_UUID
+                                  accessControlParamValue:shareUUID
+                              secondAccessControlParamKey:accessControlParamKey
+                            secondAccessControlParamValue:accessControlParamValue
+                                        completionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
+                                            
+                                            
+        if (!success) {
+            // check if we can poll for orders if not - send error
+            if ([self canPollForOrders]) {
+                
+                __weak typeof(self) weakSelf = self;
+                
+                [self handleRealTimeWatchOrderFailForShareUUID:shareUUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue orderDelegate:delegate realTimeWatchError:error pollHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                    //
+                    if (success) {
+                        [weakSelf handleOrderUpdated:activeOrder withNewOrder:order andPoll:YES];
+                        
+                        // notify watch success
+                        if ([delegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                // notify socket fail
+                                [delegate watchOrderSucceedForOrder:activeOrder];
+                                
+                            });
+                        }
+                    }
+                    else{
+                        // notify watch fail
+                        if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                
+                                [delegate watchOrderFailForOrder:activeOrder error:error];
+                                
+                            });
+                        }
+                        
+                    }
+                }];
+                
+                
+            }
+            else {
+                // notify watch fail
+                if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        [delegate watchOrderFailForOrder:activeOrder error:error];
+                        
+                    });
+                }
+            }
+        }
+        else{
+            
+            // infer order uuid from response
+            NSString *orderUUID = [socketResponse valueForKeyPath:PARAM_ORDER_UUID];
+            [activeOrder setUuid:orderUUID];
+            
+            if (delegate && orderUUID) {
+                @synchronized(self) {
+                    [_liveMonitor.orderDelegates setObject:delegate forKey:orderUUID];
+                }
+            }
+            
+            [self handleRealTimeWatchOrderSuccessForOrder:activeOrder shareUUID:shareUUID response:socketResponse orderDelegate:delegate];
+            
+            
+        }
+    }];
 }
 
 - (void)handleRealTimeWatchOrderSuccessForOrder:(nonnull GGOrder *)activeOrder
@@ -909,10 +1024,10 @@
         
         BOOL isShareUUIDExpired = NO;
         id expiredObj = [response objectForKey:PARAM_EXPIRED];
+       
         if ([expiredObj isKindOfClass:[NSNumber class]]) {
             isShareUUIDExpired = ((NSNumber *)expiredObj).boolValue;
         }
-        
         
         
         if (isShareUUIDExpired) {
@@ -921,13 +1036,14 @@
             if ([orderDelegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
                 [orderDelegate watchOrderSucceedForOrder:activeOrder];
             }
-        }
-        else {
-            
+        } else {
             
             if (self.httpManager && _shareUUID) {
                 // try to get the full order object once
-                [self getWatchedOrderByShareUUID:_shareUUID orderUUID:activeOrder.uuid withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+                [self getWatchedOrderByShareUUID:_shareUUID
+                           accessControlParamKey:PARAM_ORDER_UUID
+                         accessControlParamValue:activeOrder.uuid
+                           withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
                     
                     if (success && order) {
                         order.sharedLocation = sharedLocation;
@@ -970,9 +1086,8 @@
     // call the start watch from the http manager
     // we are depending here that we have a shared uuid or customer access token
     // try to start watching via REST
-    __weak __typeof(self)weakSelf = self;
     
-    // if we dont have order uuid just call the poll handler with failure
+    // if we dont have an order uuid just call the poll handler with failure
     if ([NSString isStringEmpty:activeOrder.uuid]) {
         
         pollHandler(NO , nil, activeOrder, realTimeWatchError);
@@ -981,6 +1096,7 @@
         
     }
     
+    __weak __typeof(self)weakSelf = self;
     [self startRESTWatchingOrderByOrderUUID:activeOrder.uuid accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
         
         if (success) {
@@ -990,7 +1106,10 @@
             if (updatedOrder.sharedLocationUUID != nil) {
                 
                 // get the full order via REST
-                [weakSelf getWatchedOrderByShareUUID:updatedOrder.sharedLocationUUID orderUUID:updatedOrder.uuid withCompletionHandler:pollHandler];
+                [weakSelf getWatchedOrderByShareUUID:updatedOrder.sharedLocationUUID
+                               accessControlParamKey:PARAM_ORDER_UUID
+                             accessControlParamValue:updatedOrder.uuid
+                               withCompletionHandler:pollHandler];
             }
             else {
                  pollHandler(NO , response, activeOrder, error);
@@ -1000,6 +1119,43 @@
             pollHandler(NO , response, activeOrder, error);
         }
     }];
+}
+
+- (void)handleRealTimeWatchOrderFailForShareUUID:(nonnull NSString *)shareUUID
+                           accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                         accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                                   orderDelegate:(id <OrderDelegate> _Nullable)orderDelegate
+                              realTimeWatchError:(nullable NSError *)realTimeWatchError
+                                     pollHandler:(nonnull GGOrderResponseHandler)pollHandler{
+    
+    
+    // if we dont have a share uuid just call the poll handler with failure
+    if ([NSString isStringEmpty:shareUUID]) {
+        
+        pollHandler(NO , nil, nil, realTimeWatchError);
+        
+        return;
+        
+    }
+    
+    // call the start watch from the http manager
+    // we are depending here that we have a shared uuid and either customer access token or order uuid
+    // try to start watching via REST
+    __weak __typeof(self)weakSelf = self;
+    
+    [self getWatchedOrderByShareUUID:shareUUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGOrder * _Nullable order, NSError * _Nullable error) {
+        //
+        if (success) {
+            GGOrder *updatedOrder = [weakSelf.liveMonitor addAndUpdateOrder:order];
+            
+             pollHandler(NO , response, updatedOrder, error);
+        }
+        else{
+            pollHandler(NO , response, order, error);
+        }
+    }];
+    
+   
 }
 
 - (void)handleOrderUpdated:(GGOrder *)activeOrder withNewOrder:(GGOrder *)order andPoll:(BOOL)doPoll{

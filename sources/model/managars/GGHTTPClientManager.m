@@ -44,7 +44,7 @@
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
 #define API_PATH_ORDER_CREATE @"/api/customer/task/create" // method: POST
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
-#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid !!!!! creates new shared_location object !!!!
+#define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid !!!!! this creates new shared_location object on server !!!!
 #define API_PATH_WATCH_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid,  params - order_uuid
 
 //PRIVATE
@@ -632,17 +632,17 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
 }
 
 
-- (void)getOrderByShareUUID:(NSString * _Nonnull)shareUUID
-                  orderUUID:(NSString * _Nonnull)orderUUID
-                     extras:(NSDictionary * _Nullable)extras
+- (void)getOrderByShareUUID:(nonnull NSString *)shareUUID
+      accessControlParamKey:(nonnull NSString *)accessControlParamKey
+    accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                     extras:(nullable NSDictionary *)extras
       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [self addAuthinticationToParams:&params];
+    [params setObject:accessControlParamValue forKey:accessControlParamKey];
     
-    if (orderUUID) {
-        [params setObject:orderUUID forKey:PARAM_ORDER_UUID];
-    }
+    [self addAuthinticationToParams:&params];
+   
     
     if (extras) {
         [self injectCustomExtras:extras toParams:&params];

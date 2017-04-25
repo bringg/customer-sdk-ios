@@ -639,7 +639,9 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler{
       withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler {
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:accessControlParamValue forKey:accessControlParamKey];
+    if (accessControlParamKey && accessControlParamValue) {
+        [params setObject:accessControlParamValue forKey:accessControlParamKey];
+    }
     
     [self addAuthinticationToParams:&params];
    

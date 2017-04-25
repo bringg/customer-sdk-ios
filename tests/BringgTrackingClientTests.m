@@ -134,9 +134,15 @@
             
             if (existingDelegate) {
                 if (success) {
-                    [existingDelegate watchOrderSucceedForOrder:[self getOrderWithUUID:uuid]];
+                    if ([existingDelegate respondsToSelector:@selector(watchOrderSucceedForOrder:)]) {
+                        [existingDelegate watchOrderSucceedForOrder:[self getOrderWithUUID:uuid]];
+                    }
+                    
                 }else{
-                    [existingDelegate watchOrderFailForOrder:[self getOrderWithUUID:uuid] error:error];
+                    if ([existingDelegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                         [existingDelegate watchOrderFailForOrder:[self getOrderWithUUID:uuid] error:error];
+                    }
+                   
                 }
             }
 

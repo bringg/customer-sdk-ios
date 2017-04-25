@@ -669,13 +669,14 @@
 #pragma mark - Watch Actions
 
 
-- (void)sendWatchOrderWithOrderUUID:(nonnull NSString *)uuid
-              accessControlParamKey:(nonnull NSString *)accessControlParamKey
-            accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                  completionHandler:(nullable SocketResponseBlock)completionHandler{
+- (void)sendWatchOrderWithAccessControlParamKey:(nonnull NSString *)accessControlParamKey
+                        accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                    secondAccessControlParamKey:(nonnull NSString *)secondAccessControlParamKey
+                  secondAccessControlParamValue:(nonnull NSString *)secondAccessControlParamValue
+                              completionHandler:(nullable SocketResponseBlock)completionHandler{
     
     
-     [self sendWatchEvent:@"watch order" forUUID:uuid uuidParamKey:PARAM_ORDER_UUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:completionHandler];
+    [self sendWatchEvent:@"watch order" accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue secondAccessControlParamKey:secondAccessControlParamKey secondAccessControlParamValue:secondAccessControlParamValue completionHandler:completionHandler];
     
     
 }
@@ -685,9 +686,43 @@
               accessControlParamValue:(nonnull NSString *)accessControlParamValue
                     completionHandler:(nullable SocketResponseBlock)completionHandler {
     
-    [self sendWatchEvent:@"watch driver" forUUID:uuid uuidParamKey:PARAM_DRIVER_UUID accessControlParamKey:accessControlParamKey accessControlParamValue:accessControlParamValue completionHandler:completionHandler];
+    
+    [self sendWatchEvent:@"watch driver"
+   accessControlParamKey:accessControlParamKey
+ accessControlParamValue:accessControlParamValue
+secondAccessControlParamKey:PARAM_DRIVER_UUID
+secondAccessControlParamValue:uuid completionHandler:completionHandler];
     
     
+}
+
+- (void)sendWatchEvent:(nonnull NSString *)eventName
+ accessControlParamKey:(nonnull NSString *)accessControlParamKey
+accessControlParamValue:(nonnull NSString *)accessControlParamValue
+secondAccessControlParamKey:(nonnull NSString *)secondAccessControlParamKey
+secondAccessControlParamValue:(nonnull NSString *)secondAccessControlParamValue
+     completionHandler:(nullable SocketResponseBlock)completionHandler{
+    
+    
+    if ( [NSString isStringEmpty:secondAccessControlParamKey] || [NSString isStringEmpty:secondAccessControlParamValue] || [NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue]) {
+        
+        if (completionHandler) {
+            
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeMissing userInfo:@{NSLocalizedDescriptionKey:@"missing or empty params provided"}];
+            
+            completionHandler(NO, nil,  error);
+            
+        }
+        return;
+    }
+    
+    NSLog(@"%@ -> %@: %@ , %@: %@",eventName, accessControlParamKey, accessControlParamValue,  secondAccessControlParamKey, secondAccessControlParamValue);
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   accessControlParamValue, accessControlParamKey,
+                                   secondAccessControlParamValue, secondAccessControlParamKey,
+                                   nil];
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:eventName params:params completionHandler:completionHandler];
 }
 
 - (void)sendWatchEvent:(nonnull NSString *)eventName

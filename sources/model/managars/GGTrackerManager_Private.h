@@ -51,6 +51,10 @@
  */
 - (nonnull instancetype)initWithDeveloperToken:(NSString *_Nullable)devToken HTTPManager:(GGHTTPClientManager * _Nullable)httpManager realTimeDelegate:(id <RealTimeDelegate> _Nullable)realTimeDelegate;
 
+
+
+
+
 /**
  *  uses REST api to start watching an order
  *
@@ -62,16 +66,20 @@
                   accessControlParamValue:(nonnull NSString *)accessControlParamValue
                     withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
+
+
 /**
- *  gets an initial data of watched order
- *
- *  @usage                  use to get order when no shared uuid exists
- *  @param shareUUID         share uuid
- *  @param completionHandler handle response callback
+ uses rest api to get the a watched order by shared location and an access controll param (order uuid, customer access token, etc)
+
+ @param shareUUID share uuid
+ @param accessControlParamKey access control key
+ @param accessControlParamValue access control value
+ @param completionHandler handle response callback
  */
--(void)getWatchedOrderByShareUUID:(NSString * _Nonnull)shareUUID
-                        orderUUID:(NSString * _Nonnull)orderUUID
-            withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
+- (void)getWatchedOrderByShareUUID:(NSString * _Nonnull)shareUUID
+             accessControlParamKey:(nonnull NSString *)accessControlParamKey
+           accessControlParamValue:(nonnull NSString *)accessControlParamValue
+             withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 
 
 

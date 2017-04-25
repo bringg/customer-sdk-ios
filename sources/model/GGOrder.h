@@ -37,7 +37,7 @@
 @property (nonatomic, strong) GGSharedLocation * __nullable sharedLocation;
 //@property (nonatomic, strong) GGDriver *driver;
 
-@property (nonatomic, copy) NSString * __nonnull uuid;
+@property (nonatomic, copy) NSString * __nullable uuid;
 @property (nonatomic, copy) NSString * __nullable title;
 @property (nonatomic, copy) NSString * __nullable url;
 @property (nonatomic, copy) NSString * __nullable driverUUID;

@@ -194,20 +194,31 @@
 
 
 
+/**
+ starts to watch an order using order uuid and some access control param
+ 
+ @param orderUUID order uuid
+ @param accessControlParamKey access control key
+ @param accessControlParamValue access control value
+ @param delegate delegate to recieve later callbacks
+ */
+- (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
+                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
- *  starts watching an order using  order uuid and an access controll paramter (shared uuid or customer access token)
- *
- *  @param uuid                     order uuid
- *  @param accessControlParamKey    access control param key
- *  @param accessControlParamValue    access control param value
- *  @param delegate   delegate
- *  @throws if invalid or missing order UUID or access control param
+ starts to watch an order using share uuid and some access control param
+ 
+ @param shareUUID share uuid
+ @param accessControlParamKey access control key
+ @param accessControlParamValue access control value
+ @param delegate delegate to recieve later callbacks
  */
-- (void)startWatchingOrderWithUUID:(nonnull NSString *)uuid
-             accessControlParamKey:(nonnull NSString *)accessControlParamKey
-           accessControlParamValue:(nonnull NSString *)accessControlParamValue
-                          delegate:(id <OrderDelegate> _Nullable)delegate;
+- (void)startWatchingOrderWithShareUUID:(nonnull NSString *)shareUUID
+                  accessControlParamKey:(nonnull NSString *)accessControlParamKey
+                accessControlParamValue:(nonnull NSString *)accessControlParamValue
+                               delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
 /**

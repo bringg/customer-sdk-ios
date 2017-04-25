@@ -292,6 +292,16 @@
         NSDictionary *responseDict = nil;
         
         if (jsonError) {
+            // the response could be a throttle response  check if the data represents a string instead of json
+            @try {
+                 NSString *dataMessege = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if (dataMessege) {
+                    jsonError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo: @{NSLocalizedDescriptionKey: dataMessege}];
+                }
+            } @catch (NSException *exception) {
+                //
+            }
+           
             responseError = jsonError;
         }
         else {

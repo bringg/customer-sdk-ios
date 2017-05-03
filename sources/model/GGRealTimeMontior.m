@@ -21,6 +21,7 @@
 #import "GGRealTimeInternals.h"
 #import "NSString+Extensions.h"
 #import "BringgPrivates.h"  
+#import "GGBringgUtils.h"
 
 @import SocketIO;
 
@@ -526,71 +527,8 @@
         return YES;
         
     } else if ([eventName isEqualToString:EVENT_DRIVER_LOCATION_CHANGED]) {
-        NSDictionary *locationUpdate = eventData;
-        NSString *driverUUID = [locationUpdate objectForKey:PARAM_DRIVER_UUID];
-        NSString *shareUUID = [locationUpdate objectForKey:PARAM_SHARE_UUID];
-        NSNumber *lat = [locationUpdate objectForKey:PARAM_LAT];
-        NSNumber *lng = [locationUpdate objectForKey:PARAM_LNG];
         
-        // get driver from data
-        GGDriver *driver = [self.activeDrivers objectForKey:driverUUID];
-        
-        // if no data get it from the current active drivers
-        if (!driver) {
-            // try to get driver from shared uuid
-            // to do this we go over all orders - check which has the specified shared uuid & shared location object and then get the driver related
-            NSArray *sharedLocations = [self.activeOrders valueForKeyPath:@"sharedLocation"];
-            if (sharedLocations.count > 0) {
-                GGSharedLocation *sl = [[sharedLocations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locationUUID == %@", shareUUID]] firstObject];
-                if (sl && sl.driver) {
-                    driver = sl.driver;
-                }else{
-                    driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
-                }
-            }else{
-                driver = [self.activeDrivers objectForKey:self.activeDrivers.allKeys.firstObject];
-            }
-            
-            
-        }
-        
-        if (driver) {
-            [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
-            
-            driver = [self addAndUpdateDriver:driver];
-            
-            // search for the delegates appropriate and notify
-            NSArray *monitoredDrivers = self.driverDelegates.allKeys;
-            
-            [monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSString *driverCompoundKey = (NSString *)obj;
-                
-                
-                NSString *driverUUID;
-                NSString *shareUUID;
-                
-                [GGBringgUtils parseDriverCompoundKey:driverCompoundKey toDriverUUID:&driverUUID andSharedUUID:&shareUUID];
-                
-                //check there is still a delegate listening
-                id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:driverCompoundKey];
-                
-                
-                
-                if ([driverUUID isEqualToString:driver.uuid]) {
-                    if (self.logsEnabled) {
-                        NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, driver.uuid);
-                    }
-
-                    if (driverDelegate) {
-                        [driverDelegate driverLocationDidChangeWithDriver:driver];
-                    }
-                    
-                }
-            }];
-            
-        }
-        
-        return YES;
+        return [self handleLocationUpdateWithData:eventData];;
         
     } else if ([eventName isEqualToString:EVENT_DRIVER_ACTIVITY_CHANGED]) {
         
@@ -665,6 +603,78 @@
     
     return NO;
 }
+
+- (BOOL)handleLocationUpdateWithData:(NSDictionary *)eventData{
+    
+    NSDictionary *locationUpdateData    = eventData;
+    NSString *driverUUID                = [GGBringgUtils stringFromJSON:[locationUpdateData objectForKey:PARAM_DRIVER_UUID] defaultTo:nil];
+    NSString *shareUUID                 = [GGBringgUtils stringFromJSON:[locationUpdateData objectForKey:PARAM_SHARE_UUID] defaultTo:nil];
+    NSNumber *lat                       = [GGBringgUtils numberFromJSON:[locationUpdateData objectForKey:PARAM_LAT] defaultTo:nil];
+    NSNumber *lng                       = [GGBringgUtils numberFromJSON:[locationUpdateData objectForKey:PARAM_LNG] defaultTo:nil];
+    
+    if (!lat || !lng) {
+        return NO;
+    }
+    
+    // get driver from data
+    __block GGDriver *driver = ![NSString isStringEmpty:driverUUID] ? [self.activeDrivers objectForKey:driverUUID] : nil;
+    
+    // if no data get it from the current active drivers
+    if (!driver && ![NSString isStringEmpty:shareUUID]) {
+        // try to get driver from shared uuid
+        // to do this we go over all orders - check which has the specified shared uuid & shared location object and then get the driver related
+        NSArray *sharedLocations = [self.activeOrders valueForKeyPath:@"sharedLocation"];
+        if (sharedLocations.count > 0) {
+            GGSharedLocation *sl = [[sharedLocations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"locationUUID == %@", shareUUID]] firstObject];
+            if (sl && sl.driver) {
+                driver = sl.driver;
+            }else{
+                // just get the first driver in the active drivers list
+                driver = [self.activeDrivers objectForKey:[[self.activeDrivers.allKeys sortedArrayUsingSelector:@selector(compare:)] firstObject]];
+            }
+        }else{
+            
+            driver = [self.activeDrivers objectForKey:[[self.activeDrivers.allKeys sortedArrayUsingSelector:@selector(compare:)] firstObject]];
+        }
+        
+        
+    }
+    
+    if (driver) {
+        [driver updateLocationToLatitude:lat.doubleValue longtitude:lng.doubleValue];
+        
+        driver = [self addAndUpdateDriver:driver];
+        
+        // search for the delegates appropriate and notify
+        NSArray *monitoredDrivers = self.driverDelegates.allKeys;
+        
+        [monitoredDrivers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *dUUID = (NSString *)obj;
+            
+            if ([dUUID isEqualToString:driver.uuid]) {
+                //check there is still a delegate listening
+                id<DriverDelegate> driverDelegate = [self.driverDelegates objectForKey:dUUID];
+                
+                
+                if (self.logsEnabled) {
+                    NSLog(@"delegate: %@ should udpate location for driver :%@", driverDelegate, dUUID);
+                }
+                
+                if ([driverDelegate respondsToSelector:@selector(driverLocationDidChangeWithDriver:)]) {
+                    [driverDelegate driverLocationDidChangeWithDriver:driver];
+                }
+            }
+            
+        }];
+        
+        return YES;
+        
+    }
+    
+    return NO;
+
+}
+
 
 #pragma mark - Watch Actions
 

@@ -191,25 +191,15 @@
     
     GGDriver *driver = [self.trackerManager.liveMonitor addAndUpdateDriver:updatedDriver];
     
-    
-    NSString *compoundKey = [[driver.uuid stringByAppendingString:DRIVER_COMPOUND_SEPERATOR] stringByAppendingString:driver.uuid];
-    
-    
-    [self.trackerManager.liveMonitor.driverDelegates setObject:self.realtimeDelegate forKey:compoundKey];
+
+    [self.trackerManager.liveMonitor.driverDelegates setObject:self.realtimeDelegate forKey:driver.uuid];
     
     NSLog(@"%@", self.trackerManager.monitoredDrivers);
     
     XCTAssertEqual(self.trackerManager.monitoredDrivers.count, 1);
     
-    // also test compound key parsing
+    XCTAssertTrue([[self.trackerManager.monitoredDrivers firstObject] isEqualToString:driver.uuid]);
     
-    
-    NSString *driverUUID;
-    NSString *shareUUID;
-    
-    [GGBringgUtils parseDriverCompoundKey:compoundKey toDriverUUID:&driverUUID andSharedUUID:&shareUUID];
-    
-    XCTAssertTrue([driverUUID isEqualToString:shareUUID]);
     
 }
 

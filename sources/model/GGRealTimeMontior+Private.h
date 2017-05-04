@@ -85,6 +85,8 @@
 - (BOOL)handleSocketIODidReceiveEvent:(nonnull NSString *)eventName
                              withData:(nonnull NSDictionary *)eventData;
 
+- (BOOL)handleLocationUpdateWithData:(nonnull NSDictionary *)eventData;
+
 - (nullable id<WaypointDelegate>)delegateForWaypointID:(nonnull NSNumber *)waypointId;
 
 /**

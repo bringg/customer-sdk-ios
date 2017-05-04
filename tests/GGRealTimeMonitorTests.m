@@ -29,7 +29,6 @@
 @property (nonatomic, strong) NSDate *lastUpdatedEta;
 
 
-
 @end
 
 @implementation WaypointDelegateTestClass
@@ -53,6 +52,28 @@
 
 @end
 
+@interface DriverDelegateTestClass : NSObject<DriverDelegate>
+
+@property (nonatomic, assign) double lastUpdateLat;
+@property (nonatomic, assign) double lastUpdateLng;
+@end
+
+@implementation DriverDelegateTestClass
+
+- (void)watchDriverSucceedForDriver:(GGDriver *)driver{
+    
+}
+
+- (void)watchDriverFailedForDriver:(GGDriver *)driver error:(NSError *)error{
+    
+}
+
+- (void)driverLocationDidChangeWithDriver:(GGDriver *)driver{
+    _lastUpdateLat = driver.latitude;
+    _lastUpdateLng = driver.longitude;
+}
+
+@end
 
 @interface GGRealTimeMonitorTests : XCTestCase
 
@@ -235,5 +256,92 @@
     XCTAssertNotNil(delegate.lastUpdatedEta);
     XCTAssertTrue([[GGBringgUtils dateFromString:eta] isEqualToDate:delegate.lastUpdatedEta]);
 }
+
+-(void)testHandlingLocationUpdateEvent{
+    
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.startJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertNotNil(updatedOrder);
+    XCTAssertNotNil(updatedDriver);
+    
+    double randomLat = [GGTestUtils randomBetweenMin:-90.0 andMax:90.0];
+    double randomLng = [GGTestUtils randomBetweenMin:-180.0 andMax:180.0];
+    
+    DriverDelegateTestClass *delegate = [[DriverDelegateTestClass alloc] init];
+    XCTAssertEqual(delegate.lastUpdateLat, 0);
+    XCTAssertEqual(delegate.lastUpdateLng, 0);
+    
+    [self.liveMonitor.driverDelegates setObject:delegate forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeDrivers setObject:updatedDriver forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeOrders setObject:updatedOrder forKey:updatedOrder.uuid];
+    
+    NSDictionary *locationUpdateData = @{PARAM_DRIVER_UUID: updatedDriver.uuid, PARAM_LAT: @(randomLat), PARAM_LNG: @(randomLng)};
+    
+    XCTAssertTrue([self.liveMonitor handleLocationUpdateWithData:locationUpdateData]);
+    
+    XCTAssertTrue(delegate.lastUpdateLat == randomLat);
+    XCTAssertTrue(delegate.lastUpdateLng == randomLng);
+}
+
+-(void)testHandlingLocationUpdateEventBaseOnShareUUID{
+    
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.startJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertNotNil(updatedOrder);
+    XCTAssertNotNil(updatedDriver);
+    
+    double randomLat = [GGTestUtils randomBetweenMin:-90.0 andMax:90.0];
+    double randomLng = [GGTestUtils randomBetweenMin:-180.0 andMax:180.0];
+    
+    DriverDelegateTestClass *delegate = [[DriverDelegateTestClass alloc] init];
+    XCTAssertEqual(delegate.lastUpdateLat, 0);
+    XCTAssertEqual(delegate.lastUpdateLng, 0);
+    
+    [self.liveMonitor.driverDelegates setObject:delegate forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeDrivers setObject:updatedDriver forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeOrders setObject:updatedOrder forKey:updatedOrder.uuid];
+    
+    NSDictionary *locationUpdateData = @{PARAM_SHARE_UUID:updatedOrder.sharedLocationUUID, PARAM_LAT: @(randomLat), PARAM_LNG: @(randomLng)};
+    
+    XCTAssertTrue([self.liveMonitor handleLocationUpdateWithData:locationUpdateData]);
+    
+    XCTAssertTrue(delegate.lastUpdateLat == randomLat);
+    XCTAssertTrue(delegate.lastUpdateLng == randomLng);
+}
+
+-(void)testHandlingLocationUpdateEventNoShareUUIDOrDriverUUID{
+    
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.startJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertNotNil(updatedOrder);
+    XCTAssertNotNil(updatedDriver);
+    
+    double randomLat = [GGTestUtils randomBetweenMin:-90.0 andMax:90.0];
+    double randomLng = [GGTestUtils randomBetweenMin:-180.0 andMax:180.0];
+   
+    [self.liveMonitor.activeDrivers setObject:updatedDriver forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeOrders setObject:updatedOrder forKey:updatedOrder.uuid];
+    
+    NSDictionary *locationUpdateData = @{PARAM_LAT: @(randomLat), PARAM_LNG: @(randomLng)};
+    
+    XCTAssertFalse([self.liveMonitor handleLocationUpdateWithData:locationUpdateData]);
+    
+}
+
 
 @end

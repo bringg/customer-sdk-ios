@@ -343,5 +343,50 @@
     
 }
 
+-(void)testHandlingLocationUpdateEventNoLat{
+    
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.startJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertNotNil(updatedOrder);
+    XCTAssertNotNil(updatedDriver);
+    
+     double randomLng = [GGTestUtils randomBetweenMin:-180.0 andMax:180.0];
+    
+    [self.liveMonitor.activeDrivers setObject:updatedDriver forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeOrders setObject:updatedOrder forKey:updatedOrder.uuid];
+    
+    NSDictionary *locationUpdateData = @{PARAM_LAT: [NSNull null], PARAM_LNG: @(randomLng)};
+    
+    XCTAssertFalse([self.liveMonitor handleLocationUpdateWithData:locationUpdateData]);
+    
+}
+
+-(void)testHandlingLocationUpdateEventNoLng{
+    
+    NSDictionary *eventData = [NSDictionary dictionaryWithDictionary:self.startJson];
+    
+    GGOrder *updatedOrder;
+    GGDriver *updatedDriver;
+    
+    [GGTestUtils parseUpdateData:eventData intoOrder:&updatedOrder andDriver:&updatedDriver];
+    
+    XCTAssertNotNil(updatedOrder);
+    XCTAssertNotNil(updatedDriver);
+    
+    double randomLat = [GGTestUtils randomBetweenMin:-90.0 andMax:90.0];
+    
+    [self.liveMonitor.activeDrivers setObject:updatedDriver forKey:updatedDriver.uuid];
+    [self.liveMonitor.activeOrders setObject:updatedOrder forKey:updatedOrder.uuid];
+    
+    NSDictionary *locationUpdateData = @{PARAM_LAT: @(randomLat), PARAM_LNG: [NSNull null]};
+    
+    XCTAssertFalse([self.liveMonitor handleLocationUpdateWithData:locationUpdateData]);
+    
+}
 
 @end

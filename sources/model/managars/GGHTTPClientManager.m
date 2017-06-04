@@ -46,6 +46,7 @@
 #define API_PATH_RATE @"/api/rate/%@" // method: POST; shared_location_uuid, rating token, rating
 #define API_PATH_ORDER_UUID @"/shared/orders/%@/" //method: GET; order_uuid !!!!! this creates new shared_location object on server !!!!
 #define API_PATH_WATCH_ORDER @"/watch/shared/%@/" //method: GET; shared_location_uuid,  params - order_uuid
+#define API_PATH_REPORT_EXCEPTION @"/api/analytics/report_exception/" // method POST; error
 
 //PRIVATE
 #define API_PATH_REQUEST_CONFIRMATION @"/api/customer/confirmation/request" //method:Post ;merchant_id, phone
@@ -594,6 +595,23 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                    }
                    //
                }];
+}
+
+#pragma mark - Private Actions
+- (void)reportExceptionWithStackTrace:(nonnull NSString*)stackTraceString
+                    completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler{
+    
+    if ([NSString isStringEmpty:stackTraceString]) {
+        if (completionHandler) {
+            completionHandler(NO, nil, [NSError errorWithDomain:kSDKDomainData code:0 userInfo:@{NSLocalizedDescriptionKey: @"can't send empty stack trace"}]);
+        }
+        return;
+    }
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"error": stackTraceString}];
+    [self addAuthinticationToParams:&params];
+    
+    [self httpRequestWithMethod:BCRESTMethodPost path:API_PATH_REPORT_EXCEPTION params:params completionHandler:completionHandler];
 }
 
 #pragma mark - HTTP GETTERS

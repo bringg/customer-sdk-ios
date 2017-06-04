@@ -99,4 +99,14 @@
 - (BOOL)isWaitingTooLongForHTTPEvent;
 
 
+/**
+ reports exceptions that occoured in app consuming the SDK
+
+ @param stackTraceString stack trace string
+ @param completionHandler handler
+ */
+- (void)reportExceptionWithStackTrace:(nonnull NSString*)stackTraceString
+completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler
+
+
 @end

@@ -20,6 +20,7 @@
 
 #import "GGTrackerManager_Private.h"
 #import "GGTrackerManager.h"
+#import "GGSDKExceptionHandler.h"
 
 
 #import "GGOrder.h"
@@ -30,12 +31,14 @@
 
 #define TEST_DEV_TOKEN @"SOME_DEV_TOKEN"
 
-@interface GGTestRealTimeMockDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate>
+@interface GGTestRealTimeMockDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate, WaypointDelegate>
 
 @property (nullable, nonatomic, strong) GGOrder * lastUpdatedOrder;
 @property (nullable, nonatomic, strong) GGDriver * lastUpdatedDriver;
+@property (nullable, nonatomic, strong) NSNumber * lastUpdatedWaypointId;
 @property (nullable, nonatomic, strong) NSError * lastOrderError;
 @property (nullable, nonatomic, strong) NSError * lastDriverError;
+@property (nullable, nonatomic, strong) NSError * lastWaypointError;
 
 - (void)resetDelegate;
 
@@ -92,7 +95,19 @@
     self.lastUpdatedDriver = driver;
 }
 
+- (void)watchWaypointFailedForWaypointId:(NSNumber *)waypointId error:(NSError *)error{
+    
+    self.lastUpdatedWaypointId = waypointId;
+    self.lastWaypointError = error;
+}
 
+- (void)watchWaypointSucceededForWaypointId:(NSNumber *)waypointId waypoint:(GGWaypoint *)waypoint{
+    self.lastUpdatedWaypointId = waypointId;
+}
+
+- (void)waypointDidUpdatedWaypointId:(nonnull NSNumber *)waypointId eta:(nullable NSDate *)eta{
+    self.lastUpdatedWaypointId = waypointId;
+}
 
 @end
 
@@ -153,6 +168,14 @@
     }
     
 }
+
+- (void)sendWatchWaypointWithWaypointId:(NSNumber *)waypointId andOrderUUID:(NSString *)orderUUID completionHandler:(SocketResponseBlock)completionHandler{
+    
+    if (completionHandler) {
+        completionHandler(YES, nil, nil);
+    }
+}
+
 
 @end
 
@@ -271,19 +294,31 @@
     
     self.realtimeDelegate = [[GGTestRealTimeMockDelegate alloc] init];
     self.trackingClient = [BringgTrackingClientTestClass clientWithDeveloperToken:@"aaa-bbb-ccc" connectionDelegate:self.realtimeDelegate];
+    // clear nsuser defaults before each test
     
 }
+
+
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     self.trackingClient = nil;
     self.realtimeDelegate = nil;
     
+    [self resetDefaults];
+    
     [super tearDown];
 }
 
 //MARK: Helpers
-
+- (void)resetDefaults {
+    NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+    NSDictionary * dict = [defs dictionaryRepresentation];
+    for (id key in dict) {
+        [defs removeObjectForKey:key];
+    }
+    [defs synchronize];
+}
 
 - (NSDictionary *)generateSharedLocationJSONSharedUUID:(nonnull NSString *)shareUUID orderUUID:(nonnull NSString *)orderUUID {
     
@@ -298,25 +333,36 @@
     
     NSString *shareUUID = nil;
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
+    
+    [self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    [self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
+    
     
     shareUUID = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
-    
+    [self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    [self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     shareUUID = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:nil]);
-    
+    [self.trackingClient startWatchingOrderWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertNil(delegate.lastOrderError);
 }
 
 - (void)testWatchingOrderUsingUUIDAndCustomerAccessToken{
@@ -324,26 +370,34 @@
     
     NSString *customerToken = nil;
     
+    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
+    [self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
+    [self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     customerToken = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
-    
+    [self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
+    [self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:delegate];
+    XCTAssertTrue(delegate.lastOrderError.code == GGErrorTypeInvalid);
+    delegate.lastOrderError = nil;
     
     customerToken = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:nil]);
-    
+    [self.trackingClient startWatchingOrderWithUUID:uuid customerAccessToken:customerToken delegate:delegate];
+    XCTAssertNil(delegate.lastOrderError);
 }
 
 - (void)testWatchingDriverUsingUUIDAndSharedUUID{
@@ -351,42 +405,56 @@
     
     NSString *shareUUID = nil;
     
+    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    [self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastDriverError.code == GGErrorTypeInvalid);
+    delegate.lastDriverError = nil;
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    [self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastDriverError.code == GGErrorTypeInvalid);
+    delegate.lastDriverError = nil;
     
     shareUUID = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    [self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastDriverError.code == GGErrorTypeInvalid);
+    delegate.lastDriverError = nil;
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertThrows([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
+    [self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertTrue(delegate.lastDriverError.code == GGErrorTypeInvalid);
+    delegate.lastDriverError = nil;
     
     shareUUID = @"fefe-asd-fasd";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:nil]);
-    
+    [self.trackingClient startWatchingDriverWithUUID:uuid shareUUID:shareUUID delegate:delegate];
+    XCTAssertNil(delegate.lastDriverError);
 }
 
 - (void)testWatchingCustomerDriver{
      NSString *uuid = nil;
     
-    XCTAssertThrows([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:nil]);
+    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
+    
+    [self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate];
+    XCTAssertTrue(delegate.lastDriverError.code == GGErrorTypeInvalid);
+    delegate.lastDriverError = nil;
     
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:nil]);
+    [self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate];
+    XCTAssertTrue(delegate.lastDriverError.code == GGErrorTypeInvalid);
+    delegate.lastDriverError = nil;
     
     uuid = @"asd_asd_asdads";
-    
-    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
-    
-    XCTAssertNoThrow([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate]);
+ 
+    [self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate];
     XCTAssertNotNil(delegate.lastDriverError);
+    
     XCTAssertTrue([[delegate.lastDriverError.userInfo valueForKey:NSLocalizedDescriptionKey] isEqualToString:@"cant watch driver without valid customer"]);
     
     // define a mock customer
@@ -399,7 +467,7 @@
     [delegate resetDelegate];
     
     // now calling the watch customer driver should work, no exception , no error, since we have a customer object
-    XCTAssertNoThrow([self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate]);
+    [self.trackingClient startWatchingCustomerDriverWithUUID:uuid delegate:delegate];
     XCTAssertNil(delegate.lastDriverError);
     
     
@@ -411,22 +479,34 @@
    
     NSString *uuid = nil;
     NSNumber *wpid = nil;
+   
+    GGTestRealTimeMockDelegate *delegate = [[GGTestRealTimeMockDelegate alloc] init];
     
+    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:delegate];
     
-    XCTAssertThrows([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    GGRealTimeMontiorMockingClass *mockLiveMonitor = [[GGRealTimeMontiorMockingClass alloc] init];
     
+    realTrackingClient.trackerManager.liveMonitor = mockLiveMonitor;
+    
+    [realTrackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:delegate];
+    XCTAssertTrue(delegate.lastWaypointError.code == GGErrorTypeInvalid);
+    delegate.lastWaypointError = nil;
     uuid = @"";
     
-    XCTAssertThrows([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    [realTrackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:delegate];
+    XCTAssertTrue(delegate.lastWaypointError.code == GGErrorTypeInvalid);
+    delegate.lastWaypointError = nil;
     
     wpid = @123456789;
     
-    XCTAssertThrows([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
+    [realTrackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:delegate];
+    XCTAssertTrue(delegate.lastWaypointError.code == GGErrorTypeInvalid);
+    delegate.lastWaypointError = nil;
     
     uuid = @"asd_asd_asdads";
     
-    XCTAssertNoThrow([self.trackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:nil]);
-    
+    [realTrackingClient startWatchingWaypointWithWaypointId:wpid andOrderUUID:uuid delegate:delegate];
+    XCTAssertNil(delegate.lastWaypointError);
 }
 
 - (void)testRequestingFindMeUsingOrderUUID{
@@ -598,5 +678,6 @@
     XCTAssertTrue(delegate.lastOrderError.code == rc);
     XCTAssertTrue([[delegate.lastOrderError.userInfo valueForKey:NSLocalizedDescriptionKey] isEqualToString:msg]);
 }
+
 
 @end

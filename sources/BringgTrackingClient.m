@@ -185,7 +185,13 @@
     NSLog(@"Trying to start watching on order uuid: %@, shared %@, with delegate %@", uuid, shareUUID, delegate);
     
     if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareUUID]) {
-        [NSException raise:@"Invalid params" format:@"Order and Share UUIDs can not be empty"];
+        
+        if (delegate) {
+            
+             NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"Order and Share UUIDs can not be empty"}];
+            
+            [delegate watchOrderFailForOrder:nil error:err];
+        }
         
         return;
     }
@@ -203,7 +209,13 @@
     
     
     if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:customerAccessToken]) {
-        [NSException raise:@"Invalid params" format:@"Order and customer token can not be empty"];
+        
+        if (delegate) {
+            
+             NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"Order and customer token can not be empty"}];
+            
+            [delegate watchOrderFailForOrder:nil error:err];
+        }
         
         return;
     }
@@ -220,7 +232,13 @@
      NSLog(@"Trying to start watching using customer token and share uuid: %@, with delegate %@", shareUUID, delegate);
     
     if ([NSString isStringEmpty:shareUUID] || [NSString isStringEmpty:customerAccessToken]) {
-        [NSException raise:@"Invalid params" format:@"Share UUID and customer token can not be empty"];
+
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"Share UUID and customer token can not be empty"}];
+            
+            [delegate watchOrderFailForOrder:nil error:err];
+        }
         
         return;
     }
@@ -238,7 +256,13 @@
     
     
     if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:shareUUID]) {
-        [NSException raise:@"Invalid params" format:@"driver and shared uuid can not be empty"];
+        
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"driver and shared uuid can not be empty" }];
+            
+            [delegate watchDriverFailedForDriver:nil error:err];
+        }
         
         return;
     }
@@ -255,7 +279,13 @@
     
     
     if ([NSString isStringEmpty:uuid]) {
-        [NSException raise:@"Invalid params" format:@"driver uuid can not be empty"];
+        
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"driver uuid can not be empty" }];
+            
+            [delegate watchDriverFailedForDriver:nil error:err];
+        }
         
         return;
     }
@@ -284,6 +314,18 @@
 - (void)startWatchingWaypointWithWaypointId:(NSNumber *_Nonnull)waypointId
                                andOrderUUID:(NSString * _Nonnull)orderUUID
                                    delegate:(id <WaypointDelegate> _Nullable)delegate{
+    
+    if (!waypointId || [NSString isStringEmpty:orderUUID]) {
+        
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"waypoint id and order uuid params can not be empty"}];
+            
+            [delegate watchWaypointFailedForWaypointId:waypointId error:err];
+        }
+        
+        return;
+    }
     
     [self.trackerManager startWatchingWaypointWithWaypointId:waypointId andOrderUUID:orderUUID delegate:delegate];
     

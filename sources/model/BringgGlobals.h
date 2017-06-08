@@ -139,7 +139,7 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param order the order requesting watch
  *  @param error failure reason
  */
-- (void)watchOrderFailForOrder:(nonnull GGOrder *)order error:(nonnull NSError *)error;
+- (void)watchOrderFailForOrder:(nullable GGOrder *)order error:(nonnull NSError *)error;
 
 
 /**

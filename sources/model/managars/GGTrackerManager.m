@@ -755,7 +755,13 @@
     
     
     if ([NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue] || [NSString isStringEmpty:orderUUID]) {
-        [NSException raise:@"Invalid params" format:@"order uuid and param keys and values must be provided"];
+        
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"order uuid and param keys and values must be provided" }];
+            
+            [delegate watchOrderFailForOrder:nil error:err];
+        }
         
         return;
     }
@@ -855,7 +861,13 @@
                                delegate:(id <OrderDelegate> _Nullable)delegate {
     
     if ([NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue] || [NSString isStringEmpty:shareUUID]) {
-        [NSException raise:@"Invalid params" format:@"order uuid and param keys and values must be provided"];
+    
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"order uuid and param keys and values must be provided" }];
+            
+            [delegate watchOrderFailForOrder:nil error:err];
+        }
         
         return;
     }
@@ -1171,7 +1183,13 @@
                            delegate:(id <DriverDelegate> _Nullable)delegate {
     
     if ([NSString isStringEmpty:uuid] || [NSString isStringEmpty:accessControlParamKey] || [NSString isStringEmpty:accessControlParamValue]) {
-        [NSException raise:@"Invalid params" format:@"driver and access controll params can not be empty"];
+        
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"driver and access controll params can not be empty" }];
+            
+            [delegate watchDriverFailedForDriver:nil error:err];
+        }
         
         return;
     }
@@ -1232,7 +1250,13 @@
     
     
     if (!waypointId || [NSString isStringEmpty:orderUUID]) {
-        [NSException raise:@"Invalid params" format:@"waypoint id and order uuid params can not be empty"];
+       
+        if (delegate) {
+            
+            NSError *err = [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalid userInfo:@{NSLocalizedDescriptionKey:@"waypoint id and order uuid params can not be empty"}];
+            
+            [delegate watchWaypointFailedForWaypointId:waypointId error:err];
+        }
         
         return;
     }

@@ -32,6 +32,8 @@ const NSInteger UncaughtExceptionHandlerReportAddressCount = 5;
 
 @end
 
+static NSUncaughtExceptionHandler *_previousHandler;
+
 @implementation GGSDKExceptionHandler
 
 
@@ -132,7 +134,9 @@ const NSInteger UncaughtExceptionHandlerReportAddressCount = 5;
     [self saveCriticalApplicationDataForException:data];
     
     // rethrow exceptions so the app consuming the sdk can handle it
-    [exception raise];
+    if (_previousHandler) {
+        _previousHandler(exception);
+    }     
 }
 
 - (void)removeExceptionByData:(NSString *)exeptionData{
@@ -224,6 +228,10 @@ static void BringgHandleException(NSException *exception){
 
 
 void SetupUncaughtExceptionHandler(){
+    
+    // check if there is another uncaught exception handler in the app
+    _previousHandler = NSGetUncaughtExceptionHandler();
+    
     NSSetUncaughtExceptionHandler(&BringgHandleException);
     signal(SIGABRT, BringgSignalHandler);
     signal(SIGILL, BringgSignalHandler);

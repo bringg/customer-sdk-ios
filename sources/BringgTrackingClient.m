@@ -19,6 +19,8 @@
 #import "BringgPrivates.h"
 #import "NSString+Extensions.h"
 
+#import "GGSDKExceptionHandler.h"
+
 #define LOCAL_URL @"http://10.0.1.125"
 #define USE_LOCAL NO
 
@@ -29,7 +31,6 @@
 
 @implementation BringgTrackingClient
 
-
 + (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
     
     static BringgTrackingClient *sharedObject = nil;
@@ -38,6 +39,7 @@
     dispatch_once(&onceToken, ^{
         // init the client
         sharedObject = [[self alloc] initWithDevToken:developerToken connectionDelegate:delegate];
+        
         
     });
     
@@ -54,10 +56,15 @@
             self.useSecuredConnection = NO;
         }
         
+        [self setupFrameworkExceptionHandler];
+        
         // init the http manager and tracking manager
         [self setupHTTPManagerWithDevToken:devToken securedConnection:self.useSecuredConnection];
 
         [self setupTrackerManagerWithDevToken:devToken httpManager:self.httpManager realtimeDelegate:delegate];
+        
+        
+        [self checkAndReportPreviousCrashes];
         
     }
     
@@ -79,6 +86,34 @@
     [self.trackerManager setConnectionDelegate:self];
     
     self.trackerManager.logsEnabled = NO;
+}
+
+- (nonnull NSArray<NSString *> *)cachedExceptions{
+    return [self.exceptionHandler cachedExceptions];
+}
+
+- (void)setupFrameworkExceptionHandler{
+    // init exception handler
+    self.exceptionHandler = [GGSDKExceptionHandler sharedInstance];
+    
+    // start watching for exceptions
+    SetupUncaughtExceptionHandler();
+}
+
+- (void)checkAndReportPreviousCrashes{
+    NSArray<NSString *> *currentCrashes = [[NSArray alloc] initWithArray:[self cachedExceptions] copyItems:YES];
+    
+    // if we have any crashes we should report them and the clear from cache
+    [currentCrashes enumerateObjectsUsingBlock:^(NSString * _Nonnull exeptionData, NSUInteger idx, BOOL * _Nonnull stop) {
+        //
+        [self.httpManager reportExceptionWithStackTrace:exeptionData completionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+            //
+            if (success) {
+                NSLog(@"success reportin crash from last session");
+                [self.exceptionHandler removeExceptionByData:exeptionData];
+            }
+        }];
+    }];
 }
 
 //MARK: -- Connection

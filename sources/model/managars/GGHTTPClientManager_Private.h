@@ -106,7 +106,7 @@
  @param completionHandler handler
  */
 - (void)reportExceptionWithStackTrace:(nonnull NSString*)stackTraceString
-completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler
+completionHandler:(void (^ _Nullable)(BOOL success, id _Nullable JSON, NSError * _Nullable error))completionHandler;
 
 
 @end

@@ -9,14 +9,14 @@
 #import "BringgTrackingClient.h"
 #import "BringgGlobals.h"
 
-@class GGHTTPClientManager, GGTrackerManager;
+@class GGHTTPClientManager, GGTrackerManager, GGSDKExceptionHandler;
 
 @interface BringgTrackingClient()
 
 @property (nonnull, nonatomic, strong) NSString *developerToken;
 @property (nonnull, nonatomic, strong) GGTrackerManager *trackerManager;
 @property (nonnull, nonatomic, strong) GGHTTPClientManager *httpManager;
-
+@property (nonnull, nonatomic, strong) GGSDKExceptionHandler *exceptionHandler;
 @property (nullable, nonatomic, weak) id<RealTimeDelegate> realTimeDelegate;
 
 @property (nonatomic) BOOL useSecuredConnection;
@@ -30,5 +30,10 @@
 
 - (void)setupTrackerManagerWithDevToken:(nonnull NSString *)devToken httpManager:(nonnull GGHTTPClientManager *)httpManager realtimeDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
+- (void)setupFrameworkExceptionHandler;
+
+- (nonnull NSArray<NSString *> *)cachedExceptions;
+
+- (void)checkAndReportPreviousCrashes;
 
 @end

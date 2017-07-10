@@ -51,7 +51,7 @@
 }
 
 - (void)trackerDidConnect{
-    
+    NSLog(@"");
 }
 
 -(void)trackerDidDisconnectWithError:(NSError *)error{
@@ -488,7 +488,7 @@
 
 - (void)testWatchingOrderWithExpiredResponseMissingSharedLocation{
     
-    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN region:GGRegionUnknown connectionDelegate:self.realtimeDelegate];
     
     GGRealTimeMontiorMockingClass *mockLiveMonitor = [[GGRealTimeMontiorMockingClass alloc] init];
     
@@ -523,7 +523,7 @@
 
 - (void)testWatchingOrderWithExpiredResponse{
     
-    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN region:GGRegionUnknown connectionDelegate:self.realtimeDelegate];
     
     GGRealTimeMontiorMockingClass *mockLiveMonitor = [[GGRealTimeMontiorMockingClass alloc] init];
     
@@ -537,6 +537,7 @@
                                                @"success": @YES};
     
     realTrackingClient.trackerManager.liveMonitor = mockLiveMonitor;
+    
     
     GGOrder * activeOrder = [realTrackingClient orderWithUUID:orderUUID];
     
@@ -559,7 +560,7 @@
 
 
 - (void)testWatchingOrderWithFailedResponse {
-    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN region:GGRegionUnknown connectionDelegate:self.realtimeDelegate];
     
     GGTrackerManagerMockClass *trackerMock = [[GGTrackerManagerMockClass alloc] initWithDeveloperToken:TEST_DEV_TOKEN HTTPManager:nil realTimeDelegate:self.realtimeDelegate];
     

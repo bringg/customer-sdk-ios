@@ -15,15 +15,25 @@
 
 
 /**
- creates the bringg tracking client singelton
+ Creates the bringg tracking client singelton.
+ 
+ The default region (GGRegionUsEast1) is used by default.
 
  @param developerToken developer token as given by bringg platform
  @param delegate connection delegate to track connection status of tracking client
- @return singelton
+ @return BringgTrackingClient
  */
 + (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
+/**
+ Creates the bringg tracking client singelton.
 
+ @param developerToken developer token as given by bringg platform
+ @param region region of the client as given by bringg platform
+ @param delegate connection delegate to track connection status of tracking client
+ @return BringgTrackingClient
+ */
++ (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken region:(GGRegion)region connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
 //MARK: -- Connection
 

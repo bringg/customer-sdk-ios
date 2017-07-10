@@ -10,6 +10,13 @@
 #import "BringgGlobals.h"
 #import "GGBringgUtils.h"
 
+// EU_EAST_01 URLS
+NSString * _Nonnull const EU_EAST_01_API_URL = @"admin-eu1.bringg.com";
+NSString * _Nonnull const EU_EAST_01_REALTIME_URL = @"realtime2-api-eu1.bringg.com";
+// US_EAST_01
+NSString * _Nonnull const US_EAST_01_API_URL = @"admin-us1.bringg.com";
+NSString * _Nonnull const US_EAST_01_REALTIME_URL = @"realtime2-api-us1.bringg.com";
+
 @interface GGNetworkUtils ()<NSURLSessionDelegate>
 
 @end
@@ -434,6 +441,31 @@
     
     
     
+}
++ (NSString *)bringgAPIUrlByRegion:(GGRegion)region {
+    switch (region) {
+        case GGRegionEuWest1:
+        {
+            return EU_EAST_01_API_URL;
+        }
+        case GGRegionUsEast1:
+        default:
+            return US_EAST_01_API_URL;
+    }
+}
+
++ (NSString *)bringgRealtimeUrlByRegion:(GGRegion)region {
+    switch (region) {
+        case GGRegionEuWest1:
+        {
+            return EU_EAST_01_REALTIME_URL;
+        }
+        case GGRegionUsEast1:
+        default:
+        {
+            return US_EAST_01_REALTIME_URL;
+        }
+    }
 }
 
 //MARK: - Session Delegate

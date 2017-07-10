@@ -351,4 +351,11 @@ typedef NS_ENUM(NSInteger, GGErrorType) {
     
 };
 
+typedef NS_ENUM(NSInteger, GGRegion) {
+         GGRegionUnknown,
+         GGRegionEuWest1,
+         GGRegionUsEast1
+};
+
+
 #endif

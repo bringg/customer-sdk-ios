@@ -24,7 +24,7 @@
 @property (nonatomic) BOOL shouldAutoWatchOrder;
 
 
-- (nonnull instancetype)initWithDevToken:(nonnull NSString *)devToken region:(GGRegion)region connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
+- (nonnull instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate;
 
 - (void)setupHTTPManagerWithDevToken:(nonnull NSString *)devToken securedConnection:(BOOL)useSecuredConnection;
 

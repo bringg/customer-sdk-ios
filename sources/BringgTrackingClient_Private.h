@@ -18,6 +18,7 @@
 @property (nonnull, nonatomic, strong) GGHTTPClientManager *httpManager;
 
 @property (nullable, nonatomic, weak) id<RealTimeDelegate> realTimeDelegate;
+@property (nonatomic) GGRegion region;
 
 @property (nonatomic) BOOL useSecuredConnection;
 @property (nonatomic) BOOL shouldAutoWatchDriver;

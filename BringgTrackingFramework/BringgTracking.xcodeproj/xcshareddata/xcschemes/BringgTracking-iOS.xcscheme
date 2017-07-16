@@ -29,7 +29,26 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       codeCoverageEnabled = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "110137431D74CE66005E10C4"
+               BuildableName = "BringgTracking-iOSTests.xctest"
+               BlueprintName = "BringgTracking-iOSTests"
+               ReferencedContainer = "container:BringgTracking.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1101373A1D74CE66005E10C4"
+            BuildableName = "BringgTracking.framework"
+            BlueprintName = "BringgTracking-iOS"
+            ReferencedContainer = "container:BringgTracking.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

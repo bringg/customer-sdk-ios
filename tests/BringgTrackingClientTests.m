@@ -598,5 +598,14 @@
     XCTAssertTrue(delegate.lastOrderError.code == rc);
     XCTAssertTrue([[delegate.lastOrderError.userInfo valueForKey:NSLocalizedDescriptionKey] isEqualToString:msg]);
 }
+- (void)testMultiRegionConnectToDefaultRegion {
+    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    XCTAssertEqual(realTrackingClient.region,GGRegionUsEast1);
+}
+- (void)testMultiRegionConnectToEURegion {
+    NSString* EUDevToken =[NSString stringWithFormat:@"EU%@",TEST_DEV_TOKEN];
+    BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:EUDevToken connectionDelegate:self.realtimeDelegate];
+    XCTAssertEqual(realTrackingClient.region,GGRegionEuWest1);
+}
 
 @end

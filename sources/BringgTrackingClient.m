@@ -24,7 +24,7 @@
 #define USE_LOCAL NO
 
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>
-@property (nonatomic) GGRegion region;
+
 @end
 
 @implementation BringgTrackingClient
@@ -32,17 +32,12 @@
 
 + (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
     
-    return [self clientWithDeveloperToken:developerToken region:GGRegionUsEast1 connectionDelegate:delegate];
-
-}
-+ (nonnull instancetype)clientWithDeveloperToken:(nonnull NSString *)developerToken region:(GGRegion)region connectionDelegate:(nonnull id<RealTimeDelegate>)delegate {
-    
     static BringgTrackingClient *sharedObject = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
         // init the client
-        sharedObject = [[self alloc] initWithDevToken:developerToken region:region connectionDelegate:delegate];
+        sharedObject = [[self alloc] initWithDevToken:developerToken connectionDelegate:delegate];
         
     });
     
@@ -50,10 +45,10 @@
     
 }
 
-- (instancetype)initWithDevToken:(nonnull NSString *)devToken region:(GGRegion)region connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
+- (instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
-        self.region = region;
+        self.region = [self getRegionFromDevToken:devToken];
         self.useSecuredConnection = YES;
         
         if (USE_LOCAL == YES) {
@@ -86,7 +81,12 @@
     
     self.trackerManager.logsEnabled = NO;
 }
-
+- (GGRegion)getRegionFromDevToken:(NSString*)devToken {
+    if ([devToken hasPrefix:@"EU"]) { //TODO: sync with server implementation
+        return GGRegionEuWest1;
+    }
+    return GGRegionUsEast1;
+}
 //MARK: -- Connection
 
 - (void)connect{

@@ -301,7 +301,7 @@
 
 - (void)webSocketConnectWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
     
-    NSString *server = [GGNetworkUtils bringgRealtimeUrlByRegion:GGRegionUnknown];
+    NSString *server = [GGNetworkUtils bringgRealtimeUrlByRegion:GGRegionUsEast1];
     
     if (self.realtimeConnectionDelegate && [self.realtimeConnectionDelegate respondsToSelector:@selector(hostDomainForRealTimeMonitor:)]) {
         server = [self.realtimeConnectionDelegate hostDomainForRealTimeMonitor:self];

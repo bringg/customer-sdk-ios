@@ -12,7 +12,8 @@
 
 // US_EAST_01
 NSString * _Nonnull const US_EAST_01_API_URL = @"admin-us1.bringg.com";
-NSString * _Nonnull const US_EAST_01_REALTIME_URL = @"realtime2-api-us1.bringg.com";
+NSString * _Nonnull const US_EAST_01_REALTIME_URL = @"realtime2-api.bringg.com";
+
 // EU_EAST_01 URLS
 NSString * _Nonnull const EU_EAST_01_API_URL = @"eu1-admin-api.bringg.com";
 NSString * _Nonnull const EU_EAST_01_REALTIME_URL = @"eu1-realtime.bringg.com";

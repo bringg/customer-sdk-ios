@@ -82,7 +82,7 @@
     self.trackerManager.logsEnabled = NO;
 }
 - (GGRegion)getRegionFromDevToken:(NSString*)devToken {
-    if ([devToken hasPrefix:@"EU"]) { //TODO: sync with server implementation
+    if ([devToken hasPrefix:@"ew1_"]) {
         return GGRegionEuWest1;
     }
     return GGRegionUsEast1;

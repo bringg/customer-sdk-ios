@@ -603,7 +603,7 @@
     XCTAssertEqual(realTrackingClient.region,GGRegionUsEast1);
 }
 - (void)testMultiRegionConnectToEURegion {
-    NSString* EUDevToken =[NSString stringWithFormat:@"EU%@",TEST_DEV_TOKEN];
+    NSString* EUDevToken =[NSString stringWithFormat:@"ew1_%@",TEST_DEV_TOKEN];
     BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:EUDevToken connectionDelegate:self.realtimeDelegate];
     XCTAssertEqual(realTrackingClient.region,GGRegionEuWest1);
 }

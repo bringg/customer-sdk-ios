@@ -5,11 +5,6 @@ codecov:
 coverage:
   ignore:
     - Pods/.*
-    - "**/*VC.*"
-    - "**/*ViewController.*"
-    - "**/*Cell.*"
-    - "**/*View.*"
-    - "**/*Button.*"
 
   precision: 2
   round: down

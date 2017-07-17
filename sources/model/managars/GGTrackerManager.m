@@ -749,7 +749,7 @@
 
 -(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
-                         withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler{
+                         withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler{
     
     if (!self.httpManager) {
         if (completionHandler) {
@@ -769,7 +769,7 @@
         
         return;
     }
-    
+
     GGOrder *order = [self orderWithUUID:uuid];
     
     if (!order) {

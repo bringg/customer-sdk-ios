@@ -323,6 +323,8 @@ typedef void (^GGSharedLocationResponseHandler)(BOOL success, NSDictionary * _Nu
 
 typedef void (^GGRatingResponseHandler)(BOOL success, NSDictionary * _Nullable response, GGRating * _Nullable rating, NSError * _Nullable error);
 
+typedef void (^GGMaskedPhoneNumberResponseHandler)(BOOL success, NSString * _Nullable phoneNumber, NSError * _Nullable error);
+
 typedef NS_ENUM(NSInteger, OrderStatus) {
     OrderStatusInvalid = -1,
     OrderStatusCreated = 0,

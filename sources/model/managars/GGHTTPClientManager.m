@@ -571,7 +571,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
 }
 -(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
-                         withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler{
+                         withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler{
 
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
@@ -582,15 +582,10 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                   
                   // update last date
                   self.lastEventDate = [NSDate date];
-                  
-                  GGSharedLocation *sharedLocation = nil;
-                  
-                  if (success) sharedLocation = [[GGSharedLocation alloc] initWithData:JSON];
-                  
+                  NSString* phoneNumber = [JSON objectForKey:@"phone_number"];
                   if (completionHandler) {
-                      completionHandler(success, JSON, error);
+                      completionHandler(success, phoneNumber, error);
                   }
-                  //
               }];
 }
 #warning TODO - add Order method to header once server is ready

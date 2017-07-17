@@ -185,7 +185,9 @@
 @end
 
 @interface GGHTTPClientManagerMockClass :  GGHTTPClientManager
-
+@property (nonatomic, strong) id jsonMockResponse;
+@property (nonatomic, strong) NSDictionary *currentRequestParam;
+@property (nonatomic ,strong) NSString *currentAPITestPath;
 @end
 
 @implementation GGHTTPClientManagerMockClass
@@ -216,6 +218,17 @@
     
 }
 
+- (NSURLSessionDataTask * _Nullable)httpRequestWithMethod:(NSString * _Nonnull)method
+                                                     path:(NSString *_Nonnull)path
+                                                   params:(NSDictionary * _Nullable)params
+                                        completionHandler:(nullable GGNetworkResponseHandler)completionHandler {
+    self.currentRequestParam = params;
+    self.currentAPITestPath = path;
+    if (completionHandler) {
+        completionHandler(YES,self.jsonMockResponse,nil);
+    }
+    return nil;
+}
 @end
 
 @interface BringgTrackingClientTestClass : BringgTrackingClient<PrivateClientConnectionDelegate>
@@ -606,6 +619,24 @@
     NSString* EUDevToken =[NSString stringWithFormat:@"ew1_%@",TEST_DEV_TOKEN];
     BringgTrackingClient *realTrackingClient = [[BringgTrackingClient alloc] initWithDevToken:EUDevToken connectionDelegate:self.realtimeDelegate];
     XCTAssertEqual(realTrackingClient.region,GGRegionEuWest1);
+}
+- (void)testGetMaskedPhoneNumberWithNoUDID {
+    
+    NSString *uuid = nil;
+    [self.trackingClient getMaskedNumberForOrderWithUUID:uuid forPhoneNumber:@"12345678" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+        XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
+    }];
+}
+
+- (void)testGetMaskedPhoneNumberWithUDID {
+    GGOrder *order = [[GGOrder alloc] initOrderWithUUID:@"12345678" atStatus:OrderStatusCreated];
+    [self.trackingClient.trackerManager.liveMonitor addAndUpdateOrder:order];
+    __block XCTestExpectation* expt = [[XCTestExpectation alloc] initWithDescription:@"MaskedNumberForOrderExpectation"];
+    [self.trackingClient getMaskedNumberForOrderWithUUID:order.uuid forPhoneNumber:@"051123123" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+        XCTAssertTrue(success);
+        [expt fulfill];
+    }];
+    [self waitForExpectations:@[expt] timeout:3.0];
 }
 
 @end

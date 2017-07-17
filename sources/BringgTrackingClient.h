@@ -182,7 +182,7 @@
  */
 - (void)getMaskedNumberForOrderWithUUID:(NSString *_Nonnull)uuid
                          forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
-                  withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler ;
+                  withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler ;
 
 /**
  send customer rating for a specific order

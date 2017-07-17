@@ -202,7 +202,7 @@
  */
 -(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
-                         withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler;
+                         withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler;
 
 /**
  starts to watch an order using order uuid and some access control param

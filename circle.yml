@@ -1,0 +1,44 @@
+general:
+
+machine:
+  xcode:
+    version: "8.3.2"
+  # environment:
+    # GYM_CODE_SIGNING_IDENTITY: "iPhone Distribution: Bringg Delivery Technologies Ltd. (CKS8FLBEB2)"
+
+# checkout:
+#   post:
+#     - git clone --depth 1 git@github.com:bringg/BringgDriverSDK-ios.git ~/BringgDriverSDK-ios
+
+dependencies:
+  pre:
+    - (cd ./BringgTrackingFramework/ && pod install)
+
+test:
+  override:
+    - set -o pipefail &&
+      xcodebuild
+        CODE_SIGNING_REQUIRED=NO
+        CODE_SIGN_IDENTITY=
+        PROVISIONING_PROFILE=
+        -sdk iphonesimulator
+        -destination 'platform=iOS Simulator,OS=10.3,name=iPhone 6'
+        -workspace ./BringgTrackingFramework/BringgTracking.xcworkspace
+        -scheme "BringgTracking-iOS"
+        -enableCodeCoverage YES
+        clean build test |
+      tee $CIRCLE_ARTIFACTS/xcode_raw.log |
+      xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+  post:
+    - bash <(curl -s https://codecov.io/bash) -t f8e47c90-8f8a-41c8-95a3-a116eb4b3916
+
+# deployment:
+#   beta_distribution: # just a label, can be anything
+#     branch: master
+#       commands:
+#         # this will build the ipa file
+#         - gym --scheme "App" --workspace "App.xcworkspace"
+#         - ipa distribute:crashlytics
+#             --crashlytics_path Crashlytics.framework
+#             --api_token    "$CRASHLYTICS_API_KEY"
+#             --build_secret "$CRASHLYTICS_SECRET"

@@ -262,6 +262,14 @@
     [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
+- (void)getMaskedNumberForOrderWithUUID:(NSString *_Nonnull)uuid
+                                       forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+  withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler {
+    
+    [self.trackerManager sendMaskedNumberRequestForOrderWithUUID:uuid
+                                                  forPhoneNumber:originalPhoneNumber
+                                           withCompletionHandler:completionHandler];
+}
 
 - (void)rateOrder:(nonnull GGOrder *)order
        withRating:(int)rating

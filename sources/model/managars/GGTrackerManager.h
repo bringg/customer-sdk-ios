@@ -193,6 +193,16 @@
             withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
 
+/**
+ send Masked Number Request
+
+ @param uuid order uuid
+ @param originalPhoneNumber originalPhoneNumber
+ @param completionHandler completionHandler
+ */
+-(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+                                forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                         withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler;
 
 /**
  starts to watch an order using order uuid and some access control param

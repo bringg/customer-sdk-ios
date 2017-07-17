@@ -747,6 +747,45 @@
     [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
+-(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+                                forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                         withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler{
+    
+    if (!self.httpManager) {
+        if (completionHandler) {
+            
+            completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
+        }
+        
+        return;
+    }
+    
+    
+    if (!uuid) {
+        if (completionHandler) {
+            
+            completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"supplied order uuid is invalid"}]);
+        }
+        
+        return;
+    }
+    
+    GGOrder *order = [self orderWithUUID:uuid];
+    
+    if (!order) {
+        if (completionHandler) {
+            completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with uuid %@", uuid]}]);
+        }
+        return;
+        
+    }else{
+        [self.httpManager sendMaskedNumberRequestForOrderWithUUID:uuid
+                                                   forPhoneNumber:originalPhoneNumber
+                                            withCompletionHandler:completionHandler];
+    }
+}
+    
+
 
 - (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
                   accessControlParamKey:(nonnull NSString *)accessControlParamKey

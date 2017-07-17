@@ -119,7 +119,9 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
  */
 - (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
-
+-(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+                                forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                         withCompletionHandler:(nullable GGNetworkResponseHandler)completionHandler;
 /**
  *  this methods start a watch action on an order and in returns the data of a watched order by its uuid and shared uuid
  *

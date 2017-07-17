@@ -18,12 +18,12 @@
 #import "GGRating.h"
 #import "BringgPrivates.h"
 #import "NSString+Extensions.h"
+#import "GGNetworkUtils.h"
 
 #define LOCAL_URL @"http://10.0.1.125"
 #define USE_LOCAL NO
 
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>
-
 
 @end
 
@@ -42,12 +42,13 @@
     });
     
     return sharedObject;
+    
 }
 
 - (instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
-        
+        self.region = [self getRegionFromDevToken:devToken];
         self.useSecuredConnection = YES;
         
         if (USE_LOCAL == YES) {
@@ -80,7 +81,12 @@
     
     self.trackerManager.logsEnabled = NO;
 }
-
+- (GGRegion)getRegionFromDevToken:(NSString*)devToken {
+    if ([devToken hasPrefix:@"ew1_"]) {
+        return GGRegionEuWest1;
+    }
+    return GGRegionUsEast1;
+}
 //MARK: -- Connection
 
 - (void)connect{
@@ -376,26 +382,25 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     return [self.trackerManager shareUUIDforDriverUUID:driverUUID];
 }
 
-//MARK: -- Private
-
-//MARK: -- PrivateClientConnectionDelegate
+//MARK: -- URLs Delegate
 
 - (NSString *)hostDomainForClientManager:(GGHTTPClientManager *)clientManager {
+    NSString *hostDomainURL = [GGNetworkUtils bringgAPIUrlByRegion:self.region];
+        //Local
     if (USE_LOCAL == YES) {
-        //
-        return [NSString stringWithFormat:@"%@:3000", LOCAL_URL];
+        hostDomainURL = [NSString stringWithFormat:@"%@:3000", LOCAL_URL];
     }
-    
-    return nil;
+    return hostDomainURL;
 }
 
 - (NSString *)hostDomainForTrackerManager:(GGTrackerManager *)trackerManager {
+    NSString *realtimeURL = [GGNetworkUtils bringgRealtimeUrlByRegion:self.region];
+    //Local
     if (USE_LOCAL == YES) {
-        //
-        return [NSString stringWithFormat:@"%@:3030", LOCAL_URL];
+        
+        realtimeURL = [NSString stringWithFormat:@"%@:3030", LOCAL_URL];
     }
-    
-    return nil;
+    return realtimeURL;
 }
 
 @end

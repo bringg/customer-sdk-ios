@@ -8,10 +8,7 @@
 
 #import "GGRealTimeMontior.h"
 #import "GGRealTimeMontior+Private.h"
-
 #import "GGRealTimeAdapter.h"
-
-
 #import "GGDriver.h"
 #import "GGCustomer.h"
 #import "GGOrder.h"
@@ -22,6 +19,7 @@
 #import "NSString+Extensions.h"
 #import "BringgPrivates.h"  
 #import "GGBringgUtils.h"
+#import "GGNetworkUtils.h"
 
 @import SocketIO;
 
@@ -48,15 +46,10 @@
         self.waypointDelegates = [NSMutableDictionary dictionary];
         self.activeDrivers = [NSMutableDictionary dictionary];
         self.activeOrders = [NSMutableDictionary dictionary];
-        // let the real time manager handle socket events
-        self.socketIO = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:BTRealtimeServer] config:nil];
-        
         self.connected = NO;
         self.wasManuallyConnected = NO;
-        
         // start reachability monitor
         [self configureReachability];
-        
         
     }
     
@@ -308,15 +301,12 @@
 
 - (void)webSocketConnectWithCompletionHandler:(void (^)(BOOL success, NSError *error))completionHandler {
     
-    NSString *server;
+    NSString *server = [GGNetworkUtils bringgRealtimeUrlByRegion:GGRegionUsEast1];
     
     if (self.realtimeConnectionDelegate && [self.realtimeConnectionDelegate respondsToSelector:@selector(hostDomainForRealTimeMonitor:)]) {
         server = [self.realtimeConnectionDelegate hostDomainForRealTimeMonitor:self];
     }
-    
-    if (!server) {
-        server = BTRealtimeServer;
-    }
+
     
     
     // add correct scheme to server address
@@ -397,7 +387,7 @@
 
 
 - (void)connect {
-    NSLog(@"Trying Connecting!");
+    NSLog(@"connecting ... ");
     [self webSocketConnectWithCompletionHandler:^(BOOL success, NSError *error) {
         
         self.connected = success;

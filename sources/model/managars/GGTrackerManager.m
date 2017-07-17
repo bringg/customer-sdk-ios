@@ -1582,27 +1582,17 @@
              [self restartLiveMonitor];
         }
         
-       
     }
 }
 
 #pragma mark - Real Time Monitor Connection Delegate
 -(NSString *)hostDomainForRealTimeMonitor:(GGRealTimeMontior *)realTimeMonitor{
-    
-    NSString *retval;
-    
     if (self.connectionDelegate && [self.connectionDelegate respondsToSelector:@selector(hostDomainForTrackerManager:)]) {
         
-        retval = [self.connectionDelegate hostDomainForTrackerManager:self];
+        return [self.connectionDelegate hostDomainForTrackerManager:self];
     }
-    
-    if (!retval) {
-        retval = BTRealtimeServer;
-    }
-    
-    return retval;
+    return nil;
 }
-
 #pragma mark - Real Time status checks
 
 - (BOOL)isPollingSupported{

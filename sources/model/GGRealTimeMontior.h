@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define BTRealtimeServer @"realtime2-api.bringg.com"
 
 @class GGOrder;
 @class GGDriver;

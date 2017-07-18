@@ -112,13 +112,20 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 /**
  *  send a find me request for an order
  *
- *  @param findmeConfig        findme configuration object holding token and url
- *  @param lat               latitude location
- *  @param lng               longitude location
- *  @param completionHandler responce handler
+ *  @param findmeConfig         findme configuration object holding token and url
+ *  @param lat                  latitude location
+ *  @param lng                  longitude location
+ *  @param completionHandler    response handler
  */
 - (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
+/**
+ send Masked phone Number Request
+
+ @param uuid order uuid
+ @param originalPhoneNumber device phone number
+ @param completionHandler response handler
+ */
 -(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                          withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler;

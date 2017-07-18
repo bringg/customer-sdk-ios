@@ -747,7 +747,7 @@
     [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
--(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                          withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler{
     
@@ -761,7 +761,7 @@
     }
     
     
-    if (!uuid) {
+    if (!shareUUID) {
         if (completionHandler) {
             
             completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"supplied order uuid is invalid"}]);
@@ -770,19 +770,10 @@
         return;
     }
 
-    GGOrder *order = [self orderWithUUID:uuid];
-    
-    if (!order) {
-        if (completionHandler) {
-            completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeOrderNotFound userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"no order found with uuid %@", uuid]}]);
-        }
-        return;
-        
-    }else{
-        [self.httpManager sendMaskedNumberRequestForOrderWithUUID:uuid
+    [self.httpManager sendMaskedNumberRequestWithShareUUID:shareUUID
                                                    forPhoneNumber:originalPhoneNumber
                                             withCompletionHandler:completionHandler];
-    }
+    
 }
     
 

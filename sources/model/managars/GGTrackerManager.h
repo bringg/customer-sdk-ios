@@ -196,11 +196,11 @@
 /**
  send Masked Number Request
 
- @param uuid order uuid
+ @param shareUUID share UUID
  @param originalPhoneNumber originalPhoneNumber
  @param completionHandler completionHandler
  */
--(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                          withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler;
 

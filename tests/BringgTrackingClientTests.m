@@ -623,16 +623,16 @@
 - (void)testGetMaskedPhoneNumberWithNoUDID {
     
     NSString *uuid = nil;
-    [self.trackingClient getMaskedNumberForOrderWithUUID:uuid forPhoneNumber:@"12345678" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+    [self.trackingClient getMaskedNumberWithShareUUID:uuid
+                                       forPhoneNumber:@"12345678" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
         XCTAssertEqual(error.code, GGErrorTypeInvalidUUID);
     }];
 }
 
 - (void)testGetMaskedPhoneNumberWithUDID {
-    GGOrder *order = [[GGOrder alloc] initOrderWithUUID:@"12345678" atStatus:OrderStatusCreated];
-    [self.trackingClient.trackerManager.liveMonitor addAndUpdateOrder:order];
+    NSString *uuid = @"1234";
     __block XCTestExpectation* expt = [[XCTestExpectation alloc] initWithDescription:@"MaskedNumberForOrderExpectation"];
-    [self.trackingClient getMaskedNumberForOrderWithUUID:order.uuid forPhoneNumber:@"051123123" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+    [self.trackingClient getMaskedNumberWithShareUUID:uuid forPhoneNumber:@"051123123" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
         XCTAssertTrue(success);
         [expt fulfill];
     }];

@@ -122,11 +122,11 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 /**
  send Masked phone Number Request
 
- @param uuid order uuid
+ @param shareUUID share uuid
  @param originalPhoneNumber device phone number
  @param completionHandler response handler
  */
--(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                          withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler;
 /**

@@ -569,14 +569,14 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                    //
                }];
 }
--(void)sendMaskedNumberRequestForOrderWithUUID:(NSString *_Nonnull)uuid
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                          withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler{
 
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [self addAuthinticationToParams:&params];
     [self httpRequestWithMethod:BCRESTMethodGet
-                           path:[NSString stringWithFormat:API_PATH_SHARED_MASK_PHONE, uuid]
+                           path:[NSString stringWithFormat:API_PATH_SHARED_MASK_PHONE, shareUUID]
                          params:params
               completionHandler:^(BOOL success, id JSON, NSError *error) {
                   

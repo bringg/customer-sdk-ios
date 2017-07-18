@@ -175,12 +175,12 @@
 
 
 /**
- get Phone masked phone Number
- @param uuid                 UUID of order
- @param originalPhoneNumber  original device phone number.
- @param completionHandler    callback handler
+ get phone masked phone number
+ @param shareUUID                   share UUID
+ @param originalPhoneNumber         original device phone number.
+ @param completionHandler           callback handler
  */
-- (void)getMaskedNumberForOrderWithUUID:(NSString *_Nonnull)uuid
+- (void)getMaskedNumberWithShareUUID:(NSString *_Nonnull)shareUUID
                          forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                   withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler ;
 

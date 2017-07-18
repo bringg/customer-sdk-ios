@@ -268,11 +268,11 @@
     [self.trackerManager sendFindMeRequestForOrderWithUUID:uuid latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
-- (void)getMaskedNumberForOrderWithUUID:(NSString *_Nonnull)uuid
+- (void)getMaskedNumberWithShareUUID:(NSString *_Nonnull)shareUUID
                                        forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
   withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler {
     
-    [self.trackerManager sendMaskedNumberRequestForOrderWithUUID:uuid
+    [self.trackerManager sendMaskedNumberRequestWithShareUUID:shareUUID
                                                   forPhoneNumber:originalPhoneNumber
                                            withCompletionHandler:completionHandler];
 }

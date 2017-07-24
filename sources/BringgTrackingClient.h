@@ -175,6 +175,16 @@
 
 
 /**
+ get phone masked phone number
+ @param shareUUID                   share UUID
+ @param originalPhoneNumber         original device phone number.
+ @param completionHandler           callback handler
+ */
+- (void)getMaskedNumberWithShareUUID:(NSString *_Nonnull)shareUUID
+                         forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                  withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler ;
+
+/**
  send customer rating for a specific order
 
  @param order order to rate

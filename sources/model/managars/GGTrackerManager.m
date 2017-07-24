@@ -747,6 +747,36 @@
     [self.httpManager sendFindMeRequestWithFindMeConfiguration:order.sharedLocation.findMe latitude:lat longitude:lng withCompletionHandler:completionHandler];
 }
 
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
+                                forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                         withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler{
+    
+    if (!self.httpManager) {
+        if (completionHandler) {
+            
+            completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainSetup code:GGErrorTypeHTTPManagerNotSet userInfo:@{NSLocalizedDescriptionKey:@"http manager is not set"}]);
+        }
+        
+        return;
+    }
+    
+    
+    if (!shareUUID) {
+        if (completionHandler) {
+            
+            completionHandler(NO,nil, [NSError errorWithDomain:kSDKDomainData code:GGErrorTypeInvalidUUID userInfo:@{NSLocalizedDescriptionKey:@"supplied order uuid is invalid"}]);
+        }
+        
+        return;
+    }
+
+    [self.httpManager sendMaskedNumberRequestWithShareUUID:shareUUID
+                                                   forPhoneNumber:originalPhoneNumber
+                                            withCompletionHandler:completionHandler];
+    
+}
+    
+
 
 - (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
                   accessControlParamKey:(nonnull NSString *)accessControlParamKey

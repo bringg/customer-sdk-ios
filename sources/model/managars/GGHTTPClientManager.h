@@ -112,14 +112,23 @@ withCompletionHandler:(nullable GGOrderResponseHandler)completionHandler;
 /**
  *  send a find me request for an order
  *
- *  @param findmeConfig        findme configuration object holding token and url
- *  @param lat               latitude location
- *  @param lng               longitude location
- *  @param completionHandler remote handler
+ *  @param findmeConfig         findme configuration object holding token and url
+ *  @param lat                  latitude location
+ *  @param lng                  longitude location
+ *  @param completionHandler    response handler
  */
 - (void)sendFindMeRequestWithFindMeConfiguration:(nonnull GGFindMe *)findmeConfig latitude:(double)lat longitude:(double)lng  withCompletionHandler:(nullable GGActionResponseHandler)completionHandler;
 
+/**
+ send Masked phone Number Request
 
+ @param shareUUID share uuid
+ @param originalPhoneNumber device phone number
+ @param completionHandler response handler
+ */
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
+                                forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                         withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler;
 /**
  *  this methods start a watch action on an order and in returns the data of a watched order by its uuid and shared uuid
  *

@@ -39,6 +39,7 @@
 #define BCRESTMethodDelete @"DELETE"
 
 #define API_PATH_SIGN_IN @"/api/customer/sign_in"//method: POST; phone, name, confirmation_code, merchant_id, dev_access_token
+#define API_PATH_SHARED_MASK_PHONE @"/shared/%@/phone_number/"
 #define API_PATH_SHARED_LOCATION @"/shared/%@/location/"
 #define API_PATH_SHARED @"/shared/%@/"
 #define API_PATH_ORDER @"/api/customer/task/%@" // method: GET ; task id
@@ -568,7 +569,26 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                    //
                }];
 }
+-(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
+                                forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
+                         withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler{
 
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [self addAuthinticationToParams:&params];
+    [self httpRequestWithMethod:BCRESTMethodGet
+                           path:[NSString stringWithFormat:API_PATH_SHARED_MASK_PHONE, shareUUID]
+                         params:params
+              completionHandler:^(BOOL success, id JSON, NSError *error) {
+                  
+                  // update last date
+                  self.lastEventDate = [NSDate date];
+                  
+                  NSString* phoneNumber = [GGBringgUtils stringFromJSON:@"phone_number" defaultTo:nil] ;
+                  if (completionHandler) {
+                      completionHandler(success, phoneNumber, error);
+                  }
+              }];
+}
 #warning TODO - add Order method to header once server is ready
 - (void)addOrderWith:(GGOrderBuilder *)orderBuilder withCompletionHandler:(void (^)(BOOL success, GGOrder *order, NSError *error))completionHandler{
     

@@ -583,7 +583,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                   // update last date
                   self.lastEventDate = [NSDate date];
                   
-                  NSString* phoneNumber = [GGBringgUtils stringFromJSON:@"phone_number" defaultTo:nil] ;
+                  NSString* phoneNumber = [GGBringgUtils stringFromJSON:[JSON objectForKey:@"phone_number"] defaultTo:nil] ;
                   if (completionHandler) {
                       completionHandler(success, phoneNumber, error);
                   }

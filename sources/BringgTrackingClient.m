@@ -20,7 +20,7 @@
 #import "NSString+Extensions.h"
 #import "GGNetworkUtils.h"
 
-#define LOCAL_URL @"http://10.0.1.125"
+#define LOCAL_URL @"http://192.168.1.229"
 #define USE_LOCAL NO
 
 @interface BringgTrackingClient () <PrivateClientConnectionDelegate>

@@ -188,6 +188,7 @@
 @property (nonatomic, strong) id jsonMockResponse;
 @property (nonatomic, strong) NSDictionary *currentRequestParam;
 @property (nonatomic ,strong) NSString *currentAPITestPath;
+@property (nonatomic, strong) NSDictionary *requestHeaders;
 @end
 
 @implementation GGHTTPClientManagerMockClass
@@ -222,6 +223,7 @@
                                                      path:(NSString *_Nonnull)path
                                                    params:(NSDictionary * _Nullable)params
                                         completionHandler:(nullable GGNetworkResponseHandler)completionHandler {
+    self.requestHeaders = self.session.configuration.HTTPAdditionalHeaders;
     self.currentRequestParam = params;
     self.currentAPITestPath = path;
     if (completionHandler) {
@@ -637,6 +639,24 @@
         [expt fulfill];
     }];
     [self waitForExpectations:@[expt] timeout:3.0];
+}
+- (void)testHTTPRequestHedaers {
+    NSString *uuid = @"1234";
+    __block XCTestExpectation* expt = [[XCTestExpectation alloc] initWithDescription:@"MaskedNumberForOrderExpectation"];
+    //any http call can do
+    [self.trackingClient getMaskedNumberWithShareUUID:uuid forPhoneNumber:@"051123123" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+        XCTAssertTrue(success);
+        [expt fulfill];
+    }];
+    [self waitForExpectations:@[expt] timeout:3.0];
+    NSDictionary *headers = ((GGHTTPClientManagerMockClass*)self.trackingClient.httpManager).requestHeaders;
+    XCTAssertNotNil(headers);
+    NSArray *headersKeys = headers.allKeys;
+    XCTAssertEqual(headersKeys.count, 3);
+    XCTAssertTrue([headersKeys containsObject:@"Authorization"]);
+    XCTAssertTrue([headersKeys containsObject:@"CLIENT-VERSION"]);
+    XCTAssertTrue([headersKeys containsObject:@"CLIENT"]);
+    
 }
 
 @end

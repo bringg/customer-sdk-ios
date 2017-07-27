@@ -155,6 +155,14 @@
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
     _customerToken = customer ? customer.customerToken : nil;
+    if (_customerToken!=nil && _appCustomer.customerId!=0 ) {
+        [self.liveMonitor sendCustomerSuccessEventWithCustomerAccessToken:_customerToken
+                                                               customerId:[@(_appCustomer.customerId) stringValue]
+                                                        completionHandler:nil ];
+    }
+    else {
+        NSLog(@"Customer token or ID are missing");
+    }
 }
 
 - (void)setLiveMonitor:(GGRealTimeMontior *)liveMonitor{

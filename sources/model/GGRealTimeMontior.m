@@ -695,7 +695,26 @@ secondAccessControlParamValue:uuid completionHandler:completionHandler];
     
     
 }
+- (void)sendCustomerSuccessEventWithCustomerAccessToken:(nonnull NSString *)customerAccessToken
+                                  customerId:(nonnull NSString *)customerId
+                                        completionHandler:(nullable SocketResponseBlock)completionHandler {
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   self.developerToken, @"dev_token",
+                                   customerId,@"customer_id",
+                                   customerAccessToken,@"access_token",
+                                   
+                                   nil];
 
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"customer connect" params:params completionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
+        if (success && !error) {
+            NSLog(@"developer token sent.");
+        }
+        else{
+            NSLog(@"error:failed to send developmer token");
+        }
+    }];
+}
 - (void)sendWatchEvent:(nonnull NSString *)eventName
  accessControlParamKey:(nonnull NSString *)accessControlParamKey
 accessControlParamValue:(nonnull NSString *)accessControlParamValue
@@ -792,9 +811,11 @@ accessControlParamValue:(nonnull NSString *)accessControlParamValue
     if (self.socketIOConnectedBlock) {
         
         NSLog(@"\t\thandling connect success");
-        
         self.socketIOConnectedBlock(YES, nil);
         self.socketIOConnectedBlock = nil;
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                       self.developerToken, @"developer_access_token",
+                                       nil];
         
     }
     

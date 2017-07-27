@@ -155,16 +155,24 @@
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
     _customerToken = customer ? customer.customerToken : nil;
-    if (_customerToken!=nil && _appCustomer.customerId!=0 ) {
+
+}
+- (void)sendCustomerConnectedEventWithCompletionHandler:(nullable SocketResponseBlock)completionHandler {
+    if (_customerToken!=nil && [_appCustomer customerId]!=0 ) {
         [self.liveMonitor sendCustomerSuccessEventWithCustomerAccessToken:_customerToken
                                                                customerId:[@(_appCustomer.customerId) stringValue]
-                                                        completionHandler:nil ];
+                                                        completionHandler:completionHandler ];
     }
     else {
         NSLog(@"Customer token or ID are missing");
+        if (completionHandler!=nil) {
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:0
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Customer token or ID are missing.",
+                                                        NSLocalizedRecoverySuggestionErrorKey: @"Customer token or ID are missing."}];
+            completionHandler(false,nil,error);
+        }
     }
 }
-
 - (void)setLiveMonitor:(GGRealTimeMontior *)liveMonitor{
     
    _liveMonitor = liveMonitor;

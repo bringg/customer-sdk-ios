@@ -706,14 +706,7 @@ secondAccessControlParamValue:uuid completionHandler:completionHandler];
                                    
                                    nil];
 
-    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"customer connect" params:params completionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
-        if (success && !error) {
-            NSLog(@"developer token sent.");
-        }
-        else{
-            NSLog(@"error:failed to send developmer token");
-        }
-    }];
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"customer connect" params:params completionHandler:completionHandler];
 }
 - (void)sendWatchEvent:(nonnull NSString *)eventName
  accessControlParamKey:(nonnull NSString *)accessControlParamKey

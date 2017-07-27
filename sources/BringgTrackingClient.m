@@ -129,6 +129,7 @@
                        // after sign in we assign the customer signed in to the tracking manager
                        if (customer) {
                            [self.trackerManager setCustomer:customer];
+                           
                        }
                        
                        if (completionHandler) {
@@ -385,7 +386,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 //MARK: -- URLs Delegate
 
 - (NSString *)hostDomainForClientManager:(GGHTTPClientManager *)clientManager {
-    NSString *hostDomainURL = [GGNetworkUtils bringgAPIUrlByRegion:self.region];
+    NSString *hostDomainURL = [GGNetworkUtils bringgRealtimeUrlByRegion:self.region];
         //Local
     if (USE_LOCAL == YES) {
         hostDomainURL = [NSString stringWithFormat:@"%@:3000", LOCAL_URL];

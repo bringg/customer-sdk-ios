@@ -122,13 +122,15 @@
 @end
 
 @interface GGRealTimeMontiorTestClass :  GGRealTimeMontior
--(void)sendCustomerSuccessEventWithCustomerAccessToken:(NSString *)customerAccessToken customerId:(NSString *)customerId completionHandler:(SocketResponseBlock)completionHandler {
-    
-}
+
 
 @end
 @implementation GGRealTimeMontiorTestClass
-
+-(void)sendCustomerSuccessEventWithCustomerAccessToken:(NSString *)customerAccessToken customerId:(NSString *)customerId completionHandler:(SocketResponseBlock)completionHandler {
+    if (completionHandler) {
+        completionHandler(true,nil,nil);
+    }
+}
 @end
 
 

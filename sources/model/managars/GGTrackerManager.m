@@ -157,22 +157,7 @@
     _customerToken = customer ? customer.customerToken : nil;
 
 }
-- (void)sendCustomerConnectedEventWithCompletionHandler:(nullable SocketResponseBlock)completionHandler {
-    if (_customerToken!=nil && [_appCustomer customerId]!=0 ) {
-        [self.liveMonitor sendCustomerSuccessEventWithCustomerAccessToken:_customerToken
-                                                               customerId:[@(_appCustomer.customerId) stringValue]
-                                                        completionHandler:completionHandler ];
-    }
-    else {
-        NSLog(@"Customer token or ID are missing");
-        if (completionHandler!=nil) {
-            NSError *error = [NSError errorWithDomain:kSDKDomainData code:0
-                                             userInfo:@{NSLocalizedDescriptionKey: @"Customer token or ID are missing.",
-                                                        NSLocalizedRecoverySuggestionErrorKey: @"Customer token or ID are missing."}];
-            completionHandler(false,nil,error);
-        }
-    }
-}
+
 - (void)setLiveMonitor:(GGRealTimeMontior *)liveMonitor{
     
    _liveMonitor = liveMonitor;
@@ -1510,7 +1495,22 @@
         }
     }];
 }
-
+- (void)sendCustomerConnectedEventWithCompletionHandler:(nullable SocketResponseBlock)completionHandler {
+    if (_customerToken!=nil && [_appCustomer customerId]!=0 ) {
+        [self.liveMonitor sendCustomerSuccessEventWithCustomerAccessToken:_customerToken
+                                                               customerId:[@(_appCustomer.customerId) stringValue]
+                                                        completionHandler:completionHandler ];
+    }
+    else {
+        NSLog(@"Customer token or ID are missing");
+        if (completionHandler!=nil) {
+            NSError *error = [NSError errorWithDomain:kSDKDomainData code:0
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Customer token or ID are missing.",
+                                                        NSLocalizedRecoverySuggestionErrorKey: @"Customer token or ID are missing."}];
+            completionHandler(false,nil,error);
+        }
+    }
+}
 #pragma mark - cleanup
 -(void)removeOrderDelegates{
     [self.liveMonitor.orderDelegates removeAllObjects];

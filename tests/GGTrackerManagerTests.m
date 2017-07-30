@@ -16,6 +16,7 @@
 #import "GGTestUtils.h"
 
 #import "GGHTTPClientManager.h"
+#import "GGRealTimeMontior.h"
 
 #import "GGTrackerManager_Private.h"
 #import "GGTrackerManager.h"
@@ -25,6 +26,7 @@
 #import "GGDriver.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
+#import "GGCustomer.h"
 
 
 @interface GGTestRealTimeDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate>
@@ -119,10 +121,22 @@
 
 @end
 
+@interface GGRealTimeMontiorTestClass :  GGRealTimeMontior
+-(void)sendCustomerSuccessEventWithCustomerAccessToken:(NSString *)customerAccessToken customerId:(NSString *)customerId completionHandler:(SocketResponseBlock)completionHandler {
+    
+}
+
+@end
+@implementation GGRealTimeMontiorTestClass
+
+@end
+
+
 @interface GGTrackerManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGTrackerManagerTestClass *trackerManager;
 @property (nonatomic, strong) GGTestRealTimeDelegate  *realtimeDelegate;
+@property (nonatomic, strong) GGRealTimeMontiorTestClass  *realtimeMonitor;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
 
@@ -142,6 +156,8 @@
     
     GGHTTPClientManagerTestClass *mockHttp = [[GGHTTPClientManagerTestClass alloc] initWithDeveloperToken:@"SOME_DEV_TOKEN"];
     [self.trackerManager setHTTPManager:mockHttp];
+    self.realtimeMonitor = [[GGRealTimeMontiorTestClass alloc] init];
+    [self.trackerManager setLiveMonitor:self.realtimeMonitor];
 }
 
 - (void)tearDown {
@@ -153,9 +169,11 @@
     self.startJson = nil;
     
     [super tearDown];
-   
 }
 
+- (void)sendEventWithClient:(nonnull SocketIOClient *)socketIO eventName:(nonnull NSString *)eventName params:(nullable NSDictionary *)params completionHandler:(nullable SocketResponseBlock)completionHandler {
+    NSLog(@"");
+}
 //MARK: Tests
 -(void)testMonitoredOrders{
     
@@ -265,6 +283,35 @@
 
 }
 
+-(void)testSendCustomerCustomerConnectedEventWithoutCustomerToken {
+    __block BOOL successCall;
+    [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error)
+    {
+        successCall=success;
+    }];
+    XCTAssertFalse(successCall);
+}
+-(void)testSendCustomerCustomerConnectedEventWithoutCustomerID {
+    GGCustomer  *appCustomer = [[GGCustomer alloc] initWithData:@{PARAM_ACCESS_TOKEN:@"111"}];
+    [self.trackerManager setCustomer:appCustomer];
+    __block BOOL successCall;
+    [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error)
+     {
+         successCall=success;
+     }];
+    XCTAssertFalse(successCall);
+}
+-(void)testSendCustomerCustomerConnectedEvent {
+    GGCustomer  *appCustomer = [[GGCustomer alloc] initWithData:@{PARAM_ID:@"111",PARAM_ACCESS_TOKEN:@"234"}];
+    
+    [self.trackerManager setCustomer:appCustomer];
+    __block BOOL successCall;
+    [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error)
+     {
+         successCall=success;
+     }];
+    XCTAssertTrue(successCall);
+}
 
 
 

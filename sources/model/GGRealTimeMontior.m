@@ -695,17 +695,8 @@ secondAccessControlParamValue:uuid completionHandler:completionHandler];
     
     
 }
-- (void)sendCustomerSuccessEventWithCustomerAccessToken:(nonnull NSString *)customerAccessToken
-                                  customerId:(nonnull NSString *)customerId
+- (void)sendCustomerSuccessEventParams:(nonnull NSDictionary *)params
                                         completionHandler:(nullable SocketResponseBlock)completionHandler {
-    
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   self.developerToken, @"dev_token",
-                                   customerId,@"customer_id",
-                                   customerAccessToken,@"access_token",
-                                   
-                                   nil];
-
     [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"customer connect" params:params completionHandler:completionHandler];
 }
 - (void)sendWatchEvent:(nonnull NSString *)eventName

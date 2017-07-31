@@ -123,10 +123,11 @@
 
 @interface GGRealTimeMontiorTestClass :  GGRealTimeMontior
 
-
+@property (nonatomic, strong) NSDictionary* requestParams;
 @end
 @implementation GGRealTimeMontiorTestClass
--(void)sendCustomerSuccessEventWithCustomerAccessToken:(NSString *)customerAccessToken customerId:(NSString *)customerId completionHandler:(SocketResponseBlock)completionHandler {
+-(void)sendCustomerSuccessEventWithParams:(nonnull NSDictionary *)params completionHandler:(SocketResponseBlock)completionHandler {
+    self.requestParams = params;
     if (completionHandler) {
         completionHandler(true,nil,nil);
     }
@@ -291,7 +292,8 @@
     {
         successCall=success;
     }];
-    XCTAssertFalse(successCall);
+    XCTAssertTrue(self.realtimeMonitor.requestParams.count==1);
+    XCTAssertTrue(successCall);
 }
 -(void)testSendCustomerCustomerConnectedEventWithoutCustomerID {
     GGCustomer  *appCustomer = [[GGCustomer alloc] initWithData:@{PARAM_ACCESS_TOKEN:@"111"}];
@@ -301,7 +303,8 @@
      {
          successCall=success;
      }];
-    XCTAssertFalse(successCall);
+    XCTAssertTrue(self.realtimeMonitor.requestParams.count==2);
+    XCTAssertTrue(successCall);
 }
 -(void)testSendCustomerCustomerConnectedEvent {
     GGCustomer  *appCustomer = [[GGCustomer alloc] initWithData:@{PARAM_ID:@"111",PARAM_ACCESS_TOKEN:@"234"}];
@@ -312,6 +315,7 @@
      {
          successCall=success;
      }];
+    XCTAssertTrue(self.realtimeMonitor.requestParams.count==3);
     XCTAssertTrue(successCall);
 }
 

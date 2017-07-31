@@ -1496,20 +1496,15 @@
     }];
 }
 - (void)sendCustomerConnectedEventWithCompletionHandler:(nullable SocketResponseBlock)completionHandler {
-    if (_customerToken!=nil && [_appCustomer customerId]!=0 ) {
-        [self.liveMonitor sendCustomerSuccessEventWithCustomerAccessToken:_customerToken
-                                                               customerId:[@(_appCustomer.customerId) stringValue]
-                                                        completionHandler:completionHandler ];
-    }
-    else {
-        NSLog(@"Customer token or ID are missing");
-        if (completionHandler!=nil) {
-            NSError *error = [NSError errorWithDomain:kSDKDomainData code:0
-                                             userInfo:@{NSLocalizedDescriptionKey: @"Customer token or ID are missing.",
-                                                        NSLocalizedRecoverySuggestionErrorKey: @"Customer token or ID are missing."}];
-            completionHandler(false,nil,error);
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   self.developerToken, @"dev_token",
+                                   _customerToken,@"access_token",
+                                   nil];
+    
+        if ( [_appCustomer customerId]!=0 ) {
+            [params setObject:[@(_appCustomer.customerId) stringValue] forKey:@"customer_id"];
         }
-    }
+        [self.liveMonitor sendCustomerSuccessEventWithParams:params completionHandler:completionHandler ];
 }
 #pragma mark - cleanup
 -(void)removeOrderDelegates{

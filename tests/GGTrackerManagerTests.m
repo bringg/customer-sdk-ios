@@ -286,38 +286,6 @@
 
 }
 
--(void)testSendCustomerCustomerConnectedEventWithoutCustomerToken {
-    __block BOOL successCall;
-    [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error)
-    {
-        successCall=success;
-    }];
-    XCTAssertTrue(self.realtimeMonitor.requestParams.count==1);
-    XCTAssertTrue(successCall);
-}
--(void)testSendCustomerCustomerConnectedEventWithoutCustomerID {
-    GGCustomer  *appCustomer = [[GGCustomer alloc] initWithData:@{PARAM_ACCESS_TOKEN:@"111"}];
-    [self.trackerManager setCustomer:appCustomer];
-    __block BOOL successCall;
-    [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error)
-     {
-         successCall=success;
-     }];
-    XCTAssertTrue(self.realtimeMonitor.requestParams.count==2);
-    XCTAssertTrue(successCall);
-}
--(void)testSendCustomerCustomerConnectedEvent {
-    GGCustomer  *appCustomer = [[GGCustomer alloc] initWithData:@{PARAM_ID:@"111",PARAM_ACCESS_TOKEN:@"234"}];
-    
-    [self.trackerManager setCustomer:appCustomer];
-    __block BOOL successCall;
-    [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error)
-     {
-         successCall=success;
-     }];
-    XCTAssertTrue(self.realtimeMonitor.requestParams.count==3);
-    XCTAssertTrue(successCall);
-}
 
 
 

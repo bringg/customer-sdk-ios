@@ -129,15 +129,7 @@
                        // after sign in we assign the customer signed in to the tracking manager
                        if (customer) {
                            [self.trackerManager setCustomer:customer];
-                           [self.trackerManager sendCustomerConnectedEventWithCompletionHandler:^(BOOL success, id  _Nullable socketResponse, NSError * _Nullable error) {
-                               if (success && !error) {
-                                   NSLog(@"developer token sent.");
-                               }
-                               else{
-                                   NSLog(@"error:failed to send developmer token,error:%@",error.localizedDescription);
-                               }
-                           }];
-                           
+                                                      
                        }
                        
                        if (completionHandler) {

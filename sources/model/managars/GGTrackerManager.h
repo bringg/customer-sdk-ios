@@ -81,12 +81,6 @@
  */
 - (void)setCustomer:(GGCustomer * _Nullable)customer;
 
-/**
- send event that customer is connected
-
- @param completionHandler callback handler
- */
-- (void)sendCustomerConnectedEventWithCompletionHandler:(nullable SocketResponseBlock)completionHandler;
 
 // status checks
 

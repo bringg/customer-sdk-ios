@@ -1495,17 +1495,6 @@
         }
     }];
 }
-- (void)sendCustomerConnectedEventWithCompletionHandler:(nullable SocketResponseBlock)completionHandler {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   self.developerToken, @"dev_token",
-                                   _customerToken,@"access_token",
-                                   nil];
-    
-        if ( [_appCustomer customerId]!=0 ) {
-            [params setObject:[@(_appCustomer.customerId) stringValue] forKey:@"customer_id"];
-        }
-        [self.liveMonitor sendCustomerSuccessEventWithParams:params completionHandler:completionHandler ];
-}
 #pragma mark - cleanup
 -(void)removeOrderDelegates{
     [self.liveMonitor.orderDelegates removeAllObjects];

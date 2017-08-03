@@ -695,7 +695,10 @@ secondAccessControlParamValue:uuid completionHandler:completionHandler];
     
     
 }
-
+- (void)sendCustomerSuccessEventParams:(nonnull NSDictionary *)params
+                                        completionHandler:(nullable SocketResponseBlock)completionHandler {
+    [GGRealTimeAdapter sendEventWithClient:self.socketIO eventName:@"customer connect" params:params completionHandler:completionHandler];
+}
 - (void)sendWatchEvent:(nonnull NSString *)eventName
  accessControlParamKey:(nonnull NSString *)accessControlParamKey
 accessControlParamValue:(nonnull NSString *)accessControlParamValue
@@ -792,9 +795,11 @@ accessControlParamValue:(nonnull NSString *)accessControlParamValue
     if (self.socketIOConnectedBlock) {
         
         NSLog(@"\t\thandling connect success");
-        
         self.socketIOConnectedBlock(YES, nil);
         self.socketIOConnectedBlock = nil;
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                       self.developerToken, @"developer_access_token",
+                                       nil];
         
     }
     

@@ -16,6 +16,7 @@
 #import "GGTestUtils.h"
 
 #import "GGHTTPClientManager.h"
+#import "GGRealTimeMontior.h"
 
 #import "GGTrackerManager_Private.h"
 #import "GGTrackerManager.h"
@@ -25,6 +26,7 @@
 #import "GGDriver.h"
 #import "GGSharedLocation.h"
 #import "GGWaypoint.h"
+#import "GGCustomer.h"
 
 
 @interface GGTestRealTimeDelegate : NSObject<OrderDelegate, DriverDelegate, RealTimeDelegate>
@@ -119,10 +121,25 @@
 
 @end
 
+@interface GGRealTimeMontiorTestClass :  GGRealTimeMontior
+
+@property (nonatomic, strong) NSDictionary* requestParams;
+@end
+@implementation GGRealTimeMontiorTestClass
+-(void)sendCustomerSuccessEventWithParams:(nonnull NSDictionary *)params completionHandler:(SocketResponseBlock)completionHandler {
+    self.requestParams = params;
+    if (completionHandler) {
+        completionHandler(true,nil,nil);
+    }
+}
+@end
+
+
 @interface GGTrackerManagerTests : XCTestCase
 
 @property (nonatomic, strong) GGTrackerManagerTestClass *trackerManager;
 @property (nonatomic, strong) GGTestRealTimeDelegate  *realtimeDelegate;
+@property (nonatomic, strong) GGRealTimeMontiorTestClass  *realtimeMonitor;
 @property (nullable, nonatomic, strong) NSDictionary *acceptJson;
 @property (nullable, nonatomic, strong) NSDictionary *startJson;
 
@@ -142,6 +159,8 @@
     
     GGHTTPClientManagerTestClass *mockHttp = [[GGHTTPClientManagerTestClass alloc] initWithDeveloperToken:@"SOME_DEV_TOKEN"];
     [self.trackerManager setHTTPManager:mockHttp];
+    self.realtimeMonitor = [[GGRealTimeMontiorTestClass alloc] init];
+    [self.trackerManager setLiveMonitor:self.realtimeMonitor];
 }
 
 - (void)tearDown {
@@ -153,9 +172,11 @@
     self.startJson = nil;
     
     [super tearDown];
-   
 }
 
+- (void)sendEventWithClient:(nonnull SocketIOClient *)socketIO eventName:(nonnull NSString *)eventName params:(nullable NSDictionary *)params completionHandler:(nullable SocketResponseBlock)completionHandler {
+    NSLog(@"");
+}
 //MARK: Tests
 -(void)testMonitoredOrders{
     

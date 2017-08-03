@@ -102,7 +102,9 @@
     
     NSMutableDictionary *retval = @{@"CLIENT": @"BRINGG SDK iOS",
                                     @"CLIENT-VERSION": SDK_VERSION}.mutableCopy;
-    
+    if (_developerToken!=nil){
+        [retval setObject:[NSString stringWithFormat:@"Token token=%@",_developerToken] forKey:@"Authorization"];
+    }
     if (self.customHeaders) {
         [retval addEntriesFromDictionary:self.customHeaders];
     }

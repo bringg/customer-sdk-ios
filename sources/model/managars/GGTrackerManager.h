@@ -82,7 +82,6 @@
 - (void)setCustomer:(GGCustomer * _Nullable)customer;
 
 
-
 // status checks
 
 

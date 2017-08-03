@@ -155,6 +155,7 @@
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
     _customerToken = customer ? customer.customerToken : nil;
+
 }
 
 - (void)setLiveMonitor:(GGRealTimeMontior *)liveMonitor{
@@ -1494,7 +1495,6 @@
         }
     }];
 }
-
 #pragma mark - cleanup
 -(void)removeOrderDelegates{
     [self.liveMonitor.orderDelegates removeAllObjects];

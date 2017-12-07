@@ -82,6 +82,9 @@
                            andOrderUUID:(nonnull NSString *)orderUUID
                       completionHandler:(nullable SocketResponseBlock)completionHandler;
 
+- (void)sendCustomerSuccessEventWithParams:(nonnull NSDictionary *)params
+                                      completionHandler:(nullable SocketResponseBlock)completionHandler;
+
 - (BOOL)handleSocketIODidReceiveEvent:(nonnull NSString *)eventName
                              withData:(nonnull NSDictionary *)eventData;
 

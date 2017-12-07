@@ -155,6 +155,7 @@
 - (void)setCustomer:(GGCustomer *)customer{
     _appCustomer = customer;
     _customerToken = customer ? customer.customerToken : nil;
+
 }
 
 - (void)setLiveMonitor:(GGRealTimeMontior *)liveMonitor{
@@ -777,7 +778,22 @@
 }
     
 
-
+- (void)startWatchingOrderWithShareUUID:(nonnull NSString *)shareUUID
+                               delegate:(id <OrderDelegate> _Nullable)delegate {
+    __weak typeof(self) weakSelf = self;
+    [self.httpManager getOrderSharedLocationByUUID:shareUUID extras:nil withCompletionHandler:^(BOOL success, NSDictionary * _Nullable response, GGSharedLocation * _Nullable sharedLocation, NSError * _Nullable error) {
+        if (!error && sharedLocation != nil) {
+            NSString* orderUUIDFromSharedLocation = sharedLocation.orderUUID;
+            [weakSelf startWatchingOrderWithOrderUUID:orderUUIDFromSharedLocation
+                                accessControlParamKey:PARAM_SHARE_UUID
+                              accessControlParamValue:shareUUID
+                                             delegate:delegate];
+        }else{
+            NSLog(@"error on get order for shared uuid %@:\n%@", shareUUID, [error localizedDescription]);
+        }
+    }];
+    
+}
 - (void)startWatchingOrderWithOrderUUID:(nonnull NSString *)orderUUID
                   accessControlParamKey:(nonnull NSString *)accessControlParamKey
                 accessControlParamValue:(nonnull NSString *)accessControlParamValue
@@ -1494,7 +1510,6 @@
         }
     }];
 }
-
 #pragma mark - cleanup
 -(void)removeOrderDelegates{
     [self.liveMonitor.orderDelegates removeAllObjects];

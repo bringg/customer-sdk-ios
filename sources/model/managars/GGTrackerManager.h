@@ -82,7 +82,6 @@
 - (void)setCustomer:(GGCustomer * _Nullable)customer;
 
 
-
 // status checks
 
 
@@ -203,7 +202,14 @@
 -(void)sendMaskedNumberRequestWithShareUUID:(NSString *_Nonnull)shareUUID
                                 forPhoneNumber:(NSString*_Nonnull)originalPhoneNumber
                          withCompletionHandler:(nullable GGMaskedPhoneNumberResponseHandler)completionHandler;
-
+/**
+ starts to watch an order using share uuid
+ 
+ @param shareUUID share uuid
+ @param delegate delegate to recieve later callbacks
+ */
+- (void)startWatchingOrderWithShareUUID:(nonnull NSString *)shareUUID
+                               delegate:(id <OrderDelegate> _Nullable)delegate;
 /**
  starts to watch an order using order uuid and some access control param
  

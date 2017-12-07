@@ -99,7 +99,6 @@
 @interface GGRealTimeMontiorMockingClass : GGRealTimeMontior
 
 @property (nonatomic, strong) NSDictionary *watchOrderResponseJSON;
-
 @end
 
 @implementation GGRealTimeMontiorMockingClass
@@ -157,6 +156,7 @@
 @end
 
 @interface GGTrackerManagerMockClass : GGTrackerManager
+@property (nonatomic, weak) XCTestExpectation *startWatchingOrderWithOrderUUIDExpectation;
 
 @end
 
@@ -175,7 +175,6 @@
     }
     
 }
-
 - (void)startRESTWatchingOrderByOrderUUID:(NSString *)orderUUID accessControlParamKey:(NSString *)accessControlParamKey accessControlParamValue:(NSString *)accessControlParamValue withCompletionHandler:(GGOrderResponseHandler)completionHandler{
     
     // do nothing
@@ -188,6 +187,7 @@
 @property (nonatomic, strong) id jsonMockResponse;
 @property (nonatomic, strong) NSDictionary *currentRequestParam;
 @property (nonatomic ,strong) NSString *currentAPITestPath;
+@property (nonatomic, strong) NSDictionary *requestHeaders;
 @end
 
 @implementation GGHTTPClientManagerMockClass
@@ -222,6 +222,7 @@
                                                      path:(NSString *_Nonnull)path
                                                    params:(NSDictionary * _Nullable)params
                                         completionHandler:(nullable GGNetworkResponseHandler)completionHandler {
+    self.requestHeaders = self.session.configuration.HTTPAdditionalHeaders;
     self.currentRequestParam = params;
     self.currentAPITestPath = path;
     if (completionHandler) {
@@ -229,6 +230,7 @@
     }
     return nil;
 }
+
 @end
 
 @interface BringgTrackingClientTestClass : BringgTrackingClient<PrivateClientConnectionDelegate>
@@ -306,6 +308,15 @@
 }
 
 //MARK: Tests
+
+- (void)testWatchingOrderWithSharedUUIDInputs{
+    NSString *shareUUID = nil;
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithShareUUID:shareUUID delegate:nil]);
+    shareUUID = @"";
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithShareUUID:shareUUID delegate:nil]);
+    shareUUID = @"fefe-asd-fasd";
+    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithShareUUID:shareUUID delegate:nil]);
+}
 - (void)testWatchingOrderUsingUUIDAndSharedUUID{
     NSString *uuid = nil;
     
@@ -638,5 +649,37 @@
     }];
     [self waitForExpectations:@[expt] timeout:3.0];
 }
-
+- (void)testHTTPRequestHedaers {
+    NSString *uuid = @"1234";
+    __block XCTestExpectation* expt = [[XCTestExpectation alloc] initWithDescription:@"MaskedNumberForOrderExpectation"];
+    //any http call can do
+    [self.trackingClient getMaskedNumberWithShareUUID:uuid forPhoneNumber:@"051123123" withCompletionHandler:^(BOOL success, id  _Nullable JSON, NSError * _Nullable error) {
+        XCTAssertTrue(success);
+        [expt fulfill];
+    }];
+    [self waitForExpectations:@[expt] timeout:3.0];
+    NSDictionary *headers = ((GGHTTPClientManagerMockClass*)self.trackingClient.httpManager).requestHeaders;
+    XCTAssertNotNil(headers);
+    NSArray *headersKeys = headers.allKeys;
+    XCTAssertEqual(headersKeys.count, 3);
+    XCTAssertTrue([headersKeys containsObject:@"Authorization"]);
+    XCTAssertTrue([headersKeys containsObject:@"CLIENT-VERSION"]);
+    XCTAssertTrue([headersKeys containsObject:@"CLIENT"]);
+    
+}
+-(void)testStartWatchingOrderWithShareUUIDWillCallGetOrderSharedLocationByUUID{
+    NSString* shareUUID = [[NSUUID UUID] UUIDString];
+    BringgTrackingClient *client = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    id mockHttpManager =  mock([GGHTTPClientManager class]);
+    XCTestExpectation *GetOrderSharedLocationexpectation = [self expectationWithDescription:@"GetOrderSharedLocationexpectation"];
+    [givenVoid([mockHttpManager getOrderSharedLocationByUUID:anything() extras:anything() withCompletionHandler:anything()]) willDo:^id (NSInvocation *invocation){
+        [GetOrderSharedLocationexpectation fulfill];
+        NSArray *args = [invocation mkt_arguments];
+        XCTAssertEqual(args[0], shareUUID);
+        return args;
+    }];
+    [client.trackerManager setHttpManager:mockHttpManager];
+    [client startWatchingOrderWithShareUUID:shareUUID delegate:nil];
+    [self waitForExpectationsWithTimeout:3.0 handler:nil];
+}
 @end

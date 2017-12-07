@@ -130,6 +130,7 @@
                        // after sign in we assign the customer signed in to the tracking manager
                        if (customer) {
                            [self.trackerManager setCustomer:customer];
+                                                      
                        }
                        
                        if (completionHandler) {
@@ -184,21 +185,24 @@
     
 }
 
-
+- (void)startWatchingOrderWithShareUUID:(NSString *_Nonnull)shareUUID
+                               delegate:(id <OrderDelegate> _Nullable)delegate{
+    NSLog(@"Trying to start watching order using share uuid: %@, with delegate %@", shareUUID, delegate);
+    if ([NSString isStringEmpty:shareUUID]) {
+        [NSException raise:@"Invalid params" format:@"Share UUID can not be empty"];
+        return;
+    }
+    [self.trackerManager startWatchingOrderWithShareUUID:shareUUID delegate:delegate];
+}
 - (void)startWatchingOrderWithShareUUID:(NSString *_Nonnull)shareUUID
                     customerAccessToken:(NSString *_Nonnull)customerAccessToken
                                delegate:(id <OrderDelegate> _Nullable)delegate{
-    
-     NSLog(@"Trying to start watching using customer token and share uuid: %@, with delegate %@", shareUUID, delegate);
-    
+    NSLog(@"Trying to start watching using customer token and share uuid: %@, with delegate %@", shareUUID, delegate);
     if ([NSString isStringEmpty:shareUUID] || [NSString isStringEmpty:customerAccessToken]) {
         [NSException raise:@"Invalid params" format:@"Share UUID and customer token can not be empty"];
-        
         return;
     }
-    
     [self.trackerManager startWatchingOrderWithShareUUID:shareUUID accessControlParamKey:PARAM_ACCESS_TOKEN accessControlParamValue:customerAccessToken delegate:delegate];
-
 }
 
 

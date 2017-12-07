@@ -48,6 +48,7 @@
 - (instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
+        NSLog(@"Bringg SDK version %@",SDK_VERSION);
         self.region = [self getRegionFromDevToken:devToken];
         self.useSecuredConnection = YES;
         

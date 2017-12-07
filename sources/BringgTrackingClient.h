@@ -116,7 +116,7 @@
  *
  *  @param shareUUID       share uuid
  *  @param delegate   delegate
- *  @throws if invalid or missing either customer access token or shared UUID
+ *  @throws if invalid or missing shared UUID
  */
 - (void)startWatchingOrderWithShareUUID:(NSString *_Nonnull)shareUUID
                                delegate:(id <OrderDelegate> _Nullable)delegate;

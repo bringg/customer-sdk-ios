@@ -99,7 +99,6 @@
 @interface GGRealTimeMontiorMockingClass : GGRealTimeMontior
 
 @property (nonatomic, strong) NSDictionary *watchOrderResponseJSON;
-
 @end
 
 @implementation GGRealTimeMontiorMockingClass
@@ -157,6 +156,7 @@
 @end
 
 @interface GGTrackerManagerMockClass : GGTrackerManager
+@property (nonatomic, weak) XCTestExpectation *startWatchingOrderWithOrderUUIDExpectation;
 
 @end
 
@@ -175,7 +175,6 @@
     }
     
 }
-
 - (void)startRESTWatchingOrderByOrderUUID:(NSString *)orderUUID accessControlParamKey:(NSString *)accessControlParamKey accessControlParamValue:(NSString *)accessControlParamValue withCompletionHandler:(GGOrderResponseHandler)completionHandler{
     
     // do nothing
@@ -231,6 +230,7 @@
     }
     return nil;
 }
+
 @end
 
 @interface BringgTrackingClientTestClass : BringgTrackingClient<PrivateClientConnectionDelegate>
@@ -308,6 +308,15 @@
 }
 
 //MARK: Tests
+
+- (void)testWatchingOrderWithSharedUUIDInputs{
+    NSString *shareUUID = nil;
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithShareUUID:shareUUID delegate:nil]);
+    shareUUID = @"";
+    XCTAssertThrows([self.trackingClient startWatchingOrderWithShareUUID:shareUUID delegate:nil]);
+    shareUUID = @"fefe-asd-fasd";
+    XCTAssertNoThrow([self.trackingClient startWatchingOrderWithShareUUID:shareUUID delegate:nil]);
+}
 - (void)testWatchingOrderUsingUUIDAndSharedUUID{
     NSString *uuid = nil;
     
@@ -658,5 +667,19 @@
     XCTAssertTrue([headersKeys containsObject:@"CLIENT"]);
     
 }
-
+-(void)testStartWatchingOrderWithShareUUIDWillCallGetOrderSharedLocationByUUID{
+    NSString* shareUUID = [[NSUUID UUID] UUIDString];
+    BringgTrackingClient *client = [[BringgTrackingClient alloc] initWithDevToken:TEST_DEV_TOKEN connectionDelegate:self.realtimeDelegate];
+    id mockHttpManager =  mock([GGHTTPClientManager class]);
+    XCTestExpectation *GetOrderSharedLocationexpectation = [self expectationWithDescription:@"GetOrderSharedLocationexpectation"];
+    [givenVoid([mockHttpManager getOrderSharedLocationByUUID:anything() extras:anything() withCompletionHandler:anything()]) willDo:^id (NSInvocation *invocation){
+        [GetOrderSharedLocationexpectation fulfill];
+        NSArray *args = [invocation mkt_arguments];
+        XCTAssertEqual(args[0], shareUUID);
+        return args;
+    }];
+    [client.trackerManager setHttpManager:mockHttpManager];
+    [client startWatchingOrderWithShareUUID:shareUUID delegate:nil];
+    [self waitForExpectationsWithTimeout:3.0 handler:nil];
+}
 @end

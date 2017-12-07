@@ -790,6 +790,11 @@
                                              delegate:delegate];
         }else{
             NSLog(@"error on get order for shared uuid %@:\n%@", shareUUID, [error localizedDescription]);
+            if ([delegate respondsToSelector:@selector(watchOrderFailForOrder:error:)]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [delegate watchOrderFailForOrder:nil error:error];
+                });
+            }
         }
     }];
     

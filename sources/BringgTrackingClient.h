@@ -111,6 +111,15 @@
                           delegate:(id <OrderDelegate> _Nullable)delegate;
 
 
+/**
+ *  starts watching an order using share uuid
+ *
+ *  @param shareUUID       share uuid
+ *  @param delegate   delegate
+ *  @throws if invalid or missing either customer access token or shared UUID
+ */
+- (void)startWatchingOrderWithShareUUID:(NSString *_Nonnull)shareUUID
+                               delegate:(id <OrderDelegate> _Nullable)delegate;
 
 /**
  *  starts watching an order using both share uuid and customer access token

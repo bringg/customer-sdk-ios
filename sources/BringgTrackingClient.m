@@ -48,6 +48,7 @@
 - (instancetype)initWithDevToken:(nonnull NSString *)devToken connectionDelegate:(nonnull id<RealTimeDelegate>)delegate{
    
     if (self = [super init]) {
+        NSLog(@"Bringg SDK version %@",SDK_VERSION);
         self.region = [self getRegionFromDevToken:devToken];
         self.useSecuredConnection = YES;
         
@@ -385,7 +386,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
 //MARK: -- URLs Delegate
 
 - (NSString *)hostDomainForClientManager:(GGHTTPClientManager *)clientManager {
-    NSString *hostDomainURL = [GGNetworkUtils bringgAPIUrlByRegion:self.region];
+    NSString *hostDomainURL = [GGNetworkUtils bringgRealtimeUrlByRegion:self.region];
         //Local
     if (USE_LOCAL == YES) {
         hostDomainURL = [NSString stringWithFormat:@"%@:3000", LOCAL_URL];

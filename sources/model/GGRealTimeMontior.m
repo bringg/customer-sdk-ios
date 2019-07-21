@@ -58,11 +58,11 @@
 }
 
 - (BOOL)isSocketIOConnected{
-    return self.socketIO.status == SocketIOClientStatusConnected;
+    return self.socketIO.status == SocketIOStatusConnected;
 }
 
 - (BOOL)isSocketIOConnecting{
-    return self.socketIO.status == SocketIOClientStatusConnecting;
+    return self.socketIO.status == SocketIOStatusConnecting;
 }
 
 - (void)configureReachability {
@@ -322,10 +322,9 @@
     NSDictionary *connectionParams = @{@"CLIENT": @"BRINGG-SDK-iOS", @"CLIENT-VERSION": SDK_VERSION, @"developer_access_token":self.developerToken};
     
     NSDictionary *connectionOptions = @{@"log": @(self.logsEnabled), @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"connectParams":connectionParams};
-    
-    self.socketIO = [[SocketIOClient alloc] initWithSocketURL:[NSURL URLWithString:server] config:connectionOptions];
-    
-    
+
+    SocketManager* manager = [[SocketManager alloc] initWithSocketURL:[NSURL URLWithString:server] config:connectionOptions];
+    self.socketIO = manager.defaultSocket;
     
     if ([self isSocketIOConnected] || [self isSocketIOConnecting]) {
         
@@ -797,10 +796,6 @@ accessControlParamValue:(nonnull NSString *)accessControlParamValue
         NSLog(@"\t\thandling connect success");
         self.socketIOConnectedBlock(YES, nil);
         self.socketIOConnectedBlock = nil;
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                       self.developerToken, @"developer_access_token",
-                                       nil];
-        
     }
     
 }

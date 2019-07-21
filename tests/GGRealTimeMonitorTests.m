@@ -50,6 +50,10 @@
     self.lastUpdatedWaypointId = waypointId;
 }
 
+- (void)watchWaypointSucceededForWaypointId:(nonnull NSNumber *)waypointId waypoint:(nonnull GGWaypoint *)waypoint {
+}
+
+
 @end
 
 @interface DriverDelegateTestClass : NSObject<DriverDelegate>

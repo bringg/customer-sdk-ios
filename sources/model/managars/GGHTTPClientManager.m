@@ -591,7 +591,7 @@ withCompletionHandler:(nullable GGRatingResponseHandler)completionHandler{
                   }
               }];
 }
-#warning TODO - add Order method to header once server is ready
+
 - (void)addOrderWith:(GGOrderBuilder *)orderBuilder withCompletionHandler:(void (^)(BOOL success, GGOrder *order, NSError *error))completionHandler{
     
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:orderBuilder.orderData];

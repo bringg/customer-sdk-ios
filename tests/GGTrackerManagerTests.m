@@ -47,6 +47,11 @@
     
 }
 
+- (void)watchDriverSucceedForDriver:(nullable GGDriver *)driver {
+    
+}
+
+
 -(void)watchOrderFailForOrder:(GGOrder *)order error:(NSError *)error{
     
 }
@@ -60,6 +65,11 @@
 - (void)orderDidStartWithOrder:(GGOrder *)order withDriver:(GGDriver *)driver{
     
 }
+
+- (void)watchOrderSucceedForOrder:(nonnull GGOrder *)order {
+    
+}
+
 
 
 
@@ -87,7 +97,7 @@
 
 @end
 
-@interface GGHTTPClientManagerTestClass :  GGHTTPClientManager
+@interface GGHTTPClientManagerTestClass: GGHTTPClientManager
 
 @end
 

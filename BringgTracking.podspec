@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "BringgTracking"
-  s.version      = "1.20.0"
+  s.version      = "1.21.0"
   s.summary      = "BringgTracking SDK"
   s.homepage     = "http://www.bringg.com"
   s.author       = "Bringg Ltd."

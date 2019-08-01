@@ -632,7 +632,7 @@
 				PRODUCT_NAME = BringgTracking;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -660,7 +660,7 @@
 				PRODUCT_NAME = BringgTracking;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

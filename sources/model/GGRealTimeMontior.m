@@ -26,7 +26,7 @@
 @interface GGRealTimeMontior() <SocketIOClientDelegate>
 
 @property (nonatomic, strong) Reachability *reachability;
-
+@property (nonatomic,strong) SocketManager *socketManager;
 @end
 
 @implementation GGRealTimeMontior
@@ -323,8 +323,8 @@
     
     NSDictionary *connectionOptions = @{@"log": @(self.logsEnabled), @"forceWebsockets":@YES, @"secure": @(self.useSSL), @"reconnects":@NO, @"cookies":@[], @"connectParams":connectionParams};
 
-    SocketManager* manager = [[SocketManager alloc] initWithSocketURL:[NSURL URLWithString:server] config:connectionOptions];
-    self.socketIO = manager.defaultSocket;
+    self.socketManager = [[SocketManager alloc] initWithSocketURL:[NSURL URLWithString:server] config:connectionOptions];
+    self.socketIO = self.socketManager.defaultSocket;
     
     if ([self isSocketIOConnected] || [self isSocketIOConnecting]) {
         

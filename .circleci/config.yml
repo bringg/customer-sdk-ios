@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    # Specify the Xcode version to use
     macos:
       xcode: 10.2.0
     steps:
@@ -15,6 +14,9 @@ jobs:
       - run:
             name: Bundler - Install Dependencies
             command: bundler install --path .bundle.
+      - run:
+            name: Update fastlane
+            command: bundle update fastlane
       - run:
             name: Fastlane - Run Unit Tests
             command: bundle exec fastlane test

@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    # Specify the Xcode version to use
+    macos:
+      xcode: 10.2.0
+    steps:
+      - checkout
+      - run:
+            name: Configure git
+            command: |
+              git config credential.helper 'cache --timeout=120'
+              git config user.email "bringg-ios-developers@bringg.com"
+              git config user.name "CircleCI"
+      - run:
+            name: Bundler - Install Dependencies
+            command: bundler install --path .bundle.
+      - run:
+            name: Fastlane - Run Unit Tests
+            command: bundle exec fastlane test
+      - store_test_results:
+            path: fastlane/test_output
+      - store_artifacts:
+            path: fastlane/test_output

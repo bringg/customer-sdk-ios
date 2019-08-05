@@ -13,7 +13,7 @@ jobs:
               git config user.name "CircleCI"
       - run:
             name: Bundler - Install Dependencies
-            command: bundler install --path .bundle.
+            command: d BringgTrackingFramework && bundler install --path .bundle.
 
       - run:
             name: Cocoapods - Install Dependencies

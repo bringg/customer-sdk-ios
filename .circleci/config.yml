@@ -19,8 +19,8 @@ jobs:
             command: bundle update fastlane
       - run:
             name: Fastlane - Run Unit Tests
-            command: bundle exec fastlane test
+            command: cd BringgTrackingFramework && bundle exec fastlane test
       - store_test_results:
-            path: fastlane/test_output
+            path: BringgTrackingFramework/fastlane/test_output
       - store_artifacts:
-            path: fastlane/test_output
+            path: BringgTrackingFramework/fastlane/test_output

@@ -14,6 +14,13 @@ jobs:
       - run:
             name: Bundler - Install Dependencies
             command: bundler install --path .bundle.
+
+      - run:
+            name: Cocoapods - Install Dependencies
+            command: |
+              curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+              cd BringgTrackingFramework && bundle exec pod install
+
       - run:
             name: Update fastlane
             command: bundle update fastlane

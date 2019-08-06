@@ -24,7 +24,6 @@ platform :ios do
   desc "Run unit tests"
   lane :test do
     scan
-    codecov
   end
 
   error do |lane, exception|

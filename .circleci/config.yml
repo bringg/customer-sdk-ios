@@ -1,4 +1,6 @@
 version: 2
+orbs:
+  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     macos:
@@ -31,3 +33,5 @@ jobs:
             path: BringgTrackingFramework/fastlane/test_output
       - store_artifacts:
             path: BringgTrackingFramework/fastlane/test_output
+      - codecov/upload:
+          file: BringgTrackingFramework/fastlane/test_output/report.junit

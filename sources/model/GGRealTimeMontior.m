@@ -184,8 +184,7 @@
     _lastEventDate = lastEventDate;
     
     // delegate methods
-    if (lastEventDate && [self.networkClientDelegate respondsToSelector:@selector(networkClient:didReciveUpdateEventAtDate:)]) {
-        
+    if (lastEventDate && [self.networkClientDelegate respondsToSelector:@selector(networkClient:didReciveUpdateEventAtDate:)]) {        
         [self.networkClientDelegate networkClient:self didReciveUpdateEventAtDate:_lastEventDate];
     }
 }
@@ -460,14 +459,20 @@
                     [existingDelegate orderDidStartWithOrder:order withDriver:driver];
                     break;
                 case OrderStatusCheckedIn:
-                    [existingDelegate orderDidArrive:order withDriver:driver];
+                    if ([existingDelegate respondsToSelector:@selector(orderDidArrive:withDriver:)]) {
+                        [existingDelegate orderDidArrive:order withDriver:driver];
+                    }
                     break;
                 case OrderStatusDone:
-                    [existingDelegate orderDidFinish:order withDriver:driver];
+                    if ([existingDelegate respondsToSelector:@selector(orderDidFinish:withDriver:)]) {
+                        [existingDelegate orderDidFinish:order withDriver:driver];
+                    }
                     break;
                 case OrderStatusCancelled:
                 case OrderStatusRejected:
-                    [existingDelegate orderDidCancel:order withDriver:driver];
+                    if ([existingDelegate respondsToSelector:@selector(orderDidCancel:withDriver:)]) {
+                        [existingDelegate orderDidCancel:order withDriver:driver];
+                    }
                     break;
                 default:
                     break;
@@ -509,8 +514,9 @@
         }
         
         if (existingDelegate) {
-            [existingDelegate orderDidFinish:order  withDriver:driver];
-            
+            if ([existingDelegate respondsToSelector:@selector(orderDidFinish:withDriver:)]) {
+                [existingDelegate orderDidFinish:order  withDriver:driver];
+            }
         }
         
         return YES;
@@ -536,10 +542,12 @@
         NSNumber *lat = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:PARAM_LAT] defaultTo:nil];
         NSNumber *lng = [GGBringgUtils numberFromJSON:[locationUpdate objectForKey:PARAM_LNG] defaultTo:nil];
         
-        NSLog(@"delegate: %@ should udpate waypoint %@ location to: %@/%@ withData:%@", existingDelegate, wpid, lat, lng , eventData);
+        NSLog(@"delegate: %@ should update waypoint %@ location to: %@/%@ withData:%@", existingDelegate, wpid, lat, lng , eventData);
         
         if (lat && lng && existingDelegate) {
-            [existingDelegate waypoint:wpid didUpdatedCoordinatesToLat:lat lng:lng];
+            if ([existingDelegate respondsToSelector:@selector(waypoint:didUpdatedCoordinatesToLat:lng:)]) {
+                [existingDelegate waypoint:wpid didUpdatedCoordinatesToLat:lat lng:lng];
+            }
         }
         
     }else if ([eventName isEqualToString:EVENT_WAY_POINT_ETA_UPDATE]) {
@@ -550,7 +558,7 @@
         
         id existingDelegate = [self delegateForWaypointID:wpid];
         
-        NSLog(@"delegate: %@ should udpate waypoint %@ ETA to: %@ withData:%@", existingDelegate, wpid, eta , eventData);
+        NSLog(@"delegate: %@ should update waypoint %@ ETA to: %@ withData:%@", existingDelegate, wpid, eta , eventData);
         
         if (existingDelegate) {
             [existingDelegate waypointDidUpdatedWaypointId:wpid eta:etaToDate];
@@ -568,7 +576,9 @@
         NSLog(@"delegate: %@ should udpate waypoint %@ arrived withData:%@", existingDelegate, wpid, eventData );
         
         if (existingDelegate) {
-            [existingDelegate waypointDidArrivedWaypointId:wpid];
+            if ([existingDelegate respondsToSelector:@selector(waypointDidArrivedWaypointId:)]) {
+                [existingDelegate waypointDidArrivedWaypointId:wpid];
+            }
             
         }
         
@@ -582,7 +592,9 @@
         NSLog(@"delegate: %@ should udpate waypoint %@ done withData:%@", existingDelegate, wpid, eventData );
         
         if (existingDelegate) {
-            [existingDelegate waypointDidArrivedWaypointId:wpid];
+            if ([existingDelegate respondsToSelector:@selector(waypointDidArrivedWaypointId:)]) {
+                [existingDelegate waypointDidArrivedWaypointId:wpid];
+            }
             
         }
         

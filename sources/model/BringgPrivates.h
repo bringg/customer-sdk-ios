@@ -14,7 +14,6 @@
 @protocol PrivateClientConnectionDelegate <NSObject>
 
 @optional
-
 /**
  *  asks the delegate for a custom domain host for the http manager.
  *  if no domain is provided the http manager will resolve to its default
@@ -44,7 +43,6 @@
 @protocol NetworkClientUpdateDelegate <NSObject>
 
 @optional
-
 - (void)networkClient:(nonnull id)networkClient didReciveUpdateEventAtDate:(nonnull NSDate *)eventDate;
 
 @end

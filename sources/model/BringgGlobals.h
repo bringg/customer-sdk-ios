@@ -113,7 +113,6 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  */
 - (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
 
-
 @optional
 /**
  *  delegate method to track the last date the tracker manager recieved data

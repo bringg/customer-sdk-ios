@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.21.0"
+#define SDK_VERSION @"1.21.1"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
@@ -112,7 +112,6 @@ typedef void (^SocketResponseBlock)(BOOL success, id __nullable socketResponse, 
  *  @param error an error describing connection error (might be nill if forced)
  */
 - (void)trackerDidDisconnectWithError:(NSError * _Nullable)error;
-
 
 @optional
 /**

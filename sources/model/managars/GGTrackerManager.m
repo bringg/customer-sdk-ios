@@ -631,7 +631,9 @@
     
     if (delegate) {
         // notifiy delegate findme configuration has been updated
-        [delegate order:order didUpdateLocation:order.sharedLocation findMeConfiguration:order.sharedLocation.findMe];
+        if ([delegate respondsToSelector:@selector(order:didUpdateLocation:findMeConfiguration:)]) {
+            [delegate order:order didUpdateLocation:order.sharedLocation findMeConfiguration:order.sharedLocation.findMe];
+        }
     }
 }
 
@@ -1439,7 +1441,6 @@
             
             if (order && ![NSString isStringEmpty:order.sharedLocationUUID]) {
                 if ([orderDelegate respondsToSelector:@selector(trackerWillReviveWatchedOrder:)]) {
-                    
                     [orderDelegate trackerWillReviveWatchedOrder:orderUUID];
                 }
                 
@@ -1598,8 +1599,7 @@
 
 #pragma mark - Real Time Monitor Connection Delegate
 -(NSString *)hostDomainForRealTimeMonitor:(GGRealTimeMontior *)realTimeMonitor{
-    if (self.connectionDelegate && [self.connectionDelegate respondsToSelector:@selector(hostDomainForTrackerManager:)]) {
-        
+    if (self.connectionDelegate && [self.connectionDelegate respondsToSelector:@selector(hostDomainForTrackerManager:)]) {        
         return [self.connectionDelegate hostDomainForTrackerManager:self];
     }
     return nil;

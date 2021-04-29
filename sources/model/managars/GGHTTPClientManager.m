@@ -273,8 +273,7 @@
     _lastEventDate = lastEventDate;
     
     // delegate methods
-    if (lastEventDate && [self.networkClientDelegate respondsToSelector:@selector(networkClient:didReciveUpdateEventAtDate:)]) {
-        
+    if (lastEventDate && [self.networkClientDelegate respondsToSelector:@selector(networkClient:didReciveUpdateEventAtDate:)]) {        
         [self.networkClientDelegate networkClient:self didReciveUpdateEventAtDate:_lastEventDate];
     }
 }

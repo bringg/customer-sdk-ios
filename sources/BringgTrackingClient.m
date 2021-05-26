@@ -403,7 +403,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     //Local
     if (USE_LOCAL == YES) {
         
-        realtimeURL = [NSString stringWithFormat:@"%@:3030", LOCAL_URL];
+        realtimeURL = [NSString stringWithFormat:@"%@:3006", LOCAL_URL];
     }
     return realtimeURL;
 }

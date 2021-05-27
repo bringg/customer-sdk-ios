@@ -393,7 +393,7 @@ completionHandler:(nullable GGRatingResponseHandler)completionHandler{
     NSString *hostDomainURL = [GGNetworkUtils bringgRealtimeUrlByRegion:self.region];
         //Local
     if (USE_LOCAL == YES) {
-        hostDomainURL = [NSString stringWithFormat:@"%@:3000", LOCAL_URL];
+        hostDomainURL = [NSString stringWithFormat:@"%@:3006", LOCAL_URL];
     }
     return hostDomainURL;
 }

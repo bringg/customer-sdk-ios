@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "BringgTracking"
-  s.version      = "1.21.1"
+  s.version      = "1.21.2"
   s.summary      = "BringgTracking SDK"
   s.homepage     = "http://www.bringg.com"
   s.author       = "Bringg Ltd."
@@ -8,9 +8,9 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   allows building customer experience apps based on the popular on demand delivery platform 'Bringg'
                    DESC
-  s.license      = "MIT"
+  s.license      = { :type => 'proprietary', :file => 'LICENSE' }
   s.source       = { :git => "https://github.com/bringg/customer-sdk-ios.git", :tag => "#{s.version}" }
-  s.source_files  = "sources", "sources/**/*.{h,m}"
+  s.source_files = "sources", "sources/**/*.{h,m}"
   s.requires_arc = true
   s.dependency "Socket.IO-Client-Swift", '~> 15.1.0'
   s.xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }

@@ -14,7 +14,7 @@
 #define kSDKDomainResponse @"GGSDKResponseDomain"
 #define kSDKDomainRealTime @"GGSDKRealTimeDomain"
 
-#define SDK_VERSION @"1.21.1"
+#define SDK_VERSION @"1.21.2"
 //-----------------------------------------------------------------------------
 
 #define PARAM_STATUS @"status"
